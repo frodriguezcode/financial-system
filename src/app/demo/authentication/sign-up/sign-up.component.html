@@ -5,38 +5,57 @@
         <div class="col-md-12">
           <div class="card-body">
             <img src="assets/images/logo-dark.png" alt="logo" class="img-fluid mb-4" />
-            <h4 class="mb-3 f-w-400">Sign up</h4>
+            <h4 class="mb-3 f-w-400">Registrarse</h4>
             <form *ngIf="usuarioForm" [formGroup]="usuarioForm">
+              <!-- *Nombres -->
               <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1"><i class="feather icon-user"></i></span>
+                <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-user-large"></i></span>
                 <input formControlName="Nombres" type="text" class="form-control" placeholder="Nombres" aria-label="Username" aria-describedby="basic-addon1" />
-                <br>
-                <p style="color: red;" 
-                *ngIf="(usuarioForm.get('Nombres')?.touched || usuarioForm.get('Nombres')?.dirty) && usuarioForm.get('Nombres')?.hasError('required')">
-                  Este campo es obligatorio
-                </p>
               </div>
+              <p class="alerts__validators" style="color: red; display: block; margin-top: -7px;" 
+              *ngIf="(usuarioForm.get('Nombres')?.touched || usuarioForm.get('Nombres')?.dirty) && usuarioForm.get('Nombres')?.hasError('required')">
+                Este campos es obligatorio
+              </p>
+              <!-- *Nombres -->
+
+              <!-- *correo -->
               <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon2"><i class="feather icon-mail"></i></span>
+                <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-envelope"></i></span>
                 <input formControlName="Correo" type="email" class="form-control" placeholder="Correo" aria-label="Username" aria-describedby="basic-addon2" />
-                <br>
-                <p style="color: red;" 
-                *ngIf="(usuarioForm.get('Correo')?.touched || usuarioForm.get('Correo')?.dirty) && usuarioForm.get('Correo')?.hasError('required')">
-                  Este campo es obligatorio
-                </p>
-                <p style="color: red;" *ngIf="usuarioForm.get('Correo')?.hasError('email')">
-                  Este campo debe ser tipo correo
-                </p>
               </div>
+              <p style="color: red;  display: block; margin-top: -7px;" 
+              *ngIf="(usuarioForm.get('Correo')?.touched || usuarioForm.get('Correo')?.dirty) && usuarioForm.get('Correo')?.hasError('required')">
+                Este campo es obligatorio
+              </p>
+              <p class="alerts-validators" style="color: red;  display: block; margin-top: -7px;" *ngIf="usuarioForm.get('Correo')?.hasError('email')">
+                Este campo debe ser tipo correo
+              </p>
+
+              <!-- *correo -->
+              <!-- *Usuario -->
+
               <div class="input-group mb-4">
-                <span class="input-group-text" id="basic-addon3"><i class="feather icon-user-check"></i></span>
+                <span class="input-group-text" id="basic-addon3"><i class="fa-solid fa-user-tie"></i></span>
                 <input formControlName="Usuario" type="text" class="form-control" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon3" />
               </div>
+
+              <p style="color: red;  display: block; margin-top: -7px;" 
+              *ngIf="(usuarioForm.get('Usuario')?.touched || usuarioForm.get('Usuario')?.dirty) && usuarioForm.get('Usuario')?.hasError('required')">
+                Este campo es obligatorio
+              </p>
+                <!-- *Usuario -->
+
+                <!-- *Password -->
+
               <div class="input-group mb-4">
-                <span class="input-group-text" id="basic-addon3"><i class="feather icon-lock"></i></span>
+                <span class="input-group-text" id="basic-addon3"><i class="fa-solid fa-key"></i></span>
                 <input formControlName="Password" type="password" class="form-control" placeholder="Password" aria-label="Username" aria-describedby="basic-addon3" />
               </div>
-
+              <p class="alerts__validators" style="color: red; display: block; margin-top: -7px;" 
+              *ngIf="(usuarioForm.get('Password')?.touched || usuarioForm.get('Password')?.dirty) && usuarioForm.get('Password')?.hasError('required')">
+                Este campos es obligatorio
+              </p>
+                <!-- *Password -->
             </form>
             <div class="form-group text-start mt-2">
               <div class="checkbox checkbox-primary d-inline">
@@ -45,7 +64,7 @@
               </div>
             </div>
             <div class="d-grid">
-              <button (click)="guardarUsuario()" class="btn btn-primary btn-block mb-4">Sign up</button>
+              <button (click)="guardarUsuario()" class="btn btn-primary btn-block mb-4 btn-custom">Sign up</button>
             </div>
             <p class="mb-2">Already have an account? <a [routerLink]="['/auth/signin']" class="f-w-400">Signin</a></p>
           </div>
