@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-import { RouterModule } from '@angular/router';
+import { RouterModule,Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
+import Swal from 'sweetalert2'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
@@ -16,45 +17,15 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 export default class SignUpComponent implements OnInit {
   constructor(
     private authS: AuthService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private readonly router: Router
   ) {}
-
   usuarioForm!: FormGroup;
   Fecha: any = new Date();
 
   MesesTodos: any = [];
-
-  cargarFormulario() {
-    // *Formulario de usuario
-    this.usuarioForm = new FormGroup({
-      Nombre: new FormControl('', [Validators.required]),
-      Password: new FormControl('', [Validators.required]),
-      FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')),
-      MesRegistro: new FormControl(
-        this.datePipe.transform(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'))
-      ),
-      AnioRegistro: new FormControl(new Date().getFullYear()),
-      Activo: new FormControl(true),
-      IdSucursal: new FormControl(0),
-      ConfigInicialCompletado:new FormControl(false),
-      Correo: new FormControl('', [Validators.email, Validators.required]),
-      // TODO VERIFICACIONES, CONTRASENA AUTOMATICA, API QUE ENVIA AL CORREO.
-    });
-  }
-
-  // !Funcion que devuelve el mes
-  getMonthName(Fecha: string) {
-    return Number(Fecha.substring(5).substring(0, 2));
-  }
-
-  // !Funcion para guardar usuario
-  guardarUsuario(){
-    this.authS.crearUsuario(this.usuarioForm.value).then((resp:any)=>{
-      // TODO CREAR ALERTA DE USUARIO CREADO, REDIRECCIONAR A INICIO DE SESION
-    })
-  }
-
   ngOnInit() {
+
     this.MesesTodos = [
       {
         Mes: 'Sin Mes',
@@ -122,5 +93,51 @@ export default class SignUpComponent implements OnInit {
         seleccionado: false
       }
     ];
+    this. cargarFormulario()
   }
+
+
+
+  cargarFormulario() {
+    // *Formulario de usuario
+    let Fecha:any
+    Fecha=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
+    console.log('Fecha',this.getMonthName(Fecha))
+    this.usuarioForm = new FormGroup({
+      Nombres: new FormControl('', [Validators.required]),
+      Password: new FormControl('', [Validators.required]),
+      Usuario: new FormControl('', [Validators.required]),
+      FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')),
+      MesRegistro:new FormControl(this.MesesTodos[this.getMonthName(Fecha)].Mes),
+      AnioRegistro: new FormControl(new Date().getFullYear()),
+      Activo: new FormControl(true),
+      IdSucursal: new FormControl(0),
+      ConfigInicialCompletado:new FormControl(false),
+      Correo: new FormControl('', [Validators.email, Validators.required]),
+      // TODO VERIFICACIONES, CONTRASENA AUTOMATICA, API QUE ENVIA AL CORREO.
+    });
+  }
+
+  // !Funcion que devuelve el mes
+  getMonthName(Fecha: string) {
+    return Number(Fecha.substring(5).substring(0, 2));
+  }
+
+  // !Funcion para guardar usuario
+  guardarUsuario(){
+    console.log('UsuarioForm',this.usuarioForm.value)
+    this.authS.crearUsuario(this.usuarioForm.value).then((resp:any)=>{
+      this.router.navigate(['/auth/signin'])
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Usuario creado exitosamente",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    })
+    // TODO CREAR ALERTA DE USUARIO CREADO, REDIRECCIONAR A INICIO DE SESION
+  }
+
+
 }

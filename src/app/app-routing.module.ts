@@ -5,17 +5,24 @@ import { Routes, RouterModule } from '@angular/router';
 // project import
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
+import SignInComponent from './demo/authentication/sign-in/sign-in.component';
+import SignUpComponent from './demo/authentication/sign-up/sign-up.component';
 
 const routes: Routes = [
   {
     path: '',
+    redirectTo: 'auth/signin', // Redirigir la ruta raíz a SignInComponent
+    pathMatch: 'full'
+  },
+  {
+    path: '',
     component: AdminComponent,
     children: [
-      {
-        path: '',
-        redirectTo: '/analytics',
-        pathMatch: 'full'
-      },
+      // {
+      //   path: '',
+      //   redirectTo: '/analytics',
+      //   pathMatch: 'full'
+      // },
       {
         path: 'analytics',
         loadComponent: () => import('./demo/dashboard/dash-analytics/dash-analytics.component')
@@ -42,20 +49,29 @@ const routes: Routes = [
       }
     ]
   },
+
   {
-    path: '',
-    component: GuestComponent,
-    children: [
-      {
-        path: 'auth/signup',
-        loadComponent: () => import('./demo/authentication/sign-up/sign-up.component')
-      },
-      {
-        path: 'auth/signin',
-        loadComponent: () => import('./demo/authentication/sign-in/sign-in.component')
-      }
-    ]
-  }
+    path: 'auth/signin',
+    component:SignInComponent
+  },
+  {
+    path: 'auth/signin/signup',
+    component:SignUpComponent
+  },
+  // {
+  //   path: '',
+  //   component: GuestComponent,
+  //   children: [
+  //     {
+  //       path: 'auth/signup',
+  //       loadComponent: () => import('./demo/authentication/sign-up/sign-up.component')
+  //     },
+  //     {
+  //       path: 'auth/signin',
+  //       loadComponent: () => import('./demo/authentication/sign-in/sign-in.component')
+  //     }
+  //   ]
+  // }
 ];
 
 @NgModule({

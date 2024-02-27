@@ -18,4 +18,9 @@ export class AuthService {
       .doc(id)
       .ref.set(Object.assign(user, { id: id }));
   }
+  obtenerUsuarioLogin(usuario:string,password:string) {
+    return this.afs
+      .collection('Usuarios',(ref) => ref.where('Usuario', '==', usuario).where('Password', '==', password))
+      .valueChanges();
+  }
 }

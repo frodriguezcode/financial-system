@@ -25,6 +25,7 @@ import { NavItemComponent } from './theme/layout/admin/navigation/nav-content/na
 import { SharedModule } from './theme/shared/shared.module';
 import { FirebaseModule } from './firebase.module';
 import { DatePipe } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -44,8 +45,9 @@ import { DatePipe } from '@angular/common';
     NavItemComponent,
     NavCollapseComponent,
     NavGroupComponent
+    
   ],
-  imports: [BrowserModule, AppRoutingModule, SharedModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule, FirebaseModule],
+  imports: [BrowserModule, AppRoutingModule, SharedModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule, FirebaseModule,HttpClientModule],
   providers: [DatePipe],
   bootstrap: [AppComponent]
 })
