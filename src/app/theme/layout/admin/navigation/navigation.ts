@@ -19,73 +19,33 @@ export interface NavigationItem {
 }
 
 export const NavigationItems: NavigationItem[] = [
-  {
-    id: 'navigation',
-    title: 'Navigation',
-    type: 'group',
-    icon: 'icon-group',
-    children: [
-      {
-        id: 'dashboard',
-        title: 'Dashboard',
-        type: 'item',
-        url: '/analytics',
-        icon: 'feather icon-home'
-      }
-    ]
-  },
-  {
-    id: 'ui-component',
-    title: 'Ui Component',
-    type: 'group',
-    icon: 'icon-group',
-    children: [
-      {
-        id: 'basic',
-        title: 'Component',
-        type: 'collapse',
-        icon: 'feather icon-box',
-        children: [
-          {
-            id: 'button',
-            title: 'Button',
-            type: 'item',
-            url: '/component/button'
-          },
-          {
-            id: 'badges',
-            title: 'Badges',
-            type: 'item',
-            url: '/component/badges'
-          },
-          {
-            id: 'breadcrumb-pagination',
-            title: 'Breadcrumb & Pagination',
-            type: 'item',
-            url: '/component/breadcrumb-paging'
-          },
-          {
-            id: 'collapse',
-            title: 'Collapse',
-            type: 'item',
-            url: '/component/collapse'
-          },
-          {
-            id: 'tabs-pills',
-            title: 'Tabs & Pills',
-            type: 'item',
-            url: '/component/tabs-pills'
-          },
-          {
-            id: 'typography',
-            title: 'Typography',
-            type: 'item',
-            url: '/component/typography'
-          }
-        ]
-      }
-    ]
-  },
+  
+    {
+      id: 'configuracion',
+      title: 'Configuración',
+      type: 'group',
+      icon: 'icon-group',
+      children: [
+        {
+          id: 'bancos',
+          title: 'Bancos',
+          type: 'item',
+          url: '/bancos',
+          icon: 'feather icon-bold',
+       
+          breadcrumbs: false
+        },
+        {
+          id: 'signin',
+          title: 'Sign in',
+          type: 'item',
+          url: '/auth/signin',
+          icon: 'feather icon-log-in',
+          target: true,
+          breadcrumbs: false
+        }
+      ]
+    },
   {
     id: 'Authentication',
     title: 'Authentication',

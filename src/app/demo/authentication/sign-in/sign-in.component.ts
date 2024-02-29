@@ -26,6 +26,7 @@ export default class SignInComponent {
      Swal.showLoading();
     this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe(resp=>{
       if(resp.length>0){
+        localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0]));
         this.router.navigate(['/analytics'])
         Swal.fire({
           position: "center",
