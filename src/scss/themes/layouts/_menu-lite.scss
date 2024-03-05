@@ -1528,7 +1528,7 @@
 .pcoded-navbar.menu-light {
   background-color: $menu-light-background;
   color: $menu-light-text-color;
-
+  // border-radius: 0px 5px 0px 5px;
   .header-logo {
     background-color: $menu-dark-background;
 
@@ -1676,7 +1676,8 @@
     $i: index($color-header-name, $value);
 
     &.header-#{'' + $value} {
-      background: linear-gradient(to right, nth($color-header-color, $i), nth($color-header-color2, $i));
+      // background: linear-gradient(to right, nth($color-header-color, $i), nth($color-header-color2, $i));
+      background-image: linear-gradient(to right top, #053735, #08605c, #0c8c86, #0fbab3, #12ebe1);
       color: rgba(256, 256, 256, 0.8);
 
       .profile-notification {
