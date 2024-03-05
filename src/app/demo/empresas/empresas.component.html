@@ -1,0 +1,29 @@
+<app-card cardTitle="Modulo Empresas" [options]="false">
+  <div class="row">
+    <div class="col-md-4">
+      <h5>Crear Empresa</h5>
+      <hr />
+
+      <form *ngIf="EmpresaForm" [formGroup]="EmpresaForm">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Nombre de Empresa</label>
+          <input type="text" formControlName="Nombre" class="form-control" id="exampleInputEmail1"
+            aria-describedby="emailHelp" placeholder="Escriba un nombre de la empresa" />
+        </div>
+
+       
+        <!-- <div class="form-group">
+          <label for="exampleInputPassword1">Empresa</label>
+          <input (input)="verificarEmpresa()" type="text" formControlName="Cuenta" class="form-control" id="exampleInputPassword1" placeholder="Escriba una cuenta" />
+          <span *ngIf="empresaFound==true" style="color: red;"><p>Ya existe una cuenta con este numero</p></span>
+
+        </div> -->
+       
+
+        <button [disabled]="this.EmpresaForm.invalid || empresaFound==true" (click)="crearEmpresa()" type="button"
+          class="btn btn-primary">Guardar</button>
+      </form>
+    </div>
+
+  </div>
+</app-card>

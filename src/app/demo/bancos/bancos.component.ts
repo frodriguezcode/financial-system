@@ -24,6 +24,8 @@ export default class BancosComponent implements OnInit {
   cuentaFound:boolean=false
   BancoForm!:FormGroup
   Fecha:any= new Date();
+
+  
   ngOnInit(): void {
   this.obtenerSucursales()
   this.obtenerMonedas()
@@ -69,6 +71,8 @@ export default class BancosComponent implements OnInit {
       this.cuentaFound=false
     }
   }
+
+
   crearBanco(){
     this.conS.crearBanco(this.BancoForm.value).then(resp=>{
       Swal.fire({
@@ -80,6 +84,8 @@ export default class BancosComponent implements OnInit {
       });
     })
   }
+
+
   toggleEdicion(Banco: any) {
 
     Banco.Editando = !Banco.Editando;

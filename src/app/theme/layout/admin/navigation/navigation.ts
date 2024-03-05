@@ -31,7 +31,18 @@ export const NavigationItems: NavigationItem[] = [
           title: 'Bancos',
           type: 'item',
           url: '/bancos',
-          icon: 'feather icon-bold',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-building-columns',
+       
+          breadcrumbs: false
+        },
+        {
+          id: 'empresa',
+          title: 'Empresa',
+          type: 'item',
+          url: '/empresas',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-building',
        
           breadcrumbs: false
         },
@@ -40,7 +51,8 @@ export const NavigationItems: NavigationItem[] = [
           title: 'Sign in',
           type: 'item',
           url: '/auth/signin',
-          icon: 'feather icon-log-in',
+          // icon: 'feather icon-log-in',
+          icon: 'fa-solid fa-right-to-bracket',
           target: true,
           breadcrumbs: false
         }

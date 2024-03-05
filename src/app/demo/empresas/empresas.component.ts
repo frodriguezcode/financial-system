@@ -1,0 +1,77 @@
+//* angular import
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+
+//~ project import
+import { SharedModule } from 'src/app/theme/shared/shared.module';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { EmpresasService } from 'src/app/services/empresa.service';
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
+
+@Component({
+  selector: 'app-sample-page',
+  standalone: true,
+  imports: [CommonModule, SharedModule, FormsModule, ReactiveFormsModule],
+  templateUrl: './empresas.component.html',
+  styleUrls: ['./empresas.component.scss']
+})
+export default class EmpresasComponent implements OnInit {
+  empresaFound: boolean = false;
+  Empresas: any = [];
+  EmpresaForm!: FormGroup;
+  Fecha: any = new Date();
+
+  constructor(
+    private datePipe: DatePipe,
+    private empS: EmpresasService,
+    private toastr: ToastrService
+  ) {}
+
+  ngOnInit(): void {
+    this.obtenerEmpresas();
+    
+  }
+
+  // ~Creo Formulario de Empresa
+  cargarFormulario() {
+    this.EmpresaForm = new FormGroup({
+      Nombre: new FormControl('', [Validators.required]),
+      Activo: new FormControl(true),
+      FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'))
+    });
+  }
+  // ~Creo Formulario de Empresa
+
+  // ~Crear empresa
+  crearEmpresa() {
+    this.empS.crearEmpresa(this.EmpresaForm.value).then((resp) => {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Empresa creada',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    });
+  }
+  // ~Crear empresa
+
+  obtenerEmpresas(){
+    this.empS.obtenerEmpresa().subscribe(resp=>{
+      this.Empresas=resp
+      this.cargarFormulario()
+    })
+  }
+
+  // ~Verificar Empresa
+  verificarEmpresa() {
+    let EmpresaEncontrada: any = [];
+    EmpresaEncontrada = this.Empresas.filter((banco: any) => banco.Cuenta == this.EmpresaForm.value['Empresa']);
+    if (EmpresaEncontrada.length > 0) {
+      this.empresaFound = true;
+    } else {
+      this.empresaFound = false;
+    }
+  } // ~Verificar Empresa
+}

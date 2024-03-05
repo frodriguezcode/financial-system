@@ -44,6 +44,10 @@ const routes: Routes = [
         loadComponent: () => import('./demo/bancos/bancos.component')
       },
       {
+        path: 'empresas',
+        loadComponent: () => import('./demo/empresas/empresas.component')
+      },
+      {
         path: 'tables',
         loadComponent: () => import('./demo/forms & tables/tbl-bootstrap/tbl-bootstrap.component')
       },

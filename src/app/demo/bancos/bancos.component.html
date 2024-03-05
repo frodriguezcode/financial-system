@@ -34,6 +34,7 @@
         <button [disabled]="this.BancoForm.invalid || cuentaFound==true" (click)="crearBanco()" type="button" class="btn btn-primary">Guardar</button>
       </form>
     </div>
+    
     <div class="col-md-8">
       <h5>Lista de Cuentas</h5>
       <hr />
@@ -51,7 +52,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let banco of Bancos;index as i">
-              <th scope="row">{{i+1}}</th>
+              <th class="text-center" scope="row">{{i+1}}</th>
               <td class="text-center">
                 <ng-container *ngIf="!banco.Editando; else editarBanco">
                   {{banco.Nombre}}
@@ -79,16 +80,16 @@
                   </select>
                 </ng-template>
               </td>
-              <td *ngIf="!banco.Editando">
+              <td *ngIf="!banco.Editando" class="text-center">
                 <!-- Botón de editar -->
                 <button (click)="toggleEdicion(banco)" type="button" class="btn btn-success text-center">
-                  <i class="feather icon-edit"></i>
+                  <i class="fa-regular fa-pen-to-square"></i>
                 </button>
               </td>
               <td *ngIf="banco.Editando">
                 <!-- Botón de editar -->
                 <button (click)="actualizarBanco(banco)" type="button" class="btn btn-info text-center">
-                  <i class="feather icon-check"></i>
+                  <i class="fa solid fa-check"></i>
                 </button>
               </td>
               <td class="text-center"  *ngIf="banco.Activo"><button (click)="ActualizarBancoEstado(banco,false)" type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
