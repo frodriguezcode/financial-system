@@ -41,6 +41,7 @@ File: style.css
 @import 'scss/themes/general';
 @import 'scss/themes/generic';
 @import 'scss/themes/minixs/function';
+@import '/node_modules/ngx-toastr/toastr.css';
 
 // icon
 @import 'scss/themes/font/datta-icon';

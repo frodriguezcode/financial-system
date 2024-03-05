@@ -1,7 +1,7 @@
-<app-card cardTitle="Módulo Bancos" [options]="false">
+<app-card cardTitle="Módulo Cuentas" [options]="false">
   <div class="row">
-    <div class="col-md-6">
-      <h5>Crear Banco</h5>
+    <div class="col-md-4">
+      <h5>Crear Cuenta</h5>
       <hr />
       <form *ngIf="BancoForm" [formGroup]="BancoForm">
         <div class="form-group">
@@ -18,11 +18,8 @@
         <div class="form-group">
           <label for="exampleInputPassword1">Sucursal</label>
           <select formControlName="idSucursal" class="form-control" id="exampleFormControlSelect1">
-            <option value="0">Principal</option>
-            <option>Sucursal 1</option>
-            <option>Sucursal 2</option>
-            <option>Sucursal 3</option>
-            <option>Sucursal 4</option>
+            <option value="0">Seleccione una sucursal</option>
+            <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
 
           </select>        
         </div>
@@ -37,8 +34,8 @@
         <button [disabled]="this.BancoForm.invalid || cuentaFound==true" (click)="crearBanco()" type="button" class="btn btn-primary">Guardar</button>
       </form>
     </div>
-    <div class="col-md-6">
-      <h5>Lista de Bancos</h5>
+    <div class="col-md-8">
+      <h5>Lista de Cuentas</h5>
       <hr />
       <div class="table-responsive">
         <table class="table">
@@ -47,6 +44,7 @@
               <th>#</th>
               <th class="text-center">Banco</th>
               <th class="text-center">Cuenta</th>
+              <th class="text-center">Sucursal</th>
               <th class="text-center">Editar</th>
               <th class="text-center">Inactivar</th>
             </tr>
@@ -54,11 +52,47 @@
           <tbody>
             <tr *ngFor="let banco of Bancos;index as i">
               <th scope="row">{{i+1}}</th>
-              <td class="text-center">{{banco.Nombre}}</td>
-              <td class="text-center">{{banco.Cuenta}}</td>
-              <td class="text-center"><button type="button" class="btn btn-success"><i class="fa-solid fa-pen-to-square"></i></button></td>
-              <td class="text-center" *ngIf="banco.Activo"><button type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
-              <td class="text-center"  *ngIf="!banco.Activo"><button type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+              <td class="text-center">
+                <ng-container *ngIf="!banco.Editando; else editarBanco">
+                  {{banco.Nombre}}
+                </ng-container>
+                <ng-template #editarBanco>
+                  <input  [(ngModel)]="banco.Nombre" class="form-control text-center col-4">
+                </ng-template>
+              </td>
+              <td class="text-center">
+                <ng-container *ngIf="!banco.Editando; else editarCuenta">
+                  {{banco.Cuenta}}
+                </ng-container>
+                <ng-template #editarCuenta>
+                  <input  [(ngModel)]="banco.Cuenta" class="form-control text-center col-4">
+                </ng-template>
+              </td>
+              <td class="text-center">
+                <ng-container *ngIf="!banco.Editando; else editarSucursal">
+                  {{getNombreSucursal(banco.idSucursal)}}
+                </ng-container>
+                <ng-template #editarSucursal>
+                  <select [(ngModel)]="banco.idSucursal" id="inputState" class="form-select">
+                    <option value="0">Seleccione una sucursal</option>
+                    <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+                  </select>
+                </ng-template>
+              </td>
+              <td *ngIf="!banco.Editando">
+                <!-- Botón de editar -->
+                <button (click)="toggleEdicion(banco)" type="button" class="btn btn-success text-center">
+                  <i class="feather icon-edit"></i>
+                </button>
+              </td>
+              <td *ngIf="banco.Editando">
+                <!-- Botón de editar -->
+                <button (click)="actualizarBanco(banco)" type="button" class="btn btn-info text-center">
+                  <i class="feather icon-check"></i>
+                </button>
+              </td>
+              <td class="text-center"  *ngIf="banco.Activo"><button (click)="ActualizarBancoEstado(banco,false)" type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
+              <td class="text-center"  *ngIf="!banco.Activo"><button (click)="ActualizarBancoEstado(banco,true)" type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
          
             </tr>
         

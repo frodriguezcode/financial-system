@@ -27,4 +27,26 @@ export class ConfigurationService {
     .collection('Bancos')
     .valueChanges();
   }
+  
+ActualizarBanco(banco: any) {
+  return this.afs
+    .collection('Bancos')
+    .doc(banco.id)
+    .ref.update(banco);
+}
+ActualizarBancoEstado(Banco: any,Activo:boolean) {
+  return this.afs
+    .collection('Bancos')
+    .doc(Banco.id)
+    .ref.update({Activo:Activo});
+}
+
+
+  // !Obtener las sucursales
+  obtenerSucursales() {
+    return this.afs
+    .collection('Sucursales')
+    .valueChanges();
+  }
+
 }

@@ -26,6 +26,7 @@ import { SharedModule } from './theme/shared/shared.module';
 import { FirebaseModule } from './firebase.module';
 import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,17 @@ import { HttpClientModule } from '@angular/common/http';
     NavGroupComponent
     
   ],
-  imports: [BrowserModule, AppRoutingModule, SharedModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule, FirebaseModule,HttpClientModule],
+  imports: [
+    BrowserModule, 
+    AppRoutingModule, 
+    SharedModule, 
+    FormsModule, 
+    ReactiveFormsModule, 
+    BrowserAnimationsModule, 
+    FirebaseModule,
+    HttpClientModule,
+    ToastrModule.forRoot()
+  ],
   providers: [DatePipe],
   bootstrap: [AppComponent]
 })

@@ -7,6 +7,7 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-bancos',
@@ -16,15 +17,23 @@ import Swal from 'sweetalert2'
   styleUrls: ['./bancos.component.scss']
 })
 export default class BancosComponent implements OnInit {
-  constructor(private datePipe: DatePipe,private conS:ConfigurationService) {}
+  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService) {}
   Monedas:any=[]
   Bancos:any=[]
+  Sucursales:any=[]
   cuentaFound:boolean=false
   BancoForm!:FormGroup
   Fecha:any= new Date();
   ngOnInit(): void {
+  this.obtenerSucursales()
   this.obtenerMonedas()
   this.obtenerBancos()
+  }
+
+  obtenerSucursales(){
+    this.conS.obtenerSucursales().subscribe(resp=>{
+      this.Sucursales=resp
+    })
   }
   obtenerMonedas(){
     this.conS.obtenerMonedas().subscribe(resp=>{
@@ -70,6 +79,38 @@ export default class BancosComponent implements OnInit {
         timer: 1500
       });
     })
+  }
+  toggleEdicion(Banco: any) {
+
+    Banco.Editando = !Banco.Editando;
+  }
+  actualizarBanco(banco:any){
+    let _banco= this.Bancos;
+    const bancoEncontrado = _banco.filter((banc:any) => banc.id == banco.id);
+    bancoEncontrado[0].Nombre=banco.Nombre
+    bancoEncontrado[0].Cuenta=banco.Cuenta
+    bancoEncontrado[0].idSucursal=banco.idSucursal
+    bancoEncontrado[0].Editando = !banco.Editando;
+
+    this.conS.ActualizarBanco(bancoEncontrado[0]).then(resp=>{
+      this.toastr.success('Banco editado', '¡Exito!');
+    })
+  }
+  ActualizarBancoEstado(Banco:any,Estado:boolean){
+    this.conS.ActualizarBancoEstado(Banco,Estado).then(resp=>{
+      if(Estado==true){
+        this.toastr.success('Cuenta activada', '¡Exito!');
+      }
+      else{
+        this.toastr.success('Cuenta desactivada', '¡Exito!');
+      }
+    })
+  }
+
+  getNombreSucursal(idSucursal:string){
+    let _sucursal:any=[]
+    _sucursal=this.Sucursales.filter((s:any)=> s.id == idSucursal)
+    return _sucursal[0].Nombre
   }
 
 
