@@ -57,6 +57,25 @@ export default class EmpresasComponent implements OnInit {
   }
   // ~Crear empresa
 
+
+  toggleEdicion(Empresa: any) {
+
+    Empresa.Editando = !Empresa.Editando;
+  }
+  actualizarEmpresa(empresa:any){
+    let _empresa= this.Empresas;
+    console.log(this.Empresas);
+    const empresaEncontrada = _empresa.filter((empr:any) => empr.id == empresa.id);
+    empresaEncontrada[0].Nombre=empresa.Nombre
+    // bancoEncontrado[0].Cuenta=empresa.Cuenta
+    // empresaEncontrada[0].idSucursal=empresa.idSucursal
+    empresaEncontrada[0].Editando = !empresa.Editando;
+
+    this.empS.actualizarEmpresa(empresaEncontrada[0]).then(resp=>{
+      this.toastr.success('Empresa editado', '¡Exito!');
+    })
+  }
+
   obtenerEmpresas(){
     this.empS.obtenerEmpresa().subscribe(resp=>{
       this.Empresas=resp
@@ -74,4 +93,19 @@ export default class EmpresasComponent implements OnInit {
       this.empresaFound = false;
     }
   } // ~Verificar Empresa
+
+  // ~Actualizar Estado Emprewsa
+
+  ActualizarEmpresaEstado(Empresa:any,Estado:boolean){
+    this.empS.ActualizarEmpresaEstado(Empresa,Estado).then(resp=>{
+      if(Estado==true){
+        this.toastr.success('Empresa activada', '¡Exito!');
+      }
+      else{
+        this.toastr.success('Empresa desactivada', '¡Exito!');
+      }
+    })
+  }
+
+  // ~Actualizar Estado Emprewsa
 }

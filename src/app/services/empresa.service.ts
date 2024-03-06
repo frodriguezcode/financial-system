@@ -33,4 +33,12 @@ export class EmpresasService {
         .ref.update(empresa)
     }
 
+    // ~Actualizar estado Empresa
+    ActualizarEmpresaEstado(empresa: any,Activo:boolean) {
+        return this.afs
+          .collection('Empresa')
+          .doc(empresa.id)
+          .ref.update({Activo:Activo});
+      }
+
 }

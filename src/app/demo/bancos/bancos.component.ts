@@ -102,6 +102,8 @@ export default class BancosComponent implements OnInit {
       this.toastr.success('Banco editado', '¡Exito!');
     })
   }
+
+  
   ActualizarBancoEstado(Banco:any,Estado:boolean){
     this.conS.ActualizarBancoEstado(Banco,Estado).then(resp=>{
       if(Estado==true){

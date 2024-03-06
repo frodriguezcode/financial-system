@@ -2,7 +2,7 @@
   <li>
     <div class="dropdown" ngbDropdown placement="auto">
       <a ngbDropdownToggle href="javascript:"
-        ><i class="icon feather icon-bell" title="Notification"></i><span class="badge bg-danger"><span class="sr-only"></span></span
+        ><i class="icon fas fa-solid fa-bell" title="Notification"></i><span class="badge bg-danger"><span class="sr-only"></span></span
       ></a>
       <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end notification">
         <div class="noti-head">
@@ -36,7 +36,7 @@
               <div class="media-body">
                 <p
                   ><strong>Joseph William</strong
-                  ><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>30 min</span></p
+                  ><span class="n-time text-muted"><i class="icon fas fa-solid fa-clock m-r-10"></i>30 min</span></p
                 >
                 <p>Purchase New Theme and make payment</p>
               </div>
@@ -61,10 +61,11 @@
       </div>
     </div>
   </li>
+  <!--~ Mensajes de chat -->
   <li (click)="this.visibleUserList = !this.visibleUserList">
     <div class="dropdown">
       <a href="javascript:" class="displayChatbox dropdown-toggle">
-        <i class="icon feather icon-mail" title="Mail InBox"></i><span class="badge bg-success"><span class="sr-only"></span></span>
+        <i class="icon fas fa-solid fa-envelope" title="Mail InBox"></i><span class="badge bg-success"><span class="sr-only"></span></span>
       </a>
     </div>
   </li>
