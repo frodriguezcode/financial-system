@@ -47,6 +47,16 @@ export const NavigationItems: NavigationItem[] = [
           breadcrumbs: false
         },
         {
+          id: 'sucursales',
+          title: 'Sucursales',
+          type: 'item',
+          url: '/sucursales',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-store',
+       
+          breadcrumbs: false
+        },
+        {
           id: 'signin',
           title: 'Sign in',
           type: 'item',

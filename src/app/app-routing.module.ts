@@ -44,6 +44,10 @@ const routes: Routes = [
         loadComponent: () => import('./demo/bancos/bancos.component')
       },
       {
+        path: 'sucursales',
+        loadComponent: () => import('./demo/sucursales/sucursales.component')
+      },
+      {
         path: 'empresas',
         loadComponent: () => import('./demo/empresas/empresas.component')
       },

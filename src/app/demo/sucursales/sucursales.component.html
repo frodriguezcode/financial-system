@@ -1,0 +1,84 @@
+
+<app-card cardTitle="Módulo Sucursales" [options]="false">
+  <div class="row">
+    <div class="col-md-4">
+      <h5>Crear Sucursal</h5>
+      <hr />
+<form *ngIf="SucursalForm" [formGroup]="SucursalForm">
+
+  <div class="form-group">
+    <label for="exampleInputPassword1">Sucursal</label>
+    <input (input)="verificarSucursal()" type="text" formControlName="Nombre" class="form-control"
+      id="exampleInputPassword1" placeholder="Escriba una cuenta" />
+    <span *ngIf="sucursalFound==true" style="color: red;">
+      <p>Ya existe ya existe una sucursal con este nombre</p>
+    </span>
+
+  </div>
+
+  <div *ngIf="this.usuario.idRol==1" class="form-group">
+    <label for="exampleInputPassword1">Empresa</label>
+    <select formControlName="idEmpresa" class="form-control" id="exampleFormControlSelect1">
+      <option value="0">Seleccione una empresa</option>
+      <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
+
+    </select>
+  </div>
+
+
+  <button [disabled]="this.SucursalForm.invalid || sucursalFound==true" (click)="crearSucursal()" type="button"
+    class="btn btn-primary">Guardar</button>
+</form>
+
+    </div>
+    <div class="col-md-8">
+      <h5>Lista de Cuentas</h5>
+      <hr />
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-center">#</th>
+              <th class="text-center">Sucursal</th>
+              <th class="text-center">Editar</th>
+              <th class="text-center">Inactivar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sucursal of Sucursales;index as i">
+              <th class="text-center" scope="row">{{i+1}}</th>
+              <td class="text-center">
+                <ng-container *ngIf="!sucursal.Editando; else editarBanco">
+                  {{sucursal.Nombre}}
+                </ng-container>
+                <ng-template #editarBanco>
+                  <input [(ngModel)]="sucursal.Nombre" class="form-control text-center col-4">
+                </ng-template>
+              </td>
+
+     
+              <td *ngIf="!sucursal.Editando" class="text-center">
+                <!-- Botón de editar -->
+                <button (click)="toggleEdicion(sucursal)" type="button" class="btn btn-success text-center">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </button>
+              </td>
+              <td *ngIf="sucursal.Editando">
+                <!-- Botón de editar -->
+                <button (click)="actualizarSucursal(sucursal)" type="button" class="btn btn-info text-center">
+                  <i class="fa solid fa-check"></i>
+                </button>
+              </td>
+              <td class="text-center" *ngIf="sucursal.Activo"><button (click)="ActualizaEstadoSucursal(sucursal,false)"
+                  type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
+              <td class="text-center" *ngIf="!sucursal.Activo"><button (click)="ActualizaEstadoSucursal(sucursal,true)"
+                  type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+            </tr>
+
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</app-card>

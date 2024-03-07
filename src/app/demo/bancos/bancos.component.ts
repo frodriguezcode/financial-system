@@ -24,16 +24,18 @@ export default class BancosComponent implements OnInit {
   cuentaFound:boolean=false
   BancoForm!:FormGroup
   Fecha:any= new Date();
+  usuario:any
 
   
   ngOnInit(): void {
+  this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerSucursales()
   this.obtenerMonedas()
   this.obtenerBancos()
   }
 
   obtenerSucursales(){
-    this.conS.obtenerSucursales().subscribe(resp=>{
+    this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
       this.Sucursales=resp
     })
   }

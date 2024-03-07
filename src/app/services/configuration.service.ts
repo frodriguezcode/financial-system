@@ -43,10 +43,38 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
 
   // !Obtener las sucursales
-  obtenerSucursales() {
+  obtenerSucursales(idEmpresa:any) {
     return this.afs
-    .collection('Sucursales')
+    .collection('Sucursales',(ref)=>ref.where('idEmpresa','==',idEmpresa))
     .valueChanges();
   }
+  crearSucursal(sucursal:any) {
+    const id = this.afs.createId();
+    return this.afs
+      .collection('Sucursales')
+      .doc(id)
+      .ref.set(Object.assign(sucursal, { id: id }));
+  }
 
+  ActualizarSucursal(sucursal: any) {
+    return this.afs
+      .collection('Sucursales')
+      .doc(sucursal.id)
+      .ref.update(sucursal);
+  }
+
+  ActualizaEstadoSucursal(Sucursal: any,Activo:boolean) {
+    return this.afs
+      .collection('Sucursales')
+      .doc(Sucursal.id)
+      .ref.update({Activo:Activo});
+  }
+
+    // !Obtener las empresas
+    obtenerEmpresas(idMatriz:any) {
+      console.log('idMatriz',idMatriz)
+      return this.afs
+      .collection('Empresa',(ref)=>ref.where('idMatriz','==',idMatriz))
+      .valueChanges();
+    }
 }
