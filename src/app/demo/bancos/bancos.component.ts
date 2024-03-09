@@ -20,6 +20,7 @@ export default class BancosComponent implements OnInit {
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService) {}
   Monedas:any=[]
   Bancos:any=[]
+  Empresas:any=[]
   Sucursales:any=[]
   cuentaFound:boolean=false
   BancoForm!:FormGroup
@@ -30,13 +31,14 @@ export default class BancosComponent implements OnInit {
   ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerSucursales()
-  this.obtenerMonedas()
-  this.obtenerBancos()
+
   }
 
   obtenerSucursales(){
     this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
       this.Sucursales=resp
+      this.obtenerMonedas()
+      this.obtenerBancos()
     })
   }
   obtenerMonedas(){
@@ -56,6 +58,7 @@ export default class BancosComponent implements OnInit {
       Nombre: new FormControl('',[Validators.required]), 
       Cuenta: new FormControl('',[Validators.required]), 
       Activo: new FormControl(true), 
+      Editando: new FormControl(false), 
       idMoneda: new FormControl('',[Validators.required]), 
       idSucursal: new FormControl('0',[Validators.required]), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 

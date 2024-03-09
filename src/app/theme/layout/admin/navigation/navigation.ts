@@ -57,6 +57,16 @@ export const NavigationItems: NavigationItem[] = [
           breadcrumbs: false
         },
         {
+          id: 'item',
+          title: 'Items',
+          type: 'item',
+          url: '/item',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-list',
+       
+          breadcrumbs: false
+        },
+        {
           id: 'departamentos',
           title: 'Departamentos',
           type: 'item',

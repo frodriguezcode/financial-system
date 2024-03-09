@@ -24,6 +24,6 @@ export default class DepartamentosPageComponent implements OnInit{
 
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+
   }
 }

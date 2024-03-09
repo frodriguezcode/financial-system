@@ -110,8 +110,38 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
 
 
+    obtenerCategorias() {
+      return this.afs
+      .collection('Categoria')
+      .valueChanges();
+    }
+ //!------------Items------------
+    crearItem(Item: any) {
+      const id = this.afs.createId();
+      return this.afs
+        .collection('Items')
+        .doc(id)
+        .ref.set(Object.assign(Item, { id: id }));
+    }
 
+    obtenerItems(idEmpresa:any) {
+      return this.afs
+      .collection('Items',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+      .valueChanges();
+    }
 
+    ActualizarItem(items: any) {
+      return this.afs
+        .collection('Items')
+        .doc(items.id)
+        .ref.update(items);
+    }
+    ActualizarItemEstado(Items: any,Activo:boolean) {
+      return this.afs
+        .collection('Items')
+        .doc(Items.id)
+        .ref.update({Activo:Activo});
+    }
 
    
 }
