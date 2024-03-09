@@ -57,6 +57,16 @@ export const NavigationItems: NavigationItem[] = [
           breadcrumbs: false
         },
         {
+          id: 'departamentos',
+          title: 'Departamentos',
+          type: 'item',
+          url: '/departamentos',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-file-invoice',
+       
+          breadcrumbs: false
+        },
+        {
           id: 'signin',
           title: 'Sign in',
           type: 'item',

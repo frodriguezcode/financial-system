@@ -7,6 +7,8 @@ export class ConfigurationService {
 
   constructor( private afs: AngularFirestore,) { }
 
+  
+  //*------------BANCOS------------
   //   !Creando un banco
   crearBanco(banco: any) {
     const id = this.afs.createId();
@@ -40,7 +42,10 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     .doc(Banco.id)
     .ref.update({Activo:Activo});
 }
+    //*------------BANCOS------------
 
+
+    //?------------SUCURSALES------------
 
   // !Obtener las sucursales
   obtenerSucursales(idEmpresa:any) {
@@ -77,4 +82,38 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
       .collection('Empresa',(ref)=>ref.where('idMatriz','==',idMatriz))
       .valueChanges();
     }
+
+    //?------------SUCURSALES------------
+
+
+     //!------------DEPARTAMENTOS------------
+
+     //   !Creando un departamento
+  crearDepartamento(departamento: any) {
+    const id = this.afs.createId();
+    return this.afs
+      .collection('Departamentos')
+      .doc(id)
+      .ref.set(Object.assign(departamento, { id: id }));
+  }
+
+    // !Obtener los departamentos
+    obtenerDepartamentos() {
+      return this.afs
+      .collection('Departamentos')
+      .valueChanges();
+    }
+    
+
+
+     //!------------DEPARTAMENTOS------------
+
+
+
+
+
+
+   
 }
+
+
