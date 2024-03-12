@@ -112,7 +112,7 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
     obtenerCategorias() {
       return this.afs
-      .collection('Categoria')
+      .collection('Categoria',(ref)=>ref.where('Calculado','==',false))
       .valueChanges();
     }
  //!------------Items------------
@@ -126,7 +126,7 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
     obtenerItems(idEmpresa:any) {
       return this.afs
-      .collection('Items',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+      .collection('Items',(ref)=>ref.where('idEmpresa','==',idEmpresa).orderBy('Orden','asc'))
       .valueChanges();
     }
 

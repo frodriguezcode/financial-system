@@ -4,7 +4,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
@@ -16,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./items.component.scss']
 })
 export default class SamplePageComponent  implements OnInit{
-  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService) {}
+  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService,private formBuilder: FormBuilder) {}
   Items:any=[]
   Categorias:any=[]
   Sucursales:any=[]
@@ -32,13 +32,14 @@ export default class SamplePageComponent  implements OnInit{
     this.obtenerEmpresas()
     this.obtenerSucursales()
     this.obtenerItems()
-    this.cargarFormulario()
+
   }
 
   cargarFormulario(){
     this.ItemForm = new FormGroup({
       Nombre: new FormControl('',[Validators.required]), 
       Activo: new FormControl(true), 
+      Orden: new FormControl(this.Items.length+1), 
       Editando: new FormControl(false), 
       idSucursal: new FormControl('',[Validators.required]), 
       idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
@@ -50,7 +51,7 @@ export default class SamplePageComponent  implements OnInit{
 
   verificarItem(){
     let ItemEncontrado:any=[]
-    ItemEncontrado=this.Categorias.filter((categ:any)=>categ.Nombre==this.ItemForm.value['Nombre'])
+    ItemEncontrado=this.Items.filter((categ:any)=>categ.Nombre==this.ItemForm.value['Nombre'])
     if(ItemEncontrado.length>0){
       this.ItemFound=true
     }
@@ -73,6 +74,7 @@ export default class SamplePageComponent  implements OnInit{
   obtenerItems(){
     this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
       this.Items=resp
+      this.cargarFormulario()
     })
   }
   obtenerEmpresas(){
@@ -90,7 +92,9 @@ export default class SamplePageComponent  implements OnInit{
         showConfirmButton: false,
         timer: 1500
       });
+      this.cargarFormulario()
     })
+
   }
 
   toggleEdicion(Item: any) {
