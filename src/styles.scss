@@ -25,6 +25,9 @@ File: style.css
 
 // Theme Font
 @import 'scss/themes/font/theme-font';
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
 
 // main framework
 @import 'node_modules/bootstrap/scss/functions';
@@ -64,3 +67,7 @@ File: style.css
 
 // custom
 @import 'scss/themes/custom';
+
+.dropdown{
+  z-index: 3000;
+}

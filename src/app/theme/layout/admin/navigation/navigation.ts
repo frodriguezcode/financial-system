@@ -67,6 +67,16 @@ export const NavigationItems: NavigationItem[] = [
           breadcrumbs: false
         },
         {
+          id: 'item',
+          title: 'Crear Registro',
+          type: 'item',
+          url: '/registros',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-file-pen',
+       
+          breadcrumbs: false
+        },
+        {
           id: 'departamentos',
           title: 'Departamentos',
           type: 'item',

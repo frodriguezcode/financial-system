@@ -39,6 +39,8 @@
     "ngx-color-picker": "^14.0.0",
     "ngx-scrollbar": "^13.0.1",
     "ngx-toastr": "^18.0.0",
+    "primeicons": "^6.0.1",
+    "primeng": "^17.10.0",
     "rxjs": "~7.8.1",
     "sweetalert2": "^11.10.5",
     "tslib": "^2.6.0",

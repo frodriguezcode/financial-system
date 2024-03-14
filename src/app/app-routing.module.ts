@@ -60,6 +60,10 @@ const routes: Routes = [
         loadComponent: () => import('./demo/Items/items.component')
       },
       {
+        path: 'registros',
+        loadComponent: () => import('./demo/registros/crear-registro/crear-registro.component')
+      },
+      {
         path: 'tables',
         loadComponent: () => import('./demo/forms & tables/tbl-bootstrap/tbl-bootstrap.component')
       },

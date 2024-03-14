@@ -26,13 +26,85 @@ export default class BancosComponent implements OnInit {
   BancoForm!:FormGroup
   Fecha:any= new Date();
   usuario:any
-
+  MesesTodos:any=[]
   
   ngOnInit(): void {
+    this.MesesTodos= [
+    
+      {
+        Mes: 'Sin Mes',
+        id:0,
+        seleccionado: false
+      },
+      {
+        Mes: 'Enero',
+        id:1,
+        seleccionado: false
+      },
+      {
+        Mes: 'Febrero',
+        id:2,
+        seleccionado: false
+      },
+      {
+        Mes: 'Marzo',
+        id:3,
+        seleccionado: false
+      },
+      {
+        Mes: 'Abril',
+        id:4,
+        seleccionado: false
+      },
+      {
+        Mes: 'Mayo',
+        id:5,
+        seleccionado: false
+      },
+      {
+        Mes: 'Junio',
+        id:6,
+        seleccionado: false
+      },
+      {
+        Mes: 'Julio',
+        id:7,
+        seleccionado: false
+      },
+      {
+        Mes: 'Agosto',
+        id:8,
+        seleccionado: false
+      },
+      {
+        Mes: 'Septiembre',
+        id:9,
+        seleccionado: false
+      },
+      {
+        Mes: 'Octubre',
+        id:10,
+        seleccionado: false
+      },
+      {
+        Mes: 'Noviembre',
+        id:11,
+        seleccionado: false
+      },
+      {
+        Mes: 'Diciembre',
+        id:12,
+        seleccionado: false
+      },
+    
+    ]
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerSucursales()
 
   }
+  getMonthName(Fecha:string){
+    return Number((Fecha.substring(5)).substring(0,2))
+   }
 
   obtenerSucursales(){
     this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
@@ -54,6 +126,7 @@ export default class BancosComponent implements OnInit {
   }
 
   cargarFormulario(){
+    let _Fecha:any=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
     this.BancoForm = new FormGroup({
       Nombre: new FormControl('',[Validators.required]), 
       Cuenta: new FormControl('',[Validators.required]), 
