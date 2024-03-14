@@ -143,6 +143,47 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .ref.update({Activo:Activo});
     }
 
+    // !Socios de negocios
+    crearSocio(Socio: any) {
+      const id = this.afs.createId();
+      return this.afs
+        .collection('Socios')
+        .doc(id)
+        .ref.set(Object.assign(Socio, { id: id }));
+    }
+
+    // obtenerSocios(idEmpresa:any) {
+    //   return this.afs
+    //   .collection('Socios',(ref)=>ref.where('idEmpresa','==',idEmpresa).orderBy('Orden','asc'))
+    //   .valueChanges();
+    // }
+
+   
+    obtenerSocios() {
+      return this.afs
+      .collection('Socios')
+      .valueChanges();
+    }
+
+    ActualizarSocio(socio: any) {
+      return this.afs
+        .collection('Socios')
+        .doc(socio.id)
+        .ref.update(socio);
+    }
+
+
+    ActualizarSocioEstado(socios: any,Activo:boolean) {
+      return this.afs
+        .collection('Socios')
+        .doc(socios.id)
+        .ref.update({Activo:Activo});
+    }
+
+
+
+    // !Socios de negocios
+
    
 }
 

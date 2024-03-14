@@ -57,6 +57,16 @@ export const NavigationItems: NavigationItem[] = [
           breadcrumbs: false
         },
         {
+          id: 'socios',
+          title: 'Socios de negocios',
+          type: 'item',
+          url: '/socios',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-user-tie',
+       
+          breadcrumbs: false
+        },
+        {
           id: 'item',
           title: 'Items',
           type: 'item',
