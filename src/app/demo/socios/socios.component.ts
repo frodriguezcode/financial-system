@@ -39,12 +39,18 @@ export default class BancosComponent implements OnInit {
   }
 
   obtenerSocios(){
-    this.conS.obtenerSocios().subscribe(resp=>{
+    this.conS.obtenerSocios(this.usuario.idEmpresa).subscribe(resp=>{
       this.Socios=resp
       this.cargarFormulario()
     console.log("socios",this.Socios);
 
     })
+  }
+
+  getNameTipo(idTipo:string){
+    let _Tipo:any=[]
+    _Tipo=this.tipoSocios.filter((x:any) => x.id===idTipo)
+    return _Tipo[0].name
   }
 
   cargarFormulario(){
@@ -53,6 +59,7 @@ export default class BancosComponent implements OnInit {
       Nombre: new FormControl('',[Validators.required]), 
       Tipo: new FormControl('',[Validators.required]), 
       Activo: new FormControl(true), 
+      idEmpresa: new FormControl(this.usuario.idEmpresa), 
       Editando: new FormControl(false), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
 
@@ -80,7 +87,10 @@ export default class BancosComponent implements OnInit {
         showConfirmButton: false,
         timer: 1500
       });
+      this.cargarFormulario()
     })
+
+  
   }
 
 
@@ -90,12 +100,10 @@ export default class BancosComponent implements OnInit {
   }
   actualizarSocio(socio:any){
     let _socio= this.Socios;
-    const socioEncontrado = _socio.filter((soc:any) => soc.id == soc.id);
+    const socioEncontrado = _socio.filter((soc:any) => soc.id == socio.id);
     socioEncontrado[0].Nombre=socio.Nombre
     socioEncontrado[0].Tipo=socio.Tipo
-    // socioEncontrado[0].idSucursal=socio.idSucursal
     socioEncontrado[0].Editando = !socio.Editando;
-
     this.conS.ActualizarSocio(socioEncontrado[0]).then(resp=>{
       this.toastr.success('Socio editado', '¡Exito!');
     })

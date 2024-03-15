@@ -20,7 +20,7 @@
           <label for="exampleInputPassword1">Tipo de Socio</label>
           <select formControlName="Tipo" class="form-control" id="exampleFormControlSelect1">
             <option value="0">Seleccione una opcion</option>
-            <option value="{{tipoSocios}}" *ngFor="let tipoSocio of tipoSocios">{{tipoSocio.name}}</option>
+            <option value="{{tipoSocio.id}}" *ngFor="let tipoSocio of tipoSocios">{{tipoSocio.name}}</option>
 
           </select>
         </div>
@@ -59,11 +59,14 @@
                 </ng-template>
               </td>
               <td class="text-center">
-                <ng-container *ngIf="!socio.Editando; else editarSocio">
-                  {{socio.Tipo.name}}
+                <ng-container *ngIf="!socio.Editando; else editarTipo">
+                  {{this.getNameTipo(socio.Tipo)}}
                 </ng-container>
-                <ng-template #editarSocio>
-                  <input [(ngModel)]="socio.Tipo" class="form-control text-center col-4">
+                <ng-template #editarTipo>
+                  <select [(ngModel)]="socio.Tipo" class="form-control" id="exampleFormControlSelect1">
+                    <option value="0">Seleccione una opcion</option>
+                    <option value="{{tipoSocio.id}}" *ngFor="let tipoSocio of tipoSocios">{{tipoSocio.name}}</option>
+                  </select>
                 </ng-template>
               </td>
               

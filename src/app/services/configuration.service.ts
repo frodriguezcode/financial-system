@@ -152,18 +152,18 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .ref.set(Object.assign(Socio, { id: id }));
     }
 
-    // obtenerSocios(idEmpresa:any) {
-    //   return this.afs
-    //   .collection('Socios',(ref)=>ref.where('idEmpresa','==',idEmpresa).orderBy('Orden','asc'))
-    //   .valueChanges();
-    // }
-
-   
-    obtenerSocios() {
+    obtenerSocios(idEmpresa:any) {
       return this.afs
-      .collection('Socios')
+      .collection('Socios',(ref)=>ref.where('idEmpresa','==',idEmpresa))
       .valueChanges();
     }
+
+   
+    // obtenerSocios() {
+    //   return this.afs
+    //   .collection('Socios')
+    //   .valueChanges();
+    // }
 
     ActualizarSocio(socio: any) {
       return this.afs
@@ -182,7 +182,14 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
 
 
-    // !Socios de negocios
+    // !Registros
+    crearRegistro(Registro: any) {
+      const id = this.afs.createId();
+      return this.afs
+        .collection('Registro')
+        .doc(id)
+        .ref.set(Object.assign(Registro, { id: id }));
+    }
 
    
 }

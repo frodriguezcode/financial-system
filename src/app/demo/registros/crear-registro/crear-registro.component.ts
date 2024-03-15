@@ -9,6 +9,8 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import Swal from 'sweetalert2'
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -26,7 +28,8 @@ import { InputTextModule } from 'primeng/inputtext';
     DropdownModule,
     ReactiveFormsModule,
     FormsModule,
-    InputTextModule
+    InputTextModule,
+    RadioButtonModule
    ],
   templateUrl: './crear-registro.component.html',
   styleUrls: ['./crear-registro.component.scss']
@@ -35,16 +38,26 @@ export default class CrearRegistroComponent implements OnInit {
   constructor(private conS:ConfigurationService,private datePipe: DatePipe){}
   registroForm!:FormGroup
   registroDialog: boolean = false;
+  visible: boolean = false;
   submitted: boolean = false;
   registros: any=[];
   cuentas: any=[];
   selectedRegistros!: any[] | null;
   registro: any=[];
+  Categorias: any=[];
   MesesTodos: any=[];
+  SociosNegocios: any=[];
   Items: any=[];
   ItemSeleccionados: any=[];
   usuario:any
   idItem:any=''
+  Departamentos: string[] = [];
+  Flujos: any = [
+    {id: "1", name: "Banco"},
+    {id: "2", name: "Caja"},
+    
+  ]
+
   Fecha:any= new Date();
 ngOnInit(): void {
   this.MesesTodos= [
@@ -118,7 +131,21 @@ ngOnInit(): void {
   ]
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerItems()
+  this.obtenerSocios()
+  this.obtenerCategorias()
   this.cargarFormulario()
+}
+
+obtenerSocios(){
+  this.conS.obtenerSocios(this.usuario.idEmpresa).subscribe(resp=>{
+    this.SociosNegocios=resp
+  })
+}
+
+obtenerCategorias(){
+  this.conS.obtenerCategorias().subscribe(resp=>{
+    this.Categorias=resp
+  })
 }
 
 getMonthName(Fecha:string){
@@ -130,6 +157,10 @@ obtenerItems(){
     console.log('Items',this.Items)
   })
 }
+crearRegistro() {
+  this.visible = true;
+}
+
 
 getWeekNumber() {
  let d:any = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
@@ -150,6 +181,7 @@ cargarFormulario(){
     Elemento: new FormControl('',[Validators.required]), 
     Cuenta: new FormControl('',[Validators.required]), 
     Valor: new FormControl('',[Validators.required]), 
+    idFlujo: new FormControl('',[Validators.required]), 
     NumMes: new FormControl(this.getMonthName(_Fecha)), 
     NumSemana: new FormControl(this.getWeekNumber()), 
     AnioRegistro: new FormControl(new Date().getFullYear()), 
@@ -158,8 +190,6 @@ cargarFormulario(){
     Activo: new FormControl(true), 
     Editando: new FormControl(false), 
     idSocioNegocio: new FormControl(''), 
-    idDepartamento: new FormControl(''), 
-    Item: new FormControl(''), 
     idCategoria: new FormControl(''), 
     idSucursal: new FormControl('0',[Validators.required]), 
     FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
@@ -190,6 +220,17 @@ hideDialog() {
 }
 guardarRegistro(){
 console.log('Valorform',this.registroForm.value)
+this.conS.crearRegistro(this.registroForm.value).then(resp=>{
+  this.visible=false
+  Swal.fire({
+    position: "center",
+    icon: "success",
+    title: "Registro creado",
+    showConfirmButton: false,
+    timer: 1500
+  });
+
+})
 
 }
 }
