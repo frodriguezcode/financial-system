@@ -1,1 +1,53 @@
-@import "primeicons/primeicons.css";
+@import 'primeicons/primeicons.css';
+
+.dropdown-cat {
+  z-index: 5000;
+}
+
+
+
+.departamento-socio {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.radio-departamentos {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  border: solid 1.5px #e8eaed;
+  padding: 5px;
+  border-radius: 7px;
+  width: 100%;
+  flex-basis: 50%;
+}
+
+
+.dropdown-socio {
+  flex-basis: 50%;
+  margin-left: 2%;
+}
+
+.position-elemento {
+  width: 100%;
+}
+
+.boton-guardar {
+  position: relative;
+  margin-bottom: 0;
+}
+
+// ~Responsive
+
+@media (max-width: 640px) {
+  .departamento-socio {
+    flex-direction: column;
+    margin-top: 8px;
+  }
+  .radio-departamentos {
+    width: 100%;
+  }
+}
