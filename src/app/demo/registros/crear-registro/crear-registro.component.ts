@@ -229,7 +229,7 @@ this.conS.crearRegistro(this.registroForm.value).then(resp=>{
     showConfirmButton: false,
     timer: 1500
   });
-
+this.cargarFormulario()
 })
 
 }
