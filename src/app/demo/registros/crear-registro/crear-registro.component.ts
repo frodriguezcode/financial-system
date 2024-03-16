@@ -37,16 +37,19 @@ import { InputTextModule } from 'primeng/inputtext';
 export default class CrearRegistroComponent implements OnInit {
   constructor(private conS:ConfigurationService,private datePipe: DatePipe){}
   registroForm!:FormGroup
+  EditRegistroForm!:FormGroup
   registroDialog: boolean = false;
   visible: boolean = false;
+  visibleEditar: boolean = false;
   submitted: boolean = false;
   registros: any=[];
   cuentas: any=[];
   selectedRegistros!: any[] | null;
   registro: any=[];
   Categorias: any=[];
-  MesesTodos: any=[];
   SociosNegocios: any=[];
+  MesesTodos: any=[];
+  Registros: any=[];
   Items: any=[];
   ItemSeleccionados: any=[];
   usuario:any
@@ -133,12 +136,19 @@ ngOnInit(): void {
   this.obtenerItems()
   this.obtenerSocios()
   this.obtenerCategorias()
+  this.obtenerRegistros()
   this.cargarFormulario()
 }
 
 obtenerSocios(){
   this.conS.obtenerSocios(this.usuario.idEmpresa).subscribe(resp=>{
     this.SociosNegocios=resp
+  })
+}
+obtenerRegistros(){
+  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe(resp=>{
+    this.Registros=resp
+    console.log('Registros',this.Registros)
   })
 }
 
@@ -159,6 +169,40 @@ obtenerItems(){
 }
 crearRegistro() {
   this.visible = true;
+}
+
+get selectedCategoria() {
+  return this.Categorias.find((cat:any):any => cat.id === this.EditRegistroForm.value.idCategoria);
+}
+editarRegistro(idRegistro:string) {
+  
+  let _RegistroEditar:any={}
+  _RegistroEditar=this.Registros.filter((r:any) => r.id == idRegistro)[0]
+
+  this.EditRegistroForm = new FormGroup({
+    Elemento: new FormControl(_RegistroEditar.Elemento,[Validators.required]), 
+    Cuenta: new FormControl(_RegistroEditar.Cuenta,[Validators.required]), 
+    Valor: new FormControl(_RegistroEditar.Valor,[Validators.required]), 
+    idFlujo: new FormControl(_RegistroEditar.idFlujo,[Validators.required]), 
+    NumMes: new FormControl(_RegistroEditar.NumMes), 
+    NumSemana: new FormControl(_RegistroEditar.NumSemana), 
+    AnioRegistro: new FormControl(_RegistroEditar.AnioRegistro), 
+    Semana: new FormControl(_RegistroEditar.Semana), 
+    MesRegistro:new FormControl(_RegistroEditar.MesRegistro),
+    Nuevo:new FormControl(false),
+    Activo: new FormControl(_RegistroEditar.Activo), 
+    Editando: new FormControl(_RegistroEditar.Editando), 
+    idSocioNegocio: new FormControl(_RegistroEditar.idSocioNegocio), 
+    idEmpresa: new FormControl(_RegistroEditar.idEmpresa), 
+    idMatriz: new FormControl(_RegistroEditar.idMatriz), 
+    idCategoria: new FormControl(_RegistroEditar.idCategoria), 
+    idSucursal: new FormControl(_RegistroEditar.idSucursal,[Validators.required]), 
+    FechaRegistro: new FormControl(_RegistroEditar.FechaRegistro), 
+    id: new FormControl(_RegistroEditar.id), 
+   })
+   console.log('EditRegistroForm',this.EditRegistroForm.value);
+   this.visibleEditar = true;
+ 
 }
 
 
@@ -188,8 +232,11 @@ cargarFormulario(){
     Semana: new FormControl("Semana" + ' ' + this.getWeekNumber()), 
     MesRegistro:new FormControl(this.MesesTodos[this.getMonthName(_Fecha)].Mes),
     Activo: new FormControl(true), 
+    Nuevo: new FormControl(true), 
     Editando: new FormControl(false), 
     idSocioNegocio: new FormControl(''), 
+    idEmpresa: new FormControl(this.usuario.idEmpresa), 
+    idMatriz: new FormControl(this.usuario.idMatriz), 
     idCategoria: new FormControl(''), 
     idSucursal: new FormControl('0',[Validators.required]), 
     FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
@@ -232,5 +279,17 @@ this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 this.cargarFormulario()
 })
 
+}
+ActualizarRegistro(){
+  this.conS.ActualizarRegistro(this.EditRegistroForm.value).then(resp=>{
+    this.visibleEditar=false
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Registro actualizado",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  })
 }
 }

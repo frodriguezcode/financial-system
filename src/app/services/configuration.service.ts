@@ -191,6 +191,18 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .ref.set(Object.assign(Registro, { id: id }));
     }
 
+    obtenerRegistros(idEmpresa:any) {
+      return this.afs
+      .collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+      .valueChanges();
+    }
+
+    ActualizarRegistro(Registro: any) {
+      return this.afs
+        .collection('Registro')
+        .doc(Registro.id)
+        .ref.update(Registro);
+    }
    
 }
 
