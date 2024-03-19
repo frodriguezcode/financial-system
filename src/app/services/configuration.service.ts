@@ -203,6 +203,12 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .doc(Registro.id)
         .ref.update(Registro);
     }
+    DesactivarRegistro(IdRegistro: any) {
+      return this.afs
+        .collection('Registro')
+        .doc(IdRegistro)
+        .ref.update({Activo:false});
+    }
    
 }
 

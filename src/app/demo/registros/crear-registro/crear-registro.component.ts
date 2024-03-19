@@ -292,4 +292,30 @@ ActualizarRegistro(){
     });
   })
 }
+
+DesactivarRegistro(idRegistro:any){
+  Swal.fire({
+    title: "¿Desea borrar este registro?",
+    showDenyButton: true,
+    confirmButtonText: "Si",
+    denyButtonText: `No`
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      this.conS.DesactivarRegistro(idRegistro).then(resp=>{
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Registro eliminado",
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })
+    } else if (result.isDenied) {
+   
+    }
+  });
+
+}
+
 }

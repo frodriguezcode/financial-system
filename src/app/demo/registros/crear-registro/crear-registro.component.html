@@ -24,8 +24,8 @@
                     <td class="text-center">{{ registros.Cuenta}}</td>
                     <td class="text-center">{{ registros.Valor}}</td>
                     <td class="text-center">{{ registros.FechaRegistro}}</td>
-                    <td class="text-center"> <button type="button" (click)="editarRegistro(registros.id)" class="btn btn-success" ngbTooltip="btn-success"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                    <td class="text-center"> <button type="button" class="btn btn-danger" ngbTooltip="btn-danger"><i class="fa-solid fa-trash"></i></button></td>
+                    <td class="text-center"> <button type="button" (click)="editarRegistro(registros.id)" class="btn btn-success" ngbTooltip="Editar registro"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                    <td class="text-center"> <button type="button" (click)="DesactivarRegistro(registros.id)" class="btn btn-danger" ngbTooltip="Borrar registro"><i class="fa-solid fa-trash"></i></button></td>
 
                 </tr>
             </ng-template>
@@ -54,7 +54,7 @@
             <input type="text" pInputText formControlName="Valor" />
         </div>
         <div class="col-md-6">
-            <label for="inputPassword4" class="form-label">Cuenta</label>
+            <label for="inputPassword4" class="form-label">Cuenta (Opcional)</label>
             <input type="text" pInputText formControlName="Cuenta" />
         </div>
         <!-- ~DROPDOWN DE CATEGORIAS -->
@@ -94,7 +94,7 @@
             <div class="dropdown-socio">
     
                 <div class="col-md-6 col-lg-6 col-12 position-elemento">
-                    <label for="inputPassword4" class="form-label">Socio de Negocio</label>
+                    <label for="inputPassword4" class="form-label">Socio de Negocio (Opcional)</label>
                     <p-dropdown [options]="SociosNegocios" formControlName="idSocioNegocio" name="ItemSeleccionados"
                         optionLabel="Nombre" [filter]="true" filterBy="Nombre" [showClear]="true"
                         placeholder="Seleccione un socio de negocio">

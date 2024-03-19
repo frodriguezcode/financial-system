@@ -19,13 +19,22 @@ export interface NavigationItem {
 }
 
 export const NavigationItems: NavigationItem[] = [
-  
     {
       id: 'configuracion',
       title: 'Configuración',
       type: 'group',
       icon: 'icon-group',
       children: [
+        {
+          id: 'flujos',
+          title: 'Flujos Financieros',
+          type: 'item',
+          url: '/flujos',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-money-bill-trend-up',
+       
+          breadcrumbs: false
+        },
         {
           id: 'bancos',
           title: 'Bancos',
