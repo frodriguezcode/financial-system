@@ -112,9 +112,10 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
     obtenerCategorias() {
       return this.afs
-      .collection('Categoria',(ref)=>ref.where('Calculado','==',false))
+      .collection('Categoria',(ref)=>ref.orderBy('Orden','asc'))
       .valueChanges();
     }
+
  //!------------Items------------
     crearItem(Item: any) {
       const id = this.afs.createId();
