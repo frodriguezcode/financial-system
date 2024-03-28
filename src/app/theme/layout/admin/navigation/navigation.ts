@@ -37,7 +37,7 @@ export const NavigationItems: NavigationItem[] = [
         },
         {
           id: 'bancos',
-          title: 'Bancos',
+          title: 'Cuentas',
           type: 'item',
           url: '/bancos',
           // icon: 'feather icon-bold',

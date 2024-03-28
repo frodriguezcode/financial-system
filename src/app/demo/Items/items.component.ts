@@ -8,14 +8,15 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
+import { BuscarPipe } from '../../theme/shared/filter/buscar.pipe';
 @Component({
-  selector: 'app-sample-page',
+  selector: 'items-page',
   standalone: true,
   imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule],
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
 })
-export default class SamplePageComponent  implements OnInit{
+export default class ItemsComponent  implements OnInit{
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService,private formBuilder: FormBuilder) {}
   Items:any=[]
   Categorias:any=[]
@@ -25,6 +26,7 @@ export default class SamplePageComponent  implements OnInit{
   ItemFound:boolean = false;
   Fecha:any= new Date();
   usuario:any
+  buscarItem:string=''
 
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
