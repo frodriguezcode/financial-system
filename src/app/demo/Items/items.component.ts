@@ -8,14 +8,15 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
+import { BuscarPipe } from '../../theme/shared/filter/buscar.pipe';
 @Component({
-  selector: 'app-sample-page',
+  selector: 'items-page',
   standalone: true,
   imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule],
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
 })
-export default class SamplePageComponent  implements OnInit{
+export default class ItemsComponent  implements OnInit{
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService,private formBuilder: FormBuilder) {}
   Items:any=[]
   Categorias:any=[]
@@ -25,6 +26,7 @@ export default class SamplePageComponent  implements OnInit{
   ItemFound:boolean = false;
   Fecha:any= new Date();
   usuario:any
+  buscarItem:string=''
 
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
@@ -110,10 +112,10 @@ export default class SamplePageComponent  implements OnInit{
     itemEncontrado[0].idSucursal=item.idSucursal
     itemEncontrado[0].idEmpresa=item.idEmpresa
     itemEncontrado[0].Editando = !item.Editando;
-    console.log('itemEncontrado',itemEncontrado[0])
-    // this.conS.ActualizarItem(itemEncontrado[0]).then(resp=>{
-    //   this.toastr.success('Banco editado', '¡Exito!');
-    // })
+    this.conS.ActualizarItem(itemEncontrado[0]).then(resp=>{
+      console.log('itemEncontrado',itemEncontrado[0])
+      this.toastr.success('Item  editado', '¡Exito!');
+    })
   }
 
   ActualizarItemEstado(Item:any,Estado:boolean){
@@ -136,12 +138,24 @@ export default class SamplePageComponent  implements OnInit{
   getNombreSucursal(idSucursal:string){
     let _sucursal:any=[]
     _sucursal=this.Sucursales.filter((s:any)=> s.id == idSucursal)
-    return _sucursal[0].Nombre
+    if(_sucursal.length>0){
+      return _sucursal[0].Nombre
+
+    }
+    else {
+      return 'Sin sucursal'
+    }
   }
   getNombreEmpresa(idEmpresa:string){
     let _empresa:any=[]
     _empresa=this.Empresas.filter((s:any)=> s.id == idEmpresa)
-    return _empresa[0].Nombre
+    if (_empresa.length>0){
+      return _empresa[0].Nombre
+
+    }
+    else {
+      return 'Sin empresa'
+    }
   }
 
 

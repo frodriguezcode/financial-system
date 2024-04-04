@@ -17,6 +17,7 @@ import 'mousetrap';
 
 // bootstrap import
 import { NgbDropdownModule, NgbNavModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BuscarPipe } from './filter/buscar.pipe';
 
 @NgModule({
   imports: [
@@ -43,8 +44,10 @@ import { NgbDropdownModule, NgbNavModule, NgbModule } from '@ng-bootstrap/ng-boo
     NgbDropdownModule,
     NgbNavModule,
     NgScrollbarModule,
-    NgClickOutsideDirective
+    NgClickOutsideDirective,
+    BuscarPipe
+    
   ],
-  declarations: [DataFilterPipe, SpinnerComponent]
+  declarations: [DataFilterPipe, SpinnerComponent,BuscarPipe]
 })
 export class SharedModule {}

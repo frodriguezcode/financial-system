@@ -1,7 +1,7 @@
 <app-card cardTitle="Módulo Cuentas" [options]="false">
   <div class="row">
     <div class="col-md-4 col-lg-4 col-12">
-      <h5>Crear Item</h5>
+      <h5>Crear Centro de Costos/Ingresos</h5>
       <hr />
       <form *ngIf="ItemForm" [formGroup]="ItemForm">
         <div class="form-group">
@@ -44,88 +44,104 @@
     </div>
 
     <div class="col-md-4 col-lg-8 col-12">
-      <h5>Lista de Cuentas</h5>
+      <h5>Lista de Centros de Costos/Ingresos</h5>
       <hr />
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th class="text-center">#</th>
-              <th class="text-center">Item</th>
-              <th class="text-center">Categoría</th>
-              <th class="text-center">Sucursal</th>
-              <th class="text-center">Empresa</th>
-              <th class="text-center">Editar</th>
-              <th class="text-center">Inactivar</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of Items;index as i">
-              <th class="text-center" scope="row">{{i+1}}</th>
-              <td class="text-center">
-                <ng-container *ngIf="!item.Editando; else editarItem">
-                  {{item.Nombre}}
-                </ng-container>
-                <ng-template #editarItem>
-                  <input [(ngModel)]="item.Nombre" class="form-control text-center col-4">
-                </ng-template>
-              </td>
-        
-              <td class="text-center">
-                <ng-container *ngIf="!item.Editando; else editarCategoria">
-                  {{getNombreCategoria(item.idCategoria)}}
-                </ng-container>
-                <ng-template #editarCategoria>
-                  <select [(ngModel)]="item.idCategoria" id="inputState" class="form-select">
-                    <option value="0">Seleccione una sucursal</option>
-                    <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}</option>
-                  </select>
-                </ng-template>
-              </td>
-              <td class="text-center">
-                <ng-container *ngIf="!item.Editando; else editarSucursal">
-                  {{getNombreSucursal(item.idSucursal)}}
-                </ng-container>
-                <ng-template #editarSucursal>
-                  <select [(ngModel)]="item.idSucursal" id="inputState" class="form-select">
-                    <option value="0">Seleccione una sucursal</option>
-                    <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
-                  </select>
-                </ng-template>
-              </td>
-              <td class="text-center">
-                <ng-container *ngIf="!item.Editando; else editarEmpresa">
-                  {{getNombreEmpresa(item.idEmpresa)}}
-                </ng-container>
-                <ng-template #editarEmpresa>
-                  <select [(ngModel)]="item.idEmpresa" id="inputState" class="form-select">
-                    <option value="0">Seleccione una empresa</option>
-                    <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
-                  </select>
-                </ng-template>
-              </td>
-              <td *ngIf="!item.Editando" class="text-center">
-                <!-- Botón de editar -->
-                <button (click)="toggleEdicion(item)" type="button" class="btn btn-success text-center">
-                  <i class="fa-regular fa-pen-to-square"></i>
-                </button>
-              </td>
-              <td *ngIf="item.Editando">
-                <!-- Botón de editar -->
-                <button (click)="actualizarItem(item)" type="button" class="btn btn-info text-center">
-                  <i class="fa solid fa-check"></i>
-                </button>
-              </td>
-              <td class="text-center" *ngIf="item.Activo"><button (click)="ActualizarItemEstado(item,false)"
-                  type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
-              <td class="text-center" *ngIf="!item.Activo"><button (click)="ActualizarItemEstado(item,true)"
-                  type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+      <div class="input-group mb-3 mt-2">
+        <span class="input-group-text" id="inputGroup-sizing-default"
+          >Buscar</span
+        >
+        <input
+          type="text"
+          [(ngModel)]="buscarItem"
+          name="buscarProducto"
+          class="form-control"
+          aria-label="Sizing example input"
+          aria-describedby="inputGroup-sizing-default"
+        />
+      </div>
+      <div class="table-container">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="text-center">#</th>
+                <th class="text-center">Item</th>
+                <th class="text-center">Categoría</th>
+                <th class="text-center">Sucursal</th>
+                <th class="text-center">Empresa</th>
+                <th class="text-center">Editar</th>
+                <th class="text-center">Inactivar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of Items | buscar : buscarItem;index as i">
+                <th class="text-center" scope="row">{{i+1}}</th>
+                <td class="text-center">
+                  <ng-container *ngIf="!item.Editando; else editarItem">
+                    {{item.Nombre}}
+                  </ng-container>
+                  <ng-template #editarItem>
+                    <input [(ngModel)]="item.Nombre" class="form-control text-center col-4">
+                  </ng-template>
+                </td>
+          
+                <td class="text-center">
+                  <ng-container *ngIf="!item.Editando; else editarCategoria">
+                    {{getNombreCategoria(item.idCategoria)}}
+                  </ng-container>
+                  <ng-template #editarCategoria>
+                    <select [(ngModel)]="item.idCategoria" id="inputState" class="form-select">
+                      <option value="0">Seleccione una sucursal</option>
+                      <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}</option>
+                    </select>
+                  </ng-template>
+                </td>
+                <td class="text-center">
+                  <ng-container *ngIf="!item.Editando; else editarSucursal">
+                    {{getNombreSucursal(item.idSucursal)}}
+                  </ng-container>
+                  <ng-template #editarSucursal>
+                    <select [(ngModel)]="item.idSucursal" id="inputState" class="form-select">
+                      <option value="0">Seleccione una sucursal</option>
+                      <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+                    </select>
+                  </ng-template>
+                </td>
+                <td class="text-center">
+                  <ng-container *ngIf="!item.Editando; else editarEmpresa">
+                    {{getNombreEmpresa(item.idEmpresa)}}
+                  </ng-container>
+                  <ng-template #editarEmpresa>
+                    <select [(ngModel)]="item.idEmpresa" id="inputState" class="form-select">
+                      <option value="0">Seleccione una empresa</option>
+                      <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
+                    </select>
+                  </ng-template>
+                </td>
+                <td *ngIf="!item.Editando" class="text-center">
+                  <!-- Botón de editar -->
+                  <button (click)="toggleEdicion(item)" type="button" class="btn btn-success text-center">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                </td>
+                <td *ngIf="item.Editando">
+                  <!-- Botón de editar -->
+                  <button (click)="actualizarItem(item)" type="button" class="btn btn-info text-center">
+                    <i class="fa solid fa-check"></i>
+                  </button>
+                </td>
+                <td class="text-center" *ngIf="item.Activo"><button (click)="ActualizarItemEstado(item,false)"
+                    type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
+                <td class="text-center" *ngIf="!item.Activo"><button (click)="ActualizarItemEstado(item,true)"
+                    type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+  
+              </tr>
+  
+  
+            </tbody>
+          </table>
+        </div>
 
-            </tr>
-
-
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
