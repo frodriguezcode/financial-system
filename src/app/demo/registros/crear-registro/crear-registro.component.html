@@ -207,3 +207,112 @@ header="Editar Registro" [(visible)]="visibleEditar" [modal]="true" [style]="{ '
 
 </div>
 </p-dialog>
+
+
+
+
+<p-button label="Crear Registro" [rounded]="true" [raised]="true" severity="success" (click)="addRow()" ></p-button>
+   
+    <div class="card w-full mt-3 border-500 hover:border-40 border p-2 ">
+    
+      
+        <!-- <p-button class="mb-2" label="Crear Registro" [outlined]="true" severity="success" (click)="addRow()"></p-button> -->
+    
+        <p-toast></p-toast>
+        <p-table class=" mb-2 mt-3" [value]="_Registros" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
+            <ng-template pTemplate="header" >
+                <tr >
+                    <th class="bg-green-50" style="width:20%">Operacion</th>
+                    <th class="bg-green-50" style="width:20%">Categoria</th>
+                    <th class="bg-green-50" style="width:20%">Cuenta Banco</th>
+                    <th class="bg-green-50" style="width:20%">Valor</th>
+                    <th class="bg-green-50" style="width:20%">Fecha</th>
+                    <th class="bg-green-50" style="width:20%"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-_Registro let-editing="editing" let-ri="rowIndex">
+                <tr  [pEditableRow]="_Registro">
+                
+                    <td class="border-bottom-1 border-200">
+                        <p-cellEditor>
+                            <ng-template  pTemplate="input">
+                                <p-dropdown
+                                 [options]="Items" name="ItemSeleccionados"
+                                appendTo="body" [(ngModel)]="_Registro.Elemento.Nombre" [filter]="true" [showClear]="false" optionLabel="Nombre"
+                                filterBy="Nombre" [style]="{'width':'100%'}"
+                                placeholder="Seleccione una categoría">
+                                <ng-template   pTemplate="selectedItem" let-selectedItem>
+                                    {{selectedItem.Nombre}}
+                                </ng-template>
+                            </p-dropdown>
+                             </ng-template>
+                            <ng-template   pTemplate="output">
+                                    {{_Registro.Elemento.Nombre}}
+                                    
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td class="border-bottom-1 border-200">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-dropdown
+                                 [options]="Categorias" name="ItemSeleccionados"
+                                appendTo="body" [(ngModel)]="Categorias.Nombre" [filter]="true" [showClear]="false" optionLabel="Nombre"
+                                filterBy="Nombre" [style]="{'width':'100%'}"
+                                placeholder="Seleccione una categoría">
+                                <ng-template   pTemplate="selectedItem" let-selectedItem>
+                                    {{selectedItem.Nombre}}
+                                </ng-template>
+                            </p-dropdown>
+                             </ng-template>
+                            <ng-template   pTemplate="output">
+                                    {{_Registro.idCategoria.Nombre}}
+                                    
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td class="border-bottom-1 border-200">
+                      <p-cellEditor>
+                          <ng-template pTemplate="input">
+                              <input pInputText type="text" [(ngModel)]="_Registro.Cuenta" required>
+                          </ng-template>
+                          <ng-template pTemplate="output">
+                              {{_Registro.Cuenta}}
+                          </ng-template>
+                      </p-cellEditor>
+                    </td>
+                    <td class="border-bottom-1 border-200">
+                      <p-cellEditor>
+                          <ng-template pTemplate="input">
+                              <input pInputText type="text" [(ngModel)]="_Registro.Valor" required>
+                          </ng-template>
+                          <ng-template pTemplate="output">
+                              {{_Registro.Valor}}
+                          </ng-template>
+                      </p-cellEditor>
+                    </td>
+                    <td class="border-bottom-1 border-200">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="_Registro.FechaRegistro">
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{_Registro.FechaRegistro }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td class="border-bottom-1 border-200">
+                      <div class="flex align-items-center justify-content-center gap-2">
+                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(_Registro)" class="p-button-rounded p-button-text"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow  (click)="onRowEditSave(_Registro)" class="p-button-rounded p-button-text p-button-success mr-2"><i class="pi pi-spin pi-spinner" style="font-size: 1.5rem"></i></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(_Registro, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+                        </div> 
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+      </div>
+
+
+
+

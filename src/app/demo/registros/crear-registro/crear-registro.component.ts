@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit, importProvidersFrom } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 // project import
@@ -14,6 +14,16 @@ import Swal from 'sweetalert2'
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
+import {  MessageService, SelectItem } from 'primeng/api';
+import { Registro } from 'src/app/models/registro';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
+
 @Component({
   selector: 'app-crear',
   standalone: true,
@@ -29,13 +39,24 @@ import { InputTextModule } from 'primeng/inputtext';
     ReactiveFormsModule,
     FormsModule,
     InputTextModule,
-    RadioButtonModule
+    RadioButtonModule,
+
+    CommonModule,
+    ToastModule,
+    TableModule,
+    DropdownModule,
+    FormsModule,
+    ButtonModule,
+    InputTextModule,
+    SharedModule,
+    
    ],
   templateUrl: './crear-registro.component.html',
-  styleUrls: ['./crear-registro.component.scss']
+  styleUrls: ['./crear-registro.component.scss'],
+  providers: [MessageService]
 })
 export default class CrearRegistroComponent implements OnInit {
-  constructor(private conS:ConfigurationService,private datePipe: DatePipe){}
+  constructor(private conS:ConfigurationService,private datePipe: DatePipe, private messageService: MessageService,){}
   registroForm!:FormGroup
   EditRegistroForm!:FormGroup
   registroDialog: boolean = false;
@@ -43,10 +64,19 @@ export default class CrearRegistroComponent implements OnInit {
   visibleEditar: boolean = false;
   submitted: boolean = false;
   registros: any=[];
+  // *Registros desde la promesa
+  _Registros: Registro[];
+  clonedRegistros: { [s: string]: Registro } = {};
+
+
+  // *Registros desde la promesa
+
+
   cuentas: any=[];
   selectedRegistros!: any[] | null;
   registro: any=[];
-  Categorias: any=[];
+  // Categorias: any=[];
+  Categorias!: SelectItem[] | any;
   SociosNegocios: any=[];
   MesesTodos: any=[];
   Registros: any=[];
@@ -138,7 +168,10 @@ ngOnInit(): void {
   this.obtenerCategorias()
   this.obtenerRegistros()
   this.cargarFormulario()
+  this.obtenerRegistrosPromise()
 }
+
+
 
 obtenerSocios(){
   this.conS.obtenerSocios(this.usuario.idEmpresa).subscribe(resp=>{
@@ -150,6 +183,61 @@ obtenerRegistros(){
     this.Registros=resp
     console.log('Registros',this.Registros)
   })
+}
+
+// obtenerRegistrosPromise(){
+//   this.conS.obtenerRegistrosPromise(this.usuario.idEmpresa).then((resp =>{
+//     this._Registros = resp;
+//     console.log("promiseRegistros", this._Registros);
+//   }))
+// }
+
+obtenerRegistrosPromise(){
+  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp =>{
+    this._Registros = resp;
+    console.log("promiseRegistros", this._Registros);
+  }))
+}
+
+addRow() {
+  const newRow: Registro = {
+    id: '',
+    Elemento: '',
+    idCategoria: '',
+    Cuenta: '',
+    Valor: '',
+    FechaRegistro: '',
+    
+   
+  };
+  this._Registros = [newRow, ...this._Registros];
+
+
+}
+
+
+onRowEditSave(registro: Registro){
+  if (registro.Elemento != '') {
+    delete this.clonedRegistros[registro.id as string];
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Registro creado | actualizado',
+    });
+  } else {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Registro no valido',
+    });
+  }
+
+}
+
+
+onRowEditCancel(registro: Registro, index: number) {
+  this._Registros[index] = this.clonedRegistros[registro.id as string];
+  delete this.clonedRegistros[registro.id as string];
 }
 
 obtenerCategorias(){
@@ -248,7 +336,10 @@ openNew() {
     this.registroDialog = true;
 }
 
-
+onRowEditInit(registro: Registro) {
+  
+  this.clonedRegistros[registro.id as string] = { ...registro };
+}
 
 deleteSelectedProducts() {
 

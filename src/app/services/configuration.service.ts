@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Registro } from '../models/registro';
+import { error } from 'console';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -191,11 +194,21 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .ref.set(Object.assign(Registro, { id: id }));
     }
 
-    obtenerRegistros(idEmpresa:any) {
+    obtenerRegistros(idEmpresa:any): Observable<Registro[]> {
       return this.afs
       .collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa))
       .valueChanges();
     }
+
+    obtenerRegistrosPromise(idEmpresa: any): Promise<Registro[]> {
+      return new Promise<Registro[]>((resolve, reject) => {
+        this.obtenerRegistros(idEmpresa).subscribe(
+          (data: Registro[]) => resolve(data),
+          (error) => reject(error)
+        );
+      });
+    }
+
 
     ActualizarRegistro(Registro: any) {
       return this.afs
