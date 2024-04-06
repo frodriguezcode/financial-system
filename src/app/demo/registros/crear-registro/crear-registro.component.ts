@@ -23,6 +23,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
+import { CalendarModule } from 'primeng/calendar';
+
+
 
 @Component({
   selector: 'app-crear',
@@ -49,6 +52,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ButtonModule,
     InputTextModule,
     SharedModule,
+    CalendarModule
     
    ],
   templateUrl: './crear-registro.component.html',
@@ -203,6 +207,7 @@ addRow() {
   const newRow: Registro = {
     id: '',
     Elemento: '',
+    idFlujo : '',
     idCategoria: '',
     Cuenta: '',
     Valor: '',
