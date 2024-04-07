@@ -19,6 +19,7 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import {  MessageService, SelectItem } from 'primeng/api';
 import { Registro } from 'src/app/models/registro';
+
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -43,7 +44,6 @@ import { CalendarModule } from 'primeng/calendar';
     FormsModule,
     InputTextModule,
     RadioButtonModule,
-
     CommonModule,
     ToastModule,
     TableModule,
@@ -79,6 +79,8 @@ export default class CrearRegistroComponent implements OnInit {
   cuentas: any=[];
   selectedRegistros!: any[] | null;
   registro: any=[];
+  itemSeleccionado: any;
+  itemsFiltrados: any;
   // Categorias: any=[];
   Categorias!: SelectItem[] | any;
   SociosNegocios: any=[];
@@ -168,10 +170,11 @@ ngOnInit(): void {
   ]
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerItems()
+  this.obtenerCuentas()
   this.obtenerSocios()
   this.obtenerCategorias()
   this.obtenerRegistros()
-  this.cargarFormulario()
+
   this.obtenerRegistrosPromise()
 }
 
@@ -184,9 +187,29 @@ obtenerSocios(){
 }
 obtenerRegistros(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe(resp=>{
-    this.Registros=resp
+    this.Registros=resp.sort((a:any, b:any) => b.Orden - a.Orden);
     console.log('Registros',this.Registros)
+    this.cargarFormulario()
   })
+}
+
+salvarRegistro(Registro:any){
+  console.log('Registro',Registro)
+  let _Registro= this.Registros;
+  const registroEncontrado = _Registro.filter((reg:any) => reg.id == Registro.id);
+  console.log('registroEncontrado',registroEncontrado[0].Elemento)
+  registroEncontrado[0].Elemento=Registro.Elemento
+  registroEncontrado[0].idCategoria=Registro.idCategoria
+  registroEncontrado[0].Cuenta=Registro.Cuenta
+  registroEncontrado[0].Valor=Registro.Valor
+  registroEncontrado[0].FechaRegistro=Registro.FechaRegistro
+  registroEncontrado[0].Registrando=false
+  registroEncontrado[0].Editando=!Registro.Editando
+
+console.log('RegistroGuardado',registroEncontrado[0])
+  // this.conS.ActualizarBanco( registroEncontrado[0]).then(resp=>{
+  //  this.toastr.success('Banco editado', '¡Exito!');
+  // })
 }
 
 // obtenerRegistrosPromise(){
@@ -210,6 +233,7 @@ addRow() {
     idFlujo : '',
     idCategoria: '',
     Cuenta: '',
+    idSocioNegocio: '',
     Valor: '',
     FechaRegistro: '',
     
@@ -260,9 +284,16 @@ obtenerItems(){
     console.log('Items',this.Items)
   })
 }
-crearRegistro() {
-  this.visible = true;
+obtenerCuentas(){
+  this.conS.obtenerCuentas(this.usuario.idEmpresa).subscribe(resp=>{
+    this.cuentas=resp
+
+  })
 }
+crearRegistro() {
+  this.guardarRegistro()
+}
+
 
 get selectedCategoria() {
   return this.Categorias.find((cat:any):any => cat.id === this.EditRegistroForm.value.idCategoria);
@@ -283,6 +314,8 @@ editarRegistro(idRegistro:string) {
     Semana: new FormControl(_RegistroEditar.Semana), 
     MesRegistro:new FormControl(_RegistroEditar.MesRegistro),
     Nuevo:new FormControl(false),
+    Registrando:new FormControl(true),
+    Orden:new FormControl(this.Registros.length+1),
     Activo: new FormControl(_RegistroEditar.Activo), 
     Editando: new FormControl(_RegistroEditar.Editando), 
     idSocioNegocio: new FormControl(_RegistroEditar.idSocioNegocio), 
@@ -313,6 +346,7 @@ getIdItem(idItem:string){
 }
 
 cargarFormulario(){
+  console.log('this.Registros.length+1',this.Registros.length+1)
   let _Fecha:any=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
   this.registroForm = new FormGroup({
     Elemento: new FormControl('',[Validators.required]), 
@@ -326,7 +360,8 @@ cargarFormulario(){
     MesRegistro:new FormControl(this.MesesTodos[this.getMonthName(_Fecha)].Mes),
     Activo: new FormControl(true), 
     Nuevo: new FormControl(true), 
-    Editando: new FormControl(false), 
+    Editando: new FormControl(true), 
+    Orden: new FormControl(this.Registros.length+1),
     idSocioNegocio: new FormControl(''), 
     idEmpresa: new FormControl(this.usuario.idEmpresa), 
     idMatriz: new FormControl(this.usuario.idMatriz), 
@@ -364,14 +399,8 @@ hideDialog() {
 guardarRegistro(){
 console.log('Valorform',this.registroForm.value)
 this.conS.crearRegistro(this.registroForm.value).then(resp=>{
-  this.visible=false
-  Swal.fire({
-    position: "center",
-    icon: "success",
-    title: "Registro creado",
-    showConfirmButton: false,
-    timer: 1500
-  });
+
+
 this.cargarFormulario()
 })
 

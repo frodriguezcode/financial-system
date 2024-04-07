@@ -53,3 +53,9 @@
     width: 100%;
   }
 }
+
+.table-container {
+  height: 600px; /* Ajusta la altura máxima según tu diseño */
+  min-width:50rem;
+  overflow-y: auto; /* Agrega scroll vertical si el contenido es más largo que la altura máxima */
+}

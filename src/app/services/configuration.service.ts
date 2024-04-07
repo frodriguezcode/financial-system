@@ -133,6 +133,11 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
       .collection('Items',(ref)=>ref.where('idEmpresa','==',idEmpresa).orderBy('Orden','asc'))
       .valueChanges();
     }
+    obtenerCuentas(idEmpresa:any) {
+      return this.afs
+      .collection('Bancos',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+      .valueChanges();
+    }
 
     ActualizarItem(items: any) {
       return this.afs
@@ -197,7 +202,7 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
     obtenerRegistros(idEmpresa:any): Observable<Registro[]> {
       return this.afs
-      .collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+      .collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa).orderBy('Orden','desc'))
       .valueChanges();
     }
 
