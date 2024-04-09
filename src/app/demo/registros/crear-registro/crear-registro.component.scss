@@ -1,9 +1,12 @@
 @import 'primeicons/primeicons.css';
 
-.dropdown-cat {
-  z-index: 5000;
+.seleccion-item {
+  max-width: 9.5rem;
+  min-width: 9.5rem;
+  text-align: left;
+  font-size: 16px;
+  font-weight: bolder;
 }
-
 
 
 .departamento-socio {
@@ -25,7 +28,6 @@
   flex-basis: 50%;
 }
 
-
 .dropdown-socio {
   flex-basis: 50%;
   margin-left: 2%;
@@ -39,9 +41,10 @@
   position: relative;
   margin-bottom: 0;
 }
-.space{
-    margin-right: 8px ;
+.space {
+  margin-right: 8px;
 }
+
 // ~Responsive
 
 @media (max-width: 640px) {
@@ -55,7 +58,15 @@
 }
 
 .table-container {
-  height: 600px; /* Ajusta la altura máxima según tu diseño */
-  min-width:50rem;
-  overflow-y: auto; /* Agrega scroll vertical si el contenido es más largo que la altura máxima */
+  height: 600px;
+  min-width: 50rem;
+  overflow-y: auto;
+}
+
+.p-datatable-scrollable > .p-datatable-wrapper {
+  position: relative;
+}
+
+.p-datatable > .p-datatable-wrapper {
+  overflow: none !important;
 }
