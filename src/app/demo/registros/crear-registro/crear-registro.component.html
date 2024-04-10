@@ -6,20 +6,29 @@
     >Crear Registro <i class="fa-solid fa-plus"></i
   ></button>
   <p-table 
-   
+    #dt1
     [value]="Registros"
     [paginator]="true"
     [rows]="4"
     [scrollable]="true"
     [showCurrentPageReport]="true"
     [tableStyle]="{'min-width': '50rem'}"
+    [globalFilterFields]="['AnioRegistro', 'FechaRegistro', 'MesRegistro', 'Semana','FechaRegistro','Elemento']"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [rowsPerPageOptions]="[5, 10, 20]"
-    
-  >
+    [rowsPerPageOptions]="[5, 10, 20]" >
+    <ng-template pTemplate="caption">
+      <div class="flex col-12">
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input type="text" class="form-control" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" id="exampleInputEmail1" aria-describedby="emailHelp">
+
+        </span>
+      </div>
+    </ng-template>
     <ng-template  pTemplate="header">
       <tr class="text-center">
         <th style="text-transform: uppercase;">Orden</th>
+        <th style="text-transform: uppercase;">Borrar</th>
         <th style="text-transform: uppercase;">Elemento</th>
         <th style="text-transform: uppercase;">Categoría</th>
         <th style="text-transform: uppercase;">Cuenta</th>
@@ -27,8 +36,7 @@
         <th style="text-transform: uppercase;">Flujo</th>
         <th style="text-transform: uppercase;">Socio Negocios</th>
         <th style="text-transform: uppercase;">Fecha</th>
-        <th style="text-transform: uppercase;">Editar</th>
-        <th style="text-transform: uppercase;">Borrar</th>
+        <th style="text-transform: uppercase;">Guardar</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-registros>
@@ -39,14 +47,14 @@
                 {{ registros.Orden }}
               </ng-container>
               </td>
+        <td class="text-center">
+                <button type="button" (click)="borrarRegistro(registros.id)" class="btn btn-danger" ngbTooltip="Borrar registro"
+                  ><i class="fa-solid fa-trash"></i></button>
+        </td>
         <td class="text-center ">
-          <ng-container *ngIf="!registros.Editando; else editarElemento">
-            <div style="max-width: 9rem;">
-
-              {{ registros.Elemento.Nombre }}
-            </div>
-          </ng-container>
-          <ng-template    #editarElemento>
+       
+     
+       
 
             <p-dropdown
               [options]="Items"
@@ -64,17 +72,12 @@
                 </div>
               </ng-template>
             </p-dropdown>
-          </ng-template>
+      
         </td>
         <!-- Categorias -->
         <td class="text-center">
-          <ng-container *ngIf="!registros.Editando; else editarCategoria">
-            <div >
-
-              {{ registros.idCategoria.Nombre }}
-            </div>
-            </ng-container>
-            <ng-template #editarCategoria>
+       
+       
               <p-dropdown
               [options]="Categorias"
               [(ngModel)]="registros.idCategoria"
@@ -90,18 +93,12 @@
               </div>
           </ng-template>
           </p-dropdown>
-          </ng-template>
+     
 
         </td>
 
         <td class="text-center">
-          <ng-container *ngIf="!registros.Editando; else editarCuenta">
-            <div >
-              {{ registros.Cuenta.Cuenta }}
-
-            </div>
-            </ng-container>
-            <ng-template #editarCuenta>
+    
               <p-dropdown
               [options]="cuentas"
               [(ngModel)]="registros.Cuenta"
@@ -117,7 +114,7 @@
               </div>
           </ng-template>
           </p-dropdown>
-          </ng-template>
+     
       
       
       </td>
@@ -126,25 +123,10 @@
 
 
       <td class="text-center">
-          <ng-container *ngIf="!registros.Editando; else editarValor">
-            <div >
-              {{ registros.Valor  }}
-
-            </div>
-          </ng-container>
-
-          <ng-template #editarValor>
-              <input style="min-width: 9rem; min-height: 3rem; font-weight: bolder" [(ngModel)]="registros.Valor" class="form-control text-center col-4">
-          </ng-template>
-      
+              <input (keyup.enter)="salvarRegistro(registros)" style="min-width: 9rem; min-height: 3rem; font-weight: bolder" [(ngModel)]="registros.Valor" class="form-control text-center col-4">
       </td>
 
       <td class="text-center">
-          <ng-container *ngIf="!registros.Editando; else editarFlujo">
-              {{ registros.idFlujo.name  }}
-          </ng-container>
-
-          <ng-template #editarFlujo>
                 <p-dropdown
                 [options]="Flujos"
                 [(ngModel)]="registros.idFlujo"
@@ -160,15 +142,8 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-          </ng-template>
-      
       </td>
-
       <td class="text-center">
-          <ng-container *ngIf="!registros.Editando; else editarSocio">
-              {{ registros.idSocioNegocio.Nombre }}
-            </ng-container>
-            <ng-template #editarSocio>
               <p-dropdown
               [options]="SociosNegocios"
               [(ngModel)]="registros.idSocioNegocio"
@@ -184,30 +159,15 @@
               </div>
           </ng-template>
           </p-dropdown>
-          </ng-template>
-      
-      
       </td>
 
         <td class="text-center">
-      
-          <ng-container *ngIf="!registros.Editando; else editarFecha">
-              {{ registros.FechaRegistro }}
-          </ng-container>
-
-          <ng-template #editarFecha>
               <input style="min-height: 3rem;" type="date" [(ngModel)]=" registros.FechaRegistro" class="form-control text-center col-4">
-          </ng-template>
-      
       </td>
         <td class="text-center">
-          <button *ngIf="!registros.Editando && !registros.Registrando" type="button" (click)="editarRegistro(registros.id)" class="btn btn-success" ngbTooltip="Editar registro"><i class="fa-solid fa-pen-to-square"></i></button>
-          <button *ngIf="registros.Editando && registros.Registrando" type="button" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"><i class="fa-solid fa-floppy-disk"></i></button>
+          <button  type="button" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"><i class="fa-solid fa-floppy-disk"></i></button>
         </td>
-        <td class="text-center">
-          <button type="button" (click)="DesactivarRegistro(registros.id)" class="btn btn-danger" ngbTooltip="Borrar registro"
-            ><i class="fa-solid fa-trash"></i></button
-        ></td>
+       
       </tr>
     </ng-template>
   </p-table>

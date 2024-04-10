@@ -19,7 +19,7 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import {  MessageService, SelectItem } from 'primeng/api';
 import { Registro } from 'src/app/models/registro';
-
+import { ToastrService } from 'ngx-toastr';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -60,7 +60,11 @@ import { CalendarModule } from 'primeng/calendar';
   providers: [MessageService]
 })
 export default class CrearRegistroComponent implements OnInit {
-  constructor(private conS:ConfigurationService,private datePipe: DatePipe, private messageService: MessageService,){}
+  constructor(
+    private conS:ConfigurationService,private datePipe: DatePipe, 
+    private messageService: MessageService,
+    private toastr: ToastrService
+  ){}
   registroForm!:FormGroup
   EditRegistroForm!:FormGroup
   registroDialog: boolean = false;
@@ -188,28 +192,52 @@ obtenerSocios(){
 obtenerRegistros(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe(resp=>{
     this.Registros=resp.sort((a:any, b:any) => b.Orden - a.Orden);
-    console.log('Registros',this.Registros)
     this.cargarFormulario()
   })
 }
 
-salvarRegistro(Registro:any){
-  console.log('Registro',Registro)
-  let _Registro= this.Registros;
-  const registroEncontrado = _Registro.filter((reg:any) => reg.id == Registro.id);
-  console.log('registroEncontrado',registroEncontrado[0].Elemento)
-  registroEncontrado[0].Elemento=Registro.Elemento
-  registroEncontrado[0].idCategoria=Registro.idCategoria
-  registroEncontrado[0].Cuenta=Registro.Cuenta
-  registroEncontrado[0].Valor=Registro.Valor
-  registroEncontrado[0].FechaRegistro=Registro.FechaRegistro
-  registroEncontrado[0].Registrando=false
-  registroEncontrado[0].Editando=!Registro.Editando
+getWeek(date: Date): number {
+  var d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  var yearStart = new Date(d.getFullYear(), 0, 1);
+  var weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + yearStart.getDay() + 1) / 7);
+  return weekNo;
+}
 
-console.log('RegistroGuardado',registroEncontrado[0])
-  // this.conS.ActualizarBanco( registroEncontrado[0]).then(resp=>{
-  //  this.toastr.success('Banco editado', '¡Exito!');
-  // })
+borrarRegistro(idRegistro){
+  Swal.fire({
+    title: "¿Desea borrar este registro?",
+    text: "Esta acción no se puede revertir",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Si",
+    cancelButtonText: "No"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.conS.borrarRegistro(idRegistro).then(resp=>{
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Borrado exitosamente",
+          showConfirmButton: false,
+          timer: 1500
+        });
+
+      })
+     
+    }
+  });
+}
+
+salvarRegistro(Registro:any){
+  Registro.Semana=this.getWeek(Registro.FechaRegistro)
+  Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
+  Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
+  this.conS.ActualizarRegistro(Registro).then(resp=>{
+    this.toastr.success('Guardado', '¡Exito!');
+  })
 }
 
 // obtenerRegistrosPromise(){
@@ -222,7 +250,6 @@ console.log('RegistroGuardado',registroEncontrado[0])
 obtenerRegistrosPromise(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp =>{
     this._Registros = resp;
-    console.log("promiseRegistros", this._Registros);
   }))
 }
 
@@ -281,7 +308,6 @@ getMonthName(Fecha:string){
 obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
     this.Items=resp
-    console.log('Items',this.Items)
   })
 }
 obtenerCuentas(){
@@ -326,7 +352,6 @@ editarRegistro(idRegistro:string) {
     FechaRegistro: new FormControl(_RegistroEditar.FechaRegistro), 
     id: new FormControl(_RegistroEditar.id), 
    })
-   console.log('EditRegistroForm',this.EditRegistroForm.value);
    this.visibleEditar = true;
  
 }
@@ -341,12 +366,10 @@ getWeekNumber() {
 }
 
 getIdItem(idItem:string){
-  console.log('idItem',idItem)
   this.idItem=idItem
 }
 
 cargarFormulario(){
-  console.log('this.Registros.length+1',this.Registros.length+1)
   let _Fecha:any=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
   this.registroForm = new FormGroup({
     Elemento: new FormControl('',[Validators.required]), 
@@ -397,7 +420,7 @@ hideDialog() {
   this.submitted = false;
 }
 guardarRegistro(){
-console.log('Valorform',this.registroForm.value)
+
 this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 
 

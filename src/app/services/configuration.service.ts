@@ -222,6 +222,9 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .doc(Registro.id)
         .ref.update(Registro);
     }
+    borrarRegistro(id: string) {
+      return this.afs.collection('Registro').doc(id).delete();
+    }
     DesactivarRegistro(IdRegistro: any) {
       return this.afs
         .collection('Registro')
