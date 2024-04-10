@@ -26,7 +26,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CalendarModule } from 'primeng/calendar';
 
-
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
 
 @Component({
   selector: 'app-crear',
@@ -52,7 +53,9 @@ import { CalendarModule } from 'primeng/calendar';
     ButtonModule,
     InputTextModule,
     SharedModule,
-    CalendarModule
+    CalendarModule,
+    InputIconModule,
+    IconFieldModule
     
    ],
   templateUrl: './crear-registro.component.html',
@@ -78,6 +81,7 @@ export default class CrearRegistroComponent implements OnInit {
 
 
   // *Registros desde la promesa
+  inputVal = ''; // Initialize inputVal to be empty
 
 
   cuentas: any=[];

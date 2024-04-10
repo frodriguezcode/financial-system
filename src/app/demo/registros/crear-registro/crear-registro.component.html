@@ -1,182 +1,178 @@
-
-
 <app-card cardTitle="REGISTROS" [options]="false">
-  
-  <button type="button" (click)="crearRegistro()" class="btn btn-success mb-4 shadow-1" ngbTooltip="Click para crear registro"
+  <button type="button" (click)="crearRegistro()" class="btn btn-success mb-4 shadow-4" ngbTooltip="Click para crear registro"
     >Crear Registro <i class="fa-solid fa-plus"></i
   ></button>
-  <p-table 
+  <p-table
     #dt1
     [value]="Registros"
     [paginator]="true"
     [rows]="4"
     [scrollable]="true"
     [showCurrentPageReport]="true"
-    [tableStyle]="{'min-width': '50rem'}"
-    [globalFilterFields]="['AnioRegistro', 'FechaRegistro', 'MesRegistro', 'Semana','FechaRegistro','Elemento']"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    [globalFilterFields]="['AnioRegistro', 'FechaRegistro', 'MesRegistro', 'Semana', 'FechaRegistro', 'Elemento']"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [rowsPerPageOptions]="[5, 10, 20]" >
+    [rowsPerPageOptions]="[5, 10, 20]"
+  >
     <ng-template pTemplate="caption">
-      <div class="flex col-12">
-        <span class="p-input-icon-left ml-auto">
-          <i class="pi pi-search"></i>
-          <input type="text" class="form-control" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" id="exampleInputEmail1" aria-describedby="emailHelp">
-
-        </span>
-      </div>
+      <p-iconField iconPosition="left">
+        <p-inputIcon *ngIf="inputVal.length < 10" styleClass="pi pi-search" />
+        <input
+          style="width: 16rem; text-align:center"
+          pInputText
+          type="text"
+          class="form-control"
+          (input)="dt1.filterGlobal($any($event.target).value, 'contains')"
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          [(ngModel)]="inputVal" 
+          placeholder="Buscar..."
+        />
+      </p-iconField>
     </ng-template>
-    <ng-template  pTemplate="header">
+    <ng-template pTemplate="header">
       <tr class="text-center">
-        <th style="text-transform: uppercase;">Orden</th>
-        <th style="text-transform: uppercase;">Borrar</th>
-        <th style="text-transform: uppercase;">Elemento</th>
-        <th style="text-transform: uppercase;">Categoría</th>
-        <th style="text-transform: uppercase;">Cuenta</th>
-        <th style="text-transform: uppercase;">Valor</th>
-        <th style="text-transform: uppercase;">Flujo</th>
-        <th style="text-transform: uppercase;">Socio Negocios</th>
-        <th style="text-transform: uppercase;">Fecha</th>
-        <th style="text-transform: uppercase;">Guardar</th>
+        <th style="text-transform: uppercase">Orden</th>
+        <th style="text-transform: uppercase">Borrar</th>
+        <th style="text-transform: uppercase">Elemento</th>
+        <th style="text-transform: uppercase">Categoría</th>
+        <th style="text-transform: uppercase">Cuenta</th>
+        <th style="text-transform: uppercase">Valor</th>
+        <th style="text-transform: uppercase">Flujo</th>
+        <th style="text-transform: uppercase">Socio Negocios</th>
+        <th style="text-transform: uppercase">Fecha</th>
+        <th style="text-transform: uppercase">Guardar</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-registros>
       <tr>
-           <!-- Elementos -->
-           <td class="text-center">
-              <ng-container>
-                {{ registros.Orden }}
-              </ng-container>
-              </td>
+        <!-- Elementos -->
         <td class="text-center">
-                <button type="button" (click)="borrarRegistro(registros.id)" class="btn btn-danger" ngbTooltip="Borrar registro"
-                  ><i class="fa-solid fa-trash"></i></button>
+          <ng-container>
+            {{ registros.Orden }}
+          </ng-container>
         </td>
-        <td class="text-center ">
-       
-     
-       
-
-            <p-dropdown
-              [options]="Items"
-              [(ngModel)]="registros.Elemento"
-              name="ItemSeleccionados"
-              optionLabel="Nombre"
-              [filter]="true"
-              filterBy="Nombre"
-              [showClear]="false"
-              class=""
-              placeholder="Seleccione elemento">
-              <ng-template pTemplate="selectedItem" let-selectedItem>
-                <div class="flex align-items-center gap-2 ">
-                  <div class="seleccion-item" >{{ selectedItem.Nombre }}</div>
-                </div>
-              </ng-template>
-            </p-dropdown>
-      
+        <td class="text-center">
+          <button type="button" (click)="borrarRegistro(registros.id)" class="btn btn-danger" ngbTooltip="Borrar registro"
+            ><i class="fa-solid fa-trash"></i
+          ></button>
+        </td>
+        <td class="text-center">
+          <p-dropdown
+            [options]="Items"
+            [(ngModel)]="registros.Elemento"
+            name="ItemSeleccionados"
+            optionLabel="Nombre"
+            [filter]="true"
+            filterBy="Nombre"
+            [showClear]="false"
+            class=""
+            placeholder="Seleccione elemento"
+          >
+            <ng-template pTemplate="selectedItem" let-selectedItem>
+              <div class="flex align-items-center gap-2">
+                <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
         </td>
         <!-- Categorias -->
         <td class="text-center">
-       
-       
-              <p-dropdown
-              [options]="Categorias"
-              [(ngModel)]="registros.idCategoria"
-              name="ItemSeleccionados"
-              optionLabel="Nombre"
-              [filter]="true"
-              filterBy="Nombre"
-              [showClear]="false"
-              placeholder="Seleccione una categoría">
-          <ng-template pTemplate="selectedItem" let-selectedItem>
+          <p-dropdown
+            [options]="Categorias"
+            [(ngModel)]="registros.idCategoria"
+            name="ItemSeleccionados"
+            optionLabel="Nombre"
+            [filter]="true"
+            filterBy="Nombre"
+            [showClear]="false"
+            placeholder="Seleccione una categoría"
+          >
+            <ng-template pTemplate="selectedItem" let-selectedItem>
               <div class="flex align-items-lg-start gap-2">
-              <div class="seleccion-item" >{{ selectedItem.Nombre }}</div>
+                <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
               </div>
-          </ng-template>
+            </ng-template>
           </p-dropdown>
-     
-
         </td>
 
         <td class="text-center">
-    
-              <p-dropdown
-              [options]="cuentas"
-              [(ngModel)]="registros.Cuenta"
-              name="ItemSeleccionados"
-              optionLabel="Cuenta"
-              [filter]="true"
-              filterBy="Cuenta"
-              [showClear]="false"
-              placeholder="Seleccione una cuenta">
-          <ng-template pTemplate="selectedItem" let-selectedItem>
+          <p-dropdown
+            [options]="cuentas"
+            [(ngModel)]="registros.Cuenta"
+            name="ItemSeleccionados"
+            optionLabel="Cuenta"
+            [filter]="true"
+            filterBy="Cuenta"
+            [showClear]="false"
+            placeholder="Seleccione una cuenta"
+          >
+            <ng-template pTemplate="selectedItem" let-selectedItem>
               <div class="flex align-items-lg-start gap-2">
-              <div class="seleccion-item">{{ selectedItem.Cuenta }}</div>
+                <div class="seleccion-item">{{ selectedItem.Cuenta }}</div>
               </div>
-          </ng-template>
+            </ng-template>
           </p-dropdown>
-     
-      
-      
-      </td>
-
-
-
-
-      <td class="text-center">
-              <input (keyup.enter)="salvarRegistro(registros)" style="min-width: 9rem; min-height: 3rem; font-weight: bolder" [(ngModel)]="registros.Valor" class="form-control text-center col-4">
-      </td>
-
-      <td class="text-center">
-                <p-dropdown
-                [options]="Flujos"
-                [(ngModel)]="registros.idFlujo"
-                name="flujos"
-                optionLabel="name"
-                [filter]="true"
-                filterBy="name"
-                [showClear]="false"
-                placeholder="Seleccione un flujo">
-                <ng-template pTemplate="selectedItem" let-selectedItem>
-                  <div class="flex align-items-center gap-2">
-                    <div class="seleccion-item" style="min-width: 9rem;">{{ selectedItem.name }}</div>
-                  </div>
-                </ng-template>
-              </p-dropdown>
-      </td>
-      <td class="text-center">
-              <p-dropdown
-              [options]="SociosNegocios"
-              [(ngModel)]="registros.idSocioNegocio"
-              name="SociosNegocios"
-              optionLabel="Nombre"
-              [filter]="true"
-              filterBy="Nombre"
-              [showClear]="false"
-              placeholder="Seleccione un socio de negocios">
-          <ng-template pTemplate="selectedItem" let-selectedItem>
-              <div class="flex align-items-lg-start gap-2">
-              <div  class="seleccion-item">{{ selectedItem.Nombre }}</div>
-              </div>
-          </ng-template>
-          </p-dropdown>
-      </td>
-
-        <td class="text-center">
-              <input style="min-height: 3rem;" type="date" [(ngModel)]=" registros.FechaRegistro" class="form-control text-center col-4">
-      </td>
-        <td class="text-center">
-          <button  type="button" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"><i class="fa-solid fa-floppy-disk"></i></button>
         </td>
-       
+
+        <td class="text-center">
+          <input
+            (keyup.enter)="salvarRegistro(registros)"
+            style="min-width: 9rem; min-height: 3rem; font-weight: bolder"
+            [(ngModel)]="registros.Valor"
+            class="form-control text-center col-4"
+          />
+        </td>
+
+        <td class="text-center">
+          <p-dropdown
+            [options]="Flujos"
+            [(ngModel)]="registros.idFlujo"
+            name="flujos"
+            optionLabel="name"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="false"
+            placeholder="Seleccione un flujo"
+          >
+            <ng-template pTemplate="selectedItem" let-selectedItem>
+              <div class="flex align-items-center gap-2">
+                <div class="seleccion-item" style="min-width: 9rem">{{ selectedItem.name }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </td>
+        <td class="text-center">
+          <p-dropdown
+            [options]="SociosNegocios"
+            [(ngModel)]="registros.idSocioNegocio"
+            name="SociosNegocios"
+            optionLabel="Nombre"
+            [filter]="true"
+            filterBy="Nombre"
+            [showClear]="false"
+            placeholder="Seleccione un socio de negocios"
+          >
+            <ng-template pTemplate="selectedItem" let-selectedItem>
+              <div class="flex align-items-lg-start gap-2">
+                <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </td>
+
+        <td class="text-center">
+          <input style="min-height: 3rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
+        </td>
+        <td class="text-center">
+          <button type="button" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"
+            ><i class="fa-solid fa-floppy-disk"></i
+          ></button>
+        </td>
       </tr>
     </ng-template>
   </p-table>
 </app-card>
-
-  
-
-
-
 
 <!-- *EDITAR REGISTRO -->
 <p-dialog
