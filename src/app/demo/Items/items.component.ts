@@ -10,7 +10,7 @@ import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
 import { BuscarPipe } from '../../theme/shared/filter/buscar.pipe';
 @Component({
-  selector: 'items-page',
+  selector: 'app-elemento',
   standalone: true,
   imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule],
   templateUrl: './items.component.html',

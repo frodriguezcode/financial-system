@@ -16,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './socios.component.html',
   styleUrls: ['./socios.component.scss']
 })
-export default class BancosComponent implements OnInit {
+export default class SocioNegocioComponent implements OnInit {
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService) {}
 
   Socios:any=[]

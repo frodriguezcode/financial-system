@@ -1,6 +1,15 @@
 <app-card cardTitle="REGISTROS" [options]="false">
-  <button type="button" (click)="crearRegistro()" class="btn btn-success mb-4 shadow-4" ngbTooltip="Click para crear registro"
+  <button type="button" (click)="crearRegistro()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
     >Crear Registro <i class="fa-solid fa-plus"></i
+  ></button>
+  <button type="button" (click)="crearCuenta()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
+    >Crear Cuenta <i class="fa-solid fa-plus"></i
+  ></button>
+  <button type="button" (click)="crearElemento()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
+    >Crear Elemento <i class="fa-solid fa-plus"></i
+  ></button>
+  <button type="button" (click)="crearSocioNegocio()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
+    >Crear Socio de Negocio <i class="fa-solid fa-plus"></i
   ></button>
   <p-table
     #dt1
@@ -10,25 +19,60 @@
     [scrollable]="true"
     [showCurrentPageReport]="true"
     [tableStyle]="{ 'min-width': '50rem' }"
-    [globalFilterFields]="['AnioRegistro', 'FechaRegistro', 'MesRegistro', 'Semana', 'FechaRegistro', 'Elemento']"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [globalFilterFields]="['AnioRegistro', 'FechaRegistro', 'MesRegistro', 'Semana', 'NombreElemento','NumCuenta','CategoriaNombre','SocioNegocio']"
+    currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
     [rowsPerPageOptions]="[5, 10, 20]"
   >
     <ng-template pTemplate="caption">
-      <p-iconField iconPosition="left">
-        <p-inputIcon *ngIf="inputVal.length < 10" styleClass="pi pi-search" />
-        <input
-          style="width: 16rem; text-align:center"
-          pInputText
-          type="text"
-          class="form-control"
-          (input)="dt1.filterGlobal($any($event.target).value, 'contains')"
-          id="exampleInputEmail1"
-          aria-describedby="emailHelp"
-          [(ngModel)]="inputVal" 
-          placeholder="Buscar..."
-        />
-      </p-iconField>
+      <div class="row">
+        <div class="col-3">
+          <p-iconField iconPosition="left">
+            <label for="formGroupExampleInput" class="form-label">Buscar por cualquier campo</label>
+
+            <!-- <p-inputIcon *ngIf="inputVal.length < 10" styleClass="pi pi-search" /> -->
+            <input
+              style="width: 16rem; text-align:center"
+              pInputText
+              type="text"
+              class="form-control"
+              (input)="dt1.filterGlobal($any($event.target).value, 'contains')"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+              [(ngModel)]="inputVal" 
+              placeholder="Buscar..."
+            />
+          </p-iconField>
+        </div>
+        <div class="col-2">
+
+          <div class="mb-3">
+            <label for="formGroupExampleInput" class="form-label">Fecha Inicio</label>
+            <input type="date"[formControl]="FechaDesde" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder">
+          </div>
+
+        </div>
+        <div class="col-2">
+
+          <div class="mb-3">
+            <label for="formGroupExampleInput" class="form-label">Fecha Final</label>
+            <input type="date" [formControl]="FechaHasta" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder">
+          </div>
+
+        </div>
+        <br>
+        <div class="col-2">
+
+          <button type="button" (click)="buscarByFecha()" class="btn btn-success mb-4 shadow-4 mt-4" ngbTooltip="Click para buscar"
+          >Buscar </button>
+
+        </div>
+        <div class="col-2">
+
+          <button type="button" (click)="restablecer()" class="btn btn-info mb-4 shadow-4 mt-4" ngbTooltip="Click para buscar"
+          >Restablecer </button>
+
+        </div>
+      </div>
     </ng-template>
     <ng-template pTemplate="header">
       <tr class="text-center">
@@ -173,6 +217,43 @@
     </ng-template>
   </p-table>
 </app-card>
+
+<p-dialog
+  header="Agregar Cuenta"
+  [(visible)]="visibleCuenta"
+  [modal]="true"
+  [style]="{ width: '75vw', height: '70vh' }"
+  [modal]="true"
+  styleClass="p-fluid"
+  [draggable]="false"
+  [resizable]="false"
+>
+<app-bancos  *ngIf="visibleCuenta==true"></app-bancos>
+</p-dialog>
+<p-dialog
+  header="Agregar Item"
+  [(visible)]="visibleElemento"
+  [modal]="true"
+  [style]="{ width: '75vw', height: '70vh' }"
+  [modal]="true"
+  styleClass="p-fluid"
+  [draggable]="false"
+  [resizable]="false"
+>
+<app-elemento *ngIf="visibleElemento==true"></app-elemento>
+</p-dialog>
+<p-dialog
+  header="Agregar Socio de Negocio"
+  [(visible)]="visibleSocioNegocio"
+  [modal]="true"
+  [style]="{ width: '75vw', height: '70vh' }"
+  [modal]="true"
+  styleClass="p-fluid"
+  [draggable]="false"
+  [resizable]="false"
+>
+<app-socios *ngIf="visibleSocioNegocio==true"></app-socios>
+</p-dialog>
 
 <!-- *EDITAR REGISTRO -->
 <p-dialog

@@ -28,6 +28,9 @@ import { CalendarModule } from 'primeng/calendar';
 
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
+import BancosComponent from '../../bancos/bancos.component';
+import ItemsComponent from '../../Items/items.component';
+import SocioNegocioComponent from '../../socios/socios.component';
 
 @Component({
   selector: 'app-crear',
@@ -55,7 +58,10 @@ import { IconFieldModule } from 'primeng/iconfield';
     SharedModule,
     CalendarModule,
     InputIconModule,
-    IconFieldModule
+    IconFieldModule,
+    BancosComponent,
+    ItemsComponent,
+    SocioNegocioComponent
     
    ],
   templateUrl: './crear-registro.component.html',
@@ -73,8 +79,12 @@ export default class CrearRegistroComponent implements OnInit {
   registroDialog: boolean = false;
   visible: boolean = false;
   visibleEditar: boolean = false;
+  visibleCuenta: boolean = false;
+  visibleElemento: boolean = false;
+  visibleSocioNegocio: boolean = false;
   submitted: boolean = false;
   registros: any=[];
+  registrosBackUp: any=[];
   // *Registros desde la promesa
   _Registros: Registro[];
   clonedRegistros: { [s: string]: Registro } = {};
@@ -82,7 +92,8 @@ export default class CrearRegistroComponent implements OnInit {
 
   // *Registros desde la promesa
   inputVal = ''; // Initialize inputVal to be empty
-
+  FechaDesde:FormControl=new FormControl()
+  FechaHasta:FormControl=new FormControl()
 
   cuentas: any=[];
   selectedRegistros!: any[] | null;
@@ -193,9 +204,60 @@ obtenerSocios(){
     this.SociosNegocios=resp
   })
 }
+
+crearCuenta(){
+  this.visibleCuenta=true
+}
+crearElemento(){
+  this.visibleElemento=true
+}
+crearSocioNegocio(){
+  this.visibleCuenta=true
+}
+
+buscarByFecha(){
+
+  this.Registros=this.registrosBackUp.
+  filter((reg:any)=>reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value)
+}
+restablecer(){
+  this.Registros=this.registrosBackUp
+}
 obtenerRegistros(){
-  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe(resp=>{
-    this.Registros=resp.sort((a:any, b:any) => b.Orden - a.Orden);
+  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
+    this.Registros=[]
+    resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+      let _Registro={
+        "Activo":element.Activo,
+        "AnioRegistro":element.AnioRegistro,
+        "Cuenta":element.Cuenta,
+        "Editando":element.Editando,
+        "Elemento":element.Elemento,
+        "FechaRegistro":element.FechaRegistro,
+        "MesRegistro":element.MesRegistro,
+        "Nuevo":element.Nuevo,
+        "NumMes":element.NumMes,
+        "NumSemana":element.NumSemana,
+        "Orden":element.Orden,
+        "Semana":element.Semana,
+        "Valor":element.Valor,
+        "id":element.id,
+        "idCategoria":element.idCategoria,
+        "idEmpresa":element.idEmpresa,
+        "idFlujo":element.idFlujo,
+        "idMatriz":element.idMatriz,
+        "idSocioNegocio":element.idSocioNegocio,
+        "idSucursal":element.idSucursal,
+        "NombreElemento":element.Elemento.Nombre,
+        "NumCuenta":element.Cuenta.Cuenta,
+        "CategoriaNombre":element.idCategoria.Nombre,
+        "SocioNegocio":element.idSocioNegocio.Nombre,
+
+      }
+      this.Registros.push(_Registro)
+    })
+    this.registrosBackUp=this.Registros
+    console.log('Registros',this.Registros)
     this.cargarFormulario()
   })
 }
