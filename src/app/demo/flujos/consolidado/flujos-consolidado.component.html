@@ -3,12 +3,12 @@
     <app-card [options]="false">
       <div class="table-responsive">
         <table class="table">
-          <thead>
+          <thead style="background-color: rgb(113,189,158,255); color:white">
           
-              <th>Concepto</th> 
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Username</th>
+              <th >Concepto</th> 
+              <ng-container *ngFor="let semana of semanas">
+                <th class="text-center">{{ "Semana" + " " + semana.Semana}}</th>
+              </ng-container>     
         
           </thead>
           <tbody>
@@ -18,7 +18,7 @@
                 </td> 
             </tr>
             <ng-container *ngFor="let categoria of Categorias ;let j = index">
-              <tr>
+              <tr *ngIf="getItems(categoria.id).length > 0" >
                 <td >
                   {{ categoria.Nombre }}  
                   <ng-container *ngFor="let item of getItems(categoria.id)">

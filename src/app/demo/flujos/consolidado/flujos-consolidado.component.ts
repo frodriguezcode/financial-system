@@ -17,15 +17,48 @@ export default class FlujoConsolidadoComponent implements OnInit {
   constructor(private conS:ConfigurationService ) {}
   Categorias:any=[]
   Items:any=[]
+  semanas: any[] = [];
   usuario:any
  ngOnInit(): void {
+  this.generarUltimasSeisSemanas();
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerCategorias()
  }
+ 
+ generarUltimasSeisSemanas() {
+  const hoy = new Date(); // Fecha actual
+
+  // Iterar retrocediendo 6 semanas desde la fecha actual
+  for (let i = 0; i < 6; i++) {
+    const fechaSemana = new Date(hoy);
+    fechaSemana.setDate(hoy.getDate() - (i * 7)); // Retroceder i semanas
+    console.log('fechaSemana',fechaSemana.getFullYear())
+    const numeroSemana = this.obtenerNumeroSemana(fechaSemana);
+    let _semana ={
+      "Anio":fechaSemana.getFullYear(),
+      "Semana":numeroSemana
+    }
+    this.semanas.push(_semana);
+  }
+
+  // Invertir el orden de las semanas para mostrarlas en orden ascendente
+  this.semanas.reverse();
+  console.log('semanas',this.semanas)
+}
+
+
+
+obtenerNumeroSemana(fecha: Date): number {
+  const inicioAnio = new Date(fecha.getFullYear(), 0, 1);
+  const tiempoTranscurrido = fecha.getTime() - inicioAnio.getTime();
+  const semana = Math.ceil(tiempoTranscurrido / (7 * 24 * 60 * 60 * 1000));
+  return semana;
+}
 obtenerCategorias(){
 this.conS.obtenerCategorias().subscribe((data)=>{
-  this.Categorias=data.filter((cate:any)=>cate.Mostrar==true)
-
+  // this.Categorias=data.filter((cate:any)=>cate.Mostrar==true)
+  this.Categorias=data
+  console.log('Categorias',this.Categorias)
   this.obtenerItems()
 
 })

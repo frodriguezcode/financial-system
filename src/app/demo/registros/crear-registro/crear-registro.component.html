@@ -234,11 +234,12 @@
   header="Agregar Item"
   [(visible)]="visibleElemento"
   [modal]="true"
-  [style]="{ width: '75vw', height: '70vh' }"
+  [style]="{ width: '75vw', height: '90vh' }"
   [modal]="true"
   styleClass="p-fluid"
   [draggable]="false"
-  [resizable]="false"
+  [resizable]="true"
+  [maximizable]="true"
 >
 <app-elemento *ngIf="visibleElemento==true"></app-elemento>
 </p-dialog>
@@ -251,6 +252,7 @@
   styleClass="p-fluid"
   [draggable]="false"
   [resizable]="false"
+  [maximizable]="true"
 >
 <app-socios *ngIf="visibleSocioNegocio==true"></app-socios>
 </p-dialog>
@@ -265,6 +267,7 @@
   styleClass="p-fluid"
   [draggable]="false"
   [resizable]="false"
+  [maximizable]="true"
 >
   <div *ngIf="EditRegistroForm">
     <form [formGroup]="EditRegistroForm" class="row g-3">

@@ -248,10 +248,10 @@ obtenerRegistros(){
         "idMatriz":element.idMatriz,
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
-        "NombreElemento":element.Elemento.Nombre,
-        "NumCuenta":element.Cuenta.Cuenta,
-        "CategoriaNombre":element.idCategoria.Nombre,
-        "SocioNegocio":element.idSocioNegocio.Nombre,
+        "NombreElemento":element.Elemento.Nombre || '',
+        "NumCuenta":element.Cuenta.Cuenta || '',
+        "CategoriaNombre":element.idCategoria.Nombre || '',
+        "SocioNegocio":element.idSocioNegocio.Nombre || '',
 
       }
       this.Registros.push(_Registro)
@@ -298,12 +298,13 @@ borrarRegistro(idRegistro){
 }
 
 salvarRegistro(Registro:any){
-  Registro.Semana=this.getWeek(Registro.FechaRegistro)
-  Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
-  Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
-  this.conS.ActualizarRegistro(Registro).then(resp=>{
-    this.toastr.success('Guardado', '¡Exito!');
-  })
+  console.log('Registro',Registro)
+    Registro.Semana=this.getWeek(Registro.FechaRegistro)
+    Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
+    Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
+    this.conS.ActualizarRegistro(Registro).then(resp=>{
+      this.toastr.success('Guardado', '¡Exito!');
+    })
 }
 
 // obtenerRegistrosPromise(){
@@ -455,6 +456,10 @@ cargarFormulario(){
     idEmpresa: new FormControl(this.usuario.idEmpresa), 
     idMatriz: new FormControl(this.usuario.idMatriz), 
     idCategoria: new FormControl(''), 
+    NombreElemento:new FormControl('NombreElemento'),
+    NumCuenta:new FormControl('NumCuenta'),
+    CategoriaNombre:new FormControl('CategoriaNombre'),
+    SocioNegocio:new FormControl('SocioNegocio'),
     idSucursal: new FormControl('0',[Validators.required]), 
     FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
@@ -486,7 +491,7 @@ hideDialog() {
   this.submitted = false;
 }
 guardarRegistro(){
-
+console.log('RegistroForm',this.registroForm.value)
 this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 
 
