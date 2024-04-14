@@ -2,7 +2,7 @@
   <div class="col-sm-12">
     <app-card [options]="false">
       <div class="table-responsive">
-        <table class="table">
+        <table *ngIf="!Cargando" class="table">
           <thead style="background-color: rgb(113,189,158,255); color:white">
           
               <th >Concepto</th> 
@@ -12,37 +12,45 @@
         
           </thead>
           <tbody>
-            <tr>
-              <td style="font-weight: bolder;">
-                Saldo Inicial
-                </td> 
+            <tr style="background-color: #E3E3E3; color:white">
+              <td style="font-weight: bolder;">Saldo Inicial</td>
+              <ng-container *ngFor="let semana of semanas">
+                <td style="font-weight: bolder;" class="text-center">0</td>
+              </ng-container>
             </tr>
-            <ng-container *ngFor="let categoria of Categorias ;let j = index">
-              <tr *ngIf="getItems(categoria.id).length > 0" >
-                <td >
-                  {{ categoria.Nombre }}  
-                  <ng-container *ngFor="let item of getItems(categoria.id)">
-                    <br>
-                    <span style="margin-left:20px;font-weight: bolder;" >
-                      {{item.Nombre}}
-                    </span>
-                    <br>
+          
+            <ng-container *ngFor="let categoria of Categorias; let j = index">
+              <tr *ngIf="getItems(categoria.id).length > 0">
+                <td>{{ categoria.Nombre }}</td>
+                <ng-container *ngFor="let semana of semanas">
+                  <td class="text-center">{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id)}}</td>
+                </ng-container>
+              </tr>
+              <ng-container *ngFor="let item of getItems(categoria.id)">
+                <tr>
+                  <td><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
+                  <ng-container *ngFor="let semana of semanas">
+                    <td style="font-weight: bolder;" class="text-center">{{"$" + " " +this.getDataItem(semana.Semana,item.Nombre)}}</td>
                   </ng-container>
-                </td> 
-
-               </tr>  
-              </ng-container>     
-              <tr style="font-weight: bolder;" >
-                 <td >
-                 Saldo Final
-                 </td> 
-             </tr> 
-              <tr style="font-weight: bolder;">
-                 <td >
-                   Flujo Libre Neto
-                 </td> 
-             </tr> 
+                </tr>
+              </ng-container>
+            </ng-container>
+          
+            <tr style="font-weight: bolder; background-color: #E3E3E3">
+              <td>Saldo Final</td>
+              <ng-container *ngFor="let semana of semanas">
+                <td class="text-center">0</td>
+              </ng-container>
+            </tr>
+          
+            <tr style="font-weight: bolder; background-color: #E3E3E3">
+              <td>Flujo Libre Neto</td>
+              <ng-container *ngFor="let semana of semanas">
+                <td class="text-center">0</td>
+              </ng-container>
+            </tr>
           </tbody>
+          
         </table>
       </div>
     </app-card>

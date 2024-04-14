@@ -19,12 +19,50 @@ export default class FlujoConsolidadoComponent implements OnInit {
   Items:any=[]
   semanas: any[] = [];
   usuario:any
+  Registros: any[] = [];
+  Cargando:boolean=true;
  ngOnInit(): void {
   this.generarUltimasSeisSemanas();
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerCategorias()
  }
- 
+ obtenerRegistros(){
+  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
+    this.Registros=[]
+    resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+      let _Registro={
+        "Activo":element.Activo,
+        "AnioRegistro":element.AnioRegistro,
+        "Cuenta":element.Cuenta,
+        "Editando":element.Editando,
+        "Elemento":element.Elemento,
+        "FechaRegistro":element.FechaRegistro,
+        "MesRegistro":element.MesRegistro,
+        "Nuevo":element.Nuevo,
+        "NumMes":element.NumMes,
+        "NumSemana":element.NumSemana,
+        "Orden":element.Orden,
+        "Semana":element.Semana,
+        "Valor":element.Valor,
+        "id":element.id,
+        "idCategoria":element.idCategoria,
+        "idEmpresa":element.idEmpresa,
+        "idFlujo":element.idFlujo,
+        "idMatriz":element.idMatriz,
+        "idSocioNegocio":element.idSocioNegocio,
+        "idSucursal":element.idSucursal,
+        "NombreElemento":element.Elemento.Nombre || '',
+        "NumCuenta":element.Cuenta.Cuenta || '',
+        "CategoriaNombre":element.idCategoria.Nombre || '',
+        "SocioNegocio":element.idSocioNegocio.Nombre || '',
+
+      }
+      this.Registros.push(_Registro)
+    })
+    console.log("Registros", this.Registros)
+    this.Cargando=false
+  })
+ }
  generarUltimasSeisSemanas() {
   const hoy = new Date(); // Fecha actual
 
@@ -32,7 +70,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   for (let i = 0; i < 6; i++) {
     const fechaSemana = new Date(hoy);
     fechaSemana.setDate(hoy.getDate() - (i * 7)); // Retroceder i semanas
-    console.log('fechaSemana',fechaSemana.getFullYear())
+
     const numeroSemana = this.obtenerNumeroSemana(fechaSemana);
     let _semana ={
       "Anio":fechaSemana.getFullYear(),
@@ -46,7 +84,31 @@ export default class FlujoConsolidadoComponent implements OnInit {
   console.log('semanas',this.semanas)
 }
 
+getDataItem(NumSemana:any,NombreElemento:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>registro.NombreElemento==NombreElemento && registro.NumSemana==NumSemana )
+  if(_Data.length>0){
+    return Number(_Data[0].Valor)
+  }
+  else {
+    return 0
+  }
+}
+getDataCategoria(NumSemana:any,idCategoria:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>registro.idCategoria.id==idCategoria && registro.NumSemana==NumSemana )
 
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
 
 obtenerNumeroSemana(fecha: Date): number {
   const inicioAnio = new Date(fecha.getFullYear(), 0, 1);
@@ -74,6 +136,7 @@ this.conS.obtenerCategorias().subscribe((data)=>{
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
       this.Items=resp;
       console.log('Items',this.Items)
+      this. obtenerRegistros()
   })
  }
 
