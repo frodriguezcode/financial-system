@@ -18,18 +18,100 @@ export default class FlujoConsolidadoComponent implements OnInit {
   Categorias:any=[]
   Items:any=[]
   semanas: any[] = [];
+  Meses: any = [];
+  Anios: any[] = [];
   usuario:any
   Registros: any[] = [];
+  MesesTodos: any=[];
   Cargando:boolean=true;
  ngOnInit(): void {
-  this.generarUltimasSeisSemanas();
+  this.MesesTodos= [
+
+    {
+      Mes: 'Enero',
+      id:1,
+      seleccionado: false
+    },
+    {
+      Mes: 'Febrero',
+      id:2,
+      seleccionado: false
+    },
+    {
+      Mes: 'Marzo',
+      id:3,
+      seleccionado: false
+    },
+    {
+      Mes: 'Abril',
+      id:4,
+      seleccionado: false
+    },
+    {
+      Mes: 'Mayo',
+      id:5,
+      seleccionado: false
+    },
+    {
+      Mes: 'Junio',
+      id:6,
+      seleccionado: false
+    },
+    {
+      Mes: 'Julio',
+      id:7,
+      seleccionado: false
+    },
+    {
+      Mes: 'Agosto',
+      id:8,
+      seleccionado: false
+    },
+    {
+      Mes: 'Septiembre',
+      id:9,
+      seleccionado: false
+    },
+    {
+      Mes: 'Octubre',
+      id:10,
+      seleccionado: false
+    },
+    {
+      Mes: 'Noviembre',
+      id:11,
+      seleccionado: false
+    },
+    {
+      Mes: 'Diciembre',
+      id:12,
+      seleccionado: false
+    },
+  
+  ]
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerCategorias()
  }
+ getMonthName(Fecha:string){
+  return Number((Fecha.substring(5)).substring(0,2))
+ }
+ groupWeeksByMonth(semanas: any[]): any[] {
+  const groupedByMonth:any = {};
+  semanas.forEach(semana => {
+    const key = semana.Mes;
+    if (!groupedByMonth[key]) {
+      groupedByMonth[key] = [];
+    }
+    groupedByMonth[key].push(semana);
+  });
+  return groupedByMonth;
+}
  obtenerRegistros(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
     this.Registros=[]
     resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+      const FechaRegistro = new Date(element.FechaRegistro);
+      this.generarUltimasSeisSemanas(FechaRegistro,element.FechaRegistro)
       let _Registro={
         "Activo":element.Activo,
         "AnioRegistro":element.AnioRegistro,
@@ -59,29 +141,46 @@ export default class FlujoConsolidadoComponent implements OnInit {
       }
       this.Registros.push(_Registro)
     })
-    console.log("Registros", this.Registros)
+    console.log('Registros',this.Registros)
+    let MesesEncontrados:any=[]
+    let _MesEncontrado:any=[]
+    this.Registros.forEach((registro:any) => {
+      _MesEncontrado=MesesEncontrados.filter((mes:any)=>mes.NumMes==registro.NumMes)
+      if( _MesEncontrado.length==0 ){
+        let _Mes ={
+          "Mes": registro.MesRegistro,
+          "NumMes":registro.NumMes,
+        }
+        MesesEncontrados.push(_Mes)
+      }
+
+    })
+    this.Meses=MesesEncontrados.sort((a:any, b:any) => b.NumMes - a.NumMes)
+    this.semanas.reverse();
+    console.log('Meses',this.Meses)
+
     this.Cargando=false
   })
  }
- generarUltimasSeisSemanas() {
-  const hoy = new Date(); // Fecha actual
+ generarUltimasSeisSemanas(FechaRegistro:any,Fecha:any) {
+  const fechaSemana = new Date(FechaRegistro);
+    console.log('fechaSemana',fechaSemana.getMonth()+1)
+     // Retroceder i semanas
+   let _SemanaEncontrada: any=[]
+   const numeroSemana = this.obtenerNumeroSemana(fechaSemana);
+   _SemanaEncontrada=this.semanas.filter( (semana:any) => semana.Semana==numeroSemana)
+   if(_SemanaEncontrada.length==0){
+     let _semana ={
+       "Anio":fechaSemana.getFullYear(),
+       "Semana":numeroSemana,
+       "NumMes":this.getMonthName(Fecha),
+       "Mes":this.MesesTodos[this.getMonthName(Fecha)].Mes,
+     }
+   this.semanas.push(_semana);
 
-  // Iterar retrocediendo 6 semanas desde la fecha actual
-  for (let i = 0; i < 6; i++) {
-    const fechaSemana = new Date(hoy);
-    fechaSemana.setDate(hoy.getDate() - (i * 7)); // Retroceder i semanas
+   }
 
-    const numeroSemana = this.obtenerNumeroSemana(fechaSemana);
-    let _semana ={
-      "Anio":fechaSemana.getFullYear(),
-      "Semana":numeroSemana
-    }
-    this.semanas.push(_semana);
-  }
 
-  // Invertir el orden de las semanas para mostrarlas en orden ascendente
-  this.semanas.reverse();
-  console.log('semanas',this.semanas)
 }
 
 getDataItem(NumSemana:any,NombreElemento:any){
@@ -120,7 +219,7 @@ obtenerCategorias(){
 this.conS.obtenerCategorias().subscribe((data)=>{
   // this.Categorias=data.filter((cate:any)=>cate.Mostrar==true)
   this.Categorias=data
-  console.log('Categorias',this.Categorias)
+
   this.obtenerItems()
 
 })
@@ -135,7 +234,6 @@ this.conS.obtenerCategorias().subscribe((data)=>{
  obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
       this.Items=resp;
-      console.log('Items',this.Items)
       this. obtenerRegistros()
   })
  }

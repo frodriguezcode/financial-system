@@ -7,7 +7,7 @@
           
               <th >Concepto</th> 
               <ng-container *ngFor="let semana of semanas">
-                <th class="text-center">{{ "Semana" + " " + semana.Semana}}</th>
+                <th class="text-center">{{semana.Mes + " -" + " "+ "Semana" + " " + semana.Semana}}</th>
               </ng-container>     
         
           </thead>
@@ -20,14 +20,14 @@
             </tr>
           
             <ng-container *ngFor="let categoria of Categorias; let j = index">
-              <tr *ngIf="getItems(categoria.id).length > 0">
+              <tr style="background-color: #F5F4F4" *ngIf="getItems(categoria.id).length > 0">
                 <td>{{ categoria.Nombre }}</td>
                 <ng-container *ngFor="let semana of semanas">
                   <td class="text-center">{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id)}}</td>
                 </ng-container>
               </tr>
               <ng-container *ngFor="let item of getItems(categoria.id)">
-                <tr>
+                <tr style="background-color: #FAFAFA">
                   <td><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
                   <ng-container *ngFor="let semana of semanas">
                     <td style="font-weight: bolder;" class="text-center">{{"$" + " " +this.getDataItem(semana.Semana,item.Nombre)}}</td>
