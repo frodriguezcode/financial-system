@@ -5,47 +5,77 @@
           <thead style="background-color: rgb(113,189,158,255); color:white">
           
               <th >Concepto</th> 
-              <ng-container *ngFor="let semana of semanas">
-                <th class="text-center">{{semana.Mes + " -" + " "+ "Semana" + " " + semana.Semana}}</th>
-              </ng-container>     
+              <ng-container *ngFor="let anio of AniosRegistros">      
+                <ng-container *ngFor="let mes of MesesRegistros" >
+                  <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
+                    <th class="text-center">{{semana.Semana + " " + mes.Mes}}</th>
+                  </ng-container>     
+                  <th class="text-center">{{"Total " + mes.Mes}}</th>
+               
+
+                </ng-container>
+              </ng-container>
         
           </thead>
           <tbody>
-            <tr style="background-color: #E3E3E3; color:white">
-              <td style="font-weight: bolder;">Saldo Inicial</td>
-              <ng-container *ngFor="let semana of semanas">
-                <td style="font-weight: bolder;" class="text-center">0</td>
+            <tr>
+              <td>Saldo Inicial</td>
+              <ng-container *ngFor="let anio of AniosRegistros">      
+                <ng-container *ngFor="let mes of MesesRegistros" >
+                  <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
+                    <td class="text-center">0</td>
+                  </ng-container>     
+                  <th class="text-center">0</th>
+                </ng-container>
               </ng-container>
             </tr>
-          
             <ng-container *ngFor="let categoria of Categorias; let j = index">
-              <tr style="background-color: #F5F4F4" *ngIf="getItems(categoria.id).length > 0">
+              <tr>
+                
                 <td>{{ categoria.Nombre }}</td>
-                <ng-container *ngFor="let semana of semanas">
-                  <td class="text-center">{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id)}}</td>
+                <ng-container *ngFor="let anio of AniosRegistros">      
+                  <ng-container *ngFor="let mes of MesesRegistros" >
+                    <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
+                      <td class="text-center">{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id)}}</td>
+                    </ng-container>     
+                    <th class="text-center">0</th>
+                  </ng-container>
                 </ng-container>
               </tr>
               <ng-container *ngFor="let item of getItems(categoria.id)">
                 <tr style="background-color: #FAFAFA">
                   <td><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
-                  <ng-container *ngFor="let semana of semanas">
-                    <td style="font-weight: bolder;" class="text-center">{{"$" + " " +this.getDataItem(semana.Semana,item.Nombre)}}</td>
+                  <ng-container *ngFor="let anio of AniosRegistros">      
+                    <ng-container *ngFor="let mes of MesesRegistros" >
+                      <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
+                        <td style="font-weight: bolder;" class="text-center">{{"$" + " " +this.getDataItem(semana.Semana,item.Nombre)}}</td>
+                      </ng-container>     
+                      <th class="text-center">0</th>
+                    </ng-container>
                   </ng-container>
                 </tr>
               </ng-container>
             </ng-container>
-          
-            <tr style="font-weight: bolder; background-color: #E3E3E3">
-              <td>Saldo Final</td>
-              <ng-container *ngFor="let semana of semanas">
-                <td class="text-center">0</td>
+            <tr>
+              <td>Saldo Final en bancos</td>
+              <ng-container *ngFor="let anio of AniosRegistros">      
+                <ng-container *ngFor="let mes of MesesRegistros" >
+                  <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
+                    <td class="text-center">0</td>
+                  </ng-container>     
+                  <th class="text-center">0</th>
+                </ng-container>
               </ng-container>
             </tr>
-          
-            <tr style="font-weight: bolder; background-color: #E3E3E3">
-              <td>Flujo Libre Neto</td>
-              <ng-container *ngFor="let semana of semanas">
-                <td class="text-center">0</td>
+            <tr>
+              <td>Flujo libre neto</td>
+              <ng-container *ngFor="let anio of AniosRegistros">      
+                <ng-container *ngFor="let mes of MesesRegistros" >
+                  <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
+                    <td class="text-center">0</td>
+                  </ng-container>     
+                  <th class="text-center">0</th>
+                </ng-container>
               </ng-container>
             </tr>
           </tbody>

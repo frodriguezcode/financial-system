@@ -1,7 +1,6 @@
 // angular import
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
@@ -20,11 +19,15 @@ export default class FlujoConsolidadoComponent implements OnInit {
   semanas: any[] = [];
   Meses: any = [];
   Anios: any[] = [];
+  AniosRegistros: any[] = [];
   usuario:any
   Registros: any[] = [];
   MesesTodos: any=[];
+  MesesRegistros: any=[];
+  Semanas: any=[];
   Cargando:boolean=true;
  ngOnInit(): void {
+  this.Anios=[2023,2024]
   this.MesesTodos= [
 
     {
@@ -92,6 +95,8 @@ export default class FlujoConsolidadoComponent implements OnInit {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerCategorias()
  }
+
+
  getMonthName(Fecha:string){
   return Number((Fecha.substring(5)).substring(0,2))
  }
@@ -108,7 +113,10 @@ export default class FlujoConsolidadoComponent implements OnInit {
 }
  obtenerRegistros(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
-    this.Registros=[]
+    this.Registros=[]   
+    let _SemanaEncontrada:any=[]
+    let MesEncontrado:any=[]
+    let anioEncontrado:any=[]
     resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
       const FechaRegistro = new Date(element.FechaRegistro);
       this.generarUltimasSeisSemanas(FechaRegistro,element.FechaRegistro)
@@ -140,8 +148,66 @@ export default class FlujoConsolidadoComponent implements OnInit {
 
       }
       this.Registros.push(_Registro)
+      //Semanas
+      _SemanaEncontrada=this.Semanas
+      .filter((sem:any)=>
+      sem.NumSemana==element.NumSemana && 
+      sem.NumMes==element.NumMes &&
+      sem.Anio==element.AnioRegistro
+    )
+    if(_SemanaEncontrada.length==0){
+
+      let _Semana={
+      "Semana":element.Semana,
+      "NumSemana":element.NumSemana,
+      "NumMes":element.NumMes,
+      "Anio":element.AnioRegistro,
+      "Mes":element.MesRegistro
+
+      }
+      this.Semanas.push(_Semana);
+    }
+      //Meses
+      MesEncontrado=this.MesesRegistros
+      .filter((mes:any)=>
+        mes.NumMes==element.NumMes &&
+      mes.Anio==element.AnioRegistro
+    )
+    if(MesEncontrado.length==0){
+
+      let _Mes={
+      "NumMes":element.NumMes,
+      "Anio":element.AnioRegistro,
+      "Mes":element.MesRegistro
+
+      }
+      this.MesesRegistros.push(_Mes);
+    }
+      //Años
+      anioEncontrado=this.AniosRegistros
+      .filter((anio:any)=>
+      anio.Anio==element.AnioRegistro
+    )
+    if(anioEncontrado.length==0){
+
+      let _Anio={
+
+      "Anio":element.AnioRegistro,
+
+
+      }
+      this.AniosRegistros.push(_Anio);
+    }
+
     })
-    console.log('Registros',this.Registros)
+    
+    this.Semanas=this.conS.ordenarSemanas(this.Semanas)
+    this.MesesRegistros=this.conS.ordenarMeses(this.MesesRegistros)
+    this.Anios=this.conS.ordenarAnios(this.AniosRegistros)
+    
+    
+  
+   
     let MesesEncontrados:any=[]
     let _MesEncontrado:any=[]
     this.Registros.forEach((registro:any) => {
@@ -157,14 +223,30 @@ export default class FlujoConsolidadoComponent implements OnInit {
     })
     this.Meses=MesesEncontrados.sort((a:any, b:any) => b.NumMes - a.NumMes)
     this.semanas.reverse();
-    console.log('Meses',this.Meses)
+
 
     this.Cargando=false
   })
  }
+
+ getSemanasByMonth(NumMes:any,Anio:any){
+  let _SemanasMes:any=[];
+  _SemanasMes=this.Semanas
+  .filter((sem:any)=>
+  sem.NumMes==NumMes && 
+  sem.Anio==Anio
+)
+
+if(_SemanasMes.length>0){
+  return _SemanasMes
+}
+else {
+  return []
+}
+ }
  generarUltimasSeisSemanas(FechaRegistro:any,Fecha:any) {
   const fechaSemana = new Date(FechaRegistro);
-    console.log('fechaSemana',fechaSemana.getMonth()+1)
+ 
      // Retroceder i semanas
    let _SemanaEncontrada: any=[]
    const numeroSemana = this.obtenerNumeroSemana(fechaSemana);

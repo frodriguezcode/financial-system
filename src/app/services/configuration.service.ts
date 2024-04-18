@@ -9,8 +9,56 @@ import { Observable } from 'rxjs';
 export class ConfigurationService {
 
   constructor( private afs: AngularFirestore,) { }
+ordenarSemanas(semanas){
 
+  semanas.sort((a, b) => {
+    // Ordenar por año
+    if (a.Anio !== b.Anio) {
+      return a.Anio - b.Anio;
+    }
+    // Si el año es el mismo, ordenar por número de mes
+    if (a.NumMes !== b.NumMes) {
+      return a.NumMes - b.NumMes;
+    }
+    // Si el año y el número de mes son iguales, ordenar por número de semana
+    return a.NumSemana - b.NumSemana;
+    
+  });
+  return semanas
+}
+ordenarMeses(meses){
+
+  meses.sort((a, b) => {
+    // Ordenar por año
+    if (a.Anio !== b.Anio) {
+      return a.Anio - b.Anio;
+    }
+    // Si el año es el mismo, ordenar por número de mes
+    else if (a.NumMes !== b.NumMes) {
+      return a.NumMes - b.NumMes;
+    }
+    return a.NumMes - b.NumMes;
+ 
+
+    
+  });
+  return meses
+}
+ordenarAnios(anios){
+
+  anios.sort((a, b) => {
+    // Ordenar por año
+    if (a.Anio !== b.Anio) {
+      return a.Anio - b.Anio;
+    }
   
+    return a.Anio - b.Anio;
+ 
+
+    
+  });
+  return anios
+}
   //*------------BANCOS------------
   //   !Creando un banco
   crearBanco(banco: any) {
