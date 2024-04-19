@@ -79,11 +79,10 @@
         <th style="text-transform: uppercase">Orden</th>
         <th style="text-transform: uppercase">Borrar</th>
         <th style="text-transform: uppercase">Elemento</th>
-        <th style="text-transform: uppercase">Categoría</th>
-        <th style="text-transform: uppercase">Cuenta</th>
+        <th style="text-transform: uppercase">Cuenta (opcional)</th>
         <th style="text-transform: uppercase">Valor</th>
         <th style="text-transform: uppercase">Flujo</th>
-        <th style="text-transform: uppercase">Socio Negocios</th>
+        <th style="text-transform: uppercase">Socio Negocios (opcional)</th>
         <th style="text-transform: uppercase">Fecha</th>
         <th style="text-transform: uppercase">Guardar</th>
       </tr>
@@ -120,26 +119,6 @@
             </ng-template>
           </p-dropdown>
         </td>
-        <!-- Categorias -->
-        <td class="text-center">
-          <p-dropdown
-            [options]="Categorias"
-            [(ngModel)]="registros.idCategoria"
-            name="ItemSeleccionados"
-            optionLabel="Nombre"
-            [filter]="true"
-            filterBy="Nombre"
-            [showClear]="false"
-            placeholder="Seleccione una categoría"
-          >
-            <ng-template pTemplate="selectedItem" let-selectedItem>
-              <div class="flex align-items-lg-start gap-2">
-                <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
-              </div>
-            </ng-template>
-          </p-dropdown>
-        </td>
-
         <td class="text-center">
           <p-dropdown
             [options]="cuentas"

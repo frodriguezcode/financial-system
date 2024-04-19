@@ -265,9 +265,14 @@ else {
 
 }
 
-getDataItem(NumSemana:any,NombreElemento:any){
+getDataItem(NumSemana:any,NombreElemento:any,Mes:any,Anio:any){
   let _Data: any=[];
-  _Data=this.Registros.filter((registro:any)=>registro.NombreElemento==NombreElemento && registro.NumSemana==NumSemana )
+  _Data=this.Registros.filter((registro:any)=>
+    registro.NombreElemento==NombreElemento 
+    && registro.NumSemana==NumSemana 
+    && registro.NumMes==Mes
+    && registro.AnioRegistro==Anio
+    )
   if(_Data.length>0){
     return Number(_Data[0].Valor)
   }
@@ -275,9 +280,47 @@ getDataItem(NumSemana:any,NombreElemento:any){
     return 0
   }
 }
-getDataCategoria(NumSemana:any,idCategoria:any){
+getDataMensualItem(NombreElemento:any,Mes:any,Anio:any){
   let _Data: any=[];
-  _Data=this.Registros.filter((registro:any)=>registro.idCategoria.id==idCategoria && registro.NumSemana==NumSemana )
+  _Data=this.Registros.filter((registro:any)=>
+    registro.NombreElemento==NombreElemento 
+    && registro.NumMes==Mes
+    && registro.AnioRegistro==Anio
+    )
+  if(_Data.length>0){
+    return Number(_Data[0].Valor)
+  }
+  else {
+    return 0
+  }
+}
+getDataCategoria(NumSemana:any,idCategoria:any,Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>registro
+  .idCategoria.id==idCategoria
+  && registro.NumSemana==NumSemana
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+getDataMensualCategoria(idCategoria:any,Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>registro
+  .idCategoria.id==idCategoria
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
 
   if(_Data.length>0){
     let Valor:number=0

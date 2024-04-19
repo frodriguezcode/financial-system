@@ -14,7 +14,6 @@ import Swal from 'sweetalert2'
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import {  MessageService, SelectItem } from 'primeng/api';
@@ -298,13 +297,60 @@ borrarRegistro(idRegistro){
 }
 
 salvarRegistro(Registro:any){
-  console.log('Registro',Registro)
-    Registro.Semana=this.getWeek(Registro.FechaRegistro)
-    Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
-    Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
-    this.conS.ActualizarRegistro(Registro).then(resp=>{
-      this.toastr.success('Guardado', '¡Exito!');
-    })
+  if(Registro.Elemento==""){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Debe elegir un elemento",
+      showConfirmButton: false,
+      timer: 1500
+    });
+
+  }
+else  if(Registro.Valor==""){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Debe colocar un valor",
+      showConfirmButton: false,
+      timer: 1500
+    });
+
+  }
+else  if(Registro.idFlujo==""){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Debe elegir un flujo (caja o banco)",
+      showConfirmButton: false,
+      timer: 1500
+    });
+
+  }
+
+  if(Registro.idFlujo.id=="1" && Registro.Cuenta==""){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Debe colocar una cuenta de banco",
+      showConfirmButton: false,
+      timer: 1500
+    });
+
+  }
+  else {
+    let _categoriaEncontrada:any=[]
+    _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
+    Registro.idCategoria=_categoriaEncontrada
+    console.log('Registro',Registro)
+      Registro.Semana=this.getWeek(Registro.FechaRegistro)
+      Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
+      Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
+      this.conS.ActualizarRegistro(Registro).then(resp=>{
+        this.toastr.success('Guardado', '¡Exito!');
+      })
+
+  }
 }
 
 // obtenerRegistrosPromise(){

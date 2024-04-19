@@ -8,7 +8,7 @@
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <th class="text-center">{{semana.Semana + " " + mes.Mes}}</th>
+                    <th class="text-center">{{"Semana " + semana.Semana + " " + mes.Mes}}</th>
                   </ng-container>     
                   <th class="text-center">{{"Total " + mes.Mes}}</th>
                
@@ -36,9 +36,10 @@
                 <ng-container *ngFor="let anio of AniosRegistros">      
                   <ng-container *ngFor="let mes of MesesRegistros" >
                     <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                      <td class="text-center">{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id)}}</td>
+                      <td class="text-center">{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio)}}</td>
                     </ng-container>     
-                    <th class="text-center">0</th>
+                    <td class="text-center">{{"$" + " " +this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio)}}</td>
+             
                   </ng-container>
                 </ng-container>
               </tr>
@@ -48,9 +49,9 @@
                   <ng-container *ngFor="let anio of AniosRegistros">      
                     <ng-container *ngFor="let mes of MesesRegistros" >
                       <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                        <td style="font-weight: bolder;" class="text-center">{{"$" + " " +this.getDataItem(semana.Semana,item.Nombre)}}</td>
+                        <td style="font-weight: bolder;" class="text-center">{{"$" + " " +this.getDataItem(semana.Semana,item.Nombre,mes.NumMes,anio.Anio)}}</td>
                       </ng-container>     
-                      <th class="text-center">0</th>
+                      <td style="font-weight: bolder;" class="text-center">{{"$" + " " +this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio)}}</td>
                     </ng-container>
                   </ng-container>
                 </tr>
