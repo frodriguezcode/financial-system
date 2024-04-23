@@ -109,6 +109,7 @@ export default class CrearRegistroComponent implements OnInit {
   usuario:any
   idItem:any=''
   Departamentos: string[] = [];
+  ItemsCategGroup:any= [];
   Flujos: any = [
     {id: "1", name: "Banco"},
     {id: "2", name: "Caja"},
@@ -297,6 +298,7 @@ borrarRegistro(idRegistro){
 }
 
 salvarRegistro(Registro:any){
+
   if(Registro.Elemento==""){
     Swal.fire({
       position: "center",
@@ -342,11 +344,11 @@ else  if(Registro.idFlujo==""){
     let _categoriaEncontrada:any=[]
     _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
     Registro.idCategoria=_categoriaEncontrada
+    Registro.Semana=this.getWeek(Registro.FechaRegistro)
+    Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
+    Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
     console.log('Registro',Registro)
-      Registro.Semana=this.getWeek(Registro.FechaRegistro)
-      Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
-      Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
-      this.conS.ActualizarRegistro(Registro).then(resp=>{
+    this.conS.ActualizarRegistro(Registro).then(resp=>{
         this.toastr.success('Guardado', '¡Exito!');
       })
 
@@ -409,9 +411,36 @@ onRowEditCancel(registro: Registro, index: number) {
   delete this.clonedRegistros[registro.id as string];
 }
 
+getItemsByCategory(idCategoria:string){
+  let _Items:any=[]
+  let _ItemFormat:any=[]
+  _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria)
+  _Items.forEach(item => {
+    let _ItemFormatSingle ={
+      "label": item.Nombre,
+      "id":item.id,
+      "idCategoria":item.idCategoria
+    }
+    _ItemFormat.push(_ItemFormatSingle)
+    
+  });
+  
+  return _ItemFormat;
+}
+
 obtenerCategorias(){
   this.conS.obtenerCategorias().subscribe(resp=>{
     this.Categorias=resp
+    console.log('Categorias',this.Categorias)
+    this.Categorias.forEach((element)=>{
+      let _GroupItems= {
+        label:element.Nombre,
+        items:this.getItemsByCategory(element.id)
+      }
+      this.ItemsCategGroup.push( _GroupItems);
+    })
+
+    console.log('ItemsCategGroup',this.ItemsCategGroup)
   })
 }
 

@@ -21,13 +21,15 @@ export default class ItemsComponent  implements OnInit{
   Items:any=[]
   Categorias:any=[]
   Sucursales:any=[]
+  SucursalesSelected:any=[]
   Empresas:any=[]
   ItemForm!:FormGroup
   ItemFound:boolean = false;
   Fecha:any= new Date();
   usuario:any
   buscarItem:string=''
-
+  todasSucursales!:boolean
+  BlocCheck!:boolean
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerCategorias()
@@ -43,12 +45,36 @@ export default class ItemsComponent  implements OnInit{
       Activo: new FormControl(true), 
       Orden: new FormControl(this.Items.length+1), 
       Editando: new FormControl(false), 
-      idSucursal: new FormControl('',[Validators.required]), 
+      Sucursales: new FormControl(''), 
       idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
       idCategoria: new FormControl('',[Validators.required]), 
 
      })
+  }
+
+  verificarSelect(idSucursal){
+    console.log('idSucursal',idSucursal)
+    if(idSucursal==0){
+      this.BlocCheck=true
+
+    }
+    else {
+      this.BlocCheck=false
+    }
+  }
+
+  getTodasSucursales(){
+    this.todasSucursales=!this.todasSucursales
+    if(this.todasSucursales==true){
+      this.ItemForm.get('Sucursales').disable();
+      this.SucursalesSelected=this.Sucursales
+    }
+    else{
+      this.ItemForm.get('Sucursales').enable();
+      this.SucursalesSelected=[];
+    }
+    console.log("Seleccionadas",this.SucursalesSelected)
   }
 
   verificarItem(){
@@ -86,6 +112,16 @@ export default class ItemsComponent  implements OnInit{
   }
 
   crearItem(){
+    if(this.SucursalesSelected.length>0){
+      this.ItemForm.get('Sucursales').setValue(this.SucursalesSelected);
+
+    }
+    else {
+      let _SucursalSeleccionada:any=[]
+      _SucursalSeleccionada=this.Sucursales.filter((suc:any)=>suc.id==this.ItemForm.value['Sucursales'])
+      this.ItemForm.get('Sucursales').setValue(_SucursalSeleccionada);
+    }
+    console.log('ItemForm',this.ItemForm.value)
     this.conS.crearItem(this.ItemForm.value).then(resp=>{
       Swal.fire({
         position: "center",
@@ -109,7 +145,7 @@ export default class ItemsComponent  implements OnInit{
     const itemEncontrado = _Item.filter((it:any) => it.id == item.id);
     itemEncontrado[0].Nombre=item.Nombre
     itemEncontrado[0].idCategoria=item.idCategoria
-    itemEncontrado[0].idSucursal=item.idSucursal
+    //itemEncontrado[0].idSucursal=item.idSucursal
     itemEncontrado[0].idEmpresa=item.idEmpresa
     itemEncontrado[0].Editando = !item.Editando;
     this.conS.ActualizarItem(itemEncontrado[0]).then(resp=>{

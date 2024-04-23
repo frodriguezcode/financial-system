@@ -101,8 +101,8 @@
           ></button>
         </td>
         <td class="text-center">
-          <p-dropdown
-            [options]="Items"
+          <!-- <p-dropdown
+            [options]="ItemsCategGroup"
             [(ngModel)]="registros.Elemento"
             name="ItemSeleccionados"
             optionLabel="Nombre"
@@ -117,7 +117,24 @@
                 <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
               </div>
             </ng-template>
-          </p-dropdown>
+          </p-dropdown> -->
+
+          <p-dropdown [options]="ItemsCategGroup"
+           [(ngModel)]="registros.Elemento"
+            placeholder="Seleccione un elemento"
+            [filter]="true" filterBy="label"
+            [group]="true">
+            <ng-template let-group pTemplate="group">
+                <div class="flex align-items-center">
+                    <span>{{ group.label }}</span>
+                </div>
+            </ng-template>
+        </p-dropdown>
+        <ng-template pTemplate="selectedItem" let-selectedItem>
+          <div class="flex align-items-center gap-2">
+            <div class="seleccion-item">{{ selectedItem.label }}</div>
+          </div>
+        </ng-template>
         </td>
         <td class="text-center">
           <p-dropdown
