@@ -241,6 +241,7 @@ obtenerRegistros(){
         "Orden":element.Orden,
         "Semana":element.Semana,
         "Valor":element.Valor,
+        "Tipo":element.Tipo || '',
         "id":element.id,
         "idCategoria":element.idCategoria,
         "idEmpresa":element.idEmpresa,
@@ -297,6 +298,18 @@ borrarRegistro(idRegistro){
   });
 }
 
+getTipo(idCategoria){
+  console.log('idCategoria',idCategoria)
+  let _Tipo:any=[]
+  _Tipo=this.Categorias.find(cat=> cat.id==idCategoria)
+  console.log('_Tipo',_Tipo)
+  if(_Tipo){
+    return  _Tipo.Tipo
+  }
+  else {
+    return 'Calculado'
+  }
+}
 salvarRegistro(Registro:any){
 
   if(Registro.Elemento==""){
@@ -344,6 +357,7 @@ else  if(Registro.idFlujo==""){
     let _categoriaEncontrada:any=[]
     _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
     Registro.idCategoria=_categoriaEncontrada
+    Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
     Registro.Semana=this.getWeek(Registro.FechaRegistro)
     Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
     Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()

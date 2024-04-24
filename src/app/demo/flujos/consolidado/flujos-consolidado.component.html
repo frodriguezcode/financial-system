@@ -11,9 +11,10 @@
                     <th class="text-center">{{"Semana " + semana.Semana + " " + mes.Mes}}</th>
                   </ng-container>     
                   <th class="text-center">{{"Total " + mes.Mes}}</th>
-               
-
+                  
+                  
                 </ng-container>
+                <th class="text-center">{{"Total " + anio.Anio}}</th>
               </ng-container>
         
           </thead>
@@ -27,6 +28,7 @@
                   </ng-container>     
                   <th class="text-center">0</th>
                 </ng-container>
+                <th class="text-center">0</th>
               </ng-container>
             </tr>
             <ng-container *ngFor="let categoria of Categorias; let j = index">
@@ -36,11 +38,16 @@
                 <ng-container *ngFor="let anio of AniosRegistros">      
                   <ng-container *ngFor="let mes of MesesRegistros" >
                     <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                      <td class="text-center">{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio)}}</td>
+                      <td class="text-center"
+                      [ngClass]="{'text-center': true, 'negativo': this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio) < 0}"
+                      >{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio)}}</td>
                     </ng-container>     
-                    <td class="text-center">{{"$" + " " +this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio)}}</td>
-             
+                    <td class="text-center"
+                    [ngClass]="{'text-center': true, 'negativo': this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio) < 0}"
+                    >{{"$" + " " +this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio)}}</td>
+                    
                   </ng-container>
+                  <td class="text-center">0</td>
                 </ng-container>
               </tr>
               <ng-container *ngFor="let item of getItems(categoria.id)">
@@ -49,10 +56,17 @@
                   <ng-container *ngFor="let anio of AniosRegistros">      
                     <ng-container *ngFor="let mes of MesesRegistros" >
                       <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                        <td style="font-weight: bolder;" class="text-center">{{"$" + " " +this.getDataItem(semana.Semana,item.Nombre,mes.NumMes,anio.Anio)}}</td>
-                      </ng-container>     
-                      <td style="font-weight: bolder;" class="text-center">{{"$" + " " +this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio)}}</td>
+                        <td style="font-weight: bolder;"  [ngClass]="{'text-center': true, 'negativo': this.getDataItem(semana.Semana,item.Nombre,mes.NumMes,anio.Anio) < 0}">
+                          {{ "$ " + this.getDataItem(semana.Semana,item.Nombre,mes.NumMes,anio.Anio) }}
+                        </td>
+                        </ng-container>     
+                      <td style="font-weight: bolder;" 
+                      class="text-center"
+                      [ngClass]="{'text-center': true, 'negativo': this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio) < 0}"
+                      >
+                      {{"$" + " " +this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio)}}</td>
                     </ng-container>
+                    <td style="font-weight: bolder;" class="text-center">0</td>
                   </ng-container>
                 </tr>
               </ng-container>
@@ -66,6 +80,7 @@
                   </ng-container>     
                   <th class="text-center">0</th>
                 </ng-container>
+                <th class="text-center">0</th>
               </ng-container>
             </tr>
             <tr>
@@ -77,6 +92,7 @@
                   </ng-container>     
                   <th class="text-center">0</th>
                 </ng-container>
+                <th class="text-center">0</th>
               </ng-container>
             </tr>
           </tbody>

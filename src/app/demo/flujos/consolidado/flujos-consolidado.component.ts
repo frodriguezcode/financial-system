@@ -135,13 +135,14 @@ export default class FlujoConsolidadoComponent implements OnInit {
         "Semana":element.Semana,
         "Valor":element.Valor,
         "id":element.id,
+        "Tipo":element.Tipo || '',
         "idCategoria":element.idCategoria,
         "idEmpresa":element.idEmpresa,
         "idFlujo":element.idFlujo,
         "idMatriz":element.idMatriz,
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
-        "NombreElemento":element.Elemento.Nombre || '',
+        "NombreElemento":element.Elemento.label || '',
         "NumCuenta":element.Cuenta.Cuenta || '',
         "CategoriaNombre":element.idCategoria.Nombre || '',
         "SocioNegocio":element.idSocioNegocio.Nombre || '',
@@ -267,14 +268,23 @@ else {
 
 getDataItem(NumSemana:any,NombreElemento:any,Mes:any,Anio:any){
   let _Data: any=[];
+  let Valor: number =0
   _Data=this.Registros.filter((registro:any)=>
     registro.NombreElemento==NombreElemento 
     && registro.NumSemana==NumSemana 
     && registro.NumMes==Mes
     && registro.AnioRegistro==Anio
     )
+  
   if(_Data.length>0){
-    return Number(_Data[0].Valor)
+    _Data.forEach((element:any) => {
+      Valor+=Number(element.Valor);
+    });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+    return Number(Valor)
   }
   else {
     return 0
@@ -282,17 +292,26 @@ getDataItem(NumSemana:any,NombreElemento:any,Mes:any,Anio:any){
 }
 getDataMensualItem(NombreElemento:any,Mes:any,Anio:any){
   let _Data: any=[];
+  let Valor: number =0
   _Data=this.Registros.filter((registro:any)=>
     registro.NombreElemento==NombreElemento 
     && registro.NumMes==Mes
     && registro.AnioRegistro==Anio
     )
-  if(_Data.length>0){
-    return Number(_Data[0].Valor)
-  }
-  else {
-    return 0
-  }
+    if(_Data.length>0){
+      _Data.forEach((element:any) => {
+        Valor+=Number(element.Valor);
+      });
+      if(_Data[0].Tipo=='Egreso')
+        {
+          Valor=Valor*-1;
+        }
+        
+      return Number(Valor)
+    }
+    else {
+      return 0
+    }
 }
 getDataCategoria(NumSemana:any,idCategoria:any,Mes:any,Anio:any){
   let _Data: any=[];
@@ -308,6 +327,10 @@ getDataCategoria(NumSemana:any,idCategoria:any,Mes:any,Anio:any){
     _Data.forEach((data:any) => {
         Valor+=Number(data.Valor)
     });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
     return Valor
   }
   else {
@@ -327,6 +350,10 @@ getDataMensualCategoria(idCategoria:any,Mes:any,Anio:any){
     _Data.forEach((data:any) => {
         Valor+=Number(data.Valor)
     });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
     return Valor
   }
   else {
