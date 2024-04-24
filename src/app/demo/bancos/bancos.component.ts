@@ -119,7 +119,7 @@ export default class BancosComponent implements OnInit {
     })
   }
   obtenerBancos(){
-    this.conS.obtenerBancos().subscribe(resp=>{
+    this.conS.obtenerBancos(  this.usuario.idEmpresa).subscribe(resp=>{
       this.Bancos=resp
       this.cargarFormulario()
     })

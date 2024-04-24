@@ -59,6 +59,12 @@ ordenarAnios(anios){
   });
   return anios
 }
+
+obtenerUsuarios(idEmpresa:any) {
+  return this.afs
+  .collection('Usuarios',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+  .valueChanges();
+}
   //*------------BANCOS------------
   //   !Creando un banco
   crearBanco(banco: any) {
@@ -75,9 +81,9 @@ ordenarAnios(anios){
     .valueChanges();
   }
   // !Obtener los bancos
-  obtenerBancos() {
+  obtenerBancos(idEmpresa:any) {
     return this.afs
-    .collection('Bancos')
+    .collection('Bancos',(ref)=>ref.where('idEmpresa','==',idEmpresa))
     .valueChanges();
   }
   

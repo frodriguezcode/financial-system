@@ -4,11 +4,11 @@ import { CommonModule } from '@angular/common';
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
-
+import { MultiSelectModule } from 'primeng/multiselect';
 @Component({
   selector: 'app-flujo-consolidado',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule],
   templateUrl: './flujos-consolidado.component.html',
   styleUrls: ['./flujos-consolidado.component.scss']
 })
@@ -18,13 +18,21 @@ export default class FlujoConsolidadoComponent implements OnInit {
   Items:any=[]
   semanas: any[] = [];
   Meses: any = [];
+  MesesSeleccionados: any = [];
   Anios: any[] = [];
   AniosRegistros: any[] = [];
+  AniosRegistrosBack: any[] = [];
   usuario:any
   Registros: any[] = [];
+  RegistrosBack: any[] = [];
   MesesTodos: any=[];
   MesesRegistros: any=[];
+  MesesRegistrosBack: any=[];
   Semanas: any=[];
+  CuentasBanco:any=[]
+  CuentasBancoSelect:any=[]
+  Usuarios:any=[]
+  UsuariosSelect:any=[]
   Cargando:boolean=true;
  ngOnInit(): void {
   this.Anios=[2023,2024]
@@ -32,70 +40,103 @@ export default class FlujoConsolidadoComponent implements OnInit {
 
     {
       Mes: 'Enero',
-      id:1,
+      NumMes:1,
       seleccionado: false
     },
     {
       Mes: 'Febrero',
-      id:2,
+      NumMes:2,
       seleccionado: false
     },
     {
       Mes: 'Marzo',
-      id:3,
+      NumMes:3,
       seleccionado: false
     },
     {
       Mes: 'Abril',
-      id:4,
+      NumMes:4,
       seleccionado: false
     },
     {
       Mes: 'Mayo',
-      id:5,
+      NumMes:5,
       seleccionado: false
     },
     {
       Mes: 'Junio',
-      id:6,
+      NumMes:6,
       seleccionado: false
     },
     {
       Mes: 'Julio',
-      id:7,
+      NumMes:7,
       seleccionado: false
     },
     {
       Mes: 'Agosto',
-      id:8,
+      NumMes:8,
       seleccionado: false
     },
     {
       Mes: 'Septiembre',
-      id:9,
+      NumMes:9,
       seleccionado: false
     },
     {
       Mes: 'Octubre',
-      id:10,
+      NumMes:10,
       seleccionado: false
     },
     {
       Mes: 'Noviembre',
-      id:11,
+      NumMes:11,
       seleccionado: false
     },
     {
       Mes: 'Diciembre',
-      id:12,
+      NumMes:12,
       seleccionado: false
     },
   
   ]
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.obtenerUsuarios()
+  this.ObtenerCuentasBanco()
   this.obtenerCategorias()
  }
 
+ buscarPorCuentaBanco(){
+  this.Registros=this.RegistrosBack
+  if(this.CuentasBancoSelect.length>0){
+    this.Registros= this.Registros.filter((reg:any)=>this.CuentasBancoSelect.some((cuenta: any) => cuenta.Cuenta == reg.Cuenta.Cuenta))
+  }
+  else {
+    this.Registros=this.RegistrosBack
+  }
+ }
+ buscarPorUsuario(){
+  this.Registros=this.RegistrosBack
+  console.log('UsuariosSelect',this.UsuariosSelect)
+  console.log('Registros',this.Registros)
+  if(this.UsuariosSelect.length>0){
+    this.Registros= this.Registros.filter((reg:any)=>this.UsuariosSelect.some((user: any) => user.id == reg.idUsuario))
+  }
+  else {
+    this.Registros=this.RegistrosBack
+  }
+ }
+filterMeses(){
+  if(this.MesesSeleccionados.length>0){
+    this.MesesRegistros=this.MesesSeleccionados
+
+  }
+  else {
+    this.MesesRegistros = this.MesesRegistrosBack
+  }
+  console.log('MesesSeleccionados',this.MesesSeleccionados)
+
+}
 
  getMonthName(Fecha:string){
   return Number((Fecha.substring(5)).substring(0,2))
@@ -139,6 +180,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
         "idCategoria":element.idCategoria,
         "idEmpresa":element.idEmpresa,
         "idFlujo":element.idFlujo,
+        "idUsuario":element.idUsuario,
         "idMatriz":element.idMatriz,
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
@@ -183,6 +225,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
 
       }
       this.MesesRegistros.push(_Mes);
+    
     }
       //Años
       anioEncontrado=this.AniosRegistros
@@ -204,7 +247,12 @@ export default class FlujoConsolidadoComponent implements OnInit {
     
     this.Semanas=this.conS.ordenarSemanas(this.Semanas)
     this.MesesRegistros=this.conS.ordenarMeses(this.MesesRegistros)
+    this.MesesRegistrosBack=this.conS.ordenarMeses(this.MesesRegistros)
     this.Anios=this.conS.ordenarAnios(this.AniosRegistros)
+    this.AniosRegistrosBack=this.conS.ordenarAnios(this.AniosRegistros)
+
+    // this.MesesRegistrosBack=this.MesesRegistros
+    // this.AniosRegistros=this.AniosRegistrosBack
     
     
   
@@ -225,7 +273,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
     this.Meses=MesesEncontrados.sort((a:any, b:any) => b.NumMes - a.NumMes)
     this.semanas.reverse();
 
-
+    this.RegistrosBack=this.Registros
     this.Cargando=false
   })
  }
@@ -313,6 +361,28 @@ getDataMensualItem(NombreElemento:any,Mes:any,Anio:any){
       return 0
     }
 }
+getDataAnualItem(NombreElemento:any,Anio:any){
+  let _Data: any=[];
+  let Valor: number =0
+  _Data=this.Registros.filter((registro:any)=>
+    registro.NombreElemento==NombreElemento 
+    && registro.AnioRegistro==Anio
+    )
+    if(_Data.length>0){
+      _Data.forEach((element:any) => {
+        Valor+=Number(element.Valor);
+      });
+      if(_Data[0].Tipo=='Egreso')
+        {
+          Valor=Valor*-1;
+        }
+        
+      return Number(Valor)
+    }
+    else {
+      return 0
+    }
+}
 getDataCategoria(NumSemana:any,idCategoria:any,Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>registro
@@ -360,12 +430,45 @@ getDataMensualCategoria(idCategoria:any,Mes:any,Anio:any){
     return 0
   }
 }
+getDataAnualCategoria(idCategoria:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>registro
+  .idCategoria.id==idCategoria
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
 
 obtenerNumeroSemana(fecha: Date): number {
   const inicioAnio = new Date(fecha.getFullYear(), 0, 1);
   const tiempoTranscurrido = fecha.getTime() - inicioAnio.getTime();
   const semana = Math.ceil(tiempoTranscurrido / (7 * 24 * 60 * 60 * 1000));
   return semana;
+}
+
+ObtenerCuentasBanco(){
+  this.conS.obtenerBancos(this.usuario.idEmpresa).subscribe(resp=>{
+  this.CuentasBanco=resp
+  })
+}
+obtenerUsuarios(){
+  this.conS.obtenerUsuarios(this.usuario.idEmpresa).subscribe(resp=>{
+  this.Usuarios=resp
+  })
 }
 obtenerCategorias(){
 this.conS.obtenerCategorias().subscribe((data)=>{

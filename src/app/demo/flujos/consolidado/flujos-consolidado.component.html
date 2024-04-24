@@ -1,6 +1,9 @@
 
     <app-card cardTitle="Flujo Consolidado"  [options]="false">
-      <div class="table-responsive">
+      <p-multiSelect class="m-1" (onChange)="filterMeses()" [options]="MesesTodos" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Seleccione el(los) mes(es)" optionLabel="Mes"></p-multiSelect>
+      <p-multiSelect class="m-1" (onChange)="buscarPorCuentaBanco()"  [options]="CuentasBanco" [(ngModel)]="CuentasBancoSelect" display="chip" placeholder="Seleccione una cuenta de banco" optionLabel="Cuenta"></p-multiSelect>
+      <p-multiSelect class="m-1" (onChange)="buscarPorUsuario()"  [options]="Usuarios" [(ngModel)]="UsuariosSelect" display="chip" placeholder="Seleccione un usuario" optionLabel="Nombres"></p-multiSelect>
+      <div class="table-responsive mt-3">
         <table *ngIf="!Cargando" class="table">
           <thead style="background-color: rgb(113,189,158,255); color:white">
           
@@ -47,7 +50,10 @@
                     >{{"$" + " " +this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio)}}</td>
                     
                   </ng-container>
-                  <td class="text-center">0</td>
+                  <td class="text-center"
+                  [ngClass]="{'text-center': true, 'negativo': this.getDataAnualCategoria(categoria.id,anio.Anio) < 0}"
+                  >{{"$" + " " +this.getDataAnualCategoria(categoria.id,anio.Anio)}}</td>
+        
                 </ng-container>
               </tr>
               <ng-container *ngFor="let item of getItems(categoria.id)">
@@ -66,7 +72,12 @@
                       >
                       {{"$" + " " +this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio)}}</td>
                     </ng-container>
-                    <td style="font-weight: bolder;" class="text-center">0</td>
+                    <td style="font-weight: bolder;" 
+                    class="text-center"
+                    [ngClass]="{'text-center': true, 'negativo': this.getDataAnualItem(item.Nombre,anio.Anio)< 0}"
+                    >
+                    {{"$" + " " +this.getDataAnualItem(item.Nombre,anio.Anio)}}</td>
+             
                   </ng-container>
                 </tr>
               </ng-container>

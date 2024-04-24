@@ -361,6 +361,8 @@ else  if(Registro.idFlujo==""){
     Registro.Semana=this.getWeek(Registro.FechaRegistro)
     Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
     Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
+    Registro.idUsuario=this.usuario.id
+    Registro.Usuario=this.usuario.Usuario
     console.log('Registro',Registro)
     this.conS.ActualizarRegistro(Registro).then(resp=>{
         this.toastr.success('Guardado', '¡Exito!');
