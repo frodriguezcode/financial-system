@@ -169,7 +169,13 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
     obtenerCategorias() {
       return this.afs
-      .collection('Categoria',(ref)=>ref.orderBy('Orden','asc'))
+      .collection('Naturalezas',(ref)=>ref.orderBy('Orden','asc').where('Calculado','==',false))
+      .valueChanges();
+    }
+
+    obtenerCategoriasFlujos() {
+      return this.afs
+      .collection('Naturalezas',(ref)=>ref.orderBy('Orden','asc'))
       .valueChanges();
     }
 

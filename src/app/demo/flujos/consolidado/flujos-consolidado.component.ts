@@ -483,7 +483,7 @@ obtenerUsuarios(){
   })
 }
 obtenerCategorias(){
-this.conS.obtenerCategorias().subscribe((data)=>{
+this.conS.obtenerCategoriasFlujos().subscribe((data)=>{
   // this.Categorias=data.filter((cate:any)=>cate.Mostrar==true)
   this.Categorias=data
 

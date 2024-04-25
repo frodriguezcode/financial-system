@@ -47,7 +47,6 @@ export default class ItemsComponent  implements OnInit{
       Orden: new FormControl(this.Items.length+1), 
       Editando: new FormControl(false), 
       Sucursales: new FormControl(''), 
-      Tipo: new FormControl(''), 
       idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
       idCategoria: new FormControl('',[Validators.required]), 
@@ -112,6 +111,16 @@ export default class ItemsComponent  implements OnInit{
       this.Empresas=resp
     })
   }
+  getTipo(idCategoria:string){
+    let _Tipo:any
+    _Tipo=this.Categorias.find((categ:any)=>categ.id==idCategoria)
+    if(_Tipo){
+      return _Tipo.Tipo
+    }
+    else {
+      return 0
+    }
+  }
 
   crearItem(){
     let ItemForm:any
@@ -127,6 +136,7 @@ export default class ItemsComponent  implements OnInit{
       ItemForm.Sucursales=_SucursalSeleccionada
     }
     console.log('ItemForm',ItemForm)
+    ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
     this.conS.crearItem(ItemForm).then(resp=>{
       Swal.fire({
         position: "center",
@@ -135,7 +145,8 @@ export default class ItemsComponent  implements OnInit{
         showConfirmButton: false,
         timer: 1500
       });
-      this.cargarFormulario()
+      //this.cargarFormulario()
+      this.ItemForm.get('Nombre').setValue('');
     })
 
   }
