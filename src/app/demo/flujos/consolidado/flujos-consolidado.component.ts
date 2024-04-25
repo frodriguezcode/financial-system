@@ -20,6 +20,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   Meses: any = [];
   MesesSeleccionados: any = [];
   Anios: any[] = [];
+  AniosSelect: any[] = [];
   AniosRegistros: any[] = [];
   AniosRegistrosBack: any[] = [];
   usuario:any
@@ -133,6 +134,17 @@ filterMeses(){
   }
   else {
     this.MesesRegistros = this.MesesRegistrosBack
+  }
+  console.log('MesesSeleccionados',this.MesesSeleccionados)
+
+}
+filterAnios(){
+  if(this.AniosSelect.length>0){
+    this.AniosRegistros=this.AniosSelect
+
+  }
+  else {
+    this.AniosRegistros = this.AniosRegistrosBack
   }
   console.log('MesesSeleccionados',this.MesesSeleccionados)
 

@@ -1,5 +1,8 @@
 
     <app-card cardTitle="Flujo Consolidado"  [options]="false">
+
+      <p-multiSelect class="m-1" (onChange)="filterMeses()" [options]="Anios" [(ngModel)]="AniosSelect" display="chip" placeholder="Seleccione el(los) año(s)" optionLabel="Anio"></p-multiSelect>
+
       <p-multiSelect class="m-1" (onChange)="filterMeses()" [options]="MesesTodos" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Seleccione el(los) mes(es)" optionLabel="Mes"></p-multiSelect>
       <p-multiSelect class="m-1" (onChange)="buscarPorCuentaBanco()"  [options]="CuentasBanco" [(ngModel)]="CuentasBancoSelect" display="chip" placeholder="Seleccione una cuenta de banco" optionLabel="Cuenta"></p-multiSelect>
       <p-multiSelect class="m-1" (onChange)="buscarPorUsuario()"  [options]="Usuarios" [(ngModel)]="UsuariosSelect" display="chip" placeholder="Seleccione un usuario" optionLabel="Nombres"></p-multiSelect>

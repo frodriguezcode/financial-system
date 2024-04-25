@@ -8,11 +8,12 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { BuscarPipe } from '../../theme/shared/filter/buscar.pipe';
 @Component({
   selector: 'app-elemento',
   standalone: true,
-  imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule,RadioButtonModule],
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
 })
@@ -46,6 +47,7 @@ export default class ItemsComponent  implements OnInit{
       Orden: new FormControl(this.Items.length+1), 
       Editando: new FormControl(false), 
       Sucursales: new FormControl(''), 
+      Tipo: new FormControl(''), 
       idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
       idCategoria: new FormControl('',[Validators.required]), 
@@ -112,17 +114,20 @@ export default class ItemsComponent  implements OnInit{
   }
 
   crearItem(){
+    let ItemForm:any
+    ItemForm=this.ItemForm.value
     if(this.SucursalesSelected.length>0){
       this.ItemForm.get('Sucursales').setValue(this.SucursalesSelected);
-
+      ItemForm.Sucursales=this.SucursalesSelected
     }
     else {
       let _SucursalSeleccionada:any=[]
       _SucursalSeleccionada=this.Sucursales.filter((suc:any)=>suc.id==this.ItemForm.value['Sucursales'])
       this.ItemForm.get('Sucursales').setValue(_SucursalSeleccionada);
+      ItemForm.Sucursales=_SucursalSeleccionada
     }
-    console.log('ItemForm',this.ItemForm.value)
-    this.conS.crearItem(this.ItemForm.value).then(resp=>{
+    console.log('ItemForm',ItemForm)
+    this.conS.crearItem(ItemForm).then(resp=>{
       Swal.fire({
         position: "center",
         icon: "success",
