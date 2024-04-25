@@ -1,7 +1,5 @@
 <app-card cardTitle="REGISTROS" [options]="false">
-  <button type="button" (click)="crearRegistro()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
-    >Crear Registro <i class="fa-solid fa-plus"></i
-  ></button>
+
   <button type="button" (click)="crearCuenta()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
     >Crear Cuenta <i class="fa-solid fa-plus"></i
   ></button>
@@ -11,6 +9,8 @@
   <button type="button" (click)="crearSocioNegocio()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
     >Crear Socio de Negocio <i class="fa-solid fa-plus"></i
   ></button>
+
+
   <p-table
     #dt1
     [value]="Registros"
@@ -23,6 +23,7 @@
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
     [rowsPerPageOptions]="[5, 10, 20]"
   >
+
     <ng-template pTemplate="caption">
       <div class="row">
         <div class="col-3">
@@ -72,7 +73,19 @@
           >Restablecer </button>
 
         </div>
+  
       </div>
+      <div class="row justify-content-start">
+        <div class="col-auto">
+            <button type="button" (click)="crearRegistro(1)" class="btn btn-info shadow-4 mx-auto" ngbTooltip="Crear ingreso">Ingreso <i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="col-auto">
+            <button type="button" (click)="crearRegistro(2)" class="btn btn-danger shadow-4 mx-auto" ngbTooltip="Crear egreso">Egreso <i class="fa-solid fa-plus"></i ></button>
+        </div>
+    </div>
+    
+
+
     </ng-template>
     <ng-template pTemplate="header">
       <tr class="text-center">

@@ -110,6 +110,7 @@ export default class CrearRegistroComponent implements OnInit {
   idItem:any=''
   Departamentos: string[] = [];
   ItemsCategGroup:any= [];
+  ItemsCategGroupBack:any= [];
   Flujos: any = [
     {id: "1", name: "Banco"},
     {id: "2", name: "Caja"},
@@ -284,13 +285,7 @@ borrarRegistro(idRegistro){
   }).then((result) => {
     if (result.isConfirmed) {
       this.conS.borrarRegistro(idRegistro).then(resp=>{
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Borrado exitosamente",
-          showConfirmButton: false,
-          timer: 1500
-        });
+
 
       })
      
@@ -451,11 +446,12 @@ obtenerCategorias(){
     this.Categorias.forEach((element)=>{
       let _GroupItems= {
         label:element.Nombre,
+        Tipo: element.Tipo,
         items:this.getItemsByCategory(element.id)
       }
       this.ItemsCategGroup.push( _GroupItems);
     })
-
+    this.ItemsCategGroupBack=this.ItemsCategGroup
     console.log('ItemsCategGroup',this.ItemsCategGroup)
   })
 }
@@ -474,7 +470,11 @@ obtenerCuentas(){
 
   })
 }
-crearRegistro() {
+crearRegistro(tipo:any) {
+  let _Categorias:any=[]
+
+  _Categorias=this.ItemsCategGroupBack
+  this.ItemsCategGroup=_Categorias.filter((cat:any)=>cat.Tipo==tipo)
   this.guardarRegistro()
 }
 
