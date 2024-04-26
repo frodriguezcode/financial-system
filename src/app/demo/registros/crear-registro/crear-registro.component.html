@@ -100,8 +100,9 @@
         <th style="text-transform: uppercase">Guardar</th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-registros>
-      <tr>
+    <ng-template pTemplate="body" let-registros let-index="index">
+      <tr  [ngClass]="{'Egreso': registros.idTipo === 2, 'Ingreso' : registros.idTipo === 1 }">
+        
         <!-- Elementos -->
         <td class="text-center">
           <ng-container>
@@ -169,8 +170,10 @@
         </td>
 
         <td class="text-center">
+          <span style="color: red; font-size: 11px;" *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo</span>
           <input
             (keyup.enter)="salvarRegistro(registros)"
+            (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)"
             style="min-width: 9rem; min-height: 3rem; font-weight: bolder"
             [(ngModel)]="registros.Valor"
             class="form-control text-center col-4"
@@ -218,7 +221,7 @@
           <input style="min-height: 3rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
         </td>
         <td class="text-center">
-          <button type="button" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"
+          <button type="button" [disabled]="isNegativo==false" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"
             ><i class="fa-solid fa-floppy-disk"></i
           ></button>
         </td>

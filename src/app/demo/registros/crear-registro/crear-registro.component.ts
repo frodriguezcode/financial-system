@@ -82,6 +82,7 @@ export default class CrearRegistroComponent implements OnInit {
   visibleElemento: boolean = false;
   visibleSocioNegocio: boolean = false;
   submitted: boolean = false;
+  isNegativo: boolean = true;
   registros: any=[];
   registrosBackUp: any=[];
   // *Registros desde la promesa
@@ -247,6 +248,7 @@ obtenerRegistros(){
         "idCategoria":element.idCategoria,
         "idEmpresa":element.idEmpresa,
         "idFlujo":element.idFlujo,
+        "idTipo":element.idTipo,
         "idMatriz":element.idMatriz,
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
@@ -259,7 +261,7 @@ obtenerRegistros(){
       this.Registros.push(_Registro)
     })
     this.registrosBackUp=this.Registros
-    console.log('Registros',this.Registros)
+
     this.cargarFormulario()
   })
 }
@@ -271,7 +273,18 @@ getWeek(date: Date): number {
   var weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + yearStart.getDay() + 1) / 7);
   return weekNo;
 }
-
+validarEgreso(tipo:any,monto:any,index:any){
+  let _RegistroEncontrado:any=[]
+  _RegistroEncontrado=this.Registros.find((reg:any)=>reg.Orden==index)
+  if(_RegistroEncontrado.Valor>0 && tipo==2){
+    this.isNegativo=false
+    return false
+  }
+  else {
+    this.isNegativo=true
+    return true
+  }
+}
 borrarRegistro(idRegistro){
   Swal.fire({
     title: "¿Desea borrar este registro?",
@@ -294,10 +307,10 @@ borrarRegistro(idRegistro){
 }
 
 getTipo(idCategoria){
-  console.log('idCategoria',idCategoria)
+
   let _Tipo:any=[]
   _Tipo=this.Categorias.find(cat=> cat.id==idCategoria)
-  console.log('_Tipo',_Tipo)
+
   if(_Tipo){
     return  _Tipo.Tipo
   }
@@ -306,62 +319,78 @@ getTipo(idCategoria){
   }
 }
 salvarRegistro(Registro:any){
-
-  if(Registro.Elemento==""){
+  if(this.validarEgreso(Registro.idTipo,Registro.Valor,Registro.Orden)==false){
     Swal.fire({
       position: "center",
       icon: "warning",
-      title: "Debe elegir un elemento",
+      title: "El valor debe ser negativo",
       showConfirmButton: false,
       timer: 1500
     });
-
-  }
-else  if(Registro.Valor==""){
-    Swal.fire({
-      position: "center",
-      icon: "warning",
-      title: "Debe colocar un valor",
-      showConfirmButton: false,
-      timer: 1500
-    });
-
-  }
-else  if(Registro.idFlujo==""){
-    Swal.fire({
-      position: "center",
-      icon: "warning",
-      title: "Debe elegir un flujo (caja o banco)",
-      showConfirmButton: false,
-      timer: 1500
-    });
-
-  }
-
-  if(Registro.idFlujo.id=="1" && Registro.Cuenta==""){
-    Swal.fire({
-      position: "center",
-      icon: "warning",
-      title: "Debe colocar una cuenta de banco",
-      showConfirmButton: false,
-      timer: 1500
-    });
-
   }
   else {
-    let _categoriaEncontrada:any=[]
-    _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
-    Registro.idCategoria=_categoriaEncontrada
-    Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
-    Registro.Semana=this.getWeek(Registro.FechaRegistro)
-    Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
-    Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
-    Registro.idUsuario=this.usuario.id
-    Registro.Usuario=this.usuario.Usuario
-    console.log('Registro',Registro)
-    this.conS.ActualizarRegistro(Registro).then(resp=>{
-        this.toastr.success('Guardado', '¡Exito!');
-      })
+    if(Registro.Elemento==""){
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Debe elegir un elemento",
+        showConfirmButton: false,
+        timer: 1500
+      });
+  
+    }
+  else  if(Registro.Valor==""  || Number(Registro.Valor)==0 )
+    { 
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Debe colocar un valor",
+        showConfirmButton: false,
+        timer: 1500
+      });
+  
+    }
+  
+  else  if(Registro.idFlujo==""){
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Debe elegir un flujo (caja o banco)",
+        showConfirmButton: false,
+        timer: 1500
+      });
+  
+    }
+  
+    if(Registro.idFlujo.id=="1" && Registro.Cuenta==""){
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Debe colocar una cuenta de banco",
+        showConfirmButton: false,
+        timer: 1500
+      });
+  
+    }
+  
+    else {
+      console.log('Registro',Registro)
+      let _categoriaEncontrada:any=[]
+      _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
+      Registro.idCategoria=_categoriaEncontrada
+      Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
+      Registro.Semana=this.getWeek(Registro.FechaRegistro)
+      Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
+      Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
+      Registro.idUsuario=this.usuario.id
+      Registro.Valor=Number(Registro.Valor)
+      Registro.Usuario=this.usuario.Usuario
+  
+      this.conS.ActualizarRegistro(Registro).then(resp=>{
+          this.toastr.success('Guardado', '¡Exito!');
+        })
+  
+    }
 
   }
 }
@@ -442,7 +471,7 @@ getItemsByCategory(idCategoria:string){
 obtenerCategorias(){
   this.conS.obtenerCategorias().subscribe(resp=>{
     this.Categorias=resp
-    console.log('Categorias',this.Categorias)
+  
     this.Categorias.forEach((element)=>{
       let _GroupItems= {
         label:element.Nombre,
@@ -452,7 +481,7 @@ obtenerCategorias(){
       this.ItemsCategGroup.push( _GroupItems);
     })
     this.ItemsCategGroupBack=this.ItemsCategGroup
-    console.log('ItemsCategGroup',this.ItemsCategGroup)
+
   })
 }
 
@@ -582,7 +611,7 @@ hideDialog() {
   this.submitted = false;
 }
 guardarRegistro(idTipo:number){
-console.log('RegistroForm',this.registroForm.value)
+
 this.registroForm.value.idTipo=idTipo;
 this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 
