@@ -68,6 +68,7 @@ export default class PagoCobroComponent implements OnInit {
   isNegativo: boolean = true;
   Registros: any=[];
   registrosBackUp: any=[];
+  FechaPago:FormControl=new FormControl()
   inputVal = ''; // Initialize inputVal to be empty
   FechaDesde:FormControl=new FormControl()
   FechaHasta:FormControl=new FormControl()
@@ -79,6 +80,7 @@ export default class PagoCobroComponent implements OnInit {
   Items: any=[];
   ItemSeleccionados: any=[];
   usuario:any
+  visibleFechaPago:boolean=false
   Fecha:any= new Date();
   ItemsCategGroup:any= [];
   ItemsCategGroupBack:any= [];
@@ -97,62 +99,62 @@ export default class PagoCobroComponent implements OnInit {
       },
       {
         Mes: 'Enero',
-        id:1,
+        id:'01',
         seleccionado: false
       },
       {
         Mes: 'Febrero',
-        id:2,
+        id:'02',
         seleccionado: false
       },
       {
         Mes: 'Marzo',
-        id:3,
+        id:'03',
         seleccionado: false
       },
       {
         Mes: 'Abril',
-        id:4,
+        id:'04',
         seleccionado: false
       },
       {
         Mes: 'Mayo',
-        id:5,
+        id:'05',
         seleccionado: false
       },
       {
         Mes: 'Junio',
-        id:6,
+        id:'06',
         seleccionado: false
       },
       {
         Mes: 'Julio',
-        id:7,
+        id:'07',
         seleccionado: false
       },
       {
         Mes: 'Agosto',
-        id:8,
+        id:'08',
         seleccionado: false
       },
       {
         Mes: 'Septiembre',
-        id:9,
+        id:'09',
         seleccionado: false
       },
       {
         Mes: 'Octubre',
-        id:10,
+        id:'10',
         seleccionado: false
       },
       {
         Mes: 'Noviembre',
-        id:11,
+        id:'11',
         seleccionado: false
       },
       {
         Mes: 'Diciembre',
-        id:12,
+        id:'12',
         seleccionado: false
       },
     
@@ -162,6 +164,10 @@ export default class PagoCobroComponent implements OnInit {
     this.obtenerCuentas()
     this.obtenerSocios()
     this.obtenerCategorias()
+    this.obtenerRegistros()
+  }
+  setFechaPago(){
+    this.visibleFechaPago=true
   }
   obtenerCategorias(){
     this.conS.obtenerCategorias().subscribe(resp=>{
@@ -208,7 +214,14 @@ export default class PagoCobroComponent implements OnInit {
     })
   }
   getMonthName(Fecha:string){
-    return Number((Fecha.substring(5)).substring(0,2))
+    console.log('Fecha',Fecha)
+    if(Fecha!=null){
+      return Number((Fecha.substring(5)).substring(0,2))
+
+    }
+    else {
+      return 0
+    }
    }
    getWeekNumber() {
     let d:any = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
@@ -240,6 +253,7 @@ export default class PagoCobroComponent implements OnInit {
       MesRegistro:new FormControl(this.MesesTodos[this.getMonthName(_Fecha)].Mes),
       Activo: new FormControl(true), 
       Nuevo: new FormControl(true), 
+      Pagado: new FormControl(false), 
       Editando: new FormControl(true), 
       Orden: new FormControl(this.Registros.length+1),
       idSocioNegocio: new FormControl(''), 
@@ -271,7 +285,7 @@ export default class PagoCobroComponent implements OnInit {
   }
 
   obtenerRegistros(){
-    this.conS.obtenerRegistrosTipo(this.usuario.idEmpresa,'PagoCobro').subscribe((resp:any)=>{
+    this.conS.obtenerRegistrosFacturas(this.usuario.idEmpresa).subscribe((resp:any)=>{
       this.Registros=[]
       resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
         let _Registro={
@@ -283,6 +297,7 @@ export default class PagoCobroComponent implements OnInit {
           "FechaRegistro":element.FechaRegistro,
           "MesRegistro":element.MesRegistro,
           "Nuevo":element.Nuevo,
+          "FechaCompromisoPago":element.FechaCompromisoPago,
           "NumMes":element.NumMes,
           "NumSemana":element.NumSemana,
           "Orden":element.Orden,
@@ -290,6 +305,7 @@ export default class PagoCobroComponent implements OnInit {
           "Valor":element.Valor,
           "Tipo":element.Tipo || '',
           "id":element.id,
+          "Pagado":element.Pagado,
           "idCategoria":element.idCategoria,
           "idEmpresa":element.idEmpresa,
           "idFlujo":element.idFlujo,
@@ -316,13 +332,13 @@ export default class PagoCobroComponent implements OnInit {
   
     _Categorias=this.ItemsCategGroupBack
     this.ItemsCategGroup=_Categorias.filter((cat:any)=>cat.Tipo==tipo)
-    this.guardarRegistro(tipo)
+    this.crearRegistroFactura(tipo)
   }
 
-  guardarRegistro(idTipo:number){
-
+  crearRegistroFactura(idTipo:number){
+    console.log('idTipo', this.registroForm.value)
     this.registroForm.value.idTipo=idTipo;
-    this.conS.crearRegistro(this.registroForm.value).then(resp=>{
+    this.conS.crearRegistroFactura(this.registroForm.value).then(resp=>{
     
     
     this.cargarFormulario()
@@ -349,7 +365,7 @@ export default class PagoCobroComponent implements OnInit {
       cancelButtonText: "No"
     }).then((result) => {
       if (result.isConfirmed) {
-        this.conS.borrarRegistro(idRegistro).then(resp=>{
+        this.conS.borrarRegistroFactura(idRegistro).then(resp=>{
   
   
         })
@@ -358,9 +374,12 @@ export default class PagoCobroComponent implements OnInit {
     });
   }
 
+CerrarModal(){
+  console.log('cerrar')
+  this.visibleFechaPago=false
+}
 
-
-  salvarRegistro(Registro:any){
+salvarRegistro(Registro:any){
     if(this.validarEgreso(Registro.idTipo,Registro.Valor,Registro.Orden)==false){
       Swal.fire({
         position: "center",
@@ -371,22 +390,24 @@ export default class PagoCobroComponent implements OnInit {
       });
     }
     else {
-      if(Registro.Elemento==""){
-        Swal.fire({
-          position: "center",
-          icon: "warning",
-          title: "Debe elegir un elemento",
-          showConfirmButton: false,
-          timer: 1500
-        });
-    
-      }
-    else  if(Registro.Valor==""  || Number(Registro.Valor)==0 )
+   
+      if(Registro.Valor==""  || Number(Registro.Valor)==0 )
       { 
         Swal.fire({
           position: "center",
           icon: "warning",
           title: "Debe colocar un valor",
+          showConfirmButton: false,
+          timer: 1500
+        });
+    
+      }
+   else  if(Registro.FechaPagoReal==""  && Registro.Pagado=="true" )
+      { 
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Debe ingresar una fecha de pago",
           showConfirmButton: false,
           timer: 1500
         });
@@ -416,20 +437,76 @@ export default class PagoCobroComponent implements OnInit {
       }
     
       else {
-        console.log('Registro',Registro)
-        let _categoriaEncontrada:any=[]
-        _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
-        Registro.idCategoria=_categoriaEncontrada
+
+
         Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
-        Registro.Semana=this.getWeek(Registro.FechaRegistro)
-        Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
-        Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
+        Registro.Semana=this.getWeek(this.FechaPago.value)
+        Registro.MesRegistro=this.MesesTodos[this.getMonthName(this.FechaPago.value)].Mes
+        Registro.AnioRegistro=new Date(this.FechaPago.value).getFullYear()
         Registro.idUsuario=this.usuario.id
-        Registro.TipoRegistro="Normal"
+        Registro.FechaPagoReal=this.FechaPago.value
+        Registro.TipoRegistro="PagoCobro"
         Registro.Valor=Number(Registro.Valor)
         Registro.Usuario=this.usuario.Usuario
-    
-        this.conS.ActualizarRegistro(Registro).then(resp=>{
+        if(Registro.Pagado=="true" && Registro.FechaCompromisoPago!=''){
+        
+                let AnioMesFechaPago:number=0
+                let AnioMesFechaFechaCompromiso:number=0
+                AnioMesFechaPago= Number(`${new Date(this.FechaPago.value).getFullYear()}${this.MesesTodos[this.getMonthName(this.FechaPago.value)].id}`)
+                AnioMesFechaFechaCompromiso=Number(`${new Date(Registro.FechaCompromisoPago).getFullYear()}${this.MesesTodos[this.getMonthName(Registro.FechaCompromisoPago)].id}`)
+                
+ 
+        console.log('AnioMesFechaPago',AnioMesFechaPago)
+        console.log('AnioMesFechaFechaCompromiso',AnioMesFechaFechaCompromiso)
+
+        if(Registro.idTipo==1){
+          if(AnioMesFechaFechaCompromiso==AnioMesFechaPago){
+            Registro.Elemento=this.conS.ObtenerCobrosCreditoFacturasVencidasMes()
+          }
+         else  if(AnioMesFechaFechaCompromiso>AnioMesFechaPago){
+            Registro.Elemento=this.conS.ObtenerCobrosAnticipados()
+          }
+         else  if(AnioMesFechaFechaCompromiso<AnioMesFechaPago){
+            Registro.Elemento=this.conS.ObtenerCobrosCreditoFacturasVencidasMesAnteriores()
+          }
+          else {
+            Registro.Elemento=''
+          }
+
+        }
+        else {
+          if(AnioMesFechaFechaCompromiso==AnioMesFechaPago){
+            Registro.Elemento=this.conS.ObtenerPagoProveedoresMes()
+          }
+         else  if(AnioMesFechaFechaCompromiso<AnioMesFechaPago){
+            Registro.Elemento=this.conS.ObtenerPagosAnticipados()
+          }
+         else  if(AnioMesFechaFechaCompromiso>AnioMesFechaPago){
+            Registro.Elemento=this.conS.ObtenerPagosFacturasVencidasMesAnteriores()
+          }
+          else {
+            Registro.Elemento=''
+          }
+
+
+        }
+
+      }
+      else {
+        Registro.Elemento=''
+      }
+
+      let _categoriaEncontrada:any=[]
+      _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
+      if(_categoriaEncontrada){
+        Registro.idCategoria=_categoriaEncontrada
+      }
+      else {
+        Registro.idCategoria=""
+      }
+
+      console.log('Registro',Registro)
+        this.conS.ActualizarPagoFactura(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
           })
     

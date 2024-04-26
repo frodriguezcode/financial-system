@@ -67,10 +67,10 @@
         </div>
         <div class="row justify-content-start">
           <div class="col-auto">
-              <button type="button" (click)="crearRegistro(1)" class="btn btn-info shadow-4 mx-auto" ngbTooltip="Crear ingreso">Ingreso <i class="fa-solid fa-plus"></i></button>
+              <button type="button" (click)="crearRegistro(1)" class="btn btn-info shadow-4 mx-auto" ngbTooltip="Crear cobro">Cobro <i class="fa-solid fa-plus"></i></button>
           </div>
           <div class="col-auto">
-              <button type="button" (click)="crearRegistro(2)" class="btn btn-danger shadow-4 mx-auto" ngbTooltip="Crear egreso">Egreso <i class="fa-solid fa-minus"></i ></button>
+              <button type="button" (click)="crearRegistro(2)" class="btn btn-danger shadow-4 mx-auto" ngbTooltip="Crear pago">Pago <i class="fa-solid fa-minus"></i ></button>
           </div>
       </div>
       
@@ -81,9 +81,10 @@
         <tr class="text-center">
           <th style="text-transform: uppercase">Orden</th>
           <th style="text-transform: uppercase">Borrar</th>
-          <th style="text-transform: uppercase">Elemento</th>
-          <th style="text-transform: uppercase">Cuenta (opcional)</th>
           <th style="text-transform: uppercase">Valor</th>
+          <th style="text-transform: uppercase">Fecha Compromiso Pago</th>
+          <th style="text-transform: uppercase">Pagado</th>
+          <th style="text-transform: uppercase">Cuenta (opcional)</th>
           <th style="text-transform: uppercase">Flujo</th>
           <th style="text-transform: uppercase">Socio Negocios (opcional)</th>
           <th style="text-transform: uppercase">Fecha</th>
@@ -105,40 +106,36 @@
             ></button>
           </td>
           <td class="text-center">
-            <!-- <p-dropdown
-              [options]="ItemsCategGroup"
-              [(ngModel)]="registros.Elemento"
-              name="ItemSeleccionados"
-              optionLabel="Nombre"
-              [filter]="true"
-              filterBy="Nombre"
-              [showClear]="false"
-              class=""
-              placeholder="Seleccione elemento"
-            >
-              <ng-template pTemplate="selectedItem" let-selectedItem>
-                <div class="flex align-items-center gap-2">
-                  <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
-                </div>
-              </ng-template>
-            </p-dropdown> -->
-  
-            <p-dropdown [options]="ItemsCategGroup"
-             [(ngModel)]="registros.Elemento"
-              placeholder="Seleccione un elemento"
-              [filter]="true" filterBy="label"
-              [group]="true">
-              <ng-template let-group pTemplate="group">
-                  <div class="flex align-items-center">
-                      <span>{{ group.label }}</span>
-                  </div>
-              </ng-template>
-          </p-dropdown>
-          <ng-template pTemplate="selectedItem" let-selectedItem>
-            <div class="flex align-items-center gap-2">
-              <div class="seleccion-item">{{ selectedItem.label }}</div>
-            </div>
-          </ng-template>
+            <div class="animate__animated animate__bounceIn custom-alert shadow-1" style="color: red; font-size: 11px;" *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo</div>
+            <input
+              (keyup.enter)="salvarRegistro(registros)"
+              (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)"
+              style="min-width: 9rem; min-height: 3rem; font-weight: bolder"
+              [(ngModel)]="registros.Valor"
+              class="form-control text-center col-4"
+            />
+          </td>
+          <td class="text-center">
+            <input
+              type="date"
+              style="min-width: 9rem; min-height: 3rem; font-weight: bolder"
+              [(ngModel)]="registros.FechaCompromisoPago"
+              class="form-control text-center col-4"
+            />
+          </td>
+          <td class="text-center">
+       
+            <div class="flex flex-wrap gap-3">
+              <div class="flex align-items-center">
+                  <p-radioButton (click)="setFechaPago()" name="si" value=true [(ngModel)]="registros.Pagado" inputId="si"></p-radioButton>
+                  <label for="ingredient1" class="ml-2">Si</label>
+              </div>
+              <div class="flex align-items-center">
+                  <p-radioButton name="no" value=false [(ngModel)]="registros.Pagado" inputId="no"></p-radioButton>
+                  <label for="ingredient1" class="ml-2">No</label>
+              </div>
+             </div>
+              
           </td>
           <td class="text-center">
             <p-dropdown
@@ -159,16 +156,7 @@
             </p-dropdown>
           </td>
   
-          <td class="text-center">
-            <div class="animate__animated animate__bounceIn custom-alert shadow-1" style="color: red; font-size: 11px;" *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo</div>
-            <input
-              (keyup.enter)="salvarRegistro(registros)"
-              (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)"
-              style="min-width: 9rem; min-height: 3rem; font-weight: bolder"
-              [(ngModel)]="registros.Valor"
-              class="form-control text-center col-4"
-            />
-          </td>
+      
   
           <td class="text-center">
             <p-dropdown
@@ -221,3 +209,23 @@
     </app-card>
   </div>
 </div>
+
+<p-dialog
+  header="Establecer fecha de pago"
+  [(visible)]="visibleFechaPago"
+  [modal]="true"
+  [style]="{width: '40vw'}"
+  [modal]="true"
+  styleClass="p-fluid"
+  [draggable]="false"
+  [resizable]="true"
+  [maximizable]="true"
+>
+<input
+type="date"
+(change)="CerrarModal()"
+style="min-width: 9rem; min-height: 3rem; font-weight: bolder"
+[formControl]="FechaPago"
+class="form-control text-center col-4"
+/>
+</p-dialog>

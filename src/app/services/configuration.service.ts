@@ -80,6 +80,7 @@ let Item={
 "Editando":false,
 "FechaCreacion":"2024-02-02",
 "Nombre":"Cobros por ventas a crédito - Cobros anticipados",
+"label":"Cobros por ventas a crédito - Cobros anticipados",
 "Orden":0,
 "Tipo":1,
 "idCategoria":"od11V2OHVgaLG1RiXMiz",
@@ -94,6 +95,7 @@ ObtenerCobrosCreditoFacturasVencidasMesAnteriores(){
   "Editando":false,
   "FechaCreacion":"2024-02-02",
   "Nombre":"Cobros por ventas a crédito - Facturas vencidas en meses anteriores",
+  "label":"Cobros por ventas a crédito - Facturas vencidas en meses anteriores",
   "Orden":0,
   "Tipo":1,
   "idCategoria":"od11V2OHVgaLG1RiXMiz",
@@ -108,6 +110,7 @@ ObtenerPagoProveedoresMes(){
   "Editando":false,
   "FechaCreacion":"2024-02-02",
   "Nombre":"Pago a Proveedores - Facturas vencidas en el mes",
+  "label":"Pago a Proveedores - Facturas vencidas en el mes",
   "Orden":0,
   "Tipo":2,
   "idCategoria":"KtA2Cxpd79TJrW9afqR9",
@@ -122,6 +125,7 @@ ObtenerPagosAnticipados(){
   "Editando":false,
   "FechaCreacion":"2024-02-02",
   "Nombre":"Pago a Proveedores - Pagos anticipados",
+  "label":"Pago a Proveedores - Pagos anticipados",
   "Orden":0,
   "Tipo":2,
   "idCategoria":"KtA2Cxpd79TJrW9afqR9",
@@ -136,6 +140,7 @@ ObtenerPagosFacturasVencidasMesAnteriores(){
   "Editando":false,
   "FechaCreacion":"2024-02-02",
   "Nombre":"Pago a Proveedores - Facturas vencidas en meses anteriores",
+  "label":"Pago a Proveedores - Facturas vencidas en meses anteriores",
   "Orden":0,
   "Tipo":2,
   "idCategoria":"KtA2Cxpd79TJrW9afqR9",
@@ -344,6 +349,13 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .doc(id)
         .ref.set(Object.assign(Registro, { id: id }));
     }
+    crearRegistroFactura(Registro: any) {
+      const id = this.afs.createId();
+      return this.afs
+        .collection('RegistrosFacturas')
+        .doc(id)
+        .ref.set(Object.assign(Registro, { id: id }));
+    }
 
     obtenerRegistros(idEmpresa:any): Observable<Registro[]> {
       return this.afs
@@ -353,6 +365,11 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     obtenerRegistrosTipo(idEmpresa:any,Tipo:string): Observable<Registro[]> {
       return this.afs
       .collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa).where('TipoRegistro','==',Tipo).orderBy('Orden','desc'))
+      .valueChanges();
+    }
+    obtenerRegistrosFacturas(idEmpresa:any): Observable<Registro[]> {
+      return this.afs
+      .collection('RegistrosFacturas',(ref)=>ref.where('idEmpresa','==',idEmpresa).orderBy('Orden','desc'))
       .valueChanges();
     }
 
@@ -372,8 +389,17 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .doc(Registro.id)
         .ref.update(Registro);
     }
+    ActualizarPagoFactura(Registro: any) {
+      return this.afs
+        .collection('RegistrosFacturas')
+        .doc(Registro.id)
+        .ref.update(Registro);
+    }
     borrarRegistro(id: string) {
       return this.afs.collection('Registro').doc(id).delete();
+    }
+    borrarRegistroFactura(id: string) {
+      return this.afs.collection('RegistrosFacturas').doc(id).delete();
     }
     DesactivarRegistro(IdRegistro: any) {
       return this.afs
