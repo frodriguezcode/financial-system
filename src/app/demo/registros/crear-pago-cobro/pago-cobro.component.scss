@@ -1,0 +1,93 @@
+@import 'primeicons/primeicons.css';
+
+.seleccion-item {
+  max-width: 10rem;
+  min-width: 10rem;
+  text-align: left;
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.departamento-socio {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.radio-departamentos {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  border: solid 1.5px #e8eaed;
+  padding: 5px;
+  border-radius: 7px;
+  width: 100%;
+  flex-basis: 50%;
+}
+
+.dropdown-socio {
+  flex-basis: 50%;
+  margin-left: 2%;
+}
+
+.position-elemento {
+  width: 100%;
+}
+
+.Egreso {
+  background-color: rgba(255, 83, 112, 0.1);
+}
+.Ingreso {
+  background-color: rgba(0, 157, 178, 0.1);
+}
+
+.boton-guardar {
+  position: relative;
+  margin-bottom: 0;
+}
+.space {
+  margin-right: 8px;
+}
+
+// ~Responsive
+
+@media (max-width: 640px) {
+  .departamento-socio {
+    flex-direction: column;
+    margin-top: 8px;
+  }
+  .radio-departamentos {
+    width: 100%;
+  }
+}
+
+.table-container {
+  height: 600px;
+  min-width: 50rem;
+  overflow-y: auto;
+}
+
+.p-datatable-scrollable > .p-datatable-wrapper {
+  position: relative;
+}
+
+.p-datatable > .p-datatable-wrapper {
+  overflow: none !important;
+}
+
+.animate__animated.animate__bounceIn {
+  --animate-duration: 1.5s;
+}
+
+.custom-alert {
+  display: flex;
+  position: absolute;
+  z-index: 3;
+  background-color: rgba(255, 83, 112, 0.1);
+  text-align: center;
+  padding: 0.25rem;
+  border-radius: 6px;
+  // font-weight: bold;
+}

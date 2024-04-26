@@ -44,13 +44,13 @@
                   <span class="categoria-toggle">{{ categoria.Nombre }}</span>
                   <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
                    <span *ngIf="categoria.Calculado==false">
-                    <i class="fa-solid fa-square-minus"></i>
+                    <i style="cursor: pointer;" class="fa-solid fa-square-minus"></i>
                   </span> 
                     
                   </span>
                   <span *ngIf="categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
                     <span *ngIf="categoria.Calculado==false">
-                      <i class="fa-solid fa-square-plus"></i>
+                      <i style="cursor: pointer;" class="fa-solid fa-square-plus"></i>
                     </span> 
                   </span>
                 </td>
@@ -73,7 +73,7 @@
                 </ng-container>
               </tr>
               <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
-                <ng-container class="animate__animated animate__bounce animate__delay-2"  *ngFor="let item of getItems(categoria.id)">
+                <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
                   <tr style="background-color: #FAFAFA">
                     <td><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
                     <ng-container *ngFor="let anio of AniosRegistros">      

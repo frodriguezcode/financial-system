@@ -7,10 +7,11 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { TabViewModule } from 'primeng/tabview';
 import { ButtonModule } from 'primeng/button';
 import CrearRegistroComponent from '../crear-registro/crear-registro.component';
+import PagoCobroComponent from '../crear-pago-cobro/pago-cobro.component';
 @Component({
   selector: 'app-panel-registros',
   standalone: true,
-  imports: [CommonModule, SharedModule,TabViewModule,ButtonModule,CrearRegistroComponent],
+  imports: [CommonModule, SharedModule,TabViewModule,ButtonModule,CrearRegistroComponent,PagoCobroComponent],
   templateUrl: './panel-registros.component.html',
   styleUrls: ['./panel-registros.component.scss']
 })

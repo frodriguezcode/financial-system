@@ -1,12 +1,223 @@
 <div class="row">
   <div class="col-sm-12">
-    <app-card cardTitle="Hello Card" [options]="false">
-      <p>
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-        ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-        in culpa qui officia deserunt mollit anim id est laborum."
-      </p>
+    <app-card cardTitle="FACTURAS" [options]="false">
+      <p-table
+      #dt1
+      [value]="Registros"
+      [paginator]="true"
+      [rows]="4"
+      [scrollable]="true"
+      [showCurrentPageReport]="true"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      [globalFilterFields]="['AnioRegistro', 'FechaRegistro', 'MesRegistro', 'Semana', 'NombreElemento','NumCuenta','CategoriaNombre','SocioNegocio']"
+      currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+      [rowsPerPageOptions]="[5, 10, 20]"
+    >
+  
+      <ng-template pTemplate="caption">
+        <div class="row">
+          <div class="col-3">
+            <p-iconField iconPosition="left">
+              <label for="formGroupExampleInput" class="form-label">Buscar por cualquier campo</label>
+  
+              <!-- <p-inputIcon *ngIf="inputVal.length < 10" styleClass="pi pi-search" /> -->
+              <input
+                style="width: 16rem; text-align:center"
+                pInputText
+                type="text"
+                class="form-control"
+                (input)="dt1.filterGlobal($any($event.target).value, 'contains')"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+                [(ngModel)]="inputVal" 
+                placeholder="Buscar..."
+              />
+            </p-iconField>
+          </div>
+          <div class="col-2">
+  
+            <div class="mb-3">
+              <label for="formGroupExampleInput" class="form-label">Fecha Inicio</label>
+              <input type="date"[formControl]="FechaDesde" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder">
+            </div>
+  
+          </div>
+          <div class="col-2">
+  
+            <div class="mb-3">
+              <label for="formGroupExampleInput" class="form-label">Fecha Final</label>
+              <input type="date" [formControl]="FechaHasta" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder">
+            </div>
+  
+          </div>
+          <br>
+          <div class="col-2">
+  
+            <button type="button" (click)="buscarByFecha()" class="btn btn-success mb-4 shadow-4 mt-4" ngbTooltip="Click para buscar"
+            >Buscar </button>
+  
+          </div>
+          <div class="col-2">
+  
+            <button type="button" (click)="restablecer()" class="btn btn-info mb-4 shadow-4 mt-4" ngbTooltip="Click para buscar"
+            >Restablecer </button>
+  
+          </div>
+    
+        </div>
+        <div class="row justify-content-start">
+          <div class="col-auto">
+              <button type="button" (click)="crearRegistro(1)" class="btn btn-info shadow-4 mx-auto" ngbTooltip="Crear ingreso">Ingreso <i class="fa-solid fa-plus"></i></button>
+          </div>
+          <div class="col-auto">
+              <button type="button" (click)="crearRegistro(2)" class="btn btn-danger shadow-4 mx-auto" ngbTooltip="Crear egreso">Egreso <i class="fa-solid fa-minus"></i ></button>
+          </div>
+      </div>
+      
+  
+  
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr class="text-center">
+          <th style="text-transform: uppercase">Orden</th>
+          <th style="text-transform: uppercase">Borrar</th>
+          <th style="text-transform: uppercase">Elemento</th>
+          <th style="text-transform: uppercase">Cuenta (opcional)</th>
+          <th style="text-transform: uppercase">Valor</th>
+          <th style="text-transform: uppercase">Flujo</th>
+          <th style="text-transform: uppercase">Socio Negocios (opcional)</th>
+          <th style="text-transform: uppercase">Fecha</th>
+          <th style="text-transform: uppercase">Guardar</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-registros let-index="index">
+        <tr  [ngClass]="{'Egreso': registros.idTipo === 2, 'Ingreso' : registros.idTipo === 1 }">
+          
+          <!-- Elementos -->
+          <td class="text-center">
+            <ng-container>
+              {{ registros.Orden }}
+            </ng-container>
+          </td>
+          <td class="text-center">
+            <button type="button" (click)="borrarRegistro(registros.id)" class="btn btn-danger" ngbTooltip="Borrar registro"
+              ><i class="fa-solid fa-trash"></i
+            ></button>
+          </td>
+          <td class="text-center">
+            <!-- <p-dropdown
+              [options]="ItemsCategGroup"
+              [(ngModel)]="registros.Elemento"
+              name="ItemSeleccionados"
+              optionLabel="Nombre"
+              [filter]="true"
+              filterBy="Nombre"
+              [showClear]="false"
+              class=""
+              placeholder="Seleccione elemento"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedItem>
+                <div class="flex align-items-center gap-2">
+                  <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown> -->
+  
+            <p-dropdown [options]="ItemsCategGroup"
+             [(ngModel)]="registros.Elemento"
+              placeholder="Seleccione un elemento"
+              [filter]="true" filterBy="label"
+              [group]="true">
+              <ng-template let-group pTemplate="group">
+                  <div class="flex align-items-center">
+                      <span>{{ group.label }}</span>
+                  </div>
+              </ng-template>
+          </p-dropdown>
+          <ng-template pTemplate="selectedItem" let-selectedItem>
+            <div class="flex align-items-center gap-2">
+              <div class="seleccion-item">{{ selectedItem.label }}</div>
+            </div>
+          </ng-template>
+          </td>
+          <td class="text-center">
+            <p-dropdown
+              [options]="cuentas"
+              [(ngModel)]="registros.Cuenta"
+              name="ItemSeleccionados"
+              optionLabel="Cuenta"
+              [filter]="true"
+              filterBy="Cuenta"
+              [showClear]="false"
+              placeholder="Seleccione una cuenta"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedItem>
+                <div class="flex align-items-lg-start gap-2">
+                  <div class="seleccion-item">{{ selectedItem.Cuenta }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </td>
+  
+          <td class="text-center">
+            <div class="animate__animated animate__bounceIn custom-alert shadow-1" style="color: red; font-size: 11px;" *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo</div>
+            <input
+              (keyup.enter)="salvarRegistro(registros)"
+              (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)"
+              style="min-width: 9rem; min-height: 3rem; font-weight: bolder"
+              [(ngModel)]="registros.Valor"
+              class="form-control text-center col-4"
+            />
+          </td>
+  
+          <td class="text-center">
+            <p-dropdown
+              [options]="Flujos"
+              [(ngModel)]="registros.idFlujo"
+              name="flujos"
+              optionLabel="name"
+              [filter]="true"
+              filterBy="name"
+              [showClear]="false"
+              placeholder="Seleccione un flujo"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedItem>
+                <div class="flex align-items-center gap-2">
+                  <div class="seleccion-item" style="min-width: 9rem">{{ selectedItem.name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </td>
+          <td class="text-center">
+            <p-dropdown
+              [options]="SociosNegocios"
+              [(ngModel)]="registros.idSocioNegocio"
+              name="SociosNegocios"
+              optionLabel="Nombre"
+              [filter]="true"
+              filterBy="Nombre"
+              [showClear]="false"
+              placeholder="Seleccione un socio de negocios"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedItem>
+                <div class="flex align-items-lg-start gap-2">
+                  <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </td>
+  
+          <td class="text-center">
+            <input style="min-height: 3rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
+          </td>
+          <td class="text-center">
+            <button type="button" [disabled]="isNegativo==false" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"
+              ><i class="fa-solid fa-floppy-disk"></i
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
     </app-card>
   </div>
 </div>

@@ -16,7 +16,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
-import {  MessageService, SelectItem } from 'primeng/api';
+import {  SelectItem } from 'primeng/api';
 import { Registro } from 'src/app/models/registro';
 import { ToastrService } from 'ngx-toastr';
 import { BrowserModule } from '@angular/platform-browser';
@@ -62,7 +62,6 @@ export default class PagoCobroComponent implements OnInit {
 
   constructor(
     private conS:ConfigurationService,private datePipe: DatePipe, 
-    private messageService: MessageService,
     private toastr: ToastrService
   ){}
   registroForm!:FormGroup
@@ -81,6 +80,13 @@ export default class PagoCobroComponent implements OnInit {
   ItemSeleccionados: any=[];
   usuario:any
   Fecha:any= new Date();
+  ItemsCategGroup:any= [];
+  ItemsCategGroupBack:any= [];
+  Flujos: any = [
+    {id: "1", name: "Banco"},
+    {id: "2", name: "Caja"},
+    
+  ]
   ngOnInit(): void {
     this.MesesTodos= [
     
@@ -152,6 +158,54 @@ export default class PagoCobroComponent implements OnInit {
     
     ]
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+
+    this.obtenerCuentas()
+    this.obtenerSocios()
+    this.obtenerCategorias()
+  }
+  obtenerCategorias(){
+    this.conS.obtenerCategorias().subscribe(resp=>{
+      this.Categorias=resp
+    
+      this.Categorias.forEach((element)=>{
+        let _GroupItems= {
+          label:element.Nombre,
+          Tipo: element.Tipo,
+          items:this.getItemsByCategory(element.id)
+        }
+        this.ItemsCategGroup.push( _GroupItems);
+      })
+      this.ItemsCategGroupBack=this.ItemsCategGroup
+  
+    })
+  }
+  getItemsByCategory(idCategoria:string){
+    let _Items:any=[]
+    let _ItemFormat:any=[]
+    _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria)
+    _Items.forEach(item => {
+      let _ItemFormatSingle ={
+        "label": item.Nombre,
+        "id":item.id,
+        "idCategoria":item.idCategoria
+      }
+      _ItemFormat.push(_ItemFormatSingle)
+      
+    });
+    
+    return _ItemFormat;
+  }
+
+  obtenerCuentas(){
+    this.conS.obtenerCuentas(this.usuario.idEmpresa).subscribe(resp=>{
+      this.cuentas=resp
+  
+    })
+  }
+  obtenerSocios(){
+    this.conS.obtenerSocios(this.usuario.idEmpresa).subscribe(resp=>{
+      this.SociosNegocios=resp
+    })
   }
   getMonthName(Fecha:string){
     return Number((Fecha.substring(5)).substring(0,2))
@@ -192,6 +246,8 @@ export default class PagoCobroComponent implements OnInit {
       idEmpresa: new FormControl(this.usuario.idEmpresa), 
       idMatriz: new FormControl(this.usuario.idMatriz), 
       idCategoria: new FormControl(''), 
+      FechaCompromisoPago: new FormControl(''), 
+      FechaPagoReal: new FormControl(''), 
       NombreElemento:new FormControl('NombreElemento'),
       NumCuenta:new FormControl('NumCuenta'),
       CategoriaNombre:new FormControl('CategoriaNombre'),
@@ -254,5 +310,144 @@ export default class PagoCobroComponent implements OnInit {
   
       this.cargarFormulario()
     })
+  }
+  crearRegistro(tipo:any) {
+    let _Categorias:any=[]
+  
+    _Categorias=this.ItemsCategGroupBack
+    this.ItemsCategGroup=_Categorias.filter((cat:any)=>cat.Tipo==tipo)
+    this.guardarRegistro(tipo)
+  }
+
+  guardarRegistro(idTipo:number){
+
+    this.registroForm.value.idTipo=idTipo;
+    this.conS.crearRegistro(this.registroForm.value).then(resp=>{
+    
+    
+    this.cargarFormulario()
+    })
+    
+    }
+  restablecer(){
+    this.Registros=this.registrosBackUp
+  }
+  buscarByFecha(){
+
+    this.Registros=this.registrosBackUp.
+    filter((reg:any)=>reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value)
+  }
+  borrarRegistro(idRegistro){
+    Swal.fire({
+      title: "¿Desea borrar este registro?",
+      text: "Esta acción no se puede revertir",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.conS.borrarRegistro(idRegistro).then(resp=>{
+  
+  
+        })
+       
+      }
+    });
+  }
+
+
+
+  salvarRegistro(Registro:any){
+    if(this.validarEgreso(Registro.idTipo,Registro.Valor,Registro.Orden)==false){
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "El valor debe ser negativo",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+    else {
+      if(Registro.Elemento==""){
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Debe elegir un elemento",
+          showConfirmButton: false,
+          timer: 1500
+        });
+    
+      }
+    else  if(Registro.Valor==""  || Number(Registro.Valor)==0 )
+      { 
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Debe colocar un valor",
+          showConfirmButton: false,
+          timer: 1500
+        });
+    
+      }
+    
+    else  if(Registro.idFlujo==""){
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Debe elegir un flujo (caja o banco)",
+          showConfirmButton: false,
+          timer: 1500
+        });
+    
+      }
+    
+      if(Registro.idFlujo.id=="1" && Registro.Cuenta==""){
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Debe colocar una cuenta de banco",
+          showConfirmButton: false,
+          timer: 1500
+        });
+    
+      }
+    
+      else {
+        console.log('Registro',Registro)
+        let _categoriaEncontrada:any=[]
+        _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
+        Registro.idCategoria=_categoriaEncontrada
+        Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
+        Registro.Semana=this.getWeek(Registro.FechaRegistro)
+        Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
+        Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
+        Registro.idUsuario=this.usuario.id
+        Registro.TipoRegistro="Normal"
+        Registro.Valor=Number(Registro.Valor)
+        Registro.Usuario=this.usuario.Usuario
+    
+        this.conS.ActualizarRegistro(Registro).then(resp=>{
+            this.toastr.success('Guardado', '¡Exito!');
+          })
+    
+      }
+  
+    }
+  }
+
+  getTipo(idCategoria){
+
+    let _Tipo:any=[]
+    _Tipo=this.Categorias.find(cat=> cat.id==idCategoria)
+  
+    if(_Tipo){
+      return  _Tipo.Tipo
+    }
+    else {
+      return 'Calculado'
+    }
   }
 }
