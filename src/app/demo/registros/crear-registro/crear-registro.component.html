@@ -170,7 +170,7 @@
         </td>
 
         <td class="text-center">
-          <span style="color: red; font-size: 11px;" *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo</span>
+          <div class="animate__animated animate__bounceIn custom-alert shadow-1" style="color: red; font-size: 11px;" *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo</div>
           <input
             (keyup.enter)="salvarRegistro(registros)"
             (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)"
