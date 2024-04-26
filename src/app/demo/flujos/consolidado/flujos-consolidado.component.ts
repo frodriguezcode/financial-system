@@ -763,6 +763,12 @@ this.conS.obtenerCategoriasFlujos().subscribe((data)=>{
  obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
       this.Items=resp;
+      this.Items.push(this.conS.ObtenerCobrosCreditoFacturasVencidasMes())
+      this.Items.push(this.conS.ObtenerCobrosAnticipados())
+      this.Items.push(this.conS.ObtenerCobrosCreditoFacturasVencidasMesAnteriores())
+      this.Items.push(this.conS.ObtenerPagoProveedoresMes())
+      this.Items.push(this.conS.ObtenerPagosAnticipados())
+      this.Items.push(this.conS.ObtenerPagosFacturasVencidasMesAnteriores())
       this. obtenerRegistros()
   })
  }

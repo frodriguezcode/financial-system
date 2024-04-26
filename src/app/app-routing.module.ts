@@ -4,7 +4,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 // project import
 import { AdminComponent } from './theme/layout/admin/admin.component';
-import { GuestComponent } from './theme/layout/guest/guest.component';
 import SignInComponent from './demo/authentication/sign-in/sign-in.component';
 import SignUpComponent from './demo/authentication/sign-up/sign-up.component';
 
@@ -69,7 +68,7 @@ const routes: Routes = [
       },
       {
         path: 'registros',
-        loadComponent: () => import('./demo/registros/crear-registro/crear-registro.component')
+        loadComponent: () => import('./demo/registros/panel-registros/panel-registros.component')
       },
       {
         path: 'tables',

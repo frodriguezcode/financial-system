@@ -60,6 +60,91 @@ ordenarAnios(anios){
   return anios
 }
 
+ObtenerCobrosCreditoFacturasVencidasMes(){
+let Item={
+"Activo":true,
+"Editando":false,
+"FechaCreacion":"2024-02-02",
+"Nombre":"Cobros por ventas a crédito - Facturas vencidas en el mes",
+"Orden":0,
+"Tipo":1,
+"idCategoria":"od11V2OHVgaLG1RiXMiz",
+"id":"CobrosCreditoFacturasVencidasMesXMiz"
+}
+return Item
+
+}
+ObtenerCobrosAnticipados(){
+let Item={
+"Activo":true,
+"Editando":false,
+"FechaCreacion":"2024-02-02",
+"Nombre":"Cobros por ventas a crédito - Cobros anticipados",
+"Orden":0,
+"Tipo":1,
+"idCategoria":"od11V2OHVgaLG1RiXMiz",
+"id":"CobrosAnticipadosXMiz"
+}
+return Item
+
+}
+ObtenerCobrosCreditoFacturasVencidasMesAnteriores(){
+  let Item={
+  "Activo":true,
+  "Editando":false,
+  "FechaCreacion":"2024-02-02",
+  "Nombre":"Cobros por ventas a crédito - Facturas vencidas en meses anteriores",
+  "Orden":0,
+  "Tipo":1,
+  "idCategoria":"od11V2OHVgaLG1RiXMiz",
+  "id":"CobrosCreditoFacturasVencidasMesAnterioresXMiz"
+  }
+  return Item
+  
+  }
+ObtenerPagoProveedoresMes(){
+  let Item={
+  "Activo":true,
+  "Editando":false,
+  "FechaCreacion":"2024-02-02",
+  "Nombre":"Pago a Proveedores - Facturas vencidas en el mes",
+  "Orden":0,
+  "Tipo":2,
+  "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+  "id":"ObtenerPagoProveedoresMesfqR9"
+  }
+  return Item
+  
+}
+ObtenerPagosAnticipados(){
+  let Item={
+  "Activo":true,
+  "Editando":false,
+  "FechaCreacion":"2024-02-02",
+  "Nombre":"Pago a Proveedores - Pagos anticipados",
+  "Orden":0,
+  "Tipo":2,
+  "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+  "id":"PagosAnticipadosfqR9"
+  }
+  return Item
+  
+}
+ObtenerPagosFacturasVencidasMesAnteriores(){
+  let Item={
+  "Activo":true,
+  "Editando":false,
+  "FechaCreacion":"2024-02-02",
+  "Nombre":"Pago a Proveedores - Facturas vencidas en meses anteriores",
+  "Orden":0,
+  "Tipo":2,
+  "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+  "id":"PagosFacturasVencidasMesAnterioresfqR9"
+  }
+  return Item
+  
+}
+
 obtenerUsuarios(idEmpresa:any) {
   return this.afs
   .collection('Usuarios',(ref)=>ref.where('idEmpresa','==',idEmpresa))
@@ -263,6 +348,11 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     obtenerRegistros(idEmpresa:any): Observable<Registro[]> {
       return this.afs
       .collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa).orderBy('Orden','desc'))
+      .valueChanges();
+    }
+    obtenerRegistrosTipo(idEmpresa:any,Tipo:string): Observable<Registro[]> {
+      return this.afs
+      .collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa).where('TipoRegistro','==',Tipo).orderBy('Orden','desc'))
       .valueChanges();
     }
 

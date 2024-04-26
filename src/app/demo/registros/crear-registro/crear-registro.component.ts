@@ -196,7 +196,7 @@ ngOnInit(): void {
   this.obtenerCategorias()
   this.obtenerRegistros()
 
-  this.obtenerRegistrosPromise()
+
 }
 
 
@@ -226,7 +226,7 @@ restablecer(){
   this.Registros=this.registrosBackUp
 }
 obtenerRegistros(){
-  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
+  this.conS.obtenerRegistrosTipo(this.usuario.idEmpresa,'Normal').subscribe((resp:any)=>{
     this.Registros=[]
     resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
       let _Registro={
@@ -252,7 +252,7 @@ obtenerRegistros(){
         "idMatriz":element.idMatriz,
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
-        "NombreElemento":element.Elemento.Nombre || '',
+        "NombreElemento":element.Elemento.label || '',
         "NumCuenta":element.Cuenta.Cuenta || '',
         "CategoriaNombre":element.idCategoria.Nombre || '',
         "SocioNegocio":element.idSocioNegocio.Nombre || '',
@@ -260,6 +260,7 @@ obtenerRegistros(){
       }
       this.Registros.push(_Registro)
     })
+
     this.registrosBackUp=this.Registros
 
     this.cargarFormulario()
@@ -318,6 +319,8 @@ getTipo(idCategoria){
     return 'Calculado'
   }
 }
+
+
 salvarRegistro(Registro:any){
   if(this.validarEgreso(Registro.idTipo,Registro.Valor,Registro.Orden)==false){
     Swal.fire({
@@ -383,6 +386,7 @@ salvarRegistro(Registro:any){
       Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
       Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
       Registro.idUsuario=this.usuario.id
+      Registro.TipoRegistro="Normal"
       Registro.Valor=Number(Registro.Valor)
       Registro.Usuario=this.usuario.Usuario
   
@@ -402,11 +406,7 @@ salvarRegistro(Registro:any){
 //   }))
 // }
 
-obtenerRegistrosPromise(){
-  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp =>{
-    this._Registros = resp;
-  }))
-}
+
 
 addRow() {
   const newRow: Registro = {
