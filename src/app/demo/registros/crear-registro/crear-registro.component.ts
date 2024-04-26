@@ -475,7 +475,7 @@ crearRegistro(tipo:any) {
 
   _Categorias=this.ItemsCategGroupBack
   this.ItemsCategGroup=_Categorias.filter((cat:any)=>cat.Tipo==tipo)
-  this.guardarRegistro()
+  this.guardarRegistro(tipo)
 }
 
 
@@ -581,8 +581,9 @@ hideDialog() {
   this.registroDialog = false;
   this.submitted = false;
 }
-guardarRegistro(){
+guardarRegistro(idTipo:number){
 console.log('RegistroForm',this.registroForm.value)
+this.registroForm.value.idTipo=idTipo;
 this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 
 
