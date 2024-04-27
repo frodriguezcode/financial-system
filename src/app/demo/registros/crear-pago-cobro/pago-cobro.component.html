@@ -87,6 +87,7 @@
           <th style="text-transform: uppercase">Cuenta (opcional)</th>
           <th style="text-transform: uppercase">Flujo</th>
           <th style="text-transform: uppercase">Socio Negocios (opcional)</th>
+          <th style="text-transform: uppercase">Num. Factura (opcional)</th>
           <th style="text-transform: uppercase">Fecha</th>
           <th style="text-transform: uppercase">Guardar</th>
         </tr>
@@ -195,6 +196,9 @@
             </p-dropdown>
           </td>
   
+          <td class="text-center">
+            <input style="min-width: 9rem; min-height: 3rem; font-weight: bolder" type="text" [(ngModel)]="registros.NumFactura" class="form-control text-center col-4" />
+          </td>
           <td class="text-center">
             <input style="min-height: 3rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
           </td>

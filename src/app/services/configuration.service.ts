@@ -367,7 +367,7 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
       .collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa).where('TipoRegistro','==',Tipo).orderBy('Orden','desc'))
       .valueChanges();
     }
-    obtenerRegistrosFacturas(idEmpresa:any): Observable<Registro[]> {
+    obtenerRegistrosFacturas(idEmpresa:any): Observable<any[]> {
       return this.afs
       .collection('RegistrosFacturas',(ref)=>ref.where('idEmpresa','==',idEmpresa).orderBy('Orden','desc'))
       .valueChanges();

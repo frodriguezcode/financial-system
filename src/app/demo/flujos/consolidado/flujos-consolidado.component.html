@@ -38,10 +38,10 @@
               </ng-container>
             </tr>
             <ng-container *ngFor="let categoria of Categorias; let j = index">
-              <tr (click)="toggleCategoria(categoria.id)">
+              <tr  [ngClass]="{'cabecera-categoria': categoria.Calculado==true}" (click)="toggleCategoria(categoria.id)">
                 
                 <td>
-                  <span class="categoria-toggle">{{ categoria.Nombre }}</span>
+                  <span     class="categoria-toggle">{{ categoria.Nombre }}</span>
                   <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
                    <span *ngIf="categoria.Calculado==false">
                     <i style="cursor: pointer;" class="fa-solid fa-square-minus"></i>
@@ -57,9 +57,12 @@
                 <ng-container *ngFor="let anio of AniosRegistros">      
                   <ng-container *ngFor="let mes of MesesRegistros" >
                     <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                      <td class="text-center"
-                      [ngClass]="{'text-center': true, 'negativo': this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio,categoria.Orden) < 0}"
-                      >{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio,categoria.Orden)}}</td>
+                      <td class="text-center" 
+                      [ngClass]="{'text-center': true, 'negativo': this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio,categoria.Orden) < 0}">
+
+                    <span >{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio,categoria.Orden)}}</span>  
+                    
+                    </td>
                     </ng-container>     
                     <td class="text-center"
                     [ngClass]="{'text-center': true, 'negativo': this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio,categoria.Orden) < 0}"
@@ -75,7 +78,7 @@
               <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
                 <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
                   <tr style="background-color: #FAFAFA">
-                    <td><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
+                    <td  ><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
                     <ng-container *ngFor="let anio of AniosRegistros">      
                       <ng-container *ngFor="let mes of MesesRegistros" >
                         <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
@@ -101,20 +104,20 @@
 
               </ng-container>
             </ng-container>
-            <tr>
+            <tr >
               <td>Saldo Final en bancos</td>
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <td class="text-center">0</td>
+                    <td class="text-center">{{"$" + " " +this.getDataFlujoLibre(semana.Semana,mes.NumMes,anio.Anio)}}</td>
                   </ng-container>     
-                  <th class="text-center">0</th>
+                  <td class="text-center">{{"$" + " " +this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio)}}</td>
                 </ng-container>
-                <th class="text-center">0</th>
+                <td class="text-center">{{"$" + " " +this.getDataFlujoLibreAnual(anio.Anio)}}</td>
               </ng-container>
             </tr>
-            <tr>
-              <td>Flujo libre neto</td>
+            <tr class="cabecera-flujo-efectivo-libre">
+              <td>Flujo efectivo libre</td>
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">

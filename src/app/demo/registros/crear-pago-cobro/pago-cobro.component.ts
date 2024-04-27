@@ -214,7 +214,6 @@ export default class PagoCobroComponent implements OnInit {
     })
   }
   getMonthName(Fecha:string){
-    console.log('Fecha',Fecha)
     if(Fecha!=null){
       return Number((Fecha.substring(5)).substring(0,2))
 
@@ -256,6 +255,7 @@ export default class PagoCobroComponent implements OnInit {
       Pagado: new FormControl(false), 
       Editando: new FormControl(true), 
       Orden: new FormControl(this.Registros.length+1),
+      NumFactura: new FormControl(''), 
       idSocioNegocio: new FormControl(''), 
       idEmpresa: new FormControl(this.usuario.idEmpresa), 
       idMatriz: new FormControl(this.usuario.idMatriz), 
@@ -308,6 +308,7 @@ export default class PagoCobroComponent implements OnInit {
           "Pagado":element.Pagado,
           "idCategoria":element.idCategoria,
           "idEmpresa":element.idEmpresa,
+          "NumFactura":element.NumFactura,
           "idFlujo":element.idFlujo,
           "idTipo":element.idTipo,
           "idMatriz":element.idMatriz,
@@ -336,7 +337,6 @@ export default class PagoCobroComponent implements OnInit {
   }
 
   crearRegistroFactura(idTipo:number){
-    console.log('idTipo', this.registroForm.value)
     this.registroForm.value.idTipo=idTipo;
     this.conS.crearRegistroFactura(this.registroForm.value).then(resp=>{
     
@@ -375,7 +375,7 @@ export default class PagoCobroComponent implements OnInit {
   }
 
 CerrarModal(){
-  console.log('cerrar')
+
   this.visibleFechaPago=false
 }
 
@@ -478,10 +478,10 @@ salvarRegistro(Registro:any){
           if(AnioMesFechaFechaCompromiso==AnioMesFechaPago){
             Registro.Elemento=this.conS.ObtenerPagoProveedoresMes()
           }
-         else  if(AnioMesFechaFechaCompromiso<AnioMesFechaPago){
+         else  if(AnioMesFechaFechaCompromiso>AnioMesFechaPago){
             Registro.Elemento=this.conS.ObtenerPagosAnticipados()
           }
-         else  if(AnioMesFechaFechaCompromiso>AnioMesFechaPago){
+         else  if(AnioMesFechaFechaCompromiso<AnioMesFechaPago){
             Registro.Elemento=this.conS.ObtenerPagosFacturasVencidasMesAnteriores()
           }
           else {

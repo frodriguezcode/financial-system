@@ -165,9 +165,49 @@ filterAnios(){
   });
   return groupedByMonth;
 }
+
+obtenerRegistrosFacturas(){
+  this.conS.obtenerRegistrosFacturas(this.usuario.idEmpresa).subscribe((resp:any)=>{
+    this.Registros=[]   
+    resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+      let _Registro={
+        "Activo":element.Activo,
+        "AnioRegistro":element.AnioRegistro,
+        "Cuenta":element.Cuenta,
+        "Editando":element.Editando,
+        "Elemento":element.Elemento,
+        "FechaRegistro":element.FechaRegistro,
+        "MesRegistro":element.MesRegistro,
+        "Nuevo":element.Nuevo,
+        "NumMes":element.NumMes,
+        "NumSemana":element.NumSemana,
+        "Orden":element.Orden,
+        "Semana":element.Semana,
+        "Valor":element.Valor,
+        "id":element.id,
+        "Tipo":element.Tipo || '',
+        "idCategoria":element.idCategoria,
+        "idEmpresa":element.idEmpresa,
+        "idFlujo":element.idFlujo,
+        "idUsuario":element.idUsuario,
+        "idMatriz":element.idMatriz,
+        "idSocioNegocio":element.idSocioNegocio,
+        "idSucursal":element.idSucursal,
+        "NombreElemento":element.Elemento.label || '',
+        "NumCuenta":element.Cuenta.Cuenta || '',
+        "CategoriaNombre":element.idCategoria.Nombre || '',
+        "SocioNegocio":element.idSocioNegocio.Nombre || '',
+
+      }
+
+      this.Registros.push(_Registro)
+    })
+    this. obtenerRegistros()
+  })
+}
+
  obtenerRegistros(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
-    this.Registros=[]   
     let _SemanaEncontrada:any=[]
     let MesEncontrado:any=[]
     let anioEncontrado:any=[]
@@ -198,6 +238,7 @@ filterAnios(){
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
         "NombreElemento":element.Elemento.label || '',
+        "idElemento":element.Elemento.id || '',
         "NumCuenta":element.Cuenta.Cuenta || '',
         "CategoriaNombre":element.idCategoria.Nombre || '',
         "SocioNegocio":element.idSocioNegocio.Nombre || '',
@@ -287,6 +328,7 @@ filterAnios(){
     this.semanas.reverse();
 
     this.RegistrosBack=this.Registros
+    console.log('Registros',this.Registros)
     this.Cargando=false
   })
  }
@@ -769,7 +811,8 @@ this.conS.obtenerCategoriasFlujos().subscribe((data)=>{
       this.Items.push(this.conS.ObtenerPagoProveedoresMes())
       this.Items.push(this.conS.ObtenerPagosAnticipados())
       this.Items.push(this.conS.ObtenerPagosFacturasVencidasMesAnteriores())
-      this. obtenerRegistros()
+
+      this.obtenerRegistrosFacturas()
   })
  }
 
