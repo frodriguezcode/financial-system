@@ -18,6 +18,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   Items:any=[]
   semanas: any[] = [];
   Meses: any = [];
+  SaldoInicial:any=[]
   MesesSeleccionados: any = [];
   Anios: any[] = [];
   AniosSelect: any[] = [];
@@ -103,6 +104,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   
   ]
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.obtenerSaldoInicial()
   this.obtenerUsuarios()
   this.ObtenerCuentasBanco()
   this.obtenerCategorias()
@@ -366,6 +368,22 @@ else {
 
    }
 
+
+}
+
+getSaldoFinalSemanal(numSemana:any,Mes:any,Anio:any){
+  let saldosIniciales:any=[];
+  let saldoinicial:any=0;
+  saldosIniciales=this.SaldoInicial.filter((saldo:any)=>saldo.NumSemana=numSemana && saldo.NumMes==Mes && saldo.AnioRegistro==Anio)
+  if(saldosIniciales.length>0){
+    saldoinicial=saldosIniciales[0].Valor
+  }
+  else {
+    saldoinicial=0
+  }
+
+  return saldoinicial 
+  + this.getDataFlujoLibre(numSemana,Mes,Anio)
 
 }
 
@@ -784,6 +802,12 @@ ObtenerCuentasBanco(){
 obtenerUsuarios(){
   this.conS.obtenerUsuarios(this.usuario.idEmpresa).subscribe(resp=>{
   this.Usuarios=resp
+  })
+}
+obtenerSaldoInicial(){
+  this.conS.obtenerSaldoInicial(this.usuario.idEmpresa).subscribe(resp=>{
+  this.SaldoInicial=resp
+
   })
 }
 obtenerCategorias(){

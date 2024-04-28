@@ -112,6 +112,7 @@ export default class CrearRegistroComponent implements OnInit {
   Departamentos: string[] = [];
   ItemsCategGroup:any= [];
   ItemsCategGroupBack:any= [];
+  OrdenMax: number = 0;
   Flujos: any = [
     {id: "1", name: "Banco"},
     {id: "2", name: "Caja"},
@@ -226,7 +227,7 @@ restablecer(){
   this.Registros=this.registrosBackUp
 }
 obtenerRegistros(){
-  this.conS.obtenerRegistrosTipo(this.usuario.idEmpresa,'Normal').subscribe((resp:any)=>{
+  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
     this.Registros=[]
     resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
       let _Registro={
@@ -262,7 +263,11 @@ obtenerRegistros(){
     })
 
     this.registrosBackUp=this.Registros
-
+ 
+    this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+      return Math.max(maxOrden, objeto.Orden);
+  }, -Infinity);
+  console.log('OrdenMax',this.OrdenMax)
     this.cargarFormulario()
   })
 }
@@ -377,21 +382,22 @@ salvarRegistro(Registro:any){
     }
   
     else {
-      console.log('Registro',Registro)
       let _categoriaEncontrada:any=[]
       _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
       Registro.idCategoria=_categoriaEncontrada
       Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
       Registro.Semana=this.getWeek(Registro.FechaRegistro)
+      Registro.NumSemana=this.getWeek(Registro.FechaRegistro)
       Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
       Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
       Registro.idUsuario=this.usuario.id
       Registro.TipoRegistro="Normal"
       Registro.Valor=Number(Registro.Valor)
       Registro.Usuario=this.usuario.Usuario
-  
+      
+      console.log('Registro',Registro)
       this.conS.ActualizarRegistro(Registro).then(resp=>{
-          this.toastr.success('Guardado', '¡Exito!');
+            this.toastr.success('Guardado', '¡Exito!');
         })
   
     }
@@ -528,7 +534,7 @@ editarRegistro(idRegistro:string) {
     MesRegistro:new FormControl(_RegistroEditar.MesRegistro),
     Nuevo:new FormControl(false),
     Registrando:new FormControl(true),
-    Orden:new FormControl(this.Registros.length+1),
+    Orden:new FormControl(this.OrdenMax+1),
     Activo: new FormControl(_RegistroEditar.Activo), 
     Editando: new FormControl(_RegistroEditar.Editando), 
     idSocioNegocio: new FormControl(_RegistroEditar.idSocioNegocio), 

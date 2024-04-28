@@ -268,6 +268,11 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
       .collection('Naturalezas',(ref)=>ref.orderBy('Orden','asc'))
       .valueChanges();
     }
+    obtenerSaldoInicial(idEmpresa) {
+      return this.afs
+      .collection('SaldosIniciales',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+      .valueChanges();
+    }
 
  //!------------Items------------
     crearItem(Item: any) {
