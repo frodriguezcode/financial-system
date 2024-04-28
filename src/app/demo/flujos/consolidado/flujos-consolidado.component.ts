@@ -810,6 +810,7 @@ obtenerSaldoInicial(){
 
   })
 }
+
 obtenerCategorias(){
 this.conS.obtenerCategoriasFlujos().subscribe((data)=>{
   // this.Categorias=data.filter((cate:any)=>cate.Mostrar==true)
