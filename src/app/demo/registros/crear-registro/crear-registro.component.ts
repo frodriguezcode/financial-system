@@ -383,12 +383,16 @@ salvarRegistro(Registro:any){
   
     else {
       let _categoriaEncontrada:any=[]
+      let _MesRegistro:any=[]
+      console.log('msRegistro',this.getMonthName(Registro.FechaRegistro))
+      _MesRegistro=this.MesesTodos.filter((mes:any)=>mes.id==this.getMonthName(Registro.FechaRegistro))
       _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
       Registro.idCategoria=_categoriaEncontrada
       Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
       Registro.Semana=this.getWeek(Registro.FechaRegistro)
       Registro.NumSemana=this.getWeek(Registro.FechaRegistro)
-      Registro.MesRegistro=this.MesesTodos[this.getMonthName(Registro.FechaRegistro)].Mes
+      Registro.MesRegistro=_MesRegistro[0].Mes
+      Registro.NumMes=_MesRegistro[0].id
       Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
       Registro.idUsuario=this.usuario.id
       Registro.TipoRegistro="Normal"
@@ -577,7 +581,7 @@ cargarFormulario(){
     Activo: new FormControl(true), 
     Nuevo: new FormControl(true), 
     Editando: new FormControl(true), 
-    Orden: new FormControl(this.Registros.length+1),
+    Orden: new FormControl(this.OrdenMax+1),
     idSocioNegocio: new FormControl(''), 
     idEmpresa: new FormControl(this.usuario.idEmpresa), 
     idMatriz: new FormControl(this.usuario.idMatriz), 

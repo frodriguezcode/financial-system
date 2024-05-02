@@ -2,15 +2,42 @@
     color: red;
   }
 
+  .table-100 th,
+.table-100 td {
+  width:100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 100;
+}
+
+th:first-child,
+td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+
+}
+
   .cabecera{
     color: white;
-    background-color: #0c8c86
+    background-color: #0c8c86;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
 
 
 
   .categoria-toggle {
     cursor: pointer;
+
   }
   
   .categoria-toggle-icon {
@@ -19,6 +46,12 @@
   .cabecera-categoria{
     background-color: rgba(0, 157, 178, 0.1);
   }
+  .cabecera-categoria-no-calc{
+    background-color:white ;
+  }
+
+
+
   .cabecera-flujo-efectivo-libre{
     background-color: rgb(12,140,134,0.2)
   }

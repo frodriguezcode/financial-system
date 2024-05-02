@@ -35,6 +35,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   CuentasBancoSelect:any=[]
   Usuarios:any=[]
   UsuariosSelect:any=[]
+  SaldosInicialesSemanales:any=[]
   Cargando:boolean=true;
   categoriasExpandidas: { [id: number]: boolean } = {};
  ngOnInit(): void {
@@ -330,7 +331,7 @@ obtenerRegistrosFacturas(){
     this.semanas.reverse();
 
     this.RegistrosBack=this.Registros
-    console.log('Registros',this.Registros)
+
     this.Cargando=false
   })
  }
@@ -374,12 +375,15 @@ else {
 getSaldoFinalSemanal(numSemana:any,Mes:any,Anio:any){
   let saldosIniciales:any=[];
   let saldoinicial:any=0;
+  let saldoinicialSemAnterior:any=0;
   saldosIniciales=this.SaldoInicial.filter((saldo:any)=>saldo.NumSemana=numSemana && saldo.NumMes==Mes && saldo.AnioRegistro==Anio)
   if(saldosIniciales.length>0){
-    saldoinicial=saldosIniciales[0].Valor
+    saldoinicial=this.getSaldoInicialSemana(numSemana,Mes,Anio)
+
   }
   else {
     saldoinicial=0
+
   }
 
   return saldoinicial 
@@ -808,7 +812,22 @@ obtenerSaldoInicial(){
   this.conS.obtenerSaldoInicial(this.usuario.idEmpresa).subscribe(resp=>{
   this.SaldoInicial=resp
 
+
   })
+}
+
+getSaldoInicialSemana(semana:number,numMes:any,anio:any){
+  let _SaldoInicial:any=[]
+  _SaldoInicial=this.SaldoInicial.filter((x:any)=>Number(x.SemanaNum)===Number(semana) && x.NumMes==numMes && x.AnioRegistro==anio)
+
+if(_SaldoInicial.length>0){
+  return _SaldoInicial[0].Valor
+
+}
+else {
+
+ return 0
+}
 }
 
 obtenerCategorias(){
