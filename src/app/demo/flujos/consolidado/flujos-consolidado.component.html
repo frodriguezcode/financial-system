@@ -10,17 +10,17 @@
         <table *ngIf="!Cargando" class="table table-100">
           <thead class="cabecera">
           
-              <th >Concepto</th> 
+              <th class="text-left" style="padding: 0.5rem;">Concepto</th> 
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <th class="text-center">{{"Semana " + semana.Semana + " " + "(" + mes.Mes + ")"}}</th>
+                    <th class="text-center" style="font-weight: 400; padding: 0.7rem;">{{"Semana " + semana.Semana + " " + "(" + mes.Mes + ")"}}</th>
                   </ng-container>     
-                  <th class="text-center">{{"Total " + mes.Mes}}</th>
+                  <th class="text-center" style="padding: 0.7rem;text-decoration: underline; font-weight: 500; border-left: 1px solid #eaeaea ; border-right: 1px solid #eaeaea ">{{"Total " + mes.Mes}}</th>
                   
                   
                 </ng-container>
-                <th class="text-center">{{"Total " + anio.Anio}}</th>
+                <th class="text-center" style="padding: 0.7rem;text-decoration: underline; font-weight: 700; color: #ffffff; border-left: 1px solid #eaeaea ; border-right: 1px solid #eaeaea ">{{"Total " + anio.Anio}}</th>
               </ng-container>
         
           </thead>
