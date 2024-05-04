@@ -371,6 +371,17 @@ else {
 
 
 }
+obtenerMaximoSemana(mes: number, año: number) {
+  const objetosFiltrados = this.SaldosInicialesSemanales.filter(objeto => objeto.Mes === mes && objeto.Año === año);
+  if (objetosFiltrados.length === 0) {
+    return 0; // Si no hay objetos para el mes y año proporcionados
+  }
+  const maxSemana = Math.max(...objetosFiltrados.map(objeto => objeto.Semana));
+  return objetosFiltrados.find(objeto => objeto.Semana === maxSemana).Semana;
+}
+getSaldoFinalMensual(mes: number, año: number){
+return this.obtenerMaximoSemana(mes,año)
+}
 
 getSaldoFinalSemanal(numSemana:any,Mes:any,Anio:any){
   let saldosIniciales:any=[];
@@ -385,6 +396,23 @@ getSaldoFinalSemanal(numSemana:any,Mes:any,Anio:any){
     saldoinicial=0
 
   }
+ let _SaldoProximaSemana={
+  "Semana":numSemana+1,
+  "Valor":saldoinicial 
+  + this.getDataFlujoLibre(numSemana,Mes,Anio),
+  "Mes":Mes,
+  "Año":Anio
+ }
+
+ let _SemanaEncontrada:any=[]
+ _SemanaEncontrada=this.SaldosInicialesSemanales.filter((smna:any)=> smna.Semana == numSemana+1 && smna.Mes==Mes && smna.Año==Anio  )
+ 
+ if(_SemanaEncontrada.length==0){
+   this.SaldosInicialesSemanales.push(_SaldoProximaSemana)
+
+ }
+
+console.log('SaldosInicialesSemanales',this.SaldosInicialesSemanales)
 
   return saldoinicial 
   + this.getDataFlujoLibre(numSemana,Mes,Anio)
@@ -825,8 +853,18 @@ if(_SaldoInicial.length>0){
 
 }
 else {
+let SaldoInicial:any=[]
+let SaldoValor:number=0
+SaldoInicial=this.SaldosInicialesSemanales.filter((sem:any)=>sem.Semana ==semana && sem.Mes ==numMes && sem.Año ==anio )
+if(SaldoInicial.length>0){
+  SaldoValor=SaldoInicial[0].Valor
+}
+else {
+  SaldoValor=0
+}
 
- return 0
+
+ return SaldoValor
 }
 }
 
