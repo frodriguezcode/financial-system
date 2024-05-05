@@ -266,7 +266,7 @@ obtenerRegistros(){
  
     this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
       return Math.max(maxOrden, objeto.Orden);
-  }, -Infinity);
+  }, 0);
   console.log('OrdenMax',this.OrdenMax)
     this.cargarFormulario()
   })
@@ -511,7 +511,6 @@ obtenerCuentas(){
 }
 crearRegistro(tipo:any) {
   let _Categorias:any=[]
-
   _Categorias=this.ItemsCategGroupBack
   this.ItemsCategGroup=_Categorias.filter((cat:any)=>cat.Tipo==tipo)
   this.guardarRegistro(tipo)

@@ -459,37 +459,8 @@ salvarRegistro(Registro:any){
         console.log('AnioMesFechaPago',AnioMesFechaPago)
         console.log('AnioMesFechaFechaCompromiso',AnioMesFechaFechaCompromiso)
 
-        if(Registro.idTipo==1){
-          if(AnioMesFechaFechaCompromiso==AnioMesFechaPago){
-            Registro.Elemento=this.conS.ObtenerCobrosCreditoFacturasVencidasMes()
-          }
-         else  if(AnioMesFechaFechaCompromiso>AnioMesFechaPago){
-            Registro.Elemento=this.conS.ObtenerCobrosAnticipados()
-          }
-         else  if(AnioMesFechaFechaCompromiso<AnioMesFechaPago){
-            Registro.Elemento=this.conS.ObtenerCobrosCreditoFacturasVencidasMesAnteriores()
-          }
-          else {
-            Registro.Elemento=''
-          }
 
-        }
-        else {
-          if(AnioMesFechaFechaCompromiso==AnioMesFechaPago){
-            Registro.Elemento=this.conS.ObtenerPagoProveedoresMes()
-          }
-         else  if(AnioMesFechaFechaCompromiso>AnioMesFechaPago){
-            Registro.Elemento=this.conS.ObtenerPagosAnticipados()
-          }
-         else  if(AnioMesFechaFechaCompromiso<AnioMesFechaPago){
-            Registro.Elemento=this.conS.ObtenerPagosFacturasVencidasMesAnteriores()
-          }
-          else {
-            Registro.Elemento=''
-          }
-
-
-        }
+  
 
       }
       else {

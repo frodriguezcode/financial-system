@@ -388,32 +388,6 @@ getSaldoFinalSemanal(numSemana:any,Mes:any,Anio:any){
   let saldoinicial:any=0;
   let saldoinicialSemAnterior:any=0;
   saldosIniciales=this.SaldoInicial.filter((saldo:any)=>saldo.NumSemana=numSemana && saldo.NumMes==Mes && saldo.AnioRegistro==Anio)
-  if(saldosIniciales.length>0){
-    saldoinicial=this.getSaldoInicialSemana(numSemana,Mes,Anio)
-
-  }
-  else {
-    saldoinicial=0
-
-  }
- let _SaldoProximaSemana={
-  "Semana":numSemana+1,
-  "Valor":saldoinicial 
-  + this.getDataFlujoLibre(numSemana,Mes,Anio),
-  "Mes":Mes,
-  "Año":Anio
- }
-
- let _SemanaEncontrada:any=[]
- _SemanaEncontrada=this.SaldosInicialesSemanales.filter((smna:any)=> smna.Semana == numSemana+1 && smna.Mes==Mes && smna.Año==Anio  )
- 
- if(_SemanaEncontrada.length==0){
-   this.SaldosInicialesSemanales.push(_SaldoProximaSemana)
-
- }
-
-console.log('SaldosInicialesSemanales',this.SaldosInicialesSemanales)
-
   return saldoinicial 
   + this.getDataFlujoLibre(numSemana,Mes,Anio)
 
@@ -887,12 +861,7 @@ this.conS.obtenerCategoriasFlujos().subscribe((data)=>{
  obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
       this.Items=resp;
-      this.Items.push(this.conS.ObtenerCobrosCreditoFacturasVencidasMes())
-      this.Items.push(this.conS.ObtenerCobrosAnticipados())
-      this.Items.push(this.conS.ObtenerCobrosCreditoFacturasVencidasMesAnteriores())
-      this.Items.push(this.conS.ObtenerPagoProveedoresMes())
-      this.Items.push(this.conS.ObtenerPagosAnticipados())
-      this.Items.push(this.conS.ObtenerPagosFacturasVencidasMesAnteriores())
+
 
       this.obtenerRegistrosFacturas()
   })
