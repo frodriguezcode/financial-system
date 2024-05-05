@@ -171,7 +171,7 @@ filterAnios(){
 
 obtenerRegistrosFacturas(){
   this.conS.obtenerRegistrosFacturas(this.usuario.idEmpresa).subscribe((resp:any)=>{
-    this.Registros=[]   
+ 
     resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
       let _Registro={
         "Activo":element.Activo,
@@ -205,7 +205,7 @@ obtenerRegistrosFacturas(){
 
       this.Registros.push(_Registro)
     })
-    this. obtenerRegistros()
+
   })
 }
 
@@ -214,6 +214,7 @@ obtenerRegistrosFacturas(){
     let _SemanaEncontrada:any=[]
     let MesEncontrado:any=[]
     let anioEncontrado:any=[]
+    this.Registros=[]  
     resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
       const FechaRegistro = new Date(element.FechaRegistro);
       this.generarUltimasSeisSemanas(FechaRegistro,element.FechaRegistro)
@@ -384,11 +385,25 @@ return this.obtenerMaximoSemana(mes,año)
 }
 
 getSaldoFinalSemanal(numSemana:any,Mes:any,Anio:any){
-  let saldosIniciales:any=[];
-  let saldoinicial:any=0;
-  let saldoinicialSemAnterior:any=0;
-  saldosIniciales=this.SaldoInicial.filter((saldo:any)=>saldo.NumSemana=numSemana && saldo.NumMes==Mes && saldo.AnioRegistro==Anio)
-  return saldoinicial 
+ 
+  const existe = this.SaldosInicialesSemanales.some(saldo => 
+    saldo.Semana === numSemana && saldo.Anio === Anio && saldo.Mes === Mes);
+if (!existe) {
+    let _SaldosSemanales = {
+        "Semana": numSemana,
+        "Anio": Anio,
+        "Mes": Mes,
+        "Valor": this.SaldoInicialValor(numSemana, Mes, Anio) + this.getDataFlujoLibre(numSemana, Mes, Anio)
+    };
+
+    this.SaldosInicialesSemanales.push(_SaldosSemanales);
+} 
+
+console.log('SaldosInicialesSemanales',this.SaldosInicialesSemanales)
+
+
+
+  return this.SaldoInicialValor(numSemana,Mes,Anio) 
   + this.getDataFlujoLibre(numSemana,Mes,Anio)
 
 }
@@ -813,9 +828,33 @@ obtenerUsuarios(){
 obtenerSaldoInicial(){
   this.conS.obtenerSaldoInicial(this.usuario.idEmpresa).subscribe(resp=>{
   this.SaldoInicial=resp
-
+console.log('SaldoInicial',this.SaldoInicial)
 
   })
+}
+SaldoInicialValor(semana:any,mes:any,anio:any){
+  let valor:number=0
+  let SemanaEncontrada:any=[]
+  SemanaEncontrada=this.SaldoInicial.filter((sem:any)=>sem.SemanaNum==semana && sem.NumMes==mes && sem.AnioRegistro==anio)
+  if(SemanaEncontrada.length>0){
+    valor=SemanaEncontrada[0].Valor
+  }
+  else {
+    let SemanaEncontrada:any=[]
+    SemanaEncontrada= this.SaldosInicialesSemanales.filter((sem:any)=>sem.Semana==semana-1 && sem.Mes==mes && sem.Anio==anio)
+
+    if(SemanaEncontrada.length>0){
+      valor=SemanaEncontrada[0].Valor
+
+    }
+
+    else {
+      valor= 0
+      
+    }
+    
+  }
+  return valor
 }
 
 getSaldoInicialSemana(semana:number,numMes:any,anio:any){
@@ -863,7 +902,7 @@ this.conS.obtenerCategoriasFlujos().subscribe((data)=>{
       this.Items=resp;
 
 
-      this.obtenerRegistrosFacturas()
+      this.obtenerRegistros()
   })
  }
 
