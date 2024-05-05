@@ -399,7 +399,6 @@ if (!existe) {
     this.SaldosInicialesSemanales.push(_SaldosSemanales);
 } 
 
-console.log('SaldosInicialesSemanales',this.SaldosInicialesSemanales)
 
 
 
@@ -828,9 +827,13 @@ obtenerUsuarios(){
 obtenerSaldoInicial(){
   this.conS.obtenerSaldoInicial(this.usuario.idEmpresa).subscribe(resp=>{
   this.SaldoInicial=resp
-console.log('SaldoInicial',this.SaldoInicial)
+
 
   })
+}
+
+formatValue(valor: number): string {
+  return "$ " + valor.toString();
 }
 SaldoInicialValor(semana:any,mes:any,anio:any){
   let valor:number=0

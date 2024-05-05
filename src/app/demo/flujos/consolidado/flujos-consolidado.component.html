@@ -32,7 +32,7 @@
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
                     <td class="text-center">
        
-                      {{"$" + " " +this.SaldoInicialValor(semana.Semana,mes.NumMes,anio.Anio)}}
+                      {{ formatValue(this.SaldoInicialValor(semana.Semana, mes.NumMes, anio.Anio) || 0) }}
                       
                   
                     </td>
