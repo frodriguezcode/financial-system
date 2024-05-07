@@ -36,6 +36,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   Usuarios:any=[]
   UsuariosSelect:any=[]
   SaldosInicialesSemanales:any=[]
+  SaldosInicialesMensuales:any=[]
   Cargando:boolean=true;
   categoriasExpandidas: { [id: number]: boolean } = {};
  ngOnInit(): void {
@@ -388,13 +389,25 @@ saldoInicialMes(mes: number, año: number){
   SaldoEncontrado=this.SaldosInicialesSemanales.filter(objeto => objeto.Mes == mes && objeto.Anio == año && objeto.Semana==this.obtenerMaximoSemana(mes,año) );
   if(SaldoEncontrado.length>0){
     ValorSaldo=SaldoEncontrado[0].Valor
+    const existe = this.SaldosInicialesMensuales.some(saldo => 
+      saldo.Anio === año && saldo.Mes === mes);
+ if (!existe) {
+     let _SaldosMensuales = {
+         "Anio": año,
+         "Mes": mes,
+         "Valor": ValorSaldo
+     };
+ 
+     this.SaldosInicialesMensuales.push(_SaldosMensuales);
+   }
   }
   else {
     ValorSaldo=0
   }
-return ValorSaldo
-}
 
+
+  return ValorSaldo
+}
 
 getSaldoFinalSemanal(numSemana:any,Mes:any,Anio:any){
  
@@ -409,6 +422,7 @@ if (!existe) {
     };
 
     this.SaldosInicialesSemanales.push(_SaldosSemanales);
+  
 } 
 
 
@@ -871,7 +885,21 @@ SaldoInicialValor(semana:any,mes:any,anio:any){
     }
 
     else {
-      valor= 0
+    //  let  _MesEncontrado:any=[]
+    //  console.log('mes',mes-1)
+    //  console.log('anio',anio)
+    //  console.log('SaldosInicialesMensuales',this.SaldosInicialesMensuales)
+
+    //  _MesEncontrado=this.SaldosInicialesMensuales.filter((mes:any)=>mes.Mes==mes-1 && mes.Anio==anio)
+    //  if(_MesEncontrado.length>0){
+    //   valor=_MesEncontrado[0].Valor
+    //  }
+    //  else {
+    //    valor= 0
+
+    //  }
+
+    valor=this.getSaldoFinalMensual( mes-1, anio)
       
     }
     
