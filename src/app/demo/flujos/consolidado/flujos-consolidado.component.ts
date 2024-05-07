@@ -373,16 +373,28 @@ else {
 
 }
 obtenerMaximoSemana(mes: number, año: number) {
-  const objetosFiltrados = this.SaldosInicialesSemanales.filter(objeto => objeto.Mes === mes && objeto.Año === año);
-  if (objetosFiltrados.length === 0) {
+
+
+  const objetosFiltrados = this.SaldosInicialesSemanales.filter(objeto => objeto.Mes == mes && objeto.Anio == año);  if (objetosFiltrados.length === 0) {
     return 0; // Si no hay objetos para el mes y año proporcionados
   }
   const maxSemana = Math.max(...objetosFiltrados.map(objeto => objeto.Semana));
   return objetosFiltrados.find(objeto => objeto.Semana === maxSemana).Semana;
 }
-getSaldoFinalMensual(mes: number, año: number){
-return this.obtenerMaximoSemana(mes,año)
+
+saldoInicialMes(mes: number, año: number){
+  let SaldoEncontrado:any=[]
+  let ValorSaldo:number=0
+  SaldoEncontrado=this.SaldosInicialesSemanales.filter(objeto => objeto.Mes == mes && objeto.Anio == año && objeto.Semana==this.obtenerMaximoSemana(mes,año) );
+  if(SaldoEncontrado.length>0){
+    ValorSaldo=SaldoEncontrado[0].Valor
+  }
+  else {
+    ValorSaldo=0
+  }
+return ValorSaldo
 }
+
 
 getSaldoFinalSemanal(numSemana:any,Mes:any,Anio:any){
  
@@ -398,7 +410,6 @@ if (!existe) {
 
     this.SaldosInicialesSemanales.push(_SaldosSemanales);
 } 
-
 
 
 
@@ -697,10 +708,18 @@ getDataFlujoFinancieroMensual(Mes:any,Anio:any){
 }
 
 getDataFlujoLibreMensual(Mes:any,Anio:any){
+
   return this.getDataFlujoOperativoMensual(Mes,Anio) 
   + this.getDataFlujoInversionMensual(Mes,Anio)
   + this.getDataFlujoFinancieroMensual(Mes,Anio)
   }
+  getSaldoFinalMensual(Mes:any,Anio:any){
+  return this.saldoInicialMes( Mes, Anio) +
+   this.getDataFlujoOperativoMensual(Mes,Anio) 
+  + this.getDataFlujoInversionMensual(Mes,Anio)
+  + this.getDataFlujoFinancieroMensual(Mes,Anio)
+  }
+  
 getDataAnualCategoria(idCategoria:any,Anio:any,Orden:any){
   if(Orden==3){
 
