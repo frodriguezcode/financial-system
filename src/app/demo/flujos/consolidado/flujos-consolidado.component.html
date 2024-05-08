@@ -10,7 +10,7 @@
         <table *ngIf="!Cargando" class="table table-100">
           <thead class="cabecera">
           
-              <th class="text-left" style="padding: 0.5rem;">Concepto</th> 
+              <th class="text-left" style="padding: 0.5rem;background-color: #0c8c86;text-transform: uppercase;" >Concepto</th> 
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
@@ -26,11 +26,11 @@
           </thead>
           <tbody>
             <tr>
-              <td>Saldo Inicial</td>
+              <td style="background-color: white;">Saldo Inicial</td>
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <td class="text-center">
+                    <td class="text-center" >
        
                       {{ formatValue(this.SaldoInicialValor(semana.Semana, mes.NumMes, anio.Anio) || 0) }}
                       
@@ -116,7 +116,7 @@
               </ng-container>
             </ng-container>
             <tr >
-              <td>Saldo Final en bancos</td>
+              <td style="background-color: white;">Saldo Final en bancos</td>
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
@@ -128,7 +128,7 @@
               </ng-container>
             </tr>
             <tr class="cabecera-flujo-efectivo-libre">
-              <td>Flujo efectivo libre</td>
+              <td style="background-color: #cee8e7;">Flujo efectivo libre</td>
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">

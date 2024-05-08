@@ -39,12 +39,17 @@ td:first-child {
     cursor: pointer;
 
   }
+
+  .fa-square-minus:hover{
+    color: #0c8c86;
+  }
   
   .categoria-toggle-icon {
     margin-left: 5px;
   }
   .cabecera-categoria{
-    background-color: rgba(0, 157, 178, 0.1);
+    // background-color: rgba(0, 157, 178, 0.1);
+    background-color: #ceecf0;
   }
   .cabecera-categoria-no-calc{
     background-color:white ;

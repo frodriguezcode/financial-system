@@ -37,7 +37,7 @@ export const NavigationItems: NavigationItem[] = [
         },
         {
           id: 'bancos',
-          title: 'Cuentas',
+          title: 'Cuentas de Bancos',
           type: 'item',
           url: '/bancos',
           // icon: 'feather icon-bold',
@@ -77,7 +77,7 @@ export const NavigationItems: NavigationItem[] = [
         },
         {
           id: 'item',
-          title: 'Items',
+          title: 'Centros de costos',
           type: 'item',
           url: '/item',
           // icon: 'feather icon-bold',
