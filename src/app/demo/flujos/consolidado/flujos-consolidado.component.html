@@ -20,7 +20,7 @@
                   
                   
                 </ng-container>
-                <th class="text-center" style="padding: 0.7rem;text-decoration: underline; font-weight: 700; color: #ffffff; border-left: 1px solid #eaeaea ; border-right: 1px solid #eaeaea ">{{"Total " + anio.Anio}}</th>
+                <!-- <th class="text-center" style="padding: 0.7rem;text-decoration: underline; font-weight: 700; color: #ffffff; border-left: 1px solid #eaeaea ; border-right: 1px solid #eaeaea ">{{"Total " + anio.Anio}}</th> -->
               </ng-container>
         
           </thead>
@@ -43,7 +43,7 @@
 
                   </th>
                 </ng-container>
-                <th class="text-center">0</th>
+                <!-- <th class="text-center">0</th> -->
               </ng-container>
             </tr>
             <ng-container *ngFor="let categoria of Categorias; let j = index">
@@ -80,10 +80,10 @@
                     >{{"$" + " " +this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio,categoria.Orden)}}</td>
                     
                   </ng-container>
-                  <td class="text-center"
+                  <!-- <td class="text-center"
                   [ngClass]="{'text-center': true, 'negativo': this.getDataAnualCategoria(categoria.id,anio.Anio,categoria.Orden) < 0}"
                   >{{"$" + " " +this.getDataAnualCategoria(categoria.id,anio.Anio,categoria.Orden)}}</td>
-        
+         -->
                 </ng-container>
               </tr>
               <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
@@ -103,11 +103,11 @@
                         >
                         {{"$" + " " +this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio)}}</td>
                       </ng-container>
-                      <td style="font-weight: bolder; " 
+                      <!-- <td style="font-weight: bolder; " 
                       class="text-center"
                       [ngClass]="{'text-center': true, 'negativo': this.getDataAnualItem(item.Nombre,anio.Anio)< 0}"
                       >
-                      {{"$" + " " +this.getDataAnualItem(item.Nombre,anio.Anio)}}</td>
+                      {{"$" + " " +this.getDataAnualItem(item.Nombre,anio.Anio)}}</td> -->
                
                     </ng-container>
                   </tr>
@@ -124,7 +124,7 @@
                   </ng-container>     
                   <td class="text-center"  style="background-color: rgb(87, 87, 86,0.2);">{{"$" + " " +this.getSaldoFinalMensual(mes.NumMes,anio.Anio)}}</td>
                 </ng-container>
-                <td class="text-center">{{"$" + " " +this.getDataFlujoLibreAnual(anio.Anio)}}</td>
+                <!-- <td class="text-center">{{"$" + " " +this.getDataFlujoLibreAnual(anio.Anio)}}</td> -->
               </ng-container>
             </tr>
             <tr class="cabecera-flujo-efectivo-libre">
@@ -137,7 +137,7 @@
                   <td class="text-center" style="background-color: rgb(87, 87, 86,0.2);">{{"$" + " " +this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio)}}</td>
                   
                 </ng-container>
-                <td class="text-center">{{"$" + " " +this.getDataFlujoLibreAnual(anio.Anio)}}</td>
+                <!-- <td class="text-center">{{"$" + " " +this.getDataFlujoLibreAnual(anio.Anio)}}</td> -->
 
               </ng-container>
             </tr>
