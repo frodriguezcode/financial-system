@@ -32,14 +32,14 @@
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
                     <td class="text-center" >
        
-                      {{ formatValue(this.SaldoInicialValor(semana.Semana, mes.NumMes, anio.Anio) || 0) }}
+                {{ "$" + " " + (this.SaldoInicialValor(semana.Semana, mes.NumMes, anio.Anio) | number)  }}
                       
                   
                     </td>
                     
                   </ng-container>     
                   <th style="background-color: rgb(87, 87, 86,0.2)" class="text-center">
-                    {{ formatValue(this.saldoInicialMes( mes.NumMes, anio.Anio)) }}
+                    {{ "$" + " " +  (this.saldoInicialMes( mes.NumMes, anio.Anio) | number) }}
 
                   </th>
                 </ng-container>
@@ -70,14 +70,14 @@
                       <td class="text-center" 
                       [ngClass]="{'text-center': true, 'negativo': this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio,categoria.Orden) < 0}">
 
-                    <span >{{"$" + " " +this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio,categoria.Orden)}}</span>  
+                    <span >{{"$" + " " + (this.getDataCategoria(semana.Semana,categoria.id,mes.NumMes,anio.Anio,categoria.Orden)| number)}}</span>  
                     
                     </td>
                     </ng-container>     
                     <td class="text-center"
                     style="background-color: rgb(87, 87, 86,0.2);"
                     [ngClass]="{'text-center': true, 'negativo': this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio,categoria.Orden) < 0}"
-                    >{{"$" + " " +this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio,categoria.Orden)}}</td>
+                    >{{"$" + " " + (this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio,categoria.Orden) | number)}}</td>
                     
                   </ng-container>
                   <!-- <td class="text-center"
@@ -94,14 +94,14 @@
                       <ng-container *ngFor="let mes of MesesRegistros" >
                         <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
                           <td style="font-weight: bolder;"  [ngClass]="{'text-center': true, 'negativo': this.getDataItem(semana.Semana,item.Nombre,mes.NumMes,anio.Anio) < 0}">
-                            {{ "$ " + this.getDataItem(semana.Semana,item.Nombre,mes.NumMes,anio.Anio) }}
+                            {{ "$ " + (this.getDataItem(semana.Semana,item.Nombre,mes.NumMes,anio.Anio) | number) }}
                           </td>
                           </ng-container>     
                         <td style="font-weight: bolder; background-color: rgb(87, 87, 86,0.2);" 
                         class="text-center"
                         [ngClass]="{'text-center': true, 'negativo': this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio) < 0}"
                         >
-                        {{"$" + " " +this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio)}}</td>
+                        {{"$" + " " + (this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio)| number)}}</td>
                       </ng-container>
                       <!-- <td style="font-weight: bolder; " 
                       class="text-center"
@@ -120,9 +120,9 @@
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <td class="text-center">{{"$" + " " +this.getSaldoFinalSemanal(semana.Semana,mes.NumMes,anio.Anio)}}</td>
+                    <td class="text-center">{{"$" + " " + (this.getSaldoFinalSemanal(semana.Semana,mes.NumMes,anio.Anio)| number)}}</td>
                   </ng-container>     
-                  <td class="text-center"  style="background-color: rgb(87, 87, 86,0.2);">{{"$" + " " +this.getSaldoFinalMensual(mes.NumMes,anio.Anio)}}</td>
+                  <td class="text-center"  style="background-color: rgb(87, 87, 86,0.2);">{{"$" + " " + (this.getSaldoFinalMensual(mes.NumMes,anio.Anio)| number)}}</td>
                 </ng-container>
                 <!-- <td class="text-center">{{"$" + " " +this.getDataFlujoLibreAnual(anio.Anio)}}</td> -->
               </ng-container>
@@ -132,9 +132,9 @@
               <ng-container *ngFor="let anio of AniosRegistros">      
                 <ng-container *ngFor="let mes of MesesRegistros" >
                   <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <td class="text-center">{{"$" + " " +this.getDataFlujoLibre(semana.Semana,mes.NumMes,anio.Anio)}}</td>
+                    <td class="text-center">{{"$" + " " + (this.getDataFlujoLibre(semana.Semana,mes.NumMes,anio.Anio)| number)}}</td>
                   </ng-container>     
-                  <td class="text-center" style="background-color: rgb(87, 87, 86,0.2);">{{"$" + " " +this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio)}}</td>
+                  <td class="text-center" style="background-color: rgb(87, 87, 86,0.2);">{{"$" + " " + (this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) | number)}}</td>
                   
                 </ng-container>
                 <!-- <td class="text-center">{{"$" + " " +this.getDataFlujoLibreAnual(anio.Anio)}}</td> -->

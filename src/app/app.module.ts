@@ -27,7 +27,9 @@ import { FirebaseModule } from './firebase.module';
 import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
-
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+registerLocaleData(localeEs);
 @NgModule({
   declarations: [
     AppComponent,

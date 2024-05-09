@@ -869,7 +869,7 @@ formatValue(valor: number): string {
   return "$ " + valor.toString();
 }
 SaldoInicialValor(semana:any,mes:any,anio:any){
-  let valor:number=0
+  let valor:any=0
   let SemanaEncontrada:any=[]
   SemanaEncontrada=this.SaldoInicial.filter((sem:any)=>sem.SemanaNum==semana && sem.NumMes==mes && sem.AnioRegistro==anio)
   if(SemanaEncontrada.length>0){
