@@ -33,11 +33,14 @@ export default class FlujoConsolidadoComponent implements OnInit {
   Semanas: any=[];
   CuentasBanco:any=[]
   CuentasBancoSelect:any=[]
+  Sucursales:any=[]
+  SucursalesSelect:any=[]
   Usuarios:any=[]
   UsuariosSelect:any=[]
   SaldosInicialesSemanales:any=[]
   SaldosInicialesMensuales:any=[]
   Cargando:boolean=true;
+  Criterios:any={}
   categoriasExpandidas: { [id: number]: boolean } = {};
  ngOnInit(): void {
   this.Anios=[2023,2024]
@@ -108,11 +111,66 @@ export default class FlujoConsolidadoComponent implements OnInit {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerSaldoInicial()
   this.obtenerUsuarios()
+  this.obtenerSucursales()
   this.ObtenerCuentasBanco()
   this.obtenerCategorias()
  }
  toggleCategoria(id: number) {
   this.categoriasExpandidas[id] = !this.categoriasExpandidas[id];
+}
+
+filtrarData(){
+  let Anios:any=[]
+  let Meses:any=[]
+  let Cuentas:any=[]
+  let Usuarios:any=[]
+  let Sucursales:any=[]
+
+
+  if(this.MesesSeleccionados.length>0){
+    this.MesesSeleccionados.forEach((element:any) => {
+      Meses.push(element.Mes)
+    });
+    this.MesesRegistros=this.MesesSeleccionados
+  }
+  else {
+    this.MesesRegistros=this.MesesRegistrosBack
+  }
+  if(this.AniosSelect.length>0){
+    this.AniosSelect.forEach((element:any) => {
+      Anios.push(element.Anio)
+    });
+    this.AniosRegistros=this.AniosSelect
+  }
+  else {
+    this.Anios=this.AniosRegistrosBack
+  }
+  if(this.CuentasBancoSelect.length>0){
+    this.CuentasBancoSelect.forEach((element:any) => {
+      Cuentas.push(element.Cuenta)
+    });
+  }
+  if(this.UsuariosSelect.length>0){
+    this.UsuariosSelect.forEach((element:any) => {
+      Usuarios.push(element.Usuario)
+    });
+  }
+  if(this.SucursalesSelect.length>0){
+    this.SucursalesSelect.forEach((element:any) => {
+      Sucursales.push(element.id)
+    });
+  }
+
+  this.Criterios=
+  {
+    MesRegistro: Meses ,
+    AnioRegistro:Anios,
+    NumCuenta: Cuentas,
+    Usuario:Usuarios,
+    idSucursal: Sucursales,
+
+  }
+  this.Registros= this.conS.filtradoDinamico(this.Criterios,this.RegistrosBack)
 }
  buscarPorCuentaBanco(){
   this.Registros=this.RegistrosBack
@@ -383,27 +441,76 @@ obtenerMaximoSemana(mes: number, año: number) {
   return objetosFiltrados.find(objeto => objeto.Semana === maxSemana).Semana;
 }
 
-saldoInicialMes(mes: number, año: number){
-  let SaldoEncontrado:any=[]
-  let ValorSaldo:number=0
-  SaldoEncontrado=this.SaldosInicialesSemanales.filter(objeto => objeto.Mes == mes && objeto.Anio == año && objeto.Semana==this.obtenerMaximoSemana(mes,año) );
-  if(SaldoEncontrado.length>0){
-    ValorSaldo=SaldoEncontrado[0].Valor
-    const existe = this.SaldosInicialesMensuales.some(saldo => 
-      saldo.Anio === año && saldo.Mes === mes);
- if (!existe) {
-     let _SaldosMensuales = {
-         "Anio": año,
-         "Mes": mes,
-         "Valor": ValorSaldo
-     };
- 
-     this.SaldosInicialesMensuales.push(_SaldosMensuales);
-   }
+SaldoInicialValor(semana:any,mes:any,anio:any){
+  let valor:any=0
+  let SemanaEncontrada:any=[]
+  SemanaEncontrada=this.SaldoInicial.filter((sem:any)=>sem.SemanaNum==semana && sem.NumMes==mes && sem.AnioRegistro==anio)
+  if(SemanaEncontrada.length>0){
+    valor=SemanaEncontrada[0].Valor
   }
   else {
-    ValorSaldo=0
+    let SemanaEncontrada:any=[]
+    SemanaEncontrada= this.SaldosInicialesSemanales.filter((sem:any)=>sem.Semana==semana-1 && sem.Mes==mes && sem.Anio==anio)
+
+    if(SemanaEncontrada.length>0){
+      valor=SemanaEncontrada[0].Valor
+
+    }
+
+    else {
+
+
+    valor=this.getSaldoFinalMensual( mes-1, anio)
+      
+    }
+    
   }
+  return valor
+}
+
+saldoInicialMes(mes: number, año: number){
+
+  let SaldoEncontrado:any=[]
+  let ValorSaldo:number=0
+
+  let SemanaEncontrada:any=[]
+  let ValorMesEncontrado:any=[]
+  SemanaEncontrada=this.SaldoInicial.filter((sem:any)=> sem.NumMes==mes && sem.AnioRegistro==año)
+  if(SemanaEncontrada.length>0){
+    ValorSaldo=SemanaEncontrada[0].Valor
+  }
+  else {
+    ValorMesEncontrado=this.SaldosInicialesSemanales.filter((valorMes:any)=>valorMes.Mes==mes-1 && valorMes.Anio==año && valorMes.Semana==this.obtenerMaximoSemana(mes-1,año))
+    if(ValorMesEncontrado.length>0){
+      ValorSaldo=ValorMesEncontrado[0].Valor
+    }
+    else{
+
+      ValorSaldo=0
+    }
+
+  }
+
+
+
+//   SaldoEncontrado=this.SaldosInicialesSemanales.filter(objeto => objeto.Mes == mes && objeto.Anio == año && objeto.Semana==this.obtenerMaximoSemana(mes,año) );
+//   if(SaldoEncontrado.length>0){
+//     ValorSaldo=SaldoEncontrado[0].Valor
+//     const existe = this.SaldosInicialesMensuales.some(saldo => 
+//       saldo.Anio === año && saldo.Mes === mes);
+//  if (!existe) {
+//      let _SaldosMensuales = {
+//          "Anio": año,
+//          "Mes": mes,
+//          "Valor": ValorSaldo
+//      };
+ 
+//      this.SaldosInicialesMensuales.push(_SaldosMensuales);
+//    }
+//   }
+//   else {
+//     ValorSaldo=0
+//   }
 
 
   return ValorSaldo
@@ -852,6 +959,11 @@ ObtenerCuentasBanco(){
   this.CuentasBanco=resp
   })
 }
+obtenerSucursales(){
+  this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
+  this.Sucursales=resp
+  })
+}
 obtenerUsuarios(){
   this.conS.obtenerUsuarios(this.usuario.idEmpresa).subscribe(resp=>{
   this.Usuarios=resp
@@ -868,44 +980,7 @@ obtenerSaldoInicial(){
 formatValue(valor: number): string {
   return "$ " + valor.toString();
 }
-SaldoInicialValor(semana:any,mes:any,anio:any){
-  let valor:any=0
-  let SemanaEncontrada:any=[]
-  SemanaEncontrada=this.SaldoInicial.filter((sem:any)=>sem.SemanaNum==semana && sem.NumMes==mes && sem.AnioRegistro==anio)
-  if(SemanaEncontrada.length>0){
-    valor=SemanaEncontrada[0].Valor
-  }
-  else {
-    let SemanaEncontrada:any=[]
-    SemanaEncontrada= this.SaldosInicialesSemanales.filter((sem:any)=>sem.Semana==semana-1 && sem.Mes==mes && sem.Anio==anio)
 
-    if(SemanaEncontrada.length>0){
-      valor=SemanaEncontrada[0].Valor
-
-    }
-
-    else {
-    //  let  _MesEncontrado:any=[]
-    //  console.log('mes',mes-1)
-    //  console.log('anio',anio)
-    //  console.log('SaldosInicialesMensuales',this.SaldosInicialesMensuales)
-
-    //  _MesEncontrado=this.SaldosInicialesMensuales.filter((mes:any)=>mes.Mes==mes-1 && mes.Anio==anio)
-    //  if(_MesEncontrado.length>0){
-    //   valor=_MesEncontrado[0].Valor
-    //  }
-    //  else {
-    //    valor= 0
-
-    //  }
-
-    valor=this.getSaldoFinalMensual( mes-1, anio)
-      
-    }
-    
-  }
-  return valor
-}
 
 getSaldoInicialSemana(semana:number,numMes:any,anio:any){
   let _SaldoInicial:any=[]

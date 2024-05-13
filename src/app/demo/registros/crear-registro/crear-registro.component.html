@@ -133,7 +133,7 @@
             </ng-template>
           </p-dropdown> -->
 
-          <p-dropdown [options]="ItemsCategGroup"
+          <p-dropdown [options]="getItemsCategGroup(registros.Tipo)"
            [(ngModel)]="registros.Elemento"
             placeholder="Seleccione un elemento"
             [filter]="true" filterBy="label"

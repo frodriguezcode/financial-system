@@ -510,12 +510,17 @@ obtenerCuentas(){
   })
 }
 crearRegistro(tipo:any) {
-  let _Categorias:any=[]
-  _Categorias=this.ItemsCategGroupBack
-  this.ItemsCategGroup=_Categorias.filter((cat:any)=>cat.Tipo==tipo)
   this.guardarRegistro(tipo)
 }
 
+getItemsCategGroup(tipo:any){
+
+  let _Categorias:any=[]
+  _Categorias=this.ItemsCategGroupBack
+  this.ItemsCategGroup=_Categorias.filter((cat:any)=>cat.Tipo==tipo)
+  return this.ItemsCategGroup
+
+}
 
 get selectedCategoria() {
   return this.Categorias.find((cat:any):any => cat.id === this.EditRegistroForm.value.idCategoria);

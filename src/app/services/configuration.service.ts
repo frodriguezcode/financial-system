@@ -9,6 +9,28 @@ import { Observable } from 'rxjs';
 export class ConfigurationService {
 
   constructor( private afs: AngularFirestore,) { }
+
+  filtradoDinamico(Criterios:any,datos:any){
+
+    const ArregloFiltrado = datos.filter((item: any) => {
+      for (const key in Criterios) {
+        if (Array.isArray(Criterios[key])) {
+          if (Criterios[key].length > 0 && !Criterios[key].includes(item[key])) {
+            return false;
+          }
+        } else {
+          if (key !== 'idCliente' && Criterios[key] !== '' && item[key] !== Criterios[key]) {
+            return false;
+          }
+        }
+      }
+      return true;
+    });
+  
+        return ArregloFiltrado
+  
+    
+    }
 ordenarSemanas(semanas){
 
   semanas.sort((a, b) => {
