@@ -42,6 +42,9 @@ export default class FlujoConsolidadoComponent implements OnInit {
   Cargando:boolean=true;
   Criterios:any={}
   categoriasExpandidas: { [id: number]: boolean } = {};
+
+  SaldosInicioSemana:any=[]
+  SaldosInicioMes:any=[]
  ngOnInit(): void {
   this.Anios=[2023,2024]
   this.MesesTodos= [
@@ -368,6 +371,21 @@ obtenerRegistrosFacturas(){
     this.Anios=this.conS.ordenarAnios(this.AniosRegistros)
     this.AniosRegistrosBack=this.conS.ordenarAnios(this.AniosRegistros)
 
+    this.Anios.forEach((anio:any)=>{
+      this.MesesRegistros.forEach((mes:any)=>{
+        this.getSemanasByMonth(mes.NumMes,anio.Anio).forEach((semana:any)=>{
+
+          let _ValorInicialSemana={
+            "Anio":anio,
+            "NumMes":mes.NumMes,
+            "Semana":semana.Semana,
+            "Valor":this.SaldoInicialValor(semana.Semana, mes.NumMes, anio.Anio)
+          }
+        this.SaldosInicioSemana.push(_ValorInicialSemana)
+        })
+      })
+    })
+    console.log('SaldosInicioSemana',this.SaldosInicioSemana)
     // this.MesesRegistrosBack=this.MesesRegistros
     // this.AniosRegistros=this.AniosRegistrosBack
     
