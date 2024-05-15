@@ -40,6 +40,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   SaldosInicialesSemanales:any=[]
   SaldosInicialesMensuales:any=[]
   Cargando:boolean=true;
+  SelectMes:boolean=false;
   Criterios:any={}
   categoriasExpandidas: { [id: number]: boolean } = {};
 
@@ -117,6 +118,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   this.obtenerSucursales()
   this.ObtenerCuentasBanco()
   this.obtenerCategorias()
+
  }
  toggleCategoria(id: number) {
   this.categoriasExpandidas[id] = !this.categoriasExpandidas[id];
@@ -163,6 +165,7 @@ filtrarData(){
       Sucursales.push(element.id)
     });
   }
+
 
   this.Criterios=
   {
@@ -371,21 +374,8 @@ obtenerRegistrosFacturas(){
     this.Anios=this.conS.ordenarAnios(this.AniosRegistros)
     this.AniosRegistrosBack=this.conS.ordenarAnios(this.AniosRegistros)
 
-    this.Anios.forEach((anio:any)=>{
-      this.MesesRegistros.forEach((mes:any)=>{
-        this.getSemanasByMonth(mes.NumMes,anio.Anio).forEach((semana:any)=>{
+    
 
-          let _ValorInicialSemana={
-            "Anio":anio,
-            "NumMes":mes.NumMes,
-            "Semana":semana.Semana,
-            "Valor":this.SaldoInicialValor(semana.Semana, mes.NumMes, anio.Anio)
-          }
-        this.SaldosInicioSemana.push(_ValorInicialSemana)
-        })
-      })
-    })
-    console.log('SaldosInicioSemana',this.SaldosInicioSemana)
     // this.MesesRegistrosBack=this.MesesRegistros
     // this.AniosRegistros=this.AniosRegistrosBack
     
@@ -415,12 +405,14 @@ obtenerRegistrosFacturas(){
  }
 
  getSemanasByMonth(NumMes:any,Anio:any){
+
   let _SemanasMes:any=[];
   _SemanasMes=this.Semanas
   .filter((sem:any)=>
   sem.NumMes==NumMes && 
   sem.Anio==Anio
 )
+
 
 if(_SemanasMes.length>0){
   return _SemanasMes
@@ -460,25 +452,31 @@ obtenerMaximoSemana(mes: number, año: number) {
 }
 
 SaldoInicialValor(semana:any,mes:any,anio:any){
+ 
+
   let valor:any=0
   let SemanaEncontrada:any=[]
   SemanaEncontrada=this.SaldoInicial.filter((sem:any)=>sem.SemanaNum==semana && sem.NumMes==mes && sem.AnioRegistro==anio)
+
   if(SemanaEncontrada.length>0){
+
     valor=SemanaEncontrada[0].Valor
   }
   else {
     let SemanaEncontrada:any=[]
     SemanaEncontrada= this.SaldosInicialesSemanales.filter((sem:any)=>sem.Semana==semana-1 && sem.Mes==mes && sem.Anio==anio)
+ 
 
     if(SemanaEncontrada.length>0){
       valor=SemanaEncontrada[0].Valor
+
 
     }
 
     else {
 
-
     valor=this.getSaldoFinalMensual( mes-1, anio)
+
       
     }
     
@@ -852,8 +850,21 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
   + this.getDataFlujoInversionMensual(Mes,Anio)
   + this.getDataFlujoFinancieroMensual(Mes,Anio)
   }
+  SeleccionarMes(){
+    this.SelectMes=!this.SelectMes
+  }
   getSaldoFinalMensual(Mes:any,Anio:any){
-  return this.saldoInicialMes( Mes, Anio) +
+    let _Mes:number=0
+    if(this.SelectMes==true){
+      _Mes=Mes+1
+
+    }
+
+    else {
+      _Mes=Mes
+    }
+
+  return this.saldoInicialMes( _Mes, Anio) +
    this.getDataFlujoOperativoMensual(Mes,Anio) 
   + this.getDataFlujoInversionMensual(Mes,Anio)
   + this.getDataFlujoFinancieroMensual(Mes,Anio)
@@ -1028,6 +1039,11 @@ obtenerCategorias(){
 this.conS.obtenerCategoriasFlujos().subscribe((data)=>{
   // this.Categorias=data.filter((cate:any)=>cate.Mostrar==true)
   this.Categorias=data
+
+
+this.Categorias.forEach(categoria => {
+  this.toggleCategoria(categoria.id)
+});
 
   this.obtenerItems()
 

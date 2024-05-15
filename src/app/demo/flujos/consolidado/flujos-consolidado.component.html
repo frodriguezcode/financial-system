@@ -3,7 +3,7 @@
 
       <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Anios" [(ngModel)]="AniosSelect" display="chip" placeholder="Años" optionLabel="Anio"></p-multiSelect>
 
-      <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="MesesTodos" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Meses" optionLabel="Mes"></p-multiSelect>
+      <p-multiSelect class="m-1" (onChange)="filtrarData();this.SeleccionarMes()" [options]="MesesTodos" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Meses" optionLabel="Mes"></p-multiSelect>
       <p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="CuentasBanco" [(ngModel)]="CuentasBancoSelect" display="chip" placeholder="Cuentas" optionLabel="Cuenta"></p-multiSelect>
       <p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="Usuarios" [(ngModel)]="UsuariosSelect" display="chip" placeholder="Usuarios" optionLabel="Nombres"></p-multiSelect>
       <p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="Sucursales" [(ngModel)]="SucursalesSelect" display="chip" placeholder="Sucursales" optionLabel="Nombre"></p-multiSelect>
