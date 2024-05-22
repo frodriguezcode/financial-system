@@ -3,13 +3,22 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Registro } from '../models/registro';
 import { error } from 'console';
 import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigurationService {
+  private apiUrl = 'http://worldtimeapi.org/api/timezone';
+  constructor( private afs: AngularFirestore,private http: HttpClient) { }
 
-  constructor( private afs: AngularFirestore,) { }
-
+  getCalendario(){
+    let _Calendario:[
+      
+    ]
+  }
+  getDaysOfMonth(timezone: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${timezone}`);
+  }
   filtradoDinamico(Criterios:any,datos:any){
 
     const ArregloFiltrado = datos.filter((item: any) => {

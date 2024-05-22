@@ -43,10 +43,18 @@ export default class FlujoConsolidadoComponent implements OnInit {
   SelectMes:boolean=false;
   Criterios:any={}
   categoriasExpandidas: { [id: number]: boolean } = {};
-
+  days: string[];
   SaldosInicioSemana:any=[]
   SaldosInicioMes:any=[]
  ngOnInit(): void {
+
+  this.conS.getDaysOfMonth('Europe/London').subscribe((data: any) => {
+    // Supongamos que data contiene un campo 'days' con los días del mes
+    this.days = data.days;
+    console.log('days',data)
+  });
+
+
   this.Anios=[2023,2024]
   this.MesesTodos= [
 

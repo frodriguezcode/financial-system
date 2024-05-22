@@ -36,52 +36,12 @@ export const NavigationItems: NavigationItem[] = [
           breadcrumbs: false
         },
         {
-          id: 'bancos',
-          title: 'Cuentas de Bancos',
+          id: 'dashboard',
+          title: 'Dashboard',
           type: 'item',
-          url: '/bancos',
+          url: '/analytics',
           // icon: 'feather icon-bold',
-          icon: 'fa-solid fa-building-columns',
-       
-          breadcrumbs: false
-        },
-        {
-          id: 'empresa',
-          title: 'Empresa',
-          type: 'item',
-          url: '/empresas',
-          // icon: 'feather icon-bold',
-          icon: 'fa-solid fa-building',
-       
-          breadcrumbs: false
-        },
-        {
-          id: 'sucursales',
-          title: 'Sucursales',
-          type: 'item',
-          url: '/sucursales',
-          // icon: 'feather icon-bold',
-          icon: 'fa-solid fa-store',
-       
-          breadcrumbs: false
-        },
-        {
-          id: 'socios',
-          title: 'Socios de negocios',
-          type: 'item',
-          url: '/socios',
-          // icon: 'feather icon-bold',
-          icon: 'fa-solid fa-user-tie',
-       
-          breadcrumbs: false
-        },
-        {
-          id: 'item',
-          title: 'Centros de costos',
-          type: 'item',
-          url: '/item',
-          // icon: 'feather icon-bold',
-          icon: 'fa-solid fa-list',
+          icon: 'fa-solid fa-chart-line',
        
           breadcrumbs: false
         },
@@ -95,16 +55,7 @@ export const NavigationItems: NavigationItem[] = [
        
           breadcrumbs: false
         },
-        {
-          id: 'departamentos',
-          title: 'Departamentos',
-          type: 'item',
-          url: '/departamentos',
-          // icon: 'feather icon-bold',
-          icon: 'fa-solid fa-file-invoice',
-       
-          breadcrumbs: false
-        },
+    
         {
           id: 'signin',
           title: 'Sign in',
