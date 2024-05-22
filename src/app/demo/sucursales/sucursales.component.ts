@@ -10,13 +10,13 @@ import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-sample-page',
+  selector: 'app-sucursal',
   standalone: true,
   imports: [CommonModule, SharedModule,FormsModule,ReactiveFormsModule],
   templateUrl: './sucursales.component.html',
   styleUrls: ['./sucursales.component.scss']
 })
-export default class SamplePageComponent implements OnInit {
+export default class SucursalesComponent implements OnInit {
   Sucursales:any=[]
   Empresas:any=[]
   sucursalFound:boolean=false

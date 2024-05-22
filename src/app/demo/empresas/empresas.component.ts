@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-sample-page',
+  selector: 'app-empresas',
   standalone: true,
   imports: [CommonModule, SharedModule, FormsModule, ReactiveFormsModule],
   templateUrl: './empresas.component.html',

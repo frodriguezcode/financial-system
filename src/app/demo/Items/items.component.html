@@ -1,4 +1,7 @@
-<app-card cardTitle="Módulo Cuentas" [options]="false">
+
+
+
+<app-card *ngIf="this.Categorias.length>0" cardTitle="Módulo Cuentas" [options]="false">
   <div class="row">
     <div class="col-md-4 col-lg-4 col-12">
       <h5>Crear Centro de Costos/Ingresos</h5>

@@ -1,6 +1,7 @@
 // angular import
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { TabViewModule } from 'primeng/tabview';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -13,7 +14,7 @@ import { BuscarPipe } from '../../theme/shared/filter/buscar.pipe';
 @Component({
   selector: 'app-elemento',
   standalone: true,
-  imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule,RadioButtonModule],
+  imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule,RadioButtonModule,TabViewModule],
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
 })
@@ -32,6 +33,7 @@ export default class ItemsComponent  implements OnInit{
   todasSucursales!:boolean
   BlocCheck!:boolean
   ngOnInit(): void {
+
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerCategorias()
     this.obtenerEmpresas()
