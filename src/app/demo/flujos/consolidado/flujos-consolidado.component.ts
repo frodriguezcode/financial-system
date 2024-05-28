@@ -145,6 +145,7 @@ filtrarData(){
       Meses.push(element.Mes)
     });
     this.MesesRegistros=this.MesesSeleccionados
+  
   }
   else {
     this.MesesRegistros=this.MesesRegistrosBack
@@ -751,22 +752,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
   SeleccionarMes(){
     this.SelectMes=!this.SelectMes
   }
-  getSaldoFinalMensual(Mes:any,Anio:any){
-    let _Mes:number=0
-    if(this.SelectMes==true){
-      _Mes=Mes+1
 
-    }
-
-    else {
-      _Mes=Mes
-    }
-
-  return 
-   this.getDataFlujoOperativoMensual(Mes,Anio) 
-  + this.getDataFlujoInversionMensual(Mes,Anio)
-  + this.getDataFlujoFinancieroMensual(Mes,Anio)
-  }
   
 getDataAnualCategoria(idCategoria:any,Anio:any,Orden:any){
   if(Orden==3){
@@ -904,9 +890,26 @@ obtenerSaldoInicial(){
   })
 }
 //ValoresSaldos
-getValorInicialSemanal(Semana:any,Mes:string,Anio:any){
+getValorInicialSemanal(Semana:any,Mes:any,Anio:any){
+  console.log('Mes',Mes)
   let ValosEncontrado:any=[]
-  ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==)
+  ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==Semana && val.NumMes==Mes && val.AnioRegistro==Anio)
+  if(ValosEncontrado.length>0){
+    return ValosEncontrado[0].Valor
+  }
+  else {
+    return this.getValorFinalSemanal(Semana-1,Mes,Anio)
+  }
+}
+getValorFinalSemanal(Semana:any,Mes:any,Anio:any){
+  let ValosEncontrado:any=[]
+  ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==Semana && val.NumMes==Mes && val.AnioRegistro==Anio)
+  if(ValosEncontrado.length>0){
+    return ValosEncontrado[0].Valor + this.getDataFlujoLibre(Semana,Mes,Anio)
+  }
+  else {
+    return 0
+  }
 }
 
 
