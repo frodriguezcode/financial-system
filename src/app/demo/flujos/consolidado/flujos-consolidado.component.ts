@@ -18,7 +18,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   Items:any=[]
   semanas: any[] = [];
   Meses: any = [];
-  SaldoInicial:any=[]
+
   MesesSeleccionados: any = [];
   Anios: any[] = [];
   AniosSelect: any[] = [];
@@ -37,15 +37,15 @@ export default class FlujoConsolidadoComponent implements OnInit {
   SucursalesSelect:any=[]
   Usuarios:any=[]
   UsuariosSelect:any=[]
-  SaldosInicialesSemanales:any=[]
-  SaldosInicialesMensuales:any=[]
+
   Cargando:boolean=true;
   SelectMes:boolean=false;
   Criterios:any={}
   categoriasExpandidas: { [id: number]: boolean } = {};
   days: string[];
-  SaldosInicioSemana:any=[]
-  SaldosInicioMes:any=[]
+  //SaldosIniciales
+  SaldoInicial:any=[]
+
  ngOnInit(): void {
 
   this.conS.getDaysOfMonth('Europe/London').subscribe((data: any) => {
@@ -449,119 +449,9 @@ else {
 
 
 }
-obtenerMaximoSemana(mes: number, año: number) {
-
-
-  const objetosFiltrados = this.SaldosInicialesSemanales.filter(objeto => objeto.Mes == mes && objeto.Anio == año);  if (objetosFiltrados.length === 0) {
-    return 0; // Si no hay objetos para el mes y año proporcionados
-  }
-  const maxSemana = Math.max(...objetosFiltrados.map(objeto => objeto.Semana));
-  return objetosFiltrados.find(objeto => objeto.Semana === maxSemana).Semana;
-}
-
-SaldoInicialValor(semana:any,mes:any,anio:any){
- 
-
-  let valor:any=0
-  let SemanaEncontrada:any=[]
-  SemanaEncontrada=this.SaldoInicial.filter((sem:any)=>sem.SemanaNum==semana && sem.NumMes==mes && sem.AnioRegistro==anio)
-
-  if(SemanaEncontrada.length>0){
-
-    valor=SemanaEncontrada[0].Valor
-  }
-  else {
-    let SemanaEncontrada:any=[]
-    SemanaEncontrada= this.SaldosInicialesSemanales.filter((sem:any)=>sem.Semana==semana-1 && sem.Mes==mes && sem.Anio==anio)
- 
-
-    if(SemanaEncontrada.length>0){
-      valor=SemanaEncontrada[0].Valor
-
-
-    }
-
-    else {
-
-    valor=this.getSaldoFinalMensual( mes-1, anio)
-
-      
-    }
-    
-  }
-  return valor
-}
-
-saldoInicialMes(mes: number, año: number){
-
-  let SaldoEncontrado:any=[]
-  let ValorSaldo:number=0
-
-  let SemanaEncontrada:any=[]
-  let ValorMesEncontrado:any=[]
-  SemanaEncontrada=this.SaldoInicial.filter((sem:any)=> sem.NumMes==mes && sem.AnioRegistro==año)
-  if(SemanaEncontrada.length>0){
-    ValorSaldo=SemanaEncontrada[0].Valor
-  }
-  else {
-    ValorMesEncontrado=this.SaldosInicialesSemanales.filter((valorMes:any)=>valorMes.Mes==mes-1 && valorMes.Anio==año && valorMes.Semana==this.obtenerMaximoSemana(mes-1,año))
-    if(ValorMesEncontrado.length>0){
-      ValorSaldo=ValorMesEncontrado[0].Valor
-    }
-    else{
-
-      ValorSaldo=0
-    }
-
-  }
 
 
 
-//   SaldoEncontrado=this.SaldosInicialesSemanales.filter(objeto => objeto.Mes == mes && objeto.Anio == año && objeto.Semana==this.obtenerMaximoSemana(mes,año) );
-//   if(SaldoEncontrado.length>0){
-//     ValorSaldo=SaldoEncontrado[0].Valor
-//     const existe = this.SaldosInicialesMensuales.some(saldo => 
-//       saldo.Anio === año && saldo.Mes === mes);
-//  if (!existe) {
-//      let _SaldosMensuales = {
-//          "Anio": año,
-//          "Mes": mes,
-//          "Valor": ValorSaldo
-//      };
- 
-//      this.SaldosInicialesMensuales.push(_SaldosMensuales);
-//    }
-//   }
-//   else {
-//     ValorSaldo=0
-//   }
-
-
-  return ValorSaldo
-}
-
-getSaldoFinalSemanal(numSemana:any,Mes:any,Anio:any){
- 
-  const existe = this.SaldosInicialesSemanales.some(saldo => 
-    saldo.Semana === numSemana && saldo.Anio === Anio && saldo.Mes === Mes);
-if (!existe) {
-    let _SaldosSemanales = {
-        "Semana": numSemana,
-        "Anio": Anio,
-        "Mes": Mes,
-        "Valor": this.SaldoInicialValor(numSemana, Mes, Anio) + this.getDataFlujoLibre(numSemana, Mes, Anio)
-    };
-
-    this.SaldosInicialesSemanales.push(_SaldosSemanales);
-  
-} 
-
-
-
-  return this.SaldoInicialValor(numSemana,Mes,Anio) 
-  + this.getDataFlujoLibre(numSemana,Mes,Anio)
-
-}
 
 getDataItem(NumSemana:any,NombreElemento:any,Mes:any,Anio:any){
   let _Data: any=[];
@@ -872,7 +762,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
       _Mes=Mes
     }
 
-  return this.saldoInicialMes( _Mes, Anio) +
+  return 
    this.getDataFlujoOperativoMensual(Mes,Anio) 
   + this.getDataFlujoInversionMensual(Mes,Anio)
   + this.getDataFlujoFinancieroMensual(Mes,Anio)
@@ -1009,39 +899,22 @@ obtenerUsuarios(){
 obtenerSaldoInicial(){
   this.conS.obtenerSaldoInicial(this.usuario.idEmpresa).subscribe(resp=>{
   this.SaldoInicial=resp
-
+    console.log('SaldoInicial',this.SaldoInicial)
 
   })
 }
+//ValoresSaldos
+getValorInicialSemanal(Semana:any,Mes:string,Anio:any){
+  let ValosEncontrado:any=[]
+  ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==)
+}
+
 
 formatValue(valor: number): string {
   return "$ " + valor.toString();
 }
 
 
-getSaldoInicialSemana(semana:number,numMes:any,anio:any){
-  let _SaldoInicial:any=[]
-  _SaldoInicial=this.SaldoInicial.filter((x:any)=>Number(x.SemanaNum)===Number(semana) && x.NumMes==numMes && x.AnioRegistro==anio)
-
-if(_SaldoInicial.length>0){
-  return _SaldoInicial[0].Valor
-
-}
-else {
-let SaldoInicial:any=[]
-let SaldoValor:number=0
-SaldoInicial=this.SaldosInicialesSemanales.filter((sem:any)=>sem.Semana ==semana && sem.Mes ==numMes && sem.Año ==anio )
-if(SaldoInicial.length>0){
-  SaldoValor=SaldoInicial[0].Valor
-}
-else {
-  SaldoValor=0
-}
-
-
- return SaldoValor
-}
-}
 
 obtenerCategorias(){
 this.conS.obtenerCategoriasFlujos().subscribe((data)=>{
