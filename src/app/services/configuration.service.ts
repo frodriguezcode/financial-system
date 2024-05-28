@@ -356,6 +356,36 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .doc(IdRegistro)
         .ref.update({Activo:false});
     }
+
+
+    
+  identificarSemanas(semanas: any[]): any[] {
+    const grupos: { [key: string]: any  [] } = semanas.reduce((acc, semana) => {
+      const key = `${semana.Anio}-${semana.NumMes}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(semana);
+      return acc;
+    }, {});
+
+    for (const key in grupos) {
+      const semanasDelMes = grupos[key];
+      semanasDelMes.sort((a, b) => a.NumSemana - b.NumSemana); // Asegurarse de que estén ordenadas
+      semanasDelMes.forEach((semana, index) => {
+        if (index === 0) {
+          semana.Posicion = 'Inicial';
+        } else if (index === semanasDelMes.length - 1) {
+          semana.Posicion = 'Final';
+        } else {
+          semana.Posicion = 'En medio';
+        }
+      });
+    }
+    return semanas;
+  }
+
+
    
 }
 

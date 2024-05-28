@@ -46,12 +46,13 @@ export default class FlujoConsolidadoComponent implements OnInit {
   //SaldosIniciales
   SaldoInicial:any=[]
 
+  SaldosSemanales:any=[]
+
  ngOnInit(): void {
 
   this.conS.getDaysOfMonth('Europe/London').subscribe((data: any) => {
     // Supongamos que data contiene un campo 'days' con los días del mes
     this.days = data.days;
-    console.log('days',data)
   });
 
 
@@ -408,7 +409,34 @@ obtenerRegistrosFacturas(){
     this.semanas.reverse();
 
     this.RegistrosBack=this.Registros
+console.log('Semanas', this.Semanas)
 
+const semanasIdentificadas = this.conS.identificarSemanas(this.Semanas);
+
+
+console.log('semanasIdentificadas',semanasIdentificadas);
+// this.Semanas.forEach((element:any) => {
+//   let _ValoresSemana:any={
+//     "Semana":"Semana " + element.Semana,
+//     "NumSemana":element.Semana,
+//     "NumMes":element.NumMes,
+//     "Mes":element.Mes,
+//     "Anio":element.Anio,
+//     "SaldoInicial":this.getValorInicialSemanal(element.Semana,element.NumMes,element.Anio),
+//     "SaldoFinal":this.getValorFinalSemanal(element.Semana,element.NumMes,element.Anio)
+
+//   }
+//   let _ValorSemana:any=[]
+//   _ValorSemana=this.SaldosSemanales.filter((data:any)=>data.NumSemana==element.Semana 
+//   && element.NumMes==element.NumMes
+//   && element.Anio==element.Anio 
+// )
+// if(_ValorSemana.length==0){
+//   this.SaldosSemanales.push(_ValoresSemana)
+
+// }
+// });
+// console.log('SaldosSemanales', this.SaldosSemanales)
     this.Cargando=false
   })
  }
@@ -445,6 +473,7 @@ else {
        "Mes":this.MesesTodos[this.getMonthName(Fecha)].Mes,
      }
    this.semanas.push(_semana);
+
 
    }
 
@@ -891,7 +920,7 @@ obtenerSaldoInicial(){
 }
 //ValoresSaldos
 getValorInicialSemanal(Semana:any,Mes:any,Anio:any){
-  console.log('Mes',Mes)
+  
   let ValosEncontrado:any=[]
   ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==Semana && val.NumMes==Mes && val.AnioRegistro==Anio)
   if(ValosEncontrado.length>0){
