@@ -940,10 +940,22 @@ getValorInicialSemanal(Semana:any,Mes:any,Anio:any,Posicion:any){
   }
 }
 getValorFinalSemanal(Semana:any,Mes:any,Anio:any,Posicion:any){
+  let _ValoresSemanales=this.SaldosSemanales
+  let _ValorSemanal:any=[]
+  console.log('Semana',Semana)
+  console.log('Mes',Mes)
+  console.log('Anio',Anio)
+  _ValorSemanal=_ValoresSemanales.filter((data:any)=>data.NumSemana==Semana && data.NumMes==Mes && data.Anio==Anio && data.Posicion=='Inicial')
+  console.log('SaldosSemanales',_ValoresSemanales)
+  console.log('_ValorSemanal',_ValorSemanal)
   let ValosEncontrado:any=[]
   ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==Semana && val.NumMes==Mes && val.AnioRegistro==Anio)
   if(ValosEncontrado.length>0){
     return ValosEncontrado[0].Valor + this.getDataFlujoLibre(Semana,Mes,Anio)
+  }
+  else if (Posicion=='Final') {
+
+    return 0 + this.getDataFlujoLibre(Semana,Mes,Anio)
   }
   else {
     return this.getValorFinalMes(Mes-1,Anio) + this.getDataFlujoLibre(Semana,Mes,Anio)
