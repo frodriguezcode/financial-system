@@ -47,6 +47,7 @@ export default class FlujoConsolidadoComponent implements OnInit {
   SaldoInicial:any=[]
 
   SaldosSemanales:any=[]
+  SemanasHeader:any=[]
 
  ngOnInit(): void {
 
@@ -409,34 +410,35 @@ obtenerRegistrosFacturas(){
     this.semanas.reverse();
 
     this.RegistrosBack=this.Registros
-console.log('Semanas', this.Semanas)
+
 
 const semanasIdentificadas = this.conS.identificarSemanas(this.Semanas);
 
-
+this.SemanasHeader=semanasIdentificadas
 console.log('semanasIdentificadas',semanasIdentificadas);
-// this.Semanas.forEach((element:any) => {
-//   let _ValoresSemana:any={
-//     "Semana":"Semana " + element.Semana,
-//     "NumSemana":element.Semana,
-//     "NumMes":element.NumMes,
-//     "Mes":element.Mes,
-//     "Anio":element.Anio,
-//     "SaldoInicial":this.getValorInicialSemanal(element.Semana,element.NumMes,element.Anio),
-//     "SaldoFinal":this.getValorFinalSemanal(element.Semana,element.NumMes,element.Anio)
+this.SemanasHeader.forEach((element:any) => {
+  let _ValoresSemana:any={
+    "Semana":"Semana " + element.Semana,
+    "NumSemana":element.Semana,
+    "NumMes":element.NumMes,
+    "Mes":element.Mes,
+    "Anio":element.Anio,
+    "Posicion":element.Posicion,
+    "SaldoInicial":this.getValorInicialSemanal(element.Semana,element.NumMes,element.Anio,element.Posicion),
+    "SaldoFinal":this.getValorFinalSemanal(element.Semana,element.NumMes,element.Anio,element.Posicion)
 
-//   }
-//   let _ValorSemana:any=[]
-//   _ValorSemana=this.SaldosSemanales.filter((data:any)=>data.NumSemana==element.Semana 
-//   && element.NumMes==element.NumMes
-//   && element.Anio==element.Anio 
-// )
-// if(_ValorSemana.length==0){
-//   this.SaldosSemanales.push(_ValoresSemana)
+  }
+  let _ValorSemana:any=[]
+  _ValorSemana=this.SaldosSemanales.filter((data:any)=>data.NumSemana==element.NumSemana 
+  && data.NumMes==element.NumMes
+  && element.Anio==data.Anio 
+)
+if(_ValorSemana.length==0){
+  this.SaldosSemanales.push(_ValoresSemana)
 
-// }
-// });
-// console.log('SaldosSemanales', this.SaldosSemanales)
+}
+});
+console.log('SaldosSemanales', this.SaldosSemanales)
     this.Cargando=false
   })
  }
@@ -444,7 +446,7 @@ console.log('semanasIdentificadas',semanasIdentificadas);
  getSemanasByMonth(NumMes:any,Anio:any){
 
   let _SemanasMes:any=[];
-  _SemanasMes=this.Semanas
+  _SemanasMes=this.SaldosSemanales
   .filter((sem:any)=>
   sem.NumMes==NumMes && 
   sem.Anio==Anio
@@ -919,27 +921,67 @@ obtenerSaldoInicial(){
   })
 }
 //ValoresSaldos
-getValorInicialSemanal(Semana:any,Mes:any,Anio:any){
-  
+getValorInicialSemanal(Semana:any,Mes:any,Anio:any,Posicion:any){
+
   let ValosEncontrado:any=[]
   ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==Semana && val.NumMes==Mes && val.AnioRegistro==Anio)
   if(ValosEncontrado.length>0){
     return ValosEncontrado[0].Valor
   }
   else {
-    return this.getValorFinalSemanal(Semana-1,Mes,Anio)
+    if(Posicion=='Inicial'){
+      return this.getValorFinalMes(Mes-1,Anio)
+
+    }
+    else {
+
+      return this.getValorFinalSemanal(Semana-1,Mes,Anio,Posicion)
+    }
   }
 }
-getValorFinalSemanal(Semana:any,Mes:any,Anio:any){
+getValorFinalSemanal(Semana:any,Mes:any,Anio:any,Posicion:any){
   let ValosEncontrado:any=[]
   ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==Semana && val.NumMes==Mes && val.AnioRegistro==Anio)
   if(ValosEncontrado.length>0){
     return ValosEncontrado[0].Valor + this.getDataFlujoLibre(Semana,Mes,Anio)
   }
   else {
-    return 0
+    return this.getValorFinalMes(Mes-1,Anio) + this.getDataFlujoLibre(Semana,Mes,Anio)
   }
 }
+getValorInicialMes(NumMes:any,Anio:any){
+  let _ValorInicialMes:any=[]
+  let _Valor:any=0
+  _ValorInicialMes=this.SaldoInicial.filter((saldo:any)=>saldo.NumMes==NumMes && saldo.AnioRegistro==Anio)
+  if(_ValorInicialMes.length>0){
+    _ValorInicialMes.forEach((data:any) => {
+    _Valor=_Valor+data.Valor
+    });
+    return _Valor
+  }
+  else {
+    let ValorInicialMes:any=[]
+      ValorInicialMes=this.SaldosSemanales.filter((data:any)=>data.NumMes==NumMes && data.Anio==Anio && data.Posicion=='Inicial')
+      if(ValorInicialMes.length>0){
+        _Valor=ValorInicialMes[0].SaldoInicial
+      }
+      else{
+        _Valor=0
+      }
+  
+    }
+    return  _Valor
+}
+getValorFinalMes(NumMes:any,Anio:any){
+  let Valor:any=0
+  let ValorInicialMes:any=[]
+  Valor=this.getValorInicialMes(NumMes,Anio) + this.getDataFlujoLibreMensual(NumMes,Anio)
+
+  
+return Valor
+ 
+}
+
 
 
 formatValue(valor: number): string {
