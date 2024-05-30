@@ -424,8 +424,8 @@ this.SemanasHeader.forEach((element:any) => {
     "Mes":element.Mes,
     "Anio":element.Anio,
     "Posicion":element.Posicion,
-    "SaldoInicial":this.getValorInicialSemanal(element.Semana,element.NumMes,element.Anio,element.Posicion),
-    "SaldoFinal":this.getValorFinalSemanal(element.Semana,element.NumMes,element.Anio,element.Posicion)
+    "SaldoInicial":0,
+    "SaldoFinal":0
 
   }
   let _ValorSemana:any=[]
@@ -438,7 +438,7 @@ if(_ValorSemana.length==0){
 
 }
 });
-console.log('SaldosSemanales', this.SaldosSemanales)
+
     this.Cargando=false
   })
  }
@@ -921,78 +921,8 @@ obtenerSaldoInicial(){
   })
 }
 //ValoresSaldos
-getValorInicialSemanal(Semana:any,Mes:any,Anio:any,Posicion:any){
 
-  let ValosEncontrado:any=[]
-  ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==Semana && val.NumMes==Mes && val.AnioRegistro==Anio)
-  if(ValosEncontrado.length>0){
-    return ValosEncontrado[0].Valor
-  }
-  else {
-    if(Posicion=='Inicial'){
-      return this.getValorFinalMes(Mes-1,Anio)
 
-    }
-    else {
-
-      return this.getValorFinalSemanal(Semana-1,Mes,Anio,Posicion)
-    }
-  }
-}
-getValorFinalSemanal(Semana:any,Mes:any,Anio:any,Posicion:any){
-  let _ValoresSemanales=this.SaldosSemanales
-  let _ValorSemanal:any=[]
-  console.log('Semana',Semana)
-  console.log('Mes',Mes)
-  console.log('Anio',Anio)
-  _ValorSemanal=_ValoresSemanales.filter((data:any)=>data.NumSemana==Semana && data.NumMes==Mes && data.Anio==Anio && data.Posicion=='Inicial')
-  console.log('SaldosSemanales',_ValoresSemanales)
-  console.log('_ValorSemanal',_ValorSemanal)
-  let ValosEncontrado:any=[]
-  ValosEncontrado=this.SaldoInicial.filter((val:any)=>val.SemanaNum==Semana && val.NumMes==Mes && val.AnioRegistro==Anio)
-  if(ValosEncontrado.length>0){
-    return ValosEncontrado[0].Valor + this.getDataFlujoLibre(Semana,Mes,Anio)
-  }
-  else if (Posicion=='Final') {
-
-    return 0 + this.getDataFlujoLibre(Semana,Mes,Anio)
-  }
-  else {
-    return this.getValorFinalMes(Mes-1,Anio) + this.getDataFlujoLibre(Semana,Mes,Anio)
-  }
-}
-getValorInicialMes(NumMes:any,Anio:any){
-  let _ValorInicialMes:any=[]
-  let _Valor:any=0
-  _ValorInicialMes=this.SaldoInicial.filter((saldo:any)=>saldo.NumMes==NumMes && saldo.AnioRegistro==Anio)
-  if(_ValorInicialMes.length>0){
-    _ValorInicialMes.forEach((data:any) => {
-    _Valor=_Valor+data.Valor
-    });
-    return _Valor
-  }
-  else {
-    let ValorInicialMes:any=[]
-      ValorInicialMes=this.SaldosSemanales.filter((data:any)=>data.NumMes==NumMes && data.Anio==Anio && data.Posicion=='Inicial')
-      if(ValorInicialMes.length>0){
-        _Valor=ValorInicialMes[0].SaldoInicial
-      }
-      else{
-        _Valor=0
-      }
-  
-    }
-    return  _Valor
-}
-getValorFinalMes(NumMes:any,Anio:any){
-  let Valor:any=0
-  let ValorInicialMes:any=[]
-  Valor=this.getValorInicialMes(NumMes,Anio) + this.getDataFlujoLibreMensual(NumMes,Anio)
-
-  
-return Valor
- 
-}
 
 
 
