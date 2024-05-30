@@ -37,7 +37,8 @@ export default class FlujoConsolidadoComponent implements OnInit {
   SucursalesSelect:any=[]
   Usuarios:any=[]
   UsuariosSelect:any=[]
-
+  SaldoFinalBySemana:any
+  SaldoFinalByMensual:any
   Cargando:boolean=true;
   SelectMes:boolean=false;
   Criterios:any={}
@@ -416,6 +417,7 @@ const semanasIdentificadas = this.conS.identificarSemanas(this.Semanas);
 
 this.SemanasHeader=semanasIdentificadas
 console.log('semanasIdentificadas',semanasIdentificadas);
+
 this.SemanasHeader.forEach((element:any) => {
   let _ValoresSemana:any={
     "Semana":"Semana " + element.Semana,
@@ -424,9 +426,8 @@ this.SemanasHeader.forEach((element:any) => {
     "Mes":element.Mes,
     "Anio":element.Anio,
     "Posicion":element.Posicion,
-    "SaldoInicial":0,
-    "SaldoFinal":0
-
+    "SaldoInicial":this.getSaldoInicial(element.Semana,element.NumMes,element.Anio),
+    "SaldoFinal":this.getSaldoFinal(element.Semana,element.NumMes,element.Anio)
   }
   let _ValorSemana:any=[]
   _ValorSemana=this.SaldosSemanales.filter((data:any)=>data.NumSemana==element.NumSemana 
@@ -435,13 +436,63 @@ this.SemanasHeader.forEach((element:any) => {
 )
 if(_ValorSemana.length==0){
   this.SaldosSemanales.push(_ValoresSemana)
-
 }
 });
-
     this.Cargando=false
   })
  }
+
+ getSaldoInicial(NumSemana:number,NumMes:number,Anio:number){
+  let _ValorSemana:any=[]
+  let Valor:number=0
+  _ValorSemana=this.SaldoInicial.filter((data:any)=>data.SemanaNum==NumSemana && data.NumMes==NumMes && data.AnioRegistro==Anio)
+if(_ValorSemana.length>0){
+  _ValorSemana.forEach((dataValor:any) => {
+    Valor+=dataValor.Valor
+  });
+}
+else {
+  Valor=this.SaldoFinalBySemana
+  
+}
+return Valor
+ }
+
+ getSaldoFinal(NumSemana:number,NumMes:number,Anio:number){
+  let Valor:number=0
+  Valor=this.getSaldoInicial(NumSemana,NumMes,Anio) + this.getDataFlujoLibre(NumSemana,NumMes,Anio)
+  this.SaldoFinalBySemana=Valor
+  return Valor
+ }
+
+getSaldoInicialMensual(NumMes:number,Anio:number){
+  let _ValorSemana:any=[]
+  let Valor:number=0
+  _ValorSemana=this.SaldoInicial.filter((data:any)=> data.NumMes==NumMes && data.AnioRegistro==Anio)
+if(_ValorSemana.length>0){
+  _ValorSemana.forEach((dataValor:any) => {
+    Valor+=dataValor.Valor
+  });
+}
+else {
+  let _ValorMensual:any=[]
+  _ValorMensual=this.SaldosSemanales.filter((data:any)=>data.NumMes==NumMes && data.Anio==Anio && data.Posicion=='Inicial' )
+
+ // console.log('SemanasValores',this.SaldosSemanales)
+
+  Valor=_ValorMensual[0].SaldoInicial
+}
+return Valor
+ }
+
+ getSaldoFinalMensual(NumMes:number,Anio:number){
+  let Valor:number=0
+  Valor=this.getSaldoInicialMensual(NumMes,Anio) + this.getDataFlujoLibreMensual(NumMes,Anio)
+  this.SaldoFinalByMensual=Valor
+  return Valor
+ }
+
+
 
  getSemanasByMonth(NumMes:any,Anio:any){
 
