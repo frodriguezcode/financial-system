@@ -510,6 +510,7 @@ obtenerCuentas(){
   })
 }
 crearRegistro(tipo:any) {
+  
   this.guardarRegistro(tipo)
 }
 
