@@ -36,6 +36,16 @@ export const NavigationItems: NavigationItem[] = [
           breadcrumbs: false
         },
         {
+          id: 'planeacion',
+          title: 'Planeación Financiera',
+          type: 'item',
+          url: '/planeacion',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-business-time',
+       
+          breadcrumbs: false
+        },
+        {
           id: 'dashboard',
           title: 'Dashboard',
           type: 'item',

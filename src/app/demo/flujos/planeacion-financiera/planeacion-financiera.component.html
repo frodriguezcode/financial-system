@@ -1,0 +1,49 @@
+<p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Anios" [(ngModel)]="AniosSeleccionados" display="chip" placeholder="Años" optionLabel="Anio"></p-multiSelect>
+
+<p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Meses" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Meses" optionLabel="Mes"></p-multiSelect>
+<p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="CuentasBanco" [(ngModel)]="CuentasBancoSelect" display="chip" placeholder="Cuentas" optionLabel="Cuenta"></p-multiSelect>
+<p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="Usuarios" [(ngModel)]="UsuariosSelect" display="chip" placeholder="Usuarios" optionLabel="Nombres"></p-multiSelect>
+<p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="Sucursales" [(ngModel)]="SucursalesSelect" display="chip" placeholder="Sucursales" optionLabel="Nombre"></p-multiSelect>
+<div class="table-responsive mt-3">
+  <table  class="table table-100">
+    <thead class="cabecera">
+    
+        <th class="text-left" style="padding: 0.5rem;background-color: #0c8c86;text-transform: uppercase;" >Naturalezas</th> 
+        <ng-container *ngFor="let anio of Anios">      
+          <ng-container *ngFor="let mes of Meses" >
+        
+            <th class="text-center" style="padding: 0.7rem; font-weight: 500; border-left: 1px solid #eaeaea ; border-right: 1px solid #eaeaea; text-transform: uppercase; "> {{ 'Planeación' + ' ' + mes.Mes + ' - ' + anio.Anio}}</th>
+            <th class="text-center" style="padding: 0.7rem; font-weight: 500; border-left: 1px solid #eaeaea ; border-right: 1px solid #eaeaea; text-transform: uppercase; ">{{ mes.Mes + ' - ' + anio.Anio}}</th>
+            
+            
+          </ng-container>
+        </ng-container>
+  
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let categoria of Categorias; let j = index">
+        <tr  [ngClass]="{'cabecera-categoria': categoria.Calculado==true}" >
+          <td [ngClass]="{'cabecera-categoria': categoria.Calculado==true, 'cabecera-categoria-no-calc' : categoria.Calculado==false }">
+            <span     class="categoria-toggle">{{ categoria.Nombre }}</span>
+          </td>
+          <ng-container *ngFor="let anio of Anios">      
+            <ng-container *ngFor="let mes of Meses" >
+              <td class="text-center">
+                <div class="input-group ">
+                  <span class="input-group-text">$</span>
+                  <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+     
+                </div>
+                
+              </td>
+    
+                <td  class="text-center ">{{this.getValorCategoria(categoria.id,mes.Mes,anio.Anio)}}</td>
+              </ng-container>
+
+              </ng-container>
+          
+
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
