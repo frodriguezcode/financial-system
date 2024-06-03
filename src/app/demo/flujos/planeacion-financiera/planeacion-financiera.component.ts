@@ -249,4 +249,9 @@ getValorCategoria(idCategoria:string,MesRegistro:string,AnioRegistro:any){
   return _Valor
 }
 
+
+getTableClass() {
+  return (this.AniosSeleccionados.length === 1 && this.MesesSeleccionados.length === 1) ? 'table table-100 table-reduced' : 'table table-100';
+}
+
 }
