@@ -1,6 +1,6 @@
-<p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Anios" [(ngModel)]="AniosSeleccionados" display="chip" placeholder="Años" optionLabel="Anio"></p-multiSelect>
+<p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="AniosRegistrosBack" [(ngModel)]="AniosSeleccionados" display="chip" placeholder="Años" optionLabel="Anio"></p-multiSelect>
 
-<p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Meses" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Meses" optionLabel="Mes"></p-multiSelect>
+<p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="MesesRegistrosBack" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Meses" optionLabel="Mes"></p-multiSelect>
 <p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="CuentasBanco" [(ngModel)]="CuentasBancoSelect" display="chip" placeholder="Cuentas" optionLabel="Cuenta"></p-multiSelect>
 <p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="Usuarios" [(ngModel)]="UsuariosSelect" display="chip" placeholder="Usuarios" optionLabel="Nombres"></p-multiSelect>
 <p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="Sucursales" [(ngModel)]="SucursalesSelect" display="chip" placeholder="Sucursales" optionLabel="Nombre"></p-multiSelect>
@@ -11,7 +11,7 @@
         <th class="text-left" style="padding: 0.5rem;background-color: #0c8c86;text-transform: uppercase;">Naturalezas</th> 
         <ng-container *ngFor="let anio of Anios">      
           <ng-container *ngFor="let mes of Meses">
-            <th class="text-center" style="padding: 0.7rem; font-weight: 500; text-transform: uppercase;">{{ 'Planeación ' + mes.Mes + ' - ' + anio.Anio }}</th>
+            <th class="text-center" style="padding: 0.7rem; font-weight: 500; text-transform: uppercase; ">{{ 'Plan ' + mes.Mes + ' - ' + anio.Anio }}</th>
             <th class="text-center" style="padding: 0.7rem; font-weight: 500; text-transform: uppercase;">{{ mes.Mes + ' - ' + anio.Anio }}</th>
           </ng-container>
         </ng-container>
@@ -27,10 +27,13 @@
                 <td class="text-center">
                   <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                    <input
+                    [formControl]="ValorPlan"
+                    (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id)"
+                    type="number" class="form-control" aria-label="Amount (to the nearest dollar)">
                   </div>
                 </td>
-                <td class="text-center">{{ getValorCategoria(categoria.id, mes.Mes, anio.Anio) }}</td>
+                <td class="text-center">{{ "$" + " " + (getValorCategoria(categoria.id, mes.Mes, anio.Anio) | number) }}</td>
               </ng-container>
             </ng-container>
           </tr>

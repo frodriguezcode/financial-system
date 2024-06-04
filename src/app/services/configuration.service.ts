@@ -385,7 +385,26 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     return semanas;
   }
 
+//Planificación
+crearValorPlan(Valor: any) {
+  const id = this.afs.createId();
+  return this.afs
+    .collection('PlanificacionValores')
+    .doc(id)
+    .ref.set(Object.assign(Valor, { id: id }));
+}
+ActualizarValorPlan(Valor: any) {
+  return this.afs
+    .collection('PlanificacionValores')
+    .doc(Valor.id)
+    .ref.update(Valor);
+}
 
+obtenerValoresPlanes(idEmpresa:any): Observable<any[]> {
+  return this.afs
+  .collection('PlanificacionValores',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+  .valueChanges();
+}
    
 }
 

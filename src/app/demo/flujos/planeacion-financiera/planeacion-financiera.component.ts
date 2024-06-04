@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ConfigurationService } from 'src/app/services/configuration.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-planeacion-financiera',
@@ -32,6 +33,8 @@ export default class PlaneacionFinancieraComponent implements OnInit {
   Criterios:{}
   MesesRegistrosBack:any=[]
   RegistrosBack:any=[]
+  RegistrosValoresPlanes:any=[]
+  ValorPlan:FormControl=new FormControl(0)
   constructor(private conS:ConfigurationService) { }
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
@@ -104,6 +107,7 @@ export default class PlaneacionFinancieraComponent implements OnInit {
     ]
     this.MesesRegistrosBack=this.Meses
     this.AniosRegistrosBack=this.Anios
+    this.obtenerValoresPlanes()
     this.ObtenerCuentasBanco()
     this.obtenerCategorias()
     this.obtenerSucursales()
@@ -252,6 +256,29 @@ getValorCategoria(idCategoria:string,MesRegistro:string,AnioRegistro:any){
 
 getTableClass() {
   return (this.AniosSeleccionados.length === 1 && this.MesesSeleccionados.length === 1) ? 'table table-100 table-reduced' : 'table table-100';
+}
+obtenerValoresPlanes(){
+  this.conS.obtenerValoresPlanes(this.usuario.idEmpresa).subscribe(resp=>{
+    this.RegistrosValoresPlanes=resp
+  })
+}
+guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string){
+  let ValorCategoria:any=this.getValorCategoria(idCategoria, MesRegistro, Anio)
+  let ValorMargen:any= ValorCategoria=0 ? 1 : ValorCategoria/ this.ValorPlan.value 
+  let _Valor:any={
+    "AnioRegistro":Anio,
+    "MesRegistro":MesRegistro,
+    "idCategoria":idCategoria,
+    "Valor": this.ValorPlan.value,
+    "ValorMargen":Number(ValorMargen.toFixed(2)),
+    "idEmpresa":this.usuario.idEmpresa,
+    "IdSucursal":this.usuario.IdSucursal
+  }
+  this.conS.crearValorPlan(_Valor).then(resp=>{
+
+  })
+
+  
 }
 
 }
