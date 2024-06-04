@@ -46,8 +46,10 @@ export default class FlujoConsolidadoComponent implements OnInit {
   days: string[];
   //SaldosIniciales
   SaldoInicial:any=[]
+  SaldoInicialBack:any=[]
 
   SaldosSemanales:any=[]
+  SaldosSemanalesBack:any=[]
   SemanasHeader:any=[]
 
  ngOnInit(): void {
@@ -189,6 +191,9 @@ filtrarData(){
 
   }
   this.Registros= this.conS.filtradoDinamico(this.Criterios,this.RegistrosBack)
+
+  this.SaldoInicial= this.conS.filtradoDinamico(this.Criterios,this.SaldoInicialBack)
+
 }
  buscarPorCuentaBanco(){
   this.Registros=this.RegistrosBack
@@ -427,7 +432,8 @@ this.SemanasHeader.forEach((element:any) => {
     "Anio":element.Anio,
     "Posicion":element.Posicion,
     "SaldoInicial":this.getSaldoInicial(element.Semana,element.NumMes,element.Anio),
-    "SaldoFinal":this.getSaldoFinal(element.Semana,element.NumMes,element.Anio)
+    "SaldoFinal":this.getSaldoFinal(element.Semana,element.NumMes,element.Anio),
+    "NumCuenta":this.getNumCuenta(element.Anio,element.NumMes,element.Semana)
   }
   let _ValorSemana:any=[]
   _ValorSemana=this.SaldosSemanales.filter((data:any)=>data.NumSemana==element.NumSemana 
@@ -437,9 +443,21 @@ this.SemanasHeader.forEach((element:any) => {
 if(_ValorSemana.length==0){
   this.SaldosSemanales.push(_ValoresSemana)
 }
+console.log('SaldosSemanales',this.SaldosSemanales)
 });
     this.Cargando=false
   })
+ }
+
+ getNumCuenta(AnioRegistro:any,NumMes:any,SemanaNum:any){
+  let CuentaEncontrada:any=[]
+  CuentaEncontrada=this.SaldoInicial.filter((saldo:any)=>saldo.AnioRegistro==AnioRegistro && saldo.NumMes==NumMes && saldo.SemanaNum==SemanaNum)
+  if(CuentaEncontrada.length>0){
+    return CuentaEncontrada[0].NumCuenta
+  }
+  else {
+    return 0
+  }
  }
 
  getSaldoInicial(NumSemana:number,NumMes:number,Anio:number){
@@ -967,6 +985,7 @@ obtenerUsuarios(){
 obtenerSaldoInicial(){
   this.conS.obtenerSaldoInicial(this.usuario.idEmpresa).subscribe(resp=>{
   this.SaldoInicial=resp
+  this.SaldoInicialBack=resp
     console.log('SaldoInicial',this.SaldoInicial)
 
   })

@@ -189,6 +189,7 @@ obtenerCategorias(){
   
     this.conS.obtenerCategoriasFlujos().subscribe((data)=>{
       this.Categorias=data
+      //.filter((categ:any)=>categ.Calculado==false)
       this.obtenerRegistros()
     })
 }
