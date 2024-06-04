@@ -28,8 +28,9 @@
                   <div class="input-group">
                     <span class="input-group-text">$</span>
                     <input
-                    [formControl]="ValorPlan"
-                    (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id)"
+                    #Valor
+                    [value]="this.getValuePlan(categoria.id,mes.Mes,anio.Anio) "
+                    (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id,Valor.value)"
                     type="number" class="form-control" aria-label="Amount (to the nearest dollar)">
                   </div>
                 </td>
