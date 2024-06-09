@@ -13,6 +13,8 @@
           <ng-container *ngFor="let mes of Meses">
             <th class="text-center" style="padding: 0.7rem; font-weight: 500; text-transform: uppercase; ">{{ 'Plan ' + mes.Mes + ' - ' + anio.Anio }}</th>
             <th class="text-center" style="padding: 0.7rem; font-weight: 500; text-transform: uppercase;">{{ mes.Mes + ' - ' + anio.Anio }}</th>
+            <th class="text-center" style="padding: 0.7rem; font-weight: 500; text-transform: uppercase;">{{ 'Diferencia '}}</th>
+            <th class="text-center" style="padding: 0.7rem; font-weight: 500; text-transform: uppercase;">{{ '% Margen ' }}</th>
           </ng-container>
         </ng-container>
       </thead>
@@ -35,6 +37,8 @@
                   </div>
                 </td>
                 <td  class="text-center">{{ "$" + " " + (getValorCategoria(categoria.id, mes.Mes, anio.Anio) | number) }}</td>
+                <td  class="text-center">{{ "$" + " " + (calcularDiferencia(categoria.id, mes.Mes, anio.Anio) | number) }}</td>
+                <td  class="text-center">0</td>
               </ng-container>
             </ng-container>
           </tr>

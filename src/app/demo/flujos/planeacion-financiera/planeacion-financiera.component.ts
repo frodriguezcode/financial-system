@@ -7,11 +7,13 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { FormControl } from '@angular/forms';
+import { ToastModule } from 'primeng/toast';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-planeacion-financiera',
   standalone: true,
-  imports: [CommonModule, SharedModule,MultiSelectModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule,ToastModule],
   templateUrl: './planeacion-financiera.component.html',
   styleUrls: ['./planeacion-financiera.component.scss']
 })
@@ -35,7 +37,7 @@ export default class PlaneacionFinancieraComponent implements OnInit {
   RegistrosBack:any=[]
   RegistrosValoresPlanes:any=[]
   ValorPlan:FormControl=new FormControl(0)
-  constructor(private conS:ConfigurationService) { }
+  constructor(private conS:ConfigurationService,private toastr: ToastrService) { }
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.Anios=[
@@ -298,11 +300,31 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any){
     "idEmpresa":this.usuario.idEmpresa,
     "IdSucursal":this.usuario.IdSucursal
   }
-  this.conS.crearValorPlan(_Valor).then(resp=>{
 
+  let _ValorPlanEncontrado:any=[]
+  _ValorPlanEncontrado=this.RegistrosValoresPlanes.filter((data:any)=>
+    data.idCategoria==idCategoria &&
+    data.MesRegistro==MesRegistro &&
+    data.AnioRegistro==Anio &&
+    data.idEmpresa==this.usuario.idEmpresa &&
+    data.IdSucursal==this.usuario.IdSucursal)
+  if(_ValorPlanEncontrado.length>0){
+    _ValorPlanEncontrado[0].Valor=Valor
+    _ValorPlanEncontrado[0].ValorMargen=ValorCategoria=0 ? 1 : ValorCategoria/ Valor
+  this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
+    this.toastr.success('Guardado', '¡Exito!');
   })
+  }  
+  else {
+    
+    this.conS.crearValorPlan(_Valor).then(resp=>{
+      this.toastr.success('Guardado', '¡Exito!');
+    })
+  }
+}
 
-  
+calcularDiferencia(idCategoria:string, Mes:string, Anio:any){
+return  this.getValuePlan(idCategoria,Mes,Anio) - this.getValorCategoria(idCategoria,Mes,Anio)
 }
 
 }

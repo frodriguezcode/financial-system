@@ -6,6 +6,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import SignInComponent from './demo/authentication/sign-in/sign-in.component';
 import SignUpComponent from './demo/authentication/sign-up/sign-up.component';
+import { ConfigurationComponent } from './theme/layout/admin/configuration/configuration.component';
+import ConfiguracionInicialComponent from './demo/configuracion-inicial/configuracion-inicial.component';
 
 const routes: Routes = [
   {
@@ -81,10 +83,6 @@ const routes: Routes = [
       {
         path: 'sample-page',
         loadComponent: () => import('./demo/sample-page/sample-page.component')
-      },
-      {
-        path: 'configuracion-inicial',
-        loadComponent: () => import('./demo/configuracion-inicial/configuracion-inicial.component')
       }
     ]
   },
@@ -92,6 +90,10 @@ const routes: Routes = [
   {
     path: 'auth/signin',
     component:SignInComponent
+  },
+  {
+    path: 'configuracion-inicial',
+    component:ConfiguracionInicialComponent
   },
   {
     path: 'auth/signin/signup',

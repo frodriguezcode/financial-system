@@ -394,6 +394,7 @@ crearValorPlan(Valor: any) {
     .ref.set(Object.assign(Valor, { id: id }));
 }
 ActualizarValorPlan(Valor: any) {
+  console.log('Valor',Valor)
   return this.afs
     .collection('PlanificacionValores')
     .doc(Valor.id)

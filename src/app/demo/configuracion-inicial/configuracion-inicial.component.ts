@@ -17,10 +17,10 @@ import { ProgressIndicatorComponent } from 'src/app/theme/shared/components/prog
   selector: 'app-cofiguracion-inicial',
   standalone: true,
   imports: [CommonModule, SharedModule, ItemsComponent, BancosComponent, SocioNegocioComponent, EmpresasComponent, SucursalesComponent, ProgressIndicatorComponent ],
-  templateUrl: '/configuracion-inicial.html',
-  styleUrls: ['/configuracion-inicial.scss']
+  templateUrl: '/configuracion-inicial.component.html',
+  styleUrls: ['/configuracion-inicial.component.scss']
 })
-export default class SamplePageComponent {
+export default class ConfiguracionInicialComponent {
 
 
   currentStep = 1;
