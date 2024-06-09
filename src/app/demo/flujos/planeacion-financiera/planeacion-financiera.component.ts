@@ -288,6 +288,26 @@ else
 }
 
 }
+getValuePlanFlujo(Categoriasid:any,MesRegistro:string,Anio:number){
+  let ValorEncontrado:any=[]
+  const categorias = Categoriasid.map(item => item.idCategoria);
+  ValorEncontrado = this.RegistrosValoresPlanes.filter((data) =>
+    categorias.includes(data.idCategoria) &&
+    data.MesRegistro == MesRegistro &&
+    data.AnioRegistro == Anio &&
+    data.idEmpresa == this.usuario.idEmpresa &&
+    data.IdSucursal == this.usuario.IdSucursal
+  )
+if(ValorEncontrado.length>0){
+  return ValorEncontrado[0].Valor
+
+}
+else 
+{
+  return 0
+}
+
+}
 guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any){
   let ValorCategoria:any=this.getValorCategoria(idCategoria, MesRegistro, Anio)
   let ValorMargen:any= ValorCategoria=0 ? 1 : ValorCategoria/ Valor

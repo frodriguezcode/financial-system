@@ -26,16 +26,21 @@
             </td>
             <ng-container *ngFor="let anio of Anios">      
               <ng-container *ngFor="let mes of Meses">
-                <td class="text-center">
-                  <div   class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input
-                    #Valor
-                    [value]="this.getValuePlan(categoria.id,mes.Mes,anio.Anio) "
-                    (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id,Valor.value)"
-                    type="number" class="form-control" aria-label="Amount (to the nearest dollar)">
-                  </div>
-                </td>
+                <ng-container *ngIf="categoria.Calculado==false">
+                  <td class="text-center">
+                    <div   class="input-group">
+                      <span class="input-group-text">$</span>
+                      <input
+                      #Valor
+                      [value]="this.getValuePlan(categoria.id,mes.Mes,anio.Anio) "
+                      (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id,Valor.value)"
+                      type="number" class="form-control" aria-label="Amount (to the nearest dollar)">
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="categoria.Calculado==true">
+                  <td class="text-center">{{ "$" + " " + (getValuePlanFlujo(categoria.Categorias, mes.Mes, anio.Anio) | number) }}</td>
+                </ng-container>
                 <td  class="text-center">{{ "$" + " " + (getValorCategoria(categoria.id, mes.Mes, anio.Anio) | number) }}</td>
                 <td  class="text-center">{{ "$" + " " + (calcularDiferencia(categoria.id, mes.Mes, anio.Anio) | number) }}</td>
                 <td  class="text-center">0</td>
