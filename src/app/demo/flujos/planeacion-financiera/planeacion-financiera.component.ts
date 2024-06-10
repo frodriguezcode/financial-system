@@ -228,6 +228,7 @@ obtenerRegistros(){
         "SocioNegocio":element.idSocioNegocio.Nombre || '',
 
       }
+      console.log('Registros',this.Registros)
       this.Registros.push(_Registro)
 
 
@@ -308,6 +309,31 @@ else
 }
 
 }
+getValueCategoria(Categoriasid:any,MesRegistro:string,Anio:number){
+  let ValorEncontrado:any=[]
+  let Valor:any=0
+  const categorias = Categoriasid.map(item => item.idCategoria);
+  
+  ValorEncontrado = this.Registros.filter((data) =>
+    categorias.includes(data.idCategoria.id) &&
+    data.MesRegistro == MesRegistro &&
+    data.AnioRegistro == Anio &&
+    data.idEmpresa == this.usuario.idEmpresa &&
+    data.idSucursal == this.usuario.IdSucursal
+  )
+if(ValorEncontrado.length>0){
+  ValorEncontrado.forEach((data:any) => {
+    Valor+=data.Valor
+    
+  });
+
+}
+else 
+{
+  Valor= 0
+}
+return Valor
+}
 guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any){
   let ValorCategoria:any=this.getValorCategoria(idCategoria, MesRegistro, Anio)
   let ValorMargen:any= ValorCategoria=0 ? 1 : ValorCategoria/ Valor
@@ -345,6 +371,9 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any){
 
 calcularDiferencia(idCategoria:string, Mes:string, Anio:any){
 return  this.getValuePlan(idCategoria,Mes,Anio) - this.getValorCategoria(idCategoria,Mes,Anio)
+}
+calcularDiferenciaFlujos(Categorias:any, Mes:string, Anio:any){
+return  this.getValuePlanFlujo(Categorias,Mes,Anio) - this.getValueCategoria(Categorias,Mes,Anio)
 }
 
 }

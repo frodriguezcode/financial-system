@@ -37,13 +37,18 @@
                       type="number" class="form-control" aria-label="Amount (to the nearest dollar)">
                     </div>
                   </td>
+                  <td  class="text-center">{{ "$" + " " + (getValorCategoria(categoria.id, mes.Mes, anio.Anio) | number) }}</td>
                 </ng-container>
                 <ng-container *ngIf="categoria.Calculado==true">
                   <td class="text-center">{{ "$" + " " + (getValuePlanFlujo(categoria.Categorias, mes.Mes, anio.Anio) | number) }}</td>
+                  <td class="text-center">{{ "$" + " " + (getValueCategoria(categoria.Categorias, mes.Mes, anio.Anio) | number) }}</td>
+                  
+
                 </ng-container>
-                <td  class="text-center">{{ "$" + " " + (getValorCategoria(categoria.id, mes.Mes, anio.Anio) | number) }}</td>
-                <td  class="text-center">{{ "$" + " " + (calcularDiferencia(categoria.id, mes.Mes, anio.Anio) | number) }}</td>
-                <td  class="text-center">0</td>
+                <td *ngIf="categoria.Calculado==false"  class="text-center">{{ "$" + " " + (calcularDiferencia(categoria.id, mes.Mes, anio.Anio) | number) }}</td>
+                <td *ngIf="categoria.Calculado==true"  class="text-center">{{ "$" + " " + (calcularDiferenciaFlujos(categoria.Categorias, mes.Mes, anio.Anio) | number) }}</td>
+                <td  class="text-center">{{ "$" + " " + 50}}</td>
+
               </ng-container>
             </ng-container>
           </tr>
