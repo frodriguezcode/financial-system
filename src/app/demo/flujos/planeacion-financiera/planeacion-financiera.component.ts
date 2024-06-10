@@ -228,13 +228,13 @@ obtenerRegistros(){
         "SocioNegocio":element.idSocioNegocio.Nombre || '',
 
       }
-      console.log('Registros',this.Registros)
+   
       this.Registros.push(_Registro)
 
 
     })
     this.RegistrosBack=this.Registros
-    console.log('Registros',this.Registros)
+
 
   })
 
@@ -264,7 +264,7 @@ getTableClass() {
 obtenerValoresPlanes(){
   this.conS.obtenerValoresPlanes(this.usuario.idEmpresa).subscribe(resp=>{
     this.RegistrosValoresPlanes=resp
-    console.log('RegistrosValoresPlanes',this.RegistrosValoresPlanes)
+
   })
 }
 formatNumber(value: number): string {
@@ -370,10 +370,23 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any){
 }
 
 calcularDiferencia(idCategoria:string, Mes:string, Anio:any){
-return  this.getValuePlan(idCategoria,Mes,Anio) - this.getValorCategoria(idCategoria,Mes,Anio)
+return  this.getValorCategoria(idCategoria,Mes,Anio)- this.getValuePlan(idCategoria,Mes,Anio) 
 }
 calcularDiferenciaFlujos(Categorias:any, Mes:string, Anio:any){
-return  this.getValuePlanFlujo(Categorias,Mes,Anio) - this.getValueCategoria(Categorias,Mes,Anio)
+return  this.getValueCategoria(Categorias,Mes,Anio) - this.getValuePlanFlujo(Categorias,Mes,Anio) 
+}
+calcularMargen(idCategoria:string, Mes:string, Anio:any){
+  let ValorA:any=this.getValorCategoria(idCategoria,Mes,Anio)
+  let ValorB:any=this.getValuePlan(idCategoria,Mes,Anio)
+  return ValorA==0 || ValorB==0 ? 0 :  ((ValorA/ ValorB)-1)*100 
+}
+calcularMargenFlujos(idCategoria:string, Mes:string, Anio:any){
+  let ValorA:any=this.getValueCategoria(idCategoria,Mes,Anio)
+  let ValorB:any=this.getValuePlanFlujo(idCategoria,Mes,Anio)
+  return ValorA==0 || ValorB==0 ? 0 :  ((ValorA/ ValorB)-1)*100 
+
+
+
 }
 
 }
