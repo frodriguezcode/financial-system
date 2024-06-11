@@ -217,6 +217,13 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
       .collection('SaldosIniciales',(ref)=>ref.where('idEmpresa','==',idEmpresa))
       .valueChanges();
     }
+    crearSaldoInicial(saldo:any) {
+      const id = this.afs.createId();
+      return this.afs
+        .collection('SaldosIniciales')
+        .doc(id)
+        .ref.set(Object.assign(saldo, { id: id }));
+    }
 
  //!------------Items------------
     crearItem(Item: any) {
@@ -406,6 +413,8 @@ obtenerValoresPlanes(idEmpresa:any): Observable<any[]> {
   .collection('PlanificacionValores',(ref)=>ref.where('idEmpresa','==',idEmpresa))
   .valueChanges();
 }
+
+
    
 }
 

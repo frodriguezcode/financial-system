@@ -10,7 +10,8 @@ import FlujoConsolidadoComponent from '../consolidado/flujos-consolidado.compone
 import { TabViewModule } from 'primeng/tabview';
 import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
-
+import { DialogModule } from 'primeng/dialog';
+import AjusteSaldoComponent from '../../ajuste-saldos/ajuste-saldo.component';
 @Component({
   selector: 'app-flujos-panel',
   standalone: true,
@@ -22,12 +23,18 @@ import { StyleClassModule } from 'primeng/styleclass';
     FlujoConsolidadoComponent,
     TabViewModule,
     ButtonModule,
-    StyleClassModule
+    StyleClassModule,
+    DialogModule,
+    AjusteSaldoComponent
   ],
   templateUrl: './flujos-panel.component.html',
   styleUrls: ['./flujos-panel.component.scss']
 })
 export default class FlujosPanelComponent implements OnInit {
   activeIndex: number = 0;
+  visible: boolean = false;
   ngOnInit(): void {}
+  showDialog() {
+    this.visible = true;
+}
 }

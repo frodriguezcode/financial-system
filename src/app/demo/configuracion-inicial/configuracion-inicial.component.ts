@@ -10,13 +10,23 @@ import SocioNegocioComponent from '../socios/socios.component';
 import EmpresasComponent from '../empresas/empresas.component';
 import SucursalesComponent from '../sucursales/sucursales.component';
 import { ProgressIndicatorComponent } from 'src/app/theme/shared/components/progress-indicator/progress-indicator.component';
+import AjusteSaldoComponent from '../ajuste-saldos/ajuste-saldo.component';
 
 // import { StepperModule } from 'primeng/stepper';
 
 @Component({
   selector: 'app-cofiguracion-inicial',
   standalone: true,
-  imports: [CommonModule, SharedModule, ItemsComponent, BancosComponent, SocioNegocioComponent, EmpresasComponent, SucursalesComponent, ProgressIndicatorComponent ],
+  imports: [CommonModule, 
+  SharedModule, 
+  ItemsComponent, 
+  BancosComponent,
+  SocioNegocioComponent, 
+  EmpresasComponent, 
+  SucursalesComponent, 
+  ProgressIndicatorComponent,
+  AjusteSaldoComponent 
+],
   templateUrl: '/configuracion-inicial.component.html',
   styleUrls: ['/configuracion-inicial.component.scss']
 })
