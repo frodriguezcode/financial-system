@@ -193,8 +193,34 @@ filtrarData(){
   this.Registros= this.conS.filtradoDinamico(this.Criterios,this.RegistrosBack)
 
   this.SaldoInicial= this.conS.filtradoDinamico(this.Criterios,this.SaldoInicialBack)
-
+  this.refreshSaldosSemanales()
 }
+
+refreshSaldosSemanales(){
+  this.SaldosSemanales=[]
+  this.SemanasHeader.forEach((element:any) => {
+    let _ValoresSemana:any={
+      "Semana":"Semana " + element.Semana,
+      "NumSemana":element.Semana,
+      "NumMes":element.NumMes,
+      "Mes":element.Mes,
+      "Anio":element.Anio,
+      "Posicion":element.Posicion,
+      "SaldoInicial":this.getSaldoInicial(element.Semana,element.NumMes,element.Anio),
+      "SaldoFinal":this.getSaldoFinal(element.Semana,element.NumMes,element.Anio),
+      "NumCuenta":this.getNumCuenta(element.Anio,element.NumMes,element.Semana)
+    }
+    let _ValorSemana:any=[]
+    _ValorSemana=this.SaldosSemanales.filter((data:any)=>data.NumSemana==element.NumSemana 
+    && data.NumMes==element.NumMes
+    && element.Anio==data.Anio 
+  )
+  if(_ValorSemana.length==0){
+    this.SaldosSemanales.push(_ValoresSemana)
+  }
+  });
+}
+
  buscarPorCuentaBanco(){
   this.Registros=this.RegistrosBack
   if(this.CuentasBancoSelect.length>0){
@@ -421,8 +447,6 @@ obtenerRegistrosFacturas(){
 const semanasIdentificadas = this.conS.identificarSemanas(this.Semanas);
 
 this.SemanasHeader=semanasIdentificadas
-console.log('semanasIdentificadas',semanasIdentificadas);
-
 this.SemanasHeader.forEach((element:any) => {
   let _ValoresSemana:any={
     "Semana":"Semana " + element.Semana,
@@ -443,7 +467,7 @@ this.SemanasHeader.forEach((element:any) => {
 if(_ValorSemana.length==0){
   this.SaldosSemanales.push(_ValoresSemana)
 }
-console.log('SaldosSemanales',this.SaldosSemanales)
+
 });
     this.Cargando=false
   })
@@ -986,7 +1010,6 @@ obtenerSaldoInicial(){
   this.conS.obtenerSaldoInicial(this.usuario.idEmpresa).subscribe(resp=>{
   this.SaldoInicial=resp
   this.SaldoInicialBack=resp
-    console.log('SaldoInicial',this.SaldoInicial)
 
   })
 }
