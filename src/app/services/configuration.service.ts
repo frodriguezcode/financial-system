@@ -225,6 +225,13 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .ref.set(Object.assign(saldo, { id: id }));
     }
 
+    ActualizarSaldo(saldo: any) {
+      return this.afs
+        .collection('SaldosIniciales')
+        .doc(saldo.id)
+        .ref.update(saldo);
+    }
+
  //!------------Items------------
     crearItem(Item: any) {
       const id = this.afs.createId();

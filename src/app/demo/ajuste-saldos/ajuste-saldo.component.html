@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-6 col-lg-6 col-12">
+  <div class="col-md-4 col-lg-4 col-12">
     <form>
       <div class="row">
         <div class="form-group col-md-6 col-lg-6 col-12">
@@ -48,36 +48,101 @@
     </form>
   </div>
  
-  <div class="col-md-6 col-lg-6 col-12">
+  <div class="col-md-8 col-lg-8 col-12">
     <div class="table-responsive">
       <table class="table">
         <thead>
-          <tr>
+          <tr class="text-center">
             <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Username</th>
+            <th>Valor</th>
+            <th>Semana</th>
+            <th>Mes</th>
+            <th>Año</th>
+            <th>Cuenta</th>
+            <th>Flujo</th>
+            <th>Editar</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
+          <tr *ngFor="let saldo of SaldosIniciales;index as i">
+            <th class="text-center" scope="row">{{i + 1}}</th>
+            <td class="text-center">
+              <ng-container *ngIf="!saldo.Editando; else editarValor">
+                {{saldo.Valor}}
+              </ng-container>
+              <ng-template #editarValor>
+                <input type="number" [(ngModel)]="saldo.Valor" class="form-control text-center col-4">
+              </ng-template>
+            </td>
+            <td class="text-center">
+              <ng-container *ngIf="!saldo.Editando; else editarSemana">
+                {{"Semana " + saldo.SemanaNum}}
+              </ng-container>
+              <ng-template #editarSemana>
+                <input type="number" [(ngModel)]="saldo.SemanaNum" class="form-control text-center col-4">
+              </ng-template>
+            </td>
+            <td class="text-center">
+              <ng-container *ngIf="!saldo.Editando; else editarMes">
+                {{saldo.MesRegistro}}
+              </ng-container>
+              <ng-template #editarMes>
+                <select [(ngModel)]="saldo.NumMes" class="form-control" id="exampleFormControlSelect1">
+                  <option>Escoja un mes</option>
+                  <option [value]="mes.NumMes" *ngFor="let mes of MesesTodos">{{mes.Mes}}</option>
+                </select>
+              </ng-template>
+            </td>
+            <td class="text-center">
+
+              <ng-container *ngIf="!saldo.Editando; else editarAnio">
+                {{saldo.AnioRegistro}}
+              </ng-container>
+              <ng-template #editarAnio>
+                <input type="number" [(ngModel)]="saldo.AnioRegistro" class="form-control text-center col-4">
+              </ng-template>
+            </td>
+  
+            <td class="text-center">
+              <ng-container *ngIf="!saldo.Editando; else editarCuenta">
+                {{saldo.NumCuenta}}
+              </ng-container>
+              <ng-template #editarCuenta>
+                <select [(ngModel)]="saldo.NumCuenta" class="form-control" id="exampleFormControlSelect1">
+                  <option value="0">Escoja una cuenta</option>
+                  <option [value]="cuenta.Cuenta" *ngFor="let cuenta of Cuentas">{{cuenta.Nombre + ' ' + cuenta.Cuenta }}</option>
+                </select>
+              </ng-template>
+            </td>
+            <td class="text-center">
+
+              <ng-container *ngIf="!saldo.Editando; else editarFlujo">
+                {{saldo.Flujo =='0' ? 'Caja':'Banco'}}
+              </ng-container>
+              <ng-template #editarFlujo>
+                <select [(ngModel)]="saldo.Flujo" class="form-control" id="exampleFormControlSelect1">
+                  <option>Escoja un flujo</option>
+                  <option value= "0">Caja</option>
+                  <option value= "1">Banco</option>
+                </select>
+              </ng-template>
+
+
+            </td>
+            <td *ngIf="!saldo.Editando" class="text-center">
+              <!-- Botón de editar -->
+              <button (click)="toggleEdicion(saldo)" type="button" class="btn btn-success text-center">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+            </td>
+            <td *ngIf="saldo.Editando">
+              <!-- Botón de editar -->
+              <button (click)="actualizarSaldo(saldo)" type="button" class="btn btn-info text-center">
+                <i class="fa solid fa-check"></i>
+              </button>
+            </td>          
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
-          </tr>
+
         </tbody>
       </table>
     </div>

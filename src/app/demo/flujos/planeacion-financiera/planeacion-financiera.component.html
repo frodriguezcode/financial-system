@@ -49,12 +49,12 @@
                 <td *ngIf="categoria.Calculado==true"  class="text-center">{{ "$" + " " + (calcularDiferenciaFlujos(categoria.Categorias, mes.Mes, anio.Anio) | number) }}</td>
 
                 <td *ngIf="categoria.Calculado==false" class="text-center">
-                  {{ (calcularMargen(categoria.id, mes.Mes, anio.Anio) | number) + " %" }}
+                  {{ ((calcularMargen(categoria.id, mes.Mes, anio.Anio) | number) | number : '1.0-2') + " %" }}
                   <i *ngIf="calcularMargen(categoria.id, mes.Mes, anio.Anio) <= 0" class="fas fa-arrow-down text-danger"></i>
                   <i *ngIf="calcularMargen(categoria.id, mes.Mes, anio.Anio) > 0" class="fas fa-arrow-up text-success"></i>
                 </td>
                 <td *ngIf="categoria.Calculado==true" class="text-center">
-                  {{ (calcularMargenFlujos(categoria.Categorias, mes.Mes, anio.Anio) | number) + " %" }}
+                  {{ ((calcularMargenFlujos(categoria.Categorias, mes.Mes, anio.Anio) | number) | number : '1.0-2') + " %" }}
                   <i *ngIf="calcularMargenFlujos(categoria.Categorias, mes.Mes, anio.Anio) <= 0" class="fas fa-arrow-down text-danger"></i>
                   <i *ngIf="calcularMargenFlujos(categoria.Categorias, mes.Mes, anio.Anio) > 0" class="fas fa-arrow-up text-success"></i>
                 </td>
