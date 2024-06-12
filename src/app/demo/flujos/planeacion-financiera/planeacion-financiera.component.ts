@@ -291,6 +291,7 @@ else
 }
 getValuePlanFlujo(Categoriasid:any,MesRegistro:string,Anio:number){
   let ValorEncontrado:any=[]
+  let Valor:any=0
   const categorias = Categoriasid.map(item => item.idCategoria);
   ValorEncontrado = this.RegistrosValoresPlanes.filter((data) =>
     categorias.includes(data.idCategoria) &&
@@ -300,14 +301,17 @@ getValuePlanFlujo(Categoriasid:any,MesRegistro:string,Anio:number){
     data.IdSucursal == this.usuario.IdSucursal
   )
 if(ValorEncontrado.length>0){
-  return ValorEncontrado[0].Valor
+  ValorEncontrado.forEach((data:any) => {
+    Valor+=Number(data.Valor)
+  });
+
 
 }
 else 
 {
-  return 0
+  Valor= 0
 }
-
+return Valor
 }
 getValueCategoria(Categoriasid:any,MesRegistro:string,Anio:number){
   let ValorEncontrado:any=[]
