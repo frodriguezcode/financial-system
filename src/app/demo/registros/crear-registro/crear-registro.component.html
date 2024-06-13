@@ -93,6 +93,7 @@
         <th style="text-transform: uppercase">Borrar</th>
         <th style="text-transform: uppercase">Centro de costo</th>
         <th style="text-transform: uppercase">banco <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+        <th style="text-transform: uppercase">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th style="text-transform: uppercase">Valor</th>
         <th style="text-transform: uppercase">Flujo</th>
         <th style="text-transform: uppercase">Socio Negocios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
@@ -150,6 +151,7 @@
           </div>
         </ng-template>
         </td>
+
         <td class="text-center">
           <p-dropdown
             [options]="cuentas"
@@ -168,6 +170,27 @@
             </ng-template>
           </p-dropdown>
         </td>
+
+        <td class="text-center">
+          <p-dropdown
+          [options]="Sucursales"
+          [(ngModel)]="registros.Sucursal"
+          name="SucursalesSeleccionadas"
+          optionLabel="Sucursal"
+          optionValue="Sucursal"
+          [filter]="true"
+          filterBy="Sucursal"
+          [showClear]="false"
+          placeholder="Seleccione una sucursal">
+          <ng-template pTemplate="selectedItem" let-selectedItem>
+            <div class="flex align-items-lg-start gap-2">
+              <div class="seleccion-item">{{ selectedItem.Sucursal }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        
+        </td>
+
 
         <td class="text-center">
           <div class="animate__animated animate__bounceIn custom-alert shadow-1" style="color: red; font-size: 11px;" *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo</div>

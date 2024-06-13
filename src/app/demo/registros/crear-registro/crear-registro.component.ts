@@ -113,6 +113,7 @@ export default class CrearRegistroComponent implements OnInit {
   ItemsCategGroup:any= [];
   ItemsCategGroupBack:any= [];
   OrdenMax: number = 0;
+  Sucursales: any=[];
   Flujos: any = [
     {id: "1", name: "Banco"},
     {id: "2", name: "Caja"},
@@ -191,15 +192,22 @@ ngOnInit(): void {
   
   ]
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.obtenerSucursales()
   this.obtenerItems()
   this.obtenerCuentas()
   this.obtenerSocios()
   this.obtenerCategorias()
-  this.obtenerRegistros()
+
 
 
 }
-
+obtenerSucursales(){
+  this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe(resp=>{
+    this.Sucursales=resp
+    console.log('Sucursales',this.Sucursales)
+    this.obtenerRegistros()
+  })
+}
 
 
 obtenerSocios(){
@@ -253,6 +261,7 @@ obtenerRegistros(){
         "idMatriz":element.idMatriz,
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
+        "Sucursal":element.Sucursal || '',
         "NombreElemento":element.Elemento.label || '',
         "NumCuenta":element.Cuenta.Cuenta || '',
         "CategoriaNombre":element.idCategoria.Nombre || '',
@@ -261,13 +270,12 @@ obtenerRegistros(){
       }
       this.Registros.push(_Registro)
     })
-
+    console.log('Registros',this.Registros)
     this.registrosBackUp=this.Registros
  
     this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
       return Math.max(maxOrden, objeto.Orden);
   }, 0);
-  console.log('OrdenMax',this.OrdenMax)
     this.cargarFormulario()
   })
 }
@@ -384,7 +392,6 @@ salvarRegistro(Registro:any){
     else {
       let _categoriaEncontrada:any=[]
       let _MesRegistro:any=[]
-      console.log('msRegistro',this.getMonthName(Registro.FechaRegistro))
       _MesRegistro=this.MesesTodos.filter((mes:any)=>mes.id==this.getMonthName(Registro.FechaRegistro))
       _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
       Registro.idCategoria=_categoriaEncontrada
@@ -399,7 +406,6 @@ salvarRegistro(Registro:any){
       Registro.Valor=Number(Registro.Valor)
       Registro.Usuario=this.usuario.Usuario
       
-      console.log('Registro',Registro)
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
         })
@@ -526,37 +532,7 @@ getItemsCategGroup(tipo:any){
 get selectedCategoria() {
   return this.Categorias.find((cat:any):any => cat.id === this.EditRegistroForm.value.idCategoria);
 }
-editarRegistro(idRegistro:string) {
-  
-  let _RegistroEditar:any={}
-  _RegistroEditar=this.Registros.filter((r:any) => r.id == idRegistro)[0]
 
-  this.EditRegistroForm = new FormGroup({
-    Elemento: new FormControl(_RegistroEditar.Elemento,[Validators.required]), 
-    Cuenta: new FormControl(_RegistroEditar.Cuenta,[Validators.required]), 
-    Valor: new FormControl(_RegistroEditar.Valor,[Validators.required]), 
-    idFlujo: new FormControl(_RegistroEditar.idFlujo,[Validators.required]), 
-    NumMes: new FormControl(_RegistroEditar.NumMes), 
-    NumSemana: new FormControl(_RegistroEditar.NumSemana), 
-    AnioRegistro: new FormControl(_RegistroEditar.AnioRegistro), 
-    Semana: new FormControl(_RegistroEditar.Semana), 
-    MesRegistro:new FormControl(_RegistroEditar.MesRegistro),
-    Nuevo:new FormControl(false),
-    Registrando:new FormControl(true),
-    Orden:new FormControl(this.OrdenMax+1),
-    Activo: new FormControl(_RegistroEditar.Activo), 
-    Editando: new FormControl(_RegistroEditar.Editando), 
-    idSocioNegocio: new FormControl(_RegistroEditar.idSocioNegocio), 
-    idEmpresa: new FormControl(_RegistroEditar.idEmpresa), 
-    idMatriz: new FormControl(_RegistroEditar.idMatriz), 
-    idCategoria: new FormControl(_RegistroEditar.idCategoria), 
-    idSucursal: new FormControl(_RegistroEditar.idSucursal,[Validators.required]), 
-    FechaRegistro: new FormControl(_RegistroEditar.FechaRegistro), 
-    id: new FormControl(_RegistroEditar.id), 
-   })
-   this.visibleEditar = true;
- 
-}
 
 
 getWeekNumber() {
@@ -569,6 +545,16 @@ getWeekNumber() {
 
 getIdItem(idItem:string){
   this.idItem=idItem
+}
+
+getNombreSucursal(idSucursal:any){
+  let _SucursalEncontrada:any=this.Sucursales.find((suc:any)=>suc.id==idSucursal)
+  if(_SucursalEncontrada){
+    return _SucursalEncontrada.Nombre
+  }
+  else {
+    return ''
+  }
 }
 
 cargarFormulario(){
@@ -595,7 +581,8 @@ cargarFormulario(){
     NumCuenta:new FormControl('NumCuenta'),
     CategoriaNombre:new FormControl('CategoriaNombre'),
     SocioNegocio:new FormControl('SocioNegocio'),
-    idSucursal: new FormControl('0',[Validators.required]), 
+    idSucursal: new FormControl(this.usuario.IdSucursal,[Validators.required]), 
+    Sucursal: new FormControl(this.getNombreSucursal(this.usuario.IdSucursal),[Validators.required]), 
     FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
 }
