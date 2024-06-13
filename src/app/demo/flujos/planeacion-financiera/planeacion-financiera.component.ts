@@ -9,7 +9,7 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
 import { FormControl } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { ToastrService } from 'ngx-toastr';
-
+import Swal from 'sweetalert2'
 @Component({
   selector: 'app-planeacion-financiera',
   standalone: true,
@@ -270,7 +270,9 @@ obtenerValoresPlanes(){
 formatNumber(value: number): string {
   return value.toLocaleString().replace(/\./g, ',');
 }
-
+formatearValor(valor: number): string {
+  return valor.toLocaleString('es-ES'); // 'es-ES' es el código para español de España
+}
 getValuePlan(idCategoria:string,MesRegistro:string,Anio:number){
   let ValorEncontrado:any=[]
   ValorEncontrado=this.RegistrosValoresPlanes.filter((data:any)=>
@@ -281,7 +283,6 @@ getValuePlan(idCategoria:string,MesRegistro:string,Anio:number){
   data.IdSucursal==this.usuario.IdSucursal)
 if(ValorEncontrado.length>0){
   return ValorEncontrado[0].Valor
-
 }
 else 
 {
@@ -313,6 +314,21 @@ else
 }
 return Valor
 }
+verifyValue(categoriaTipo:any,Monto:any){
+
+  if(categoriaTipo==2 && Number(Monto)>0)
+    {
+      return [{Estado:false,Mensaje:'El valor debe ser negativo'}]  
+    }
+   else if (categoriaTipo==1 && Number(Monto)<0 ) 
+    {
+      return [{Estado:false,Mensaje:'El valor debe ser positivo'}]  
+    }
+    else {
+      return [{Estado:true,Mensaje:'Excelente'}]  
+    }
+
+}
 getValueCategoria(Categoriasid:any,MesRegistro:string,Anio:number){
   let ValorEncontrado:any=[]
   let Valor:any=0
@@ -322,8 +338,8 @@ getValueCategoria(Categoriasid:any,MesRegistro:string,Anio:number){
     categorias.includes(data.idCategoria.id) &&
     data.MesRegistro == MesRegistro &&
     data.AnioRegistro == Anio &&
-    data.idEmpresa == this.usuario.idEmpresa &&
-    data.idSucursal == this.usuario.IdSucursal
+    data.idEmpresa == this.usuario.idEmpresa 
+    //&& data.idSucursal == this.usuario.IdSucursal
   )
 if(ValorEncontrado.length>0){
   ValorEncontrado.forEach((data:any) => {
@@ -338,38 +354,50 @@ else
 }
 return Valor
 }
-guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any){
-  let ValorCategoria:any=this.getValorCategoria(idCategoria, MesRegistro, Anio)
-  let ValorMargen:any= ValorCategoria=0 ? 1 : ValorCategoria/ Valor
-  let _Valor:any={
-    "AnioRegistro":Anio,
-    "MesRegistro":MesRegistro,
-    "idCategoria":idCategoria,
-    "Valor": Valor,
-    "ValorMargen":Number(ValorMargen.toFixed(2)),
-    "idEmpresa":this.usuario.idEmpresa,
-    "IdSucursal":this.usuario.IdSucursal
+guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCategoria:any){
+  if(this.verifyValue(TipoCategoria,Number(Valor))[0].Estado==false){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: `${this.verifyValue(TipoCategoria,Number(Valor))[0].Mensaje}`,
+      showConfirmButton: false,
+      timer: 1500
+    });
   }
-
-  let _ValorPlanEncontrado:any=[]
-  _ValorPlanEncontrado=this.RegistrosValoresPlanes.filter((data:any)=>
-    data.idCategoria==idCategoria &&
-    data.MesRegistro==MesRegistro &&
-    data.AnioRegistro==Anio &&
-    data.idEmpresa==this.usuario.idEmpresa &&
-    data.IdSucursal==this.usuario.IdSucursal)
-  if(_ValorPlanEncontrado.length>0){
-    _ValorPlanEncontrado[0].Valor=Valor
-    _ValorPlanEncontrado[0].ValorMargen=ValorCategoria=0 ? 1 : ValorCategoria/ Valor
-  this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
-    this.toastr.success('Guardado', '¡Exito!');
-  })
-  }  
   else {
-    
-    this.conS.crearValorPlan(_Valor).then(resp=>{
+    let ValorCategoria:any=this.getValorCategoria(idCategoria, MesRegistro, Anio)
+    let ValorMargen:any= ValorCategoria=0 ? 1 : ValorCategoria/ Valor
+    let _Valor:any={
+      "AnioRegistro":Anio,
+      "MesRegistro":MesRegistro,
+      "idCategoria":idCategoria,
+      "Valor": Number(Valor),
+      "ValorMargen":Number(ValorMargen.toFixed(2)),
+      "idEmpresa":this.usuario.idEmpresa,
+      "IdSucursal":this.usuario.IdSucursal
+    }
+  
+    let _ValorPlanEncontrado:any=[]
+    _ValorPlanEncontrado=this.RegistrosValoresPlanes.filter((data:any)=>
+      data.idCategoria==idCategoria &&
+      data.MesRegistro==MesRegistro &&
+      data.AnioRegistro==Anio &&
+      data.idEmpresa==this.usuario.idEmpresa &&
+      data.IdSucursal==this.usuario.IdSucursal)
+    if(_ValorPlanEncontrado.length>0){
+      _ValorPlanEncontrado[0].Valor=Number(Valor)
+      _ValorPlanEncontrado[0].ValorMargen=ValorCategoria=0 ? 1 : ValorCategoria/ Number(Valor)
+    this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
     })
+    }  
+    else {
+      
+      this.conS.crearValorPlan(_Valor).then(resp=>{
+        this.toastr.success('Guardado', '¡Exito!');
+      })
+    }
+
   }
 }
 
