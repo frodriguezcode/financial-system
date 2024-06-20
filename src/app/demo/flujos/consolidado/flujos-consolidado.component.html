@@ -1,149 +1,106 @@
+<app-card cardTitle="Flujo Consolidado" [options]="false">
+  <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Anios" [(ngModel)]="AniosSelect" display="chip" placeholder="Años" optionLabel="Anio"></p-multiSelect>
+  <p-multiSelect class="m-1" (onChange)="filtrarData();this.SeleccionarMes()" [options]="MesesTodos" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Meses" optionLabel="Mes"></p-multiSelect>
+  <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="CuentasBanco" [(ngModel)]="CuentasBancoSelect" display="chip" placeholder="Cuentas" optionLabel="Cuenta"></p-multiSelect>
+  <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Usuarios" [(ngModel)]="UsuariosSelect" display="chip" placeholder="Usuarios" optionLabel="Nombres"></p-multiSelect>
+  <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Sucursales" [(ngModel)]="SucursalesSelect" display="chip" placeholder="Sucursales" optionLabel="Nombre"></p-multiSelect>
 
-    <app-card cardTitle="Flujo Consolidado"  [options]="false">
+  <hr>
+  <div>
+    <label>
+      <input type="checkbox" [(ngModel)]="mostrarSoloTotales" (change)="toggleMostrarSoloTotales()" /> Mostrar solo totales mensuales
+    </label>
+  </div>
 
-      <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Anios" [(ngModel)]="AniosSelect" display="chip" placeholder="Años" optionLabel="Anio"></p-multiSelect>
-
-      <p-multiSelect class="m-1" (onChange)="filtrarData();this.SeleccionarMes()" [options]="MesesTodos" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Meses" optionLabel="Mes"></p-multiSelect>
-      <p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="CuentasBanco" [(ngModel)]="CuentasBancoSelect" display="chip" placeholder="Cuentas" optionLabel="Cuenta"></p-multiSelect>
-      <p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="Usuarios" [(ngModel)]="UsuariosSelect" display="chip" placeholder="Usuarios" optionLabel="Nombres"></p-multiSelect>
-      <p-multiSelect class="m-1" (onChange)="filtrarData()"  [options]="Sucursales" [(ngModel)]="SucursalesSelect" display="chip" placeholder="Sucursales" optionLabel="Nombre"></p-multiSelect>
-      <div class="table-responsive mt-3">
-        <table *ngIf="SaldosSemanales.length>0" class="table table-100">
-          <thead class="cabecera">
-          
-              <th class="text-left" style="padding: 0.5rem;background-color: #0c8c86;text-transform: uppercase;" >Concepto</th> 
-              <ng-container *ngFor="let anio of AniosRegistros">      
-                <ng-container *ngFor="let mes of MesesRegistros" >
-                  <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <th class="text-center" style="font-weight: 400; padding: 0.7rem;">{{ semana.Semana + " " + "(" + mes.Mes + ")"}}</th>
-                  </ng-container>     
-                  <th class="text-center" style="padding: 0.7rem;text-decoration: underline; font-weight: 500; border-left: 1px solid #eaeaea ; border-right: 1px solid #eaeaea ">{{"Total " + mes.Mes}}</th>
-                  
-                  
-                </ng-container>
-                <!-- <th class="text-center" style="padding: 0.7rem;text-decoration: underline; font-weight: 700; color: #ffffff; border-left: 1px solid #eaeaea ; border-right: 1px solid #eaeaea ">{{"Total " + anio.Anio}}</th> -->
-              </ng-container>
-        
-          </thead>
-          <tbody>
-            <tr>
-              <td style="background-color: white;">Saldo Inicial en bancos</td>
-              <ng-container *ngFor="let anio of AniosRegistros">      
-                <ng-container *ngFor="let mes of MesesRegistros" >
-                  <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <td class="text-center" >
-       
-                      {{"$" + " " + (semana.SaldoInicial | number)}}
-                      
-                  
-                    </td>
-                    
-                  </ng-container>     
-                  <th style="background-color: rgb(87, 87, 86,0.2)" class="text-center">
-                    {{"$" + " " + (this.getSaldoInicialMensual(mes.NumMes,anio.Anio)| number)}}
-
-                  </th>
-                </ng-container>
-                <!-- <th class="text-center">0</th> -->
-              </ng-container>
-            </tr>
-            <ng-container *ngFor="let categoria of Categorias; let j = index">
-              <tr  [ngClass]="{'cabecera-categoria': categoria.Calculado==true}" (click)="toggleCategoria(categoria.id)">
-                
-                <td 
-                [ngClass]="{'cabecera-categoria': categoria.Calculado==true, 'cabecera-categoria-no-calc' : categoria.Calculado==false }">
-                  <span     class="categoria-toggle">{{ categoria.Nombre }}</span>
-                  <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
-                   <span *ngIf="categoria.Calculado==false">
-                    <i style="cursor: pointer;" class="fa-solid fa-square-minus"></i>
-                  </span> 
-                    
-                  </span>
-                  <span *ngIf="categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
-                    <span *ngIf="categoria.Calculado==false">
-                      <i style="cursor: pointer;" class="fa-solid fa-square-plus"></i>
-                    </span> 
-                  </span>
-                </td>
-                <ng-container *ngFor="let anio of AniosRegistros">      
-                  <ng-container *ngFor="let mes of MesesRegistros" >
-                    <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                      <td class="text-center" 
-                      [ngClass]="{'text-center': true, 'negativo': this.getDataCategoria(semana.NumSemana,categoria.id,mes.NumMes,anio.Anio,categoria.Orden) < 0}">
-
-                    <span >{{"$" + " " + (this.getDataCategoria(semana.NumSemana,categoria.id,mes.NumMes,anio.Anio,categoria.Orden)| number)}}</span>  
-                    
-                    </td>
-                    </ng-container>     
-                    <td class="text-center"
-                    style="background-color: rgb(87, 87, 86,0.2);"
-                    [ngClass]="{'text-center': true, 'negativo': this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio,categoria.Orden) < 0}"
-                    >{{"$" + " " + (this.getDataMensualCategoria(categoria.id,mes.NumMes,anio.Anio,categoria.Orden) | number)}}</td>
-                    
-                  </ng-container>
-                  <!-- <td class="text-center"
-                  [ngClass]="{'text-center': true, 'negativo': this.getDataAnualCategoria(categoria.id,anio.Anio,categoria.Orden) < 0}"
-                  >{{"$" + " " +this.getDataAnualCategoria(categoria.id,anio.Anio,categoria.Orden)}}</td>
-         -->
-                </ng-container>
-              </tr>
-              <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
-                <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
-                  <tr style="background-color: #FAFAFA">
-                    <td  style="background-color: white" ><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
-                    <ng-container *ngFor="let anio of AniosRegistros">      
-                      <ng-container *ngFor="let mes of MesesRegistros" >
-                        <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                          <td style="font-weight: bolder;"  [ngClass]="{'text-center': true, 'negativo': this.getDataItem(semana.NumSemana,item.Nombre,mes.NumMes,anio.Anio) < 0}">
-                            {{ "$ " + (this.getDataItem(semana.NumSemana,item.Nombre,mes.NumMes,anio.Anio) | number) }}
-                          </td>
-                          </ng-container>     
-                        <td style="font-weight: bolder; background-color: rgb(87, 87, 86,0.2);" 
-                        class="text-center"
-                        [ngClass]="{'text-center': true, 'negativo': this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio) < 0}"
-                        >
-                        {{"$" + " " + (this.getDataMensualItem(item.Nombre,mes.NumMes,anio.Anio)| number)}}</td>
-                      </ng-container>
-                      <!-- <td style="font-weight: bolder; " 
-                      class="text-center"
-                      [ngClass]="{'text-center': true, 'negativo': this.getDataAnualItem(item.Nombre,anio.Anio)< 0}"
-                      >
-                      {{"$" + " " +this.getDataAnualItem(item.Nombre,anio.Anio)}}</td> -->
-               
-                    </ng-container>
-                  </tr>
-                </ng-container>
-
+  <div class="table-responsive mt-3">
+    <table *ngIf="SaldosSemanales.length > 0" class="table table-100">
+      <thead class="cabecera">
+        <th class="text-left" style="padding: 0.5rem; background-color: #0c8c86; text-transform: uppercase;">Concepto</th>
+        <ng-container *ngFor="let anio of AniosRegistros">
+          <ng-container *ngFor="let mes of MesesRegistros">
+            <ng-container *ngIf="!mostrarSoloTotales">
+              <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes, anio.Anio)">
+                <th class="text-center" style="font-weight: 400; padding: 0.7rem;">{{ semana.Semana + " " + "(" + mes.Mes + ")" }}</th>
               </ng-container>
             </ng-container>
-            <tr >
-              <td style="background-color: white;">Saldo Final en bancos</td>
-              <ng-container *ngFor="let anio of AniosRegistros">      
-                <ng-container *ngFor="let mes of MesesRegistros" >
-                  <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <td class="text-center">  {{"$" + " " + (semana.SaldoFinal | number)}}</td>
-                  </ng-container>     
-                  <td class="text-center"  style="background-color: rgb(87, 87, 86,0.2);">{{"$" + " " + (this.getSaldoFinalMensual(mes.NumMes,anio.Anio)| number)}}</td>
+            <th class="text-center" style="padding: 0.7rem; text-decoration: underline; font-weight: 500; border-left: 1px solid #eaeaea; border-right: 1px solid #eaeaea">{{ "Total " + mes.Mes }}</th>
+          </ng-container>
+        </ng-container>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="background-color: white;">Saldo Inicial en bancos</td>
+          <ng-container *ngFor="let anio of AniosRegistros">
+            <ng-container *ngFor="let mes of MesesRegistros">
+              <ng-container *ngIf="!mostrarSoloTotales">
+                <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes, anio.Anio)">
+                  <td class="text-center">{{ "$" + " " + (semana.SaldoInicial | number) }}</td>
                 </ng-container>
-                <!-- <td class="text-center">{{"$" + " " +this.getDataFlujoLibreAnual(anio.Anio)}}</td> -->
               </ng-container>
-            </tr>
-            <tr class="cabecera-flujo-efectivo-libre">
-              <td style="background-color: #cee8e7;">Flujo efectivo libre</td>
-              <ng-container *ngFor="let anio of AniosRegistros">      
-                <ng-container *ngFor="let mes of MesesRegistros" >
-                  <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes,anio.Anio)">
-                    <td class="text-center">{{"$" + " " + (this.getDataFlujoLibre(semana.NumSemana,mes.NumMes,anio.Anio)| number)}}</td>
-                  </ng-container>     
-                  <td class="text-center" style="background-color: rgb(87, 87, 86,0.2);">{{"$" + " " + (this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) | number)}}</td>
-                  
+              <th style="background-color: rgb(87, 87, 86, 0.2)" class="text-center">
+                {{ "$" + " " + (this.getSaldoInicialMensual(mes.NumMes, anio.Anio) | number) }}
+              </th>
+            </ng-container>
+          </ng-container>
+        </tr>
+        <ng-container *ngFor="let categoria of Categorias; let j = index">
+          <tr [ngClass]="{'cabecera-categoria': categoria.Calculado == true}" (click)="toggleCategoria(categoria.id)">
+            <td [ngClass]="{'cabecera-categoria': categoria.Calculado == true, 'cabecera-categoria-no-calc': categoria.Calculado == false }">
+              <span class="categoria-toggle">{{ categoria.Nombre }}</span>
+              <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
+                <span *ngIf="categoria.Calculado == false">
+                  <i style="cursor: pointer;" class="fa-solid fa-square-minus"></i>
+                </span>
+              </span>
+              <span *ngIf="categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
+                <span *ngIf="categoria.Calculado == false">
+                  <i style="cursor: pointer;" class="fa-solid fa-square-plus"></i>
+                </span>
+              </span>
+            </td>
+            <ng-container *ngFor="let anio of AniosRegistros">
+              <ng-container *ngFor="let mes of MesesRegistros">
+                <ng-container *ngIf="!mostrarSoloTotales">
+                  <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes, anio.Anio)">
+                    <td class="text-center" [ngClass]="{'text-center': true, 'negativo': this.getDataCategoria(semana.NumSemana, categoria.id, mes.NumMes, anio.Anio, categoria.Orden) < 0}">
+                      <span>{{ "$" + " " + (this.getDataCategoria(semana.NumSemana, categoria.id, mes.NumMes, anio.Anio, categoria.Orden) | number) }}</span>
+                    </td>
+                  </ng-container>
                 </ng-container>
-                <!-- <td class="text-center">{{"$" + " " +this.getDataFlujoLibreAnual(anio.Anio)}}</td> -->
-
+                <td class="text-center" style="background-color: rgb(87, 87, 86, 0.2);" [ngClass]="{'text-center': true, 'negativo': this.getDataMensualCategoria(categoria.id, mes.NumMes, anio.Anio, categoria.Orden) < 0}">
+                  {{ "$" + " " + (this.getDataMensualCategoria(categoria.id, mes.NumMes, anio.Anio, categoria.Orden) | number) }}
+                </td>
               </ng-container>
-            </tr>
-          </tbody>
-          
-        </table>
-      </div>
-    </app-card>
+            </ng-container>
+          </tr>
+          <ng-container *ngIf="!categoriasExpandidas[categoria.id] && !mostrarSoloTotales">
+            <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
+              <tr style="background-color: #FAFAFA">
+                <td style="background-color: white"><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
+                <ng-container *ngFor="let anio of AniosRegistros">
+                  <ng-container *ngFor="let mes of MesesRegistros">
+                    <ng-container *ngIf="!mostrarSoloTotales">
+                      <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes, anio.Anio)">
+                        <td style="font-weight: bolder;" [ngClass]="{'text-center': true, 'negativo': this.getDataItem(semana.NumSemana, item.Nombre, mes.NumMes, anio.Anio) < 0}">
+                          {{ "$ " + (this.getDataItem(semana.NumSemana, item.Nombre, mes.NumMes, anio.Anio) | number) }}
+                        </td>
+                      </ng-container>
+                    </ng-container>
+                    <td style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center" [ngClass]="{'text-center': true, 'negativo': this.getDataMensualItem(item.Nombre, mes.NumMes, anio.Anio) < 0}">
+                      {{ "$" + " " + (this.getDataMensualItem(item.Nombre, mes.NumMes, anio.Anio) | number) }}
+                    </td>
+                  </ng-container>
+                </ng-container>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <tr>
+          <td style="background-color: white;">Saldo Final en bancos</td>
+          <ng-container *ngFor="let anio of AniosRegistros">
+            <ng-container *ngFor="let mes of MesesRegistros">
+              <ng-container *ngIf="!mostrarSoloTotales">
+                <ng-container *ngFor="let semana of this.getSemanasByMonth(mes.NumMes, anio.Anio)">
+                  <td class="text-center">{{ "$" + " " + (semana.SaldoFinal | number) }}</td>
+                </ng-container>
+              </ng-container>

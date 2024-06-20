@@ -50,7 +50,9 @@ export default class FlujoConsolidadoComponent implements OnInit {
 
   SaldosSemanales:any=[]
   SaldosSemanalesBack:any=[]
-  SemanasHeader:any=[]
+  SemanasHeader:any=[];
+
+  mostrarSoloTotales: boolean = false;
 
  ngOnInit(): void {
 
@@ -260,6 +262,11 @@ filterAnios(){
   }
 
 
+}
+
+toggleMostrarSoloTotales() {
+  this.mostrarSoloTotales = !this.mostrarSoloTotales;
+  
 }
 
  getMonthName(Fecha:string){
