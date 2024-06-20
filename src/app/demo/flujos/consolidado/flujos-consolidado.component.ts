@@ -1,19 +1,21 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { MultiSelectModule } from 'primeng/multiselect';
+
+import { CheckboxModule } from 'primeng/checkbox';
 @Component({
   selector: 'app-flujo-consolidado',
   standalone: true,
-  imports: [CommonModule, SharedModule,MultiSelectModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule, CheckboxModule],
   templateUrl: './flujos-consolidado.component.html',
   styleUrls: ['./flujos-consolidado.component.scss']
 })
 export default class FlujoConsolidadoComponent implements OnInit {
-  constructor(private conS:ConfigurationService ) {}
+  constructor(private conS:ConfigurationService, private cdr: ChangeDetectorRef) {}
   Categorias:any=[]
   Items:any=[]
   semanas: any[] = [];
@@ -195,7 +197,9 @@ filtrarData(){
   this.Registros= this.conS.filtradoDinamico(this.Criterios,this.RegistrosBack)
 
   this.SaldoInicial= this.conS.filtradoDinamico(this.Criterios,this.SaldoInicialBack)
-  this.refreshSaldosSemanales()
+  this.refreshSaldosSemanales();
+
+  this.cdr.detectChanges();
 }
 
 refreshSaldosSemanales(){
@@ -880,6 +884,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
   + this.getDataFlujoInversionMensual(Mes,Anio)
   + this.getDataFlujoFinancieroMensual(Mes,Anio)
   }
+  
   SeleccionarMes(){
     this.SelectMes=!this.SelectMes
   }

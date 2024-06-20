@@ -5,6 +5,8 @@
   .table-100 th,
 .table-100 td {
   width:100%;
+  min-width: 120px; /* Ajusta el tamaño mínimo según tus necesidades */
+
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis; 
@@ -59,4 +61,15 @@ td:first-child {
 
   .cabecera-flujo-efectivo-libre{
     background-color: rgb(12,140,134,0.2)
+  }
+
+  .filters-buttons{
+   display: flex;
+   align-items: flex-start;
+  //  justify-content: space-between;
+  //  background-color: #0c8c86;
+  }
+
+  .filters-buttons p-checkbox{
+    margin-top: 1rem;
   }

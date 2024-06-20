@@ -1,16 +1,30 @@
 <app-card cardTitle="Flujo Consolidado" [options]="false">
-  <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Anios" [(ngModel)]="AniosSelect" display="chip" placeholder="Años" optionLabel="Anio"></p-multiSelect>
-  <p-multiSelect class="m-1" (onChange)="filtrarData();this.SeleccionarMes()" [options]="MesesTodos" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Meses" optionLabel="Mes"></p-multiSelect>
-  <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="CuentasBanco" [(ngModel)]="CuentasBancoSelect" display="chip" placeholder="Cuentas" optionLabel="Cuenta"></p-multiSelect>
-  <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Usuarios" [(ngModel)]="UsuariosSelect" display="chip" placeholder="Usuarios" optionLabel="Nombres"></p-multiSelect>
-  <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Sucursales" [(ngModel)]="SucursalesSelect" display="chip" placeholder="Sucursales" optionLabel="Nombre"></p-multiSelect>
 
-  <hr>
-  <div>
-    <label>
-      <input type="checkbox" [(ngModel)]="mostrarSoloTotales" (change)="toggleMostrarSoloTotales()" /> Mostrar solo totales mensuales
-    </label>
+  <div class="filters-buttons">
+
+    <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Anios" [(ngModel)]="AniosSelect" display="chip" placeholder="Años" optionLabel="Anio"></p-multiSelect>
+    <p-multiSelect class="m-1" (onChange)="filtrarData();this.SeleccionarMes()" [options]="MesesTodos" [(ngModel)]="MesesSeleccionados" display="chip" placeholder="Meses" optionLabel="Mes"></p-multiSelect>
+    <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="CuentasBanco" [(ngModel)]="CuentasBancoSelect" display="chip" placeholder="Cuentas" optionLabel="Cuenta"></p-multiSelect>
+    <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Usuarios" [(ngModel)]="UsuariosSelect" display="chip" placeholder="Usuarios" optionLabel="Nombres"></p-multiSelect>
+    <p-multiSelect class="m-1" (onChange)="filtrarData()" [options]="Sucursales" [(ngModel)]="SucursalesSelect" display="chip" placeholder="Sucursales" optionLabel="Nombre"></p-multiSelect>
+
+    <p-checkbox 
+    
+
+   [(ngModel)]="mostrarSoloTotales" (change)="toggleMostrarSoloTotales()"
+   [binary]="true"
+    inputId="binary" 
+    label="Mostrar solo totales mensuales"/>
+    
   </div>
+
+
+    
+
+  
+
+
+  
 
   <div class="table-responsive mt-3">
     <table *ngIf="SaldosSemanales.length > 0" class="table table-100">
