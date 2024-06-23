@@ -11,6 +11,7 @@ import EmpresasComponent from '../empresas/empresas.component';
 import SucursalesComponent from '../sucursales/sucursales.component';
 import { ProgressIndicatorComponent } from 'src/app/theme/shared/components/progress-indicator/progress-indicator.component';
 import AjusteSaldoComponent from '../ajuste-saldos/ajuste-saldo.component';
+import CrearUsuarioComponent from '../crear-usuario/crear-usuario.component';
 
 // import { StepperModule } from 'primeng/stepper';
 
@@ -25,7 +26,8 @@ import AjusteSaldoComponent from '../ajuste-saldos/ajuste-saldo.component';
   EmpresasComponent, 
   SucursalesComponent, 
   ProgressIndicatorComponent,
-  AjusteSaldoComponent 
+  AjusteSaldoComponent,
+  CrearUsuarioComponent
 ],
   templateUrl: '/configuracion-inicial.component.html',
   styleUrls: ['/configuracion-inicial.component.scss']
@@ -34,7 +36,7 @@ export default class ConfiguracionInicialComponent {
 
 
   currentStep = 1;
-  totalSteps = 5;
+  totalSteps = 7;
 
   
 
