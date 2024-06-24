@@ -1,15 +1,138 @@
 // angular import
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
+import { Router, RouterModule } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
+import { ConfigurationService } from 'src/app/services/configuration.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-crear-usuario',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, RouterModule, FormsModule, ReactiveFormsModule],
   templateUrl: './crear-usuario.component.html',
   styleUrls: ['./crear-usuario.component.scss']
 })
-export default class CrearUsuarioComponent {}
+export default class CrearUsuarioComponent implements OnInit {
+  constructor(
+    private authS: AuthService,
+    private datePipe: DatePipe,
+    private readonly router: Router,
+    private conS:ConfigurationService,
+    private toastr: ToastrService
+  ) {}
+usuarioForm!: FormGroup;
+Fecha: any = new Date();
+MesesTodos: any = [];
+Sucursales: any = [];
+usuario:any
+ngOnInit(): void {
+  this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.MesesTodos = [
+    {
+      Mes: 'Sin Mes',
+      id: 0,
+      seleccionado: false
+    },
+    {
+      Mes: 'Enero',
+      id: 1,
+      seleccionado: false
+    },
+    {
+      Mes: 'Febrero',
+      id: 2,
+      seleccionado: false
+    },
+    {
+      Mes: 'Marzo',
+      id: 3,
+      seleccionado: false
+    },
+    {
+      Mes: 'Abril',
+      id: 4,
+      seleccionado: false
+    },
+    {
+      Mes: 'Mayo',
+      id: 5,
+      seleccionado: false
+    },
+    {
+      Mes: 'Junio',
+      id: 6,
+      seleccionado: false
+    },
+    {
+      Mes: 'Julio',
+      id: 7,
+      seleccionado: false
+    },
+    {
+      Mes: 'Agosto',
+      id: 8,
+      seleccionado: false
+    },
+    {
+      Mes: 'Septiembre',
+      id: 9,
+      seleccionado: false
+    },
+    {
+      Mes: 'Octubre',
+      id: 10,
+      seleccionado: false
+    },
+    {
+      Mes: 'Noviembre',
+      id: 11,
+      seleccionado: false
+    },
+    {
+      Mes: 'Diciembre',
+      id: 12,
+      seleccionado: false
+    }
+  ];
+  this.obtenerSucursales()
+}
+
+obtenerSucursales(){
+  this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
+    this.Sucursales=resp
+    this.cargarFormulario()
+  })
+}
+cargarFormulario() {
+  // *Formulario de usuario
+  let Fecha:any
+  Fecha=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
+  console.log('Fecha',this.getMonthName(Fecha))
+  this.usuarioForm = new FormGroup({
+    Nombres: new FormControl('', [Validators.required]),
+    Password: new FormControl('', [Validators.required]),
+    Usuario: new FormControl('', [Validators.required]),
+    FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')),
+    MesRegistro:new FormControl(this.MesesTodos[this.getMonthName(Fecha)].Mes),
+    AnioRegistro: new FormControl(new Date().getFullYear()),
+    Activo: new FormControl(true),
+    idRol: new FormControl(1),
+    IdSucursal: new FormControl(0),
+    ConfigInicialCompletado:new FormControl(false),
+    Correo: new FormControl('', [Validators.email, Validators.required]),
+    // TODO VERIFICACIONES, CONTRASENA AUTOMATICA, API QUE ENVIA AL CORREO.
+  });
+}
+
+getMonthName(Fecha: string) {
+  return Number(Fecha.substring(5).substring(0, 2));
+}
+crearUsuario(){
+  
+}
+}

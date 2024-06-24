@@ -1,12 +1,43 @@
-<div class="row">
-  <div class="col-sm-12">
-    <app-card cardTitle="Hello Card" [options]="false">
-      <p>
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-        ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-        in culpa qui officia deserunt mollit anim id est laborum."
-      </p>
-    </app-card>
+<app-card cardTitle="Módulo Usuarios" [options]="false">
+  <div class="row">
+    <div class="col-md-4">
+      <h5>Crear Usuario</h5>
+      <hr />
+      <form *ngIf="usuarioForm" [formGroup]="usuarioForm">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Nombres</label>
+          <input type="text" formControlName="Nombres" class="form-control" id="exampleInputEmail1"
+            aria-describedby="emailHelp" placeholder="Escriba un nombre del banco" />
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Contraseña</label>
+          <input  type="text" formControlName="Password" class="form-control"
+            id="exampleInputPassword1" placeholder="Escriba una contraseña" />
+        </div>
+
+        <div class="form-group">
+          <label for="exampleInputPassword1">Sucursal</label>
+          <select formControlName="IdSucursal" class="form-control" id="exampleFormControlSelect1">
+            <option value="0">Seleccione una sucursal</option>
+            <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Rol</label>
+          <select formControlName="idRol" class="form-control" id="exampleFormControlSelect1">
+            <option value="0">Seleccione una sucursal</option>
+            <option value="1">Administrador</option>
+            <option value="2">Contador</option>
+            <option value="3">Genérico</option>
+
+          </select>
+        </div>
+
+
+        <button [disabled]="this.usuarioForm.invalid" (click)="crearUsuario()" type="button"
+          class="btn btn-primary">Guardar</button>
+      </form>
+    </div>
   </div>
-</div>
+</app-card>
