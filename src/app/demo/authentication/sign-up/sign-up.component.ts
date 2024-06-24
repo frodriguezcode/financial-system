@@ -111,6 +111,7 @@ export default class SignUpComponent implements OnInit {
       MesRegistro:new FormControl(this.MesesTodos[this.getMonthName(Fecha)].Mes),
       AnioRegistro: new FormControl(new Date().getFullYear()),
       Activo: new FormControl(true),
+      idRol: new FormControl(1),
       IdSucursal: new FormControl(0),
       ConfigInicialCompletado:new FormControl(false),
       Correo: new FormControl('', [Validators.email, Validators.required]),
