@@ -133,6 +133,6 @@ getMonthName(Fecha: string) {
   return Number(Fecha.substring(5).substring(0, 2));
 }
 crearUsuario(){
-  
+  console.log('usuarioForm',this.usuarioForm.value)
 }
 }
