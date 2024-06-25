@@ -23,4 +23,22 @@ export class AuthService {
       .collection('Usuarios',(ref) => ref.where('Usuario', '==', usuario).where('Password', '==', password))
       .valueChanges();
   }
+  obtenerUsuarios(idEmpresa:string) {
+    return this.afs
+      .collection('Usuarios',(ref) => ref.where('idEmpresa', '==', idEmpresa).orderBy('Activo','desc'))
+      .valueChanges();
+  }
+  ActualizarUsuario(usuario: any) {
+    return this.afs
+      .collection('Usuarios')
+      .doc(usuario.id)
+      .ref.update(usuario);
+  }
+
+  ActualizarUsuarioEstado(Usuario: any,Activo:boolean) {
+    return this.afs
+      .collection('Usuarios')
+      .doc(Usuario.id)
+      .ref.update({Activo:Activo});
+  }
 }

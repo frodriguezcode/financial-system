@@ -29,6 +29,7 @@ usuarioForm!: FormGroup;
 Fecha: any = new Date();
 MesesTodos: any = [];
 Sucursales: any = [];
+Usuarios: any = [];
 usuario:any
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
@@ -99,14 +100,24 @@ ngOnInit(): void {
       seleccionado: false
     }
   ];
+  this.obtenerUsuarios()
   this.obtenerSucursales()
 }
-
+obtenerUsuarios(){
+  this.authS.obtenerUsuarios(this.usuario.idEmpresa).subscribe(resp=>{
+    this.Usuarios = resp
+  })
+}
 obtenerSucursales(){
   this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
     this.Sucursales=resp
     this.cargarFormulario()
   })
+}
+getNombreSucursal(idSucursal:string){
+  let _sucursal:any=[]
+  _sucursal=this.Sucursales.filter((s:any)=> s.id == idSucursal)
+  return _sucursal[0].Nombre
 }
 cargarFormulario() {
   // *Formulario de usuario
@@ -121,6 +132,9 @@ cargarFormulario() {
     MesRegistro:new FormControl(this.MesesTodos[this.getMonthName(Fecha)].Mes),
     AnioRegistro: new FormControl(new Date().getFullYear()),
     Activo: new FormControl(true),
+    Editando: new FormControl(false),
+    idEmpresa: new FormControl(this.usuario.idEmpresa),
+    idMatriz: new FormControl(this.usuario.idMatriz),
     idRol: new FormControl(1),
     IdSucursal: new FormControl(0),
     ConfigInicialCompletado:new FormControl(false),
@@ -128,11 +142,44 @@ cargarFormulario() {
     // TODO VERIFICACIONES, CONTRASENA AUTOMATICA, API QUE ENVIA AL CORREO.
   });
 }
+toggleEdicion(Usuario: any) {
 
+  Usuario.Editando = !Usuario.Editando;
+}
+actualizarUsuario(Usuario:any){
+  let _usuario= this.Usuarios;
+  const usuarioEncontrado = _usuario.filter((user:any) => user.id == Usuario.id);
+  usuarioEncontrado[0].Nombres=Usuario.Nombres
+  usuarioEncontrado[0].Correo=Usuario.Correo
+  usuarioEncontrado[0].Password=Usuario.Password
+  usuarioEncontrado[0].IdSucursal=Usuario.IdSucursal
+  usuarioEncontrado[0].Editando = !Usuario.Editando;
+
+  this.authS.ActualizarUsuario(usuarioEncontrado[0]).then(resp=>{
+    this.toastr.success('Banco editado', '¡Exito!');
+  })
+}
+
+
+ActualizarUsuarioEstado(Usuario:any,Estado:boolean){
+  this.authS.ActualizarUsuarioEstado(Usuario,Estado).then(resp=>{
+    if(Estado==true){
+      this.toastr.success('Usuario activado', '¡Exito!');
+    }
+    else{
+      this.toastr.success('Usuario desactivado', '¡Exito!');
+    }
+  })
+}
 getMonthName(Fecha: string) {
   return Number(Fecha.substring(5).substring(0, 2));
 }
 crearUsuario(){
   console.log('usuarioForm',this.usuarioForm.value)
+
+  this.authS.crearUsuario(this.usuarioForm.value).then((resp:any)=>{
+    this.toastr.success('Guardado', '¡Exito!');
+    this.cargarFormulario()
+  })
 }
 }
