@@ -73,7 +73,7 @@ export const NavigationItems: NavigationItem[] = [
           url: '/auth/signin',
           // icon: 'feather icon-log-in',
           icon: 'fa-solid fa-right-to-bracket',
-          target: true,
+          target: false,
           breadcrumbs: false
         }
       ]
