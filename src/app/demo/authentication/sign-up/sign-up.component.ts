@@ -23,6 +23,13 @@ export default class SignUpComponent implements OnInit {
   usuarioForm!: FormGroup;
   Fecha: any = new Date();
 
+  usuarioCreado = {
+    nombre : '',
+    correo : '',
+    user : '',
+    passw : '',
+  }
+
   MesesTodos: any = [];
   ngOnInit() {
 
@@ -126,7 +133,19 @@ export default class SignUpComponent implements OnInit {
 
   // !Funcion para guardar usuario
   guardarUsuario(){
-    console.log('UsuarioForm',this.usuarioForm.value)
+
+    this.usuarioCreado.nombre = this.usuarioForm.value.Nombres;
+    this.usuarioCreado.correo = this.usuarioForm.value.Correo;
+    this.usuarioCreado.user = this.usuarioForm.value.Usuario;
+    this.usuarioCreado.passw = this.usuarioForm.value.Password
+
+
+    console.log(this.usuarioCreado);
+   
+
+      // Enviar correo electrónico
+  this.authS.sendMail(this.usuarioCreado).subscribe();
+
     this.authS.crearUsuario(this.usuarioForm.value).then((resp:any)=>{
       this.router.navigate(['/auth/signin'])
       Swal.fire({
