@@ -67,7 +67,7 @@ export default class ConfiguracionInicialComponent {
   }
 
   calculateProgress(): number {
-    return (this.currentStep / this.totalSteps) * 100;
+    return Math.ceil((this.currentStep / this.totalSteps) * 100);
   }
 
   addAnimationIn() {
