@@ -22,7 +22,56 @@ export class AuthService {
       .doc(id)
       .ref.set(Object.assign(user, { id: id }));
   }
+  crearUsuarioRegistro(user: any) {
+    const id = this.afs.createId();
+    const idEmpresa = this.afs.createId();
+    const idMatriz= this.afs.createId();
+    let _Empresa={
+      Activo:true,
+      Editando:false,
+      FechaCreacion:user.FechaRegistro,
+      Nombre:user.Empresa,
+      idMatriz:idMatriz
+    }
+    let _Matriz={
+      Activo:true,
+      Editando:false,
+      FechaCreacion:user.FechaRegistro,
+      Nombre:user.Matriz,
+      Empresas:[_Empresa]
+    }
 
+    this.crearMatriz(_Matriz,idMatriz).then(resp=>{
+      
+    })
+    this.crearEmpresa(_Empresa,idEmpresa).then(resp=>{
+
+    })
+
+    user.idEmpresa=idEmpresa
+    user.idMatriz=idMatriz
+
+    return this.afs
+      .collection('Usuarios')
+      .doc(id)
+      .ref.set(Object.assign(user, { id: id }));
+  }
+
+
+  crearEmpresa(empresa: any,idEmpresa:any){
+   
+    return this.afs
+    .collection('Empresa')
+    .doc(idEmpresa)
+    .ref.set(Object.assign(empresa, {id: idEmpresa}))
+}
+  crearMatriz(Matriz: any,idMatriz:any){
+   
+    return this.afs
+    .collection('Corporaciones')
+    .doc(idMatriz)
+    .ref.set(Object.assign(Matriz, {id: idMatriz}))
+}
 
   
   sendMail(usuario:any): Observable<any>{

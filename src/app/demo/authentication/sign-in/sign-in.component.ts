@@ -24,17 +24,24 @@ export default class SignInComponent {
       title: 'Iniciando sesión....'
      });
      Swal.showLoading();
-    this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe(resp=>{
-      if(resp.length>0){
+    this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
+      if(resp.length>0){     
         localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0]));
-        this.router.navigate(['/analytics'])
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Inicio de sesión exitosa",
-          showConfirmButton: false,
-          timer: 1500
-        });
+        if(resp[0].ConfigInicialCompletado==false){
+          this.router.navigate(['/configuracion-inicial'])
+          Swal.close()
+        }
+        else{
+          this.router.navigate(['/analytics'])
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Inicio de sesión exitosa",
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+        }
       }
       else{
         Swal.fire({

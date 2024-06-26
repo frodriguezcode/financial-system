@@ -114,6 +114,8 @@ export default class SignUpComponent implements OnInit {
       Nombres: new FormControl('', [Validators.required]),
       Password: new FormControl('', [Validators.required]),
       Usuario: new FormControl('', [Validators.required]),
+      Empresa: new FormControl('', [Validators.required]),
+      Matriz: new FormControl(''),
       FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')),
       MesRegistro:new FormControl(this.MesesTodos[this.getMonthName(Fecha)].Mes),
       AnioRegistro: new FormControl(new Date().getFullYear()),
@@ -143,10 +145,10 @@ export default class SignUpComponent implements OnInit {
     console.log(this.usuarioCreado);
    
 
-      // Enviar correo electrónico
+  // Enviar correo electrónico
   this.authS.sendMail(this.usuarioCreado).subscribe();
 
-    this.authS.crearUsuario(this.usuarioForm.value).then((resp:any)=>{
+    this.authS.crearUsuarioRegistro(this.usuarioForm.value).then((resp:any)=>{
       this.router.navigate(['/auth/signin'])
       Swal.fire({
         position: "center",

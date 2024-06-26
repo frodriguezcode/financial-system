@@ -21,7 +21,7 @@ export default class EmpresasComponent implements OnInit {
   Empresas: any = [];
   EmpresaForm!: FormGroup;
   Fecha: any = new Date();
-
+  usuario:any
   constructor(
     private datePipe: DatePipe,
     private empS: EmpresasService,
@@ -29,6 +29,7 @@ export default class EmpresasComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerEmpresas();
     
   }
@@ -77,7 +78,7 @@ export default class EmpresasComponent implements OnInit {
   }
 
   obtenerEmpresas(){
-    this.empS.obtenerEmpresa().subscribe(resp=>{
+    this.empS.obtenerEmpresa(this.usuario.idMatriz).subscribe(resp=>{
       this.Empresas=resp
       this.cargarFormulario()
     })

@@ -31,7 +31,23 @@
                 Este campo debe ser tipo correo
               </p>
 
-              <!-- *correo -->
+              <!-- *Empresa -->
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-briefcase"></i></span>
+                <input formControlName="Empresa" type="text" class="form-control" placeholder="Empresa" aria-label="Username" aria-describedby="basic-addon2" />
+              </div>
+              <p style="color: red;  display: block; margin-top: -7px;" 
+              *ngIf="(usuarioForm.get('Empresa')?.touched || usuarioForm.get('Empresa')?.dirty) && usuarioForm.get('Empresa')?.hasError('required')">
+                Este campo es obligatorio
+              </p>
+
+              <!-- *Matriz -->
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-building"></i></span>
+                <input formControlName="Matriz" type="text" class="form-control" placeholder="Corporación (opcional)" aria-label="Username" aria-describedby="basic-addon2" />
+              </div>
+          
+ 
               <!-- *Usuario -->
 
               <div class="input-group mb-4">

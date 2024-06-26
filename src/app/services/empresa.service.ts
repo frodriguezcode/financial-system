@@ -19,9 +19,9 @@ export class EmpresasService {
     }
 
     //*Obtenemos las empresas
-    obtenerEmpresa(){
+    obtenerEmpresa(idMatriz:string){
         return this.afs
-        .collection('Empresa')
+        .collection('Empresa',(ref)=>ref.where('idMatriz','==',idMatriz))
         .valueChanges();
     }
 

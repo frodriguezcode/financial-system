@@ -47,7 +47,7 @@ export class BreadcrumbComponent {
         const breadcrumbList = this.filterNavigation(this.navigations, activeLink);
         this.navigationList = breadcrumbList;
         const title = breadcrumbList[breadcrumbList.length - 1]?.title || 'Welcome';
-        this.titleService.setTitle(title + ' | Gradient Able Angular free Admin Template');
+        this.titleService.setTitle(title + ' | Sistema Financiero');
       }
     });
   }

@@ -117,7 +117,13 @@ obtenerSucursales(){
 getNombreSucursal(idSucursal:string){
   let _sucursal:any=[]
   _sucursal=this.Sucursales.filter((s:any)=> s.id == idSucursal)
-  return _sucursal[0].Nombre
+  if(_sucursal.length>0){
+    return _sucursal[0].Nombre
+
+  }
+  else {
+    return 'Admin'
+  }
 }
 cargarFormulario() {
   // *Formulario de usuario
