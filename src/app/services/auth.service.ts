@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 export class AuthService {
 
 
-  urlSeverMailLocal = 'http://localhost:3000/formulario/';
 
   constructor(
     private afs: AngularFirestore,
@@ -29,11 +28,22 @@ export class AuthService {
       .collection('Usuarios',(ref) => ref.where('Usuario', '==', usuario).where('Password', '==', password))
       .valueChanges();
   }
-
-
-  sendMail(usuario:any): Observable<any>{
-    return this._http.post<any>(this.urlSeverMailLocal,usuario);
+  obtenerUsuarios(idEmpresa:string) {
+    return this.afs
+      .collection('Usuarios',(ref) => ref.where('idEmpresa', '==', idEmpresa).orderBy('Activo','desc'))
+      .valueChanges();
+  }
+  ActualizarUsuario(usuario: any) {
+    return this.afs
+      .collection('Usuarios')
+      .doc(usuario.id)
+      .ref.update(usuario);
   }
 
-
+  ActualizarUsuarioEstado(Usuario: any,Activo:boolean) {
+    return this.afs
+      .collection('Usuarios')
+      .doc(Usuario.id)
+      .ref.update({Activo:Activo});
+  }
 }
