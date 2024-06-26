@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-
+  urlSeverMailLocal = 'http://localhost:3000/formulario/';
 
   constructor(
     private afs: AngularFirestore,
@@ -21,6 +21,12 @@ export class AuthService {
       .collection('Usuarios')
       .doc(id)
       .ref.set(Object.assign(user, { id: id }));
+  }
+
+
+  
+  sendMail(usuario:any): Observable<any>{
+    return this._http.post<any>(this.urlSeverMailLocal,usuario);
   }
 
   obtenerUsuarioLogin(usuario:string,password:string) {
