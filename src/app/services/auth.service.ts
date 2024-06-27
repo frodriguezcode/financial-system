@@ -31,7 +31,8 @@ export class AuthService {
       Editando:false,
       FechaCreacion:user.FechaRegistro,
       Nombre:user.Empresa,
-      idMatriz:idMatriz
+      idMatriz:idMatriz,
+      ConfigInicial:false
     }
     let _Matriz={
       Activo:true,
