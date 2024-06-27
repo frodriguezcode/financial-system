@@ -19,12 +19,14 @@ MesesTodos: any=[];
 Cuentas: any=[];
 SaldosIniciales: any=[];
 usuario:any
+Sucursales:any=[]
 Valor:FormControl=new FormControl(0)
 Anio:FormControl=new FormControl(0)
 Mes:FormControl=new FormControl('0')
 Semana:FormControl=new FormControl()
 Cuenta:FormControl=new FormControl('')
 Flujo:FormControl=new FormControl('')
+idSucursal:FormControl=new FormControl('')
 Fecha:any= new Date();
 
 constructor(private conS:ConfigurationService,private datePipe: DatePipe,private toastr: ToastrService){}
@@ -94,6 +96,7 @@ ngOnInit(): void {
     },
   
   ]
+  this.obtenerSucursales()
   this.obtenerBancos()
   this.obtenerSaldoInicial()
 }
@@ -115,6 +118,12 @@ obtenerSaldoInicial(){
   })
 }
 
+obtenerSucursales(){
+  this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
+    this.Sucursales=resp
+ 
+  })
+}
 
 getMes(NumMes:number){
   let _MesEncontrado:any=[]
@@ -150,12 +159,22 @@ guuardarAjuste(){
     "Flujo":this.Flujo.value,
     "idEmpresa":this.usuario.idEmpresa,
     "idMatriz":this.usuario.idMatriz,
-    "idSucursal":this.usuario.IdSucursal,
+    "idSucursal":this.idSucursal.value,
   }
   console.log('_Ajuste',_Ajuste)
   this.conS.crearSaldoInicial(_Ajuste).then(resp=>{
-    
+    this.resetCampos()
   })
+}
+resetCampos(){
+  this.Anio.setValue(0)
+  this.Mes.setValue('')
+  this.Cuenta.setValue('')
+  this.Valor.setValue(0)
+  this.Semana.setValue(0)
+  this.Flujo.setValue('')
+  this.idSucursal.setValue('')
+
 }
 
 toggleEdicion(Saldo: any) {

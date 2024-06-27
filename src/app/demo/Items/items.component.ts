@@ -30,10 +30,10 @@ export default class ItemsComponent  implements OnInit{
   Fecha:any= new Date();
   usuario:any
   buscarItem:string=''
-  todasSucursales!:boolean
+  todasSucursales:boolean=true
   BlocCheck!:boolean
   ngOnInit(): void {
-
+this.todasSucursales=true
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerCategorias()
     this.obtenerEmpresas()
@@ -54,6 +54,9 @@ export default class ItemsComponent  implements OnInit{
       idCategoria: new FormControl('',[Validators.required]), 
 
      })
+     if(this.todasSucursales==true){
+      this.ItemForm.get('Sucursales').disable();
+     }
   }
 
   verificarSelect(idSucursal){
@@ -106,6 +109,7 @@ export default class ItemsComponent  implements OnInit{
     this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
       this.Items=resp
       this.cargarFormulario()
+
     })
   }
   obtenerEmpresas(){

@@ -40,5 +40,11 @@ export class EmpresasService {
           .doc(empresa.id)
           .ref.update({Activo:Activo});
       }
+    ActualizarEmpresaConfigInicial(idEmpresa: any) {
+        return this.afs
+          .collection('Empresa')
+          .doc(idEmpresa)
+          .ref.update({ConfigInicial:true});
+      }
 
 }

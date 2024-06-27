@@ -1,5 +1,5 @@
 // angular import
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // project import
@@ -12,7 +12,9 @@ import SucursalesComponent from '../sucursales/sucursales.component';
 import { ProgressIndicatorComponent } from 'src/app/theme/shared/components/progress-indicator/progress-indicator.component';
 import AjusteSaldoComponent from '../ajuste-saldos/ajuste-saldo.component';
 import CrearUsuarioComponent from '../crear-usuario/crear-usuario.component';
-
+import { EmpresasService } from 'src/app/services/empresa.service';
+import { RouterModule,Router } from '@angular/router';
+import Swal from 'sweetalert2'
 // import { StepperModule } from 'primeng/stepper';
 
 @Component({
@@ -32,8 +34,12 @@ import CrearUsuarioComponent from '../crear-usuario/crear-usuario.component';
   templateUrl: '/configuracion-inicial.component.html',
   styleUrls: ['/configuracion-inicial.component.scss']
 })
-export default class ConfiguracionInicialComponent {
-
+export default class ConfiguracionInicialComponent implements OnInit {
+usuario:any
+constructor(private emS:EmpresasService,private readonly router: Router){}
+ngOnInit(): void {
+  this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+}
 
   currentStep = 1;
   totalSteps = 7;
@@ -63,6 +69,22 @@ export default class ConfiguracionInicialComponent {
   
   complete() {
     console.log('Stepper completado');
+    Swal.fire({
+      title: "¿Desea terminar la configuración inicial?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.emS.ActualizarEmpresaConfigInicial(this.usuario.idEmpresa).then(resp=>{
+          this.router.navigate(['/analytics'])
+        })
+      }
+    });
+
     
   }
 

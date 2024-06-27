@@ -64,10 +64,10 @@ actualizarSucursal(sucursal:any){
 ActualizaEstadoSucursal(Sucursal:any,Estado:boolean){
   this.conS.ActualizaEstadoSucursal(Sucursal,Estado).then(resp=>{
     if(Estado==true){
-      this.toastr.success('Cuenta activada', '¡Exito!');
+      this.toastr.success('Sucursal activada', '¡Exito!');
     }
     else{
-      this.toastr.success('Cuenta desactivada', '¡Exito!');
+      this.toastr.success('Sucursal desactivada', '¡Exito!');
     }
   })
 }
@@ -88,7 +88,7 @@ crearSucursal(){
     Swal.fire({
       position: "center",
       icon: "success",
-      title: "Cuenta creada",
+      title: "Sucursal creada",
       showConfirmButton: false,
       timer: 1500
     });
