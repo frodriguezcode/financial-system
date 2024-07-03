@@ -68,7 +68,7 @@ ngOnInit(): void {
   }
   
   complete() {
-    console.log('Stepper completado');
+
     Swal.fire({
       title: "¿Desea terminar la configuración inicial?",
       icon: "question",

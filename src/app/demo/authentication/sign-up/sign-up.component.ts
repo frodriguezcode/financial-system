@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-import { RouterModule,Router } from '@angular/router';
+import { RouterModule,Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
 import Swal from 'sweetalert2'
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-sign-up',
   standalone: true,
-  imports: [CommonModule, SharedModule, RouterModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, RouterModule, FormsModule, ReactiveFormsModule,DialogModule, ButtonModule],
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.scss']
 })
@@ -18,11 +19,17 @@ export default class SignUpComponent implements OnInit {
   constructor(
     private authS: AuthService,
     private datePipe: DatePipe,
-    private readonly router: Router
+    private readonly router: Router,
+    private rutaActiva: ActivatedRoute,
+    private fb: FormBuilder
   ) {}
   usuarioForm!: FormGroup;
+  visible: boolean = false;
   Fecha: any = new Date();
-
+  CardNumber:FormControl=new FormControl('')
+  FechaVencimiento:FormControl=new FormControl('')
+  cardType: string | null = null;
+  idPlan:string=''
   usuarioCreado = {
     nombre : '',
     correo : '',
@@ -32,7 +39,8 @@ export default class SignUpComponent implements OnInit {
 
   MesesTodos: any = [];
   ngOnInit() {
-
+    this.idPlan= this.rutaActiva.snapshot.paramMap.get('idPlan')!;
+    console.log('idPlan',this.idPlan)
     this.MesesTodos = [
       {
         Mes: 'Sin Mes',
@@ -100,10 +108,38 @@ export default class SignUpComponent implements OnInit {
         seleccionado: false
       }
     ];
-    this. cargarFormulario()
+    this.cargarFormulario()
+
   }
 
+  showDialog() {
+    this.visible = true;
+}
 
+
+cardValidator() {
+  if (this.CardNumber.value.startsWith('4')) {
+    return 'https://firebasestorage.googleapis.com/v0/b/sistemafinanciero-924ff.appspot.com/o/LOGO%20VISA.png?alt=media&token=389956dd-21fd-4e74-8d45-7b2f7eab772b';
+  } else if (this.CardNumber.value.startsWith('5')) {
+    return 'https://firebasestorage.googleapis.com/v0/b/sistemafinanciero-924ff.appspot.com/o/LOGO%20MASTER%20CARD.png?alt=media&token=a0a8f4b5-2278-45c7-8fc1-df7750476ced';
+  } else if (this.CardNumber.value.startsWith('3')) {
+    return 'https://firebasestorage.googleapis.com/v0/b/sistemafinanciero-924ff.appspot.com/o/LOGO%20DINERS%20CLUB.png?alt=media&token=878da1fc-7c85-4917-a25b-f347d75e2f84';
+  } else {
+    return 'https://firebasestorage.googleapis.com/v0/b/sistemafinanciero-924ff.appspot.com/o/LOGO%20TARJETA.png?alt=media&token=dd22ab06-8965-4476-84d1-f9cf651d8a8d';
+  }
+}
+
+formatFechaVencimiento(event: Event) {
+  const input = event.target as HTMLInputElement;
+  let value = input.value.replace(/\D/g, ''); // Eliminar caracteres no numéricos
+
+  if (value.length >= 3) {
+    value = value.slice(0, 2) + '/' + value.slice(2, 4);
+  }
+
+  input.value = value;
+  this.FechaVencimiento.setValue(value, { emitEvent: false });
+}
 
   cargarFormulario() {
     // *Formulario de usuario

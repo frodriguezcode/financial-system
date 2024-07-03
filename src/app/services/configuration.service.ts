@@ -114,6 +114,12 @@ obtenerUsuarios(idEmpresa:any) {
     .collection('Monedas')
     .valueChanges();
   }
+  // !Obtener planes
+  obtenerPlanes() {
+    return this.afs
+    .collection('Planes')
+    .valueChanges();
+  }
   // !Obtener los bancos
   obtenerBancos(idEmpresa:any) {
     return this.afs

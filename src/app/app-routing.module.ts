@@ -8,6 +8,7 @@ import SignInComponent from './demo/authentication/sign-in/sign-in.component';
 import SignUpComponent from './demo/authentication/sign-up/sign-up.component';
 import { ConfigurationComponent } from './theme/layout/admin/configuration/configuration.component';
 import ConfiguracionInicialComponent from './demo/configuracion-inicial/configuracion-inicial.component';
+import PlanesComponent from './demo/authentication/planes/planes.component';
 
 const routes: Routes = [
   {
@@ -100,8 +101,12 @@ const routes: Routes = [
     component:ConfiguracionInicialComponent
   },
   {
-    path: 'auth/signin/signup',
+    path: 'auth/signin/signup/:idPlan',
     component:SignUpComponent
+  },
+  {
+    path: 'auth/signin/planes',
+    component:PlanesComponent
   },
   // {
   //   path: '',

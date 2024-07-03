@@ -79,7 +79,19 @@
                 <label for="checkbox-fill-2" class="cr">Send me the <a href="javascript:"> Newsletter </a> weekly.</label>
               </div>
             </div> -->
-            <div class="d-grid">
+            <div class="row">
+              <div class="col-12 col-md-6 col-lg-6">
+                <button type="button" class="btn btn-warning">Pagar con 
+                 <img class="logo" src="../../../../assets/images/paypal.png"></button>         
+              </div>
+              <div class="col-12 col-md-6 col-lg-6">
+                <button (click)="showDialog()" type="button" class="btn btn-primary">Pagar con 
+                 <img class="logo" src="../../../../assets/images/tarjeta-de-credito.png"></button>         
+              </div>
+       
+            </div>
+
+            <div class="d-grid mt-2">
               <button (click)="guardarUsuario()" class="btn btn-primary btn-block mb-4 btn-custom">Registrarse</button>
             </div>
             <p class="mb-2">¿Ya tiene cuenta? <a [routerLink]="['/auth/signin']" class="f-w-400">Inicie sesión</a></p>
@@ -89,3 +101,33 @@
     </div>
   </div>
 </div>
+
+
+
+  <p-dialog 
+      header="Pago con tarjeta" 
+      [(visible)]="visible" 
+      [modal]="true" 
+      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+      [style]="{ width: '50vw' }" 
+      [draggable]="false" 
+      [resizable]="false">
+   
+        <div class="row">
+          <div class="col-12 col-md-12 col-lg-12">
+            <div class="input-group mb-3">
+              <input (input)="cardValidator()" type="text" [formControl]="this.CardNumber" class="form-control" placeholder="Número de tarjeta" aria-label="Recipient's username" aria-describedby="basic-addon2">
+              <span class="input-group-text" id="basic-addon2"><img class="logo-tarjeta" src="{{cardValidator()}}"></span>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-6">
+            <input type="text" [formControl]="FechaVencimiento" (input)="formatFechaVencimiento($event)" class="form-control" placeholder="Fecha de vencimiento" aria-label="Last name">
+          </div>
+          <div class="col-12 col-md-6 col-lg-6">
+            <input type="text" class="form-control" placeholder="CVV" aria-label="Last name">
+          </div>
+          
+        </div>
+   
+        <button type="button" class="btn btn-primary">Pagar</button>
+  </p-dialog>
