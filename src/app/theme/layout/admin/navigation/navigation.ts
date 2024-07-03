@@ -67,6 +67,18 @@ export const NavigationItems: NavigationItem[] = [
         },
     
         {
+          id: 'roles',
+          title: 'Roles',
+          type: 'item',
+          url: '/roles',
+          // icon: 'feather icon-log-in',
+          icon: 'fa-solid fa-lock',
+          target: false,
+          breadcrumbs: false
+        }
+    
+    ,
+        {
           id: 'signin',
           title: 'Sign in',
           type: 'item',

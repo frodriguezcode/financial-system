@@ -102,4 +102,22 @@ export class AuthService {
       .doc(Usuario.id)
       .ref.update({Activo:Activo});
   }
+
+  obtenerModulos() {
+    return this.afs
+      .collection('Modulos')
+      .valueChanges();
+  }
+  obtenerAtributos() {
+    return this.afs
+      .collection('Atributos')
+      .valueChanges();
+  }
+  guardarRol(Rol:any){
+    var id = this.afs.createId();
+   return this.afs
+   .collection('Roles')
+   .doc(id)
+   .ref.set(Object.assign(Rol, { id: id }));
+  }
 }
