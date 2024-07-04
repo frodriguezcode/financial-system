@@ -126,30 +126,30 @@ obtenerAtributosByModulo(idModulo:string,parentKey: string,Atributos:any){
 }
 
 
-  actualizarRol(){
-    console.log('ItemsModulosAtributos',this.ItemsModulosAtributos)
-    let _AtributosRol:any=[]
+actualizarRol(){
+  console.log('ItemsModulosAtributos',this.ItemsModulosAtributos)
+  let _AtributosRol:any=[]
 this.ItemsModulosAtributos.forEach((atributo: any) => {
-  atributo.children.forEach((element:any) => {
-  
-    let _DataAtributo={
-      "Nombre":element.label,
-      "Seleccionado":element.data.Seleccionado,
-      "idModulo":element.data.atributo.idModulo,
-      "id":element.data.atributo.id
+atributo.children.forEach((element:any) => {
 
-    }
-    _AtributosRol.push(_DataAtributo)
-    
-  });
+  let _DataAtributo={
+    "Nombre":element.label,
+    "Seleccionado":element.data.Seleccionado,
+    "idModulo":element.data.atributo.idModulo,
+    "id":element.data.atributo.id
+
+  }
+  _AtributosRol.push(_DataAtributo)
+  
+});
 
 
 });
 
 this.RolSeleccionado.Atributos=_AtributosRol
-    this.authS.actualizarRol(this.RolSeleccionado).then((resp:any)=>{
-      this.toastr.success('Rol actualizado', '¡Exito!');
-    })
+  this.authS.actualizarRol(this.RolSeleccionado).then((resp:any)=>{
+    this.toastr.success('Rol actualizado', '¡Exito!');
+  })
 }
 
 
@@ -163,41 +163,24 @@ this.RolSeleccionado.Atributos=_AtributosRol
   }
   
   onNodeSelect(event: any) {
-    if(this.authS.validarAtributo('9QlYESWYSjAMSrgJfqQ2',[])==true){
+
 
       this.updateSeleccionado(event.node, true);
   
-    }
-    else {
-      this.toastr.warning('', '¡Acceso Denegado!',{
-        timeOut: 1000,
-      });
-}
+    
+    
+
   
   }
   
   onNodeUnselect(event: any) {
 
-    if(this.authS.validarAtributo('9QlYESWYSjAMSrgJfqQ2',[])==true){
+
 
       this.updateSeleccionado(event.node, false);
   
-    }
-    else {
+    
 
-      this.ItemsModulosAtributos.forEach((atributo: any) => {
-        atributo.disabled = true;
-        if (atributo.children) {
-          atributo.children.forEach((child: any) => {
-           child.disabled=true
-          });
-        }
-        
-      });
-      this.toastr.warning('', '¡Acceso Denegado!',{
-        timeOut: 1000,
-      });
-}
    
   }
   

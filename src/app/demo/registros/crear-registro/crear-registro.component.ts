@@ -30,6 +30,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import BancosComponent from '../../bancos/bancos.component';
 import ItemsComponent from '../../Items/items.component';
 import SocioNegocioComponent from '../../socios/socios.component';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-crear',
@@ -71,7 +72,8 @@ export default class CrearRegistroComponent implements OnInit {
   constructor(
     private conS:ConfigurationService,private datePipe: DatePipe, 
     private messageService: MessageService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private authS:AuthService
   ){}
   registroForm!:FormGroup
   EditRegistroForm!:FormGroup
@@ -217,13 +219,49 @@ obtenerSocios(){
 }
 
 crearCuenta(){
+  
+ if(this.authS.validarAtributo('lxq2zstbrTHOplePyDec',[])==true){
+
   this.visibleCuenta=true
+  
+ }
+ else {
+   this.toastr.warning('', '¡Acceso Denegado!',{
+     timeOut: 1000,
+   });
+}
+
+
 }
 crearElemento(){
+
+    
+ if(this.authS.validarAtributo('26rZNQ46kHegVjK0rNvq',[])==true){
+
   this.visibleElemento=true
+  
+ }
+ else {
+   this.toastr.warning('', '¡Acceso Denegado!',{
+     timeOut: 1000,
+   });
+}
+
+
 }
 crearSocioNegocio(){
-  this.visibleCuenta=true
+      
+ if(this.authS.validarAtributo('qVDT9etHoRfSLoAnfSuK',[])==true){
+
+  this.visibleSocioNegocio=true
+  
+ }
+ else {
+   this.toastr.warning('', '¡Acceso Denegado!',{
+     timeOut: 1000,
+   });
+}
+  
 }
 
 buscarByFecha(){
@@ -300,24 +338,37 @@ validarEgreso(tipo:any,monto:any,index:any){
   }
 }
 borrarRegistro(idRegistro){
-  Swal.fire({
-    title: "¿Desea borrar este registro?",
-    text: "Esta acción no se puede revertir",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Si",
-    cancelButtonText: "No"
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.conS.borrarRegistro(idRegistro).then(resp=>{
+  if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
+
+    Swal.fire({
+      title: "¿Desea borrar este registro?",
+      text: "Esta acción no se puede revertir",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.conS.borrarRegistro(idRegistro).then(resp=>{
+  
+  
+        })
+       
+      }
+    });
+    
+   }
+   else {
+    this.toastr.warning('', '¡Acceso Denegado!',{
+      timeOut: 1000,
+    });
+ }
 
 
-      })
-     
-    }
-  });
+
+
 }
 
 getTipo(idCategoria){
@@ -516,8 +567,25 @@ obtenerCuentas(){
   })
 }
 crearRegistro(tipo:any) {
+
+  if(this.authS.validarAtributo('Oc1llyeOkxfUlMz96F0a',[])==true && tipo==1){
+
+    this.guardarRegistro(tipo)
+    
+   }
+ else if(this.authS.validarAtributo('Uzt6wv7KRCcTOp63coNJ',[])==true && tipo==2){
+
+    this.guardarRegistro(tipo)
+    
+   }
+   else {
+     this.toastr.warning('', '¡Acceso Denegado!',{
+       timeOut: 1000,
+     });
+  }
+
   
-  this.guardarRegistro(tipo)
+
 }
 
 getItemsCategGroup(tipo:any){
