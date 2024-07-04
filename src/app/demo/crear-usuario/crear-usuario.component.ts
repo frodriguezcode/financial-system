@@ -28,6 +28,7 @@ export default class CrearUsuarioComponent implements OnInit {
 usuarioForm!: FormGroup;
 Fecha: any = new Date();
 MesesTodos: any = [];
+Roles:any=[]
 Sucursales: any = [];
 Usuarios: any = [];
 usuario:any
@@ -102,11 +103,30 @@ ngOnInit(): void {
   ];
   this.obtenerUsuarios()
   this.obtenerSucursales()
+  this.obtenerRoles()
 }
 obtenerUsuarios(){
   this.authS.obtenerUsuarios(this.usuario.idEmpresa).subscribe(resp=>{
     this.Usuarios = resp
   })
+}
+obtenerRoles(){
+  this.authS.obtenerRoles(this.usuario.idEmpresa).subscribe(roles=>{
+    this.Roles=roles
+ 
+  })
+}
+getNombreRol(idRol:string){
+  let _rol:any=[]
+  _rol=this.Roles.filter((s:any)=> s.id == idRol)
+  if(_rol.length>0){
+    
+    return _rol[0].Rol
+
+  }
+  else {
+    return 'Sin Rol'
+  }
 }
 obtenerSucursales(){
   this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
@@ -129,7 +149,6 @@ cargarFormulario() {
   // *Formulario de usuario
   let Fecha:any
   Fecha=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
-  console.log('Fecha',this.getMonthName(Fecha))
   this.usuarioForm = new FormGroup({
     Nombres: new FormControl('', [Validators.required]),
     Password: new FormControl('', [Validators.required]),
@@ -160,7 +179,7 @@ actualizarUsuario(Usuario:any){
   usuarioEncontrado[0].Password=Usuario.Password
   usuarioEncontrado[0].IdSucursal=Usuario.IdSucursal
   usuarioEncontrado[0].Editando = !Usuario.Editando;
-
+  usuarioEncontrado[0].idRol=Usuario.idRol
   this.authS.ActualizarUsuario(usuarioEncontrado[0]).then(resp=>{
     this.toastr.success('Banco editado', '¡Exito!');
   })
@@ -181,7 +200,6 @@ getMonthName(Fecha: string) {
   return Number(Fecha.substring(5).substring(0, 2));
 }
 crearUsuario(){
-  console.log('usuarioForm',this.usuarioForm.value)
 
   this.authS.crearUsuario(this.usuarioForm.value).then((resp:any)=>{
     this.toastr.success('Guardado', '¡Exito!');

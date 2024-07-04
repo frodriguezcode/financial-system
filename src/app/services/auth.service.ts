@@ -8,11 +8,32 @@ import { Observable } from 'rxjs';
 export class AuthService {
 
   urlSeverMailLocal = 'http://localhost:3000/formulario/';
-
+  Atributos:any=[]
   constructor(
     private afs: AngularFirestore,
     private _http: HttpClient
-  ) {}
+  ) {
+    this.Atributos= JSON.parse(localStorage.getItem('AtributosUsuarioFinancial_System')!);
+  }
+  validarAtributo(idAtributo:string,Atributos:any) {
+
+    let _Atributo:any=[]
+    _Atributo= this.Atributos.filter((atr:any)=>atr.id==idAtributo && atr.Seleccionado==true)
+  
+    if(_Atributo.length>0){
+      return true
+    }
+    else {
+      return false
+    }
+  } 
+
+  obtenerRolesbyId(idEmpresa:string,idRol:string) {
+ 
+    return this.afs
+      .collection('Roles',(ref) => ref.where('idEmpresa', '==', idEmpresa).where('id', '==', idRol))
+      .valueChanges();
+  }
 
 //   !Creando un usuario
   crearUsuario(user: any) {
@@ -119,5 +140,18 @@ export class AuthService {
    .collection('Roles')
    .doc(id)
    .ref.set(Object.assign(Rol, { id: id }));
+  }
+  obtenerRoles(idEmpresa:string) {
+ 
+    return this.afs
+      .collection('Roles',(ref) => ref.where('idEmpresa', '==', idEmpresa))
+      .valueChanges();
+  }
+
+  actualizarRol(Rol:any){
+    return  this.afs
+     .collection('Roles')
+     .doc(Rol.id)
+     .ref.update(Rol);
   }
 }

@@ -10,10 +10,12 @@ import { TreeNode } from 'primeng/api';
 import { FormControl } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ChangeDetectorRef } from '@angular/core';
+import { TabViewModule } from 'primeng/tabview';
+import ListaRolesComponent from './lista-roles/lista-roles.component';
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, SharedModule,TreeModule,InputSwitchModule],
+  imports: [CommonModule, SharedModule,TreeModule,InputSwitchModule,TabViewModule,ListaRolesComponent],
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss']
 })
@@ -29,7 +31,7 @@ export default class RolesComponent implements OnInit {
   Fecha:any= new Date();
   metaKeySelection: boolean = false;
   ngOnInit(): void {
-    this.usuario= JSON.parse(localStorage.getItem('usuarioSICGC')!);
+    this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerAtributos()
   }
 
@@ -44,41 +46,49 @@ export default class RolesComponent implements OnInit {
   guardarRol(){
     let _AtributosRol:any=[]
     this.ItemsModulosAtributos.forEach((atributo: any) => {
-      atributo.children.forEach((element:any) => {
-        let _DataAtributo={
-          "Nombre":element.label,
-          "Seleccionado":element.data.Seleccionado,
-          "idModulo":element.data.atributo.idModulo,
-          "id":element.data.atributo.id
+    atributo.children.forEach((element:any) => {
+  
+    let _DataAtributo={
+      "Nombre":element.label,
+      "Seleccionado":element.data.Seleccionado,
+      "idModulo":element.data.atributo.idModulo,
+      "id":element.data.atributo.id
+
+    }
+    _AtributosRol.push(_DataAtributo)
     
-        }
-        _AtributosRol.push(_DataAtributo)
-        
-      });
-    
-    
-    });
-    
-    
-      let _Rol={
-        "Rol":this.nombreRol.value,
-        "Atributos":_AtributosRol,
-        "idEmpresa":this.usuario.idEmpresa,
-        "idUsuario":this.usuario.id,
-        "Usuario":this.usuario.Usuario,
-        "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
-      }
-      this.authS.guardarRol(_Rol).then(resp=>{
-        let _Atributos:any=[]
-        this.toastr.success('Rol creado', '¡Exito!');
-        this.nombreRol.setValue('')
-        _Atributos=this.Atributos
-        this.Atributos=_Atributos.map((atributo: any) => {
-          return { ...atributo, Seleccionado: false };
+  });
+
+
+});
+
+  let _Rol={
+    "Rol":this.nombreRol.value,
+    "Atributos":_AtributosRol,
+    "idEmpresa":this.usuario.idEmpresa,
+    "idUsuario":this.usuario.id,
+    "Usuario":this.usuario.Usuario,
+    "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
+  }
+  console.log('ItemsModulosAtributos',this.ItemsModulosAtributos)
+
+  this.authS.guardarRol(_Rol).then(resp=>{
+
+    this.toastr.success('Rol creado', '¡Exito!');
+    this.nombreRol.setValue('')
+    this.ItemsModulosAtributos.forEach((atributo: any) => {
+      atributo.data.Seleccionado = false;
+      if (atributo.children) {
+        atributo.children.forEach((child: any) => {
+          this.updateSeleccionado(child, false);
         });
+      }
       
-      })
-      
+    });
+    this.updateSelection();
+    this.cdr.detectChanges();   
+ 
+  })
      
     }
   obtenerModulos(){
@@ -172,6 +182,28 @@ onNodeSelect(event: any) {
 
 onNodeUnselect(event: any) {
   this.updateSeleccionado(event.node, false);
+}
+
+
+expandAll() {
+  this.ItemsModulosAtributos.forEach((node) => {
+      this.expandRecursive(node, true);
+  });
+}
+
+collapseAll() {
+  this.ItemsModulosAtributos.forEach((node) => {
+      this.expandRecursive(node, false);
+  });
+}
+
+private expandRecursive(node: TreeNode, isExpand: boolean) {
+  node.expanded = isExpand;
+  if (node.children) {
+      node.children.forEach((childNode) => {
+          this.expandRecursive(childNode, isExpand);
+      });
+  }
 }
 
 

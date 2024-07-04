@@ -28,7 +28,7 @@ export default class SignInComponent {
      Swal.showLoading();
     this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
       localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0]));
-
+      this.obtenerAtributos(resp[0].idEmpresa,resp[0].idRol)
       if(resp.length>0){  
          this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((resp:any)=>{
            if(resp[0].ConfigInicialCompletado==false){
@@ -45,8 +45,8 @@ export default class SignInComponent {
                timer: 1500
              });
    
+    
            }
-
          })   
       }
       else{
@@ -60,6 +60,28 @@ export default class SignInComponent {
       }
     })
   }
+
+  async  obtenerAtributos(idEmpresa: any, idRol: string) {
+    try {
+      const atributos = await this.obtenerRoles(idEmpresa, idRol);
+      console.log(atributos);
+      localStorage.setItem('AtributosUsuarioFinancial_System', JSON.stringify(atributos));
+    } catch (error) {
+      console.error(error);
+    }
+  }
   
+  obtenerRoles(idEmpresa: any, idRol: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.autS.obtenerRolesbyId(idEmpresa, idRol).subscribe(
+        (resp: any) => {
+          resolve(resp[0].Atributos);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
 
 }

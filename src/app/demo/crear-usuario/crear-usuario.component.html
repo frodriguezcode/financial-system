@@ -1,6 +1,6 @@
 <app-card cardTitle="Módulo Usuarios" [options]="false">
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3 col-lg-3 col-12">
       <h5>Crear Usuario</h5>
       <hr />
       <form *ngIf="usuarioForm" [formGroup]="usuarioForm">
@@ -42,13 +42,14 @@
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Rol</label>
-          <select formControlName="idRol" class="form-control" id="exampleFormControlSelect1">
-            <option value="0">Seleccione una sucursal</option>
-            <option value="1">Administrador</option>
-            <option value="2">Contador</option>
-            <option value="3">Genérico</option>
-
-          </select>
+          <select formControlName="idRol" id="inputState" class="form-select">
+            <option selected>Escoja un rol</option>
+            <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>
+        </select>
+        <p style="color: red;" 
+        *ngIf="(usuarioForm.get('idRol')?.touched || usuarioForm.get('idRol')?.dirty) && usuarioForm.get('idRol')?.hasError('required')">
+          Este campo es obligatorio
+        </p>
         </div>
 
 
@@ -57,7 +58,7 @@
       </form>
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-9 col-lg-9 col-12">
       <h5>Lista de Usuarios</h5>
       <hr />
       <div class="table-responsive">
@@ -67,6 +68,7 @@
               <th class="text-center">#</th>
               <th class="text-center">Nombre</th>
               <th class="text-center">Correo</th>
+              <th class="text-center">Rol</th>
               <th class="text-center">Sucursal</th>
               <th class="text-center">Editar</th>
               <th class="text-center">Inactivar</th>
@@ -89,6 +91,16 @@
                 </ng-container>
                 <ng-template #editarCorreo>
                   <input [(ngModel)]="usuario.Correo" class="form-control text-center col-4">
+                </ng-template>
+              </td>
+              <td class="text-center">
+                <ng-container *ngIf="!usuario.Editando; else editarRol">
+                  {{getNombreRol(usuario.idRol)}}
+                </ng-container>
+                <ng-template #editarRol>
+                  <select [(ngModel)]="usuario.idRol" id="inputState" class="form-select">
+                    <option value="0">Seleccione un rol</option>
+                    <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>                      </select>
                 </ng-template>
               </td>
               <td class="text-center">

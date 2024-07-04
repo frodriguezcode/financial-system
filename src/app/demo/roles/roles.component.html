@@ -1,30 +1,60 @@
-<div class="row">
-  <div class="col-sm-12">
-    <app-card cardTitle="Hello Card" [options]="false">
-      <div class="row">
-        <div class="col-12 col-lg-4 col-md-4">
-          <div class="form-group">
-            <label for="exampleInputEmail1">Nombre del Rol</label>
-            <input type="text" [formControl]="nombreRol" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Nombre del rol" />
-          </div>
-          <button type="button" (click)="guardarRol()" class="btn btn-success float-end">Guardar</button>
-        </div>
-        <div class="col-12 col-lg-8 col-md-8">
-          <div class="flex align-items-center mb-4 gap-2">
-            <p-inputSwitch (onChange)="selectAll()" inputId="input-metakey" [(ngModel)]="metaKeySelection" />
-            <label for="input-metakey">Seleccionar todo</label>
-        </div>
-          <p-tree 
-          [value]="ItemsModulosAtributos" 
-          selectionMode="checkbox" 
-          class="w-full md:w-30rem" 
-          [(selection)]="selectedNodes"
-          (onNodeSelect)="onNodeSelect($event)"
-          (onNodeUnselect)="onNodeUnselect($event)" />
+<p-tabView >
+  <p-tabPanel header="Crear Rol">
+    <div class="row">
+      <div class="col-sm-12">
+        <app-card cardTitle="" [options]="false">
+          <div class="row">
+            <div class="col-12 col-lg-4 col-md-4">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Nombre del Rol</label>
+                <input type="text" [formControl]="nombreRol" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Nombre del rol" />
+              </div>
+              <button type="button" (click)="guardarRol()" class="btn btn-success float-end">Guardar</button>
+            </div>
+            <div class="col-12 col-lg-8 col-md-8">
+              <div class="flex align-items-center mb-4 gap-2">
+                <p-inputSwitch (onChange)="selectAll()" inputId="input-metakey" [(ngModel)]="metaKeySelection" />
+                <label for="input-metakey">Seleccionar todo</label>
+            </div>
+    
+            <div *ngIf="ItemsModulosAtributos.length==0" class="d-flex justify-content-center">
+              <div class="spinner-grow text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div *ngIf="ItemsModulosAtributos.length>0">
+              <div class="mb-3">
+               <button type="button"
+               (click)="expandAll()" 
+               class="btn btn-primary m-1">Expandir <i class="bi bi-plus"></i></button>
+               <button type="button"
+               (click)="collapseAll()"
+               class="btn btn-primary m-1">Contraer <i class="bi bi-dash"></i></button>
+        
+           </div>
+                 <p-tree 
+                 [value]="ItemsModulosAtributos" 
+                 selectionMode="checkbox" 
+                 class="w-full md:w-30rem" 
+                 [(selection)]="selectedNodes"
+                 (onNodeSelect)="onNodeSelect($event)"
+                 (onNodeUnselect)="onNodeUnselect($event)" />
+                 
+               </div>
+    
+    
+            </div>
+            </div>
+        </app-card>
+      </div>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel header="Roles">
+    <app-lista-roles *ngIf="this.Modulos.length>0" [ModulosTodos]="this.Modulos"></app-lista-roles>
+
+  </p-tabPanel>
+</p-tabView>
 
 
-        </div>
-        </div>
-    </app-card>
-  </div>
-</div>
+
+

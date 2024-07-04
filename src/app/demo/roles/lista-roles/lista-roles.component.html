@@ -1,0 +1,63 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card *ngIf="this.Roles.length>0" cardTitle="Listado de Roles" [options]="false">
+      <button type="button"  (click)="actualizarRol()" class="btn btn-success float-end">Guardar</button>
+
+      <div class="row">
+        <div class="col-12 col-md-3 col-lg-3">
+          <div class="list-group">
+            <div style="cursor: pointer;" *ngFor="let rol of Roles" (click)="rolSelect(rol)">
+
+              <a   class="list-group-item list-group-item-action">{{rol.Rol}}</a>
+
+            </div>
+
+          </div>
+        </div>
+        <div *ngIf="this.ItemsModulosAtributos.length==0" class="col-12 col-md-9 col-lg-9">
+
+          <div class="alert alert-warning" role="alert">
+            Elija un módulo para ver sus respectivos atributos
+          </div>
+
+        </div>
+        <div *ngIf="this.ItemsModulosAtributos.length>0" class="col-12 col-md-9 col-lg-9">
+          <div *ngIf="ItemsModulosAtributos.length==0" class="d-flex justify-content-center">
+            <div class="spinner-grow text-success" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div class="flex align-items-center mb-4 gap-2">
+            <p-inputSwitch (onChange)="selectAll()" inputId="input-metakey" [(ngModel)]="metaKeySelection" />
+            <div style="margin-top: -10px;">
+              <label  for="input-metakey">Seleccionar todo</label>
+
+            </div>
+        </div>
+          <div *ngIf="ItemsModulosAtributos.length>0">
+            <div class="mb-3">
+              <button type="button"
+              (click)="expandAll()" 
+              class="btn btn-primary m-1">Expandir <i class="bi bi-plus"></i></button>
+              <button type="button"
+              (click)="collapseAll()"
+              class="btn btn-primary m-1">Contraer <i class="bi bi-dash"></i></button>
+       
+          </div>
+            <p-tree 
+            [value]="ItemsModulosAtributos" 
+            selectionMode="checkbox" 
+            class="w-full md:w-30rem" 
+            [(selection)]="selectedNodes"
+          
+            (onNodeSelect)="onNodeSelect($event)"
+            (onNodeUnselect)="onNodeUnselect($event)" />
+          </div>
+
+        </div>
+      </div>
+
+    </app-card>
+  </div>
+</div>
+
