@@ -266,8 +266,18 @@ crearSocioNegocio(){
 
 buscarByFecha(){
 
+ if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
+
   this.Registros=this.registrosBackUp.
   filter((reg:any)=>reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value)
+  
+ }
+ else {
+   this.toastr.warning('', '¡Acceso Denegado!',{
+     timeOut: 1000,
+   });
+}
+
 }
 restablecer(){
   this.Registros=this.registrosBackUp
