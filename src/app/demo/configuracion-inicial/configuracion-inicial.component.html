@@ -19,25 +19,30 @@
     <div class="step-connector"></div>
     <div class="step" [class.active]="currentStep === 3">
       <div class="step-number">3</div>
-      <div class="step-title">Usuarios</div>
+      <div class="step-title">Roles de usuarios</div>
     </div>
     <div class="step-connector"></div>
     <div class="step" [class.active]="currentStep === 4">
       <div class="step-number">4</div>
-      <div class="step-title">Socios de Negocios</div>
+      <div class="step-title">Usuarios</div>
     </div>
     <div class="step-connector"></div>
     <div class="step" [class.active]="currentStep === 5">
+      <div class="step-number">4</div>
+      <div class="step-title">Socios de Negocios</div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step" [class.active]="currentStep === 6">
       <div class="step-number">5</div>
       <div class="step-title">Cuentas de Banco</div>
     </div>
     <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep === 6">
+    <div class="step" [class.active]="currentStep === 7">
       <div class="step-number">6</div>
       <div class="step-title">Cuentas Contables</div>
     </div>
     <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep === 7">
+    <div class="step" [class.active]="currentStep === 8">
       <div class="step-number">7</div>
       <div class="step-title">Saldos Iniciales</div>
     </div>
@@ -59,7 +64,7 @@
 
   <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 3 }" *ngIf="currentStep === 3">
 
-    <app-crear-usuario></app-crear-usuario>
+    <app-roles></app-roles>
     <div class="group-buttons">
       <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Back</button>
       <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
@@ -67,6 +72,15 @@
   </div>
 
   <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 4 }" *ngIf="currentStep === 4">
+
+    <app-crear-usuario></app-crear-usuario>
+    <div class="group-buttons">
+      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Back</button>
+      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
+    </div>
+  </div>
+
+  <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 5 }" *ngIf="currentStep === 5">
     <app-socios></app-socios>
 
     <div class="group-buttons">
@@ -75,7 +89,7 @@
     </div>
   </div>
 
-  <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 5 }" *ngIf="currentStep === 5">
+  <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 6 }" *ngIf="currentStep === 6">
 
     <app-bancos></app-bancos>
     <div class="group-buttons">
@@ -83,7 +97,7 @@
       <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
     </div>
   </div>
-  <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 6 }" *ngIf="currentStep === 6">
+  <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 7 }" *ngIf="currentStep === 7">
 
     <app-elemento></app-elemento>
     <div class="group-buttons">
@@ -92,7 +106,7 @@
     </div>
   </div>
 
-  <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 7 }" *ngIf="currentStep === 7"> 
+  <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 8 }" *ngIf="currentStep === 8"> 
     <app-ajuste-saldo></app-ajuste-saldo>
   
     <div class="group-buttons">

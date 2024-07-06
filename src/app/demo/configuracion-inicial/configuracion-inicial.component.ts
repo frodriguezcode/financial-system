@@ -15,6 +15,7 @@ import CrearUsuarioComponent from '../crear-usuario/crear-usuario.component';
 import { EmpresasService } from 'src/app/services/empresa.service';
 import { RouterModule,Router } from '@angular/router';
 import Swal from 'sweetalert2'
+import RolesComponent from '../roles/roles.component';
 // import { StepperModule } from 'primeng/stepper';
 
 @Component({
@@ -29,7 +30,8 @@ import Swal from 'sweetalert2'
   SucursalesComponent, 
   ProgressIndicatorComponent,
   AjusteSaldoComponent,
-  CrearUsuarioComponent
+  CrearUsuarioComponent,
+  RolesComponent
 ],
   templateUrl: '/configuracion-inicial.component.html',
   styleUrls: ['/configuracion-inicial.component.scss']
@@ -42,7 +44,7 @@ ngOnInit(): void {
 }
 
   currentStep = 1;
-  totalSteps = 7;
+  totalSteps = 8;
 
   
 
