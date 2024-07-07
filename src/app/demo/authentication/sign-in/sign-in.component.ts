@@ -28,14 +28,16 @@ export default class SignInComponent {
      Swal.showLoading();
     this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
       localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0]));
-      this.obtenerAtributos(resp[0].idEmpresa,resp[0].idRol)
+    
       if(resp.length>0){  
-         this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((resp:any)=>{
-           if(resp[0].ConfigInicialCompletado==false){
+         this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((empresa:any)=>{
+
+           if(empresa[0].ConfigInicial==false){
              this.router.navigate(['/configuracion-inicial'])
              Swal.close()
            }
            else{
+            this.obtenerAtributos(resp[0].idEmpresa,resp[0].idRol)
              this.router.navigate(['/analytics'])
              Swal.fire({
                position: "center",

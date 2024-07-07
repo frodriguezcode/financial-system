@@ -1,60 +1,107 @@
+
+
 <p-tabView >
   <p-tabPanel header="Crear Rol">
-    <div class="row">
+    <!-- <div class="row" >
       <div class="col-sm-12">
-        <app-card cardTitle="" [options]="false">
+        <app-card cardTitle="Creación de roles" [options]="false">
+          <button type="button" [disabled]="nombreRol.value==''" (click)="guardarRol()" class="btn btn-success float-end">Guardar</button>
+    
           <div class="row">
             <div class="col-12 col-lg-4 col-md-4">
               <div class="form-group">
                 <label for="exampleInputEmail1">Nombre del Rol</label>
                 <input type="text" [formControl]="nombreRol" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Nombre del rol" />
               </div>
-              <button type="button" (click)="guardarRol()" class="btn btn-success float-end">Guardar</button>
-            </div>
-            <div class="col-12 col-lg-8 col-md-8">
-              <div class="flex align-items-center mb-4 gap-2">
-                <p-inputSwitch (onChange)="selectAll()" inputId="input-metakey" [(ngModel)]="metaKeySelection" />
-                <label for="input-metakey">Seleccionar todo</label>
-            </div>
     
-            <div *ngIf="ItemsModulosAtributos.length==0" class="d-flex justify-content-center">
+            </div>
+            <div class="form-check">
+              <input (change)="checkTodosAtr()" class="form-check-input" type="checkbox" value="" [checked]="checkTodos" id="flexCheckDefault">
+              <label class="form-check-label" for="flexCheckDefault">
+               Todos
+              </label>
+            </div>
+            <div class="container col-12 col-lg-12 col-md-12">
+              <div class="row">
+                <div *ngFor="let modulo of Modulos" class="col-12 col-lg-4 col-md-6">
+                  <div class="card">
+                    <div class="card-header text-bg-primary d-flex justify-content-between align-items-center" style="padding-top: 7px; padding-bottom: 7px;">
+                      <p style="color: white;">{{modulo.Nombre}}</p>
+                      <input style="margin-top: -20px;"  (change)="checkTodosAtrByModulo(modulo.id,modulo.Seleccionado)" class="form-check-input" type="checkbox" [checked]="modulo.Seleccionado" value="" id="firstCheckbox">
+                    </div>
+                    <ul style="margin-top: -20px;" class="list-group list-group-flush ">
+                      <li *ngFor="let atributo of getAtributosByModulo(modulo.id)" class="list-group-item">
+                        <input (change)="addAtributo(atributo)" class="form-check-input me-1" type="checkbox" [checked]="atributo.Seleccionado" value="" id="firstCheckbox">
+                        <label class="form-check-label" for="firstCheckbox">{{atributo.Nombre}}</label>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </app-card>
+      </div>
+    </div> -->
+    <div class="row">
+      <div style="margin-top: 50px;" class="col-12 col-lg-4 col-md-4">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Nombre del Rol</label>
+          <input type="text" [formControl]="nombreRol" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Nombre del rol" />
+        </div>
+        <button type="button" [disabled]="nombreRol.value=='' || nombreRol == undefined" (click)="guardarRol()" class="btn btn-success float-end">Guardar</button>
+<br>
+<br>
+<br>
+<br>
+<div class="mt-5">
+ <div [ngClass]="ConfigInicial == false? 'groupToggle' : 'groupToggleConfig'">
+
+   <div [ngClass]="ConfigInicial == false? 'toggleButton' : 'toggleButtonConfig'">
+     <p-inputSwitch (onChange)="selectAll()" inputId="input-metakey" [(ngModel)]="metaKeySelection" />
+   </div>
+     <div [ngClass]="ConfigInicial == false? 'labeltoggleButton' : 'labeltoggleButtonConfig'" >
+       <label class="text-center"  for="input-metakey">Seleccionar todo</label>
+     </div>
+     <div class="mb-3">
+       <button type="button"
+       (click)="expandAll()" 
+       class="btn btn-primary m-1">Expandir <i class="bi bi-plus"></i></button>
+       <button type="button"
+       (click)="collapseAll()"
+       class="btn btn-primary m-1">Contraer <i class="bi bi-dash"></i></button>
+       
+      </div>
+</div> 
+
+</div>
+
+      </div>
+      <div class="col-12 col-lg-8 col-md-8">
+    <div *ngIf="ItemsModulosAtributos.length==0" class="d-flex justify-content-center">
               <div class="spinner-grow text-success" role="status">
                 <span class="visually-hidden">Loading...</span>
               </div>
-            </div>
-            <div *ngIf="ItemsModulosAtributos.length>0">
-              <div class="mb-3">
-               <button type="button"
-               (click)="expandAll()" 
-               class="btn btn-primary m-1">Expandir <i class="bi bi-plus"></i></button>
-               <button type="button"
-               (click)="collapseAll()"
-               class="btn btn-primary m-1">Contraer <i class="bi bi-dash"></i></button>
+            </div>      <div class="scroll-container" *ngIf="ItemsModulosAtributos.length>0">
+
+        <p-tree 
+        [value]="ItemsModulosAtributos" 
+        selectionMode="checkbox" 
+        class="w-full md:w-30rem horizontal-tree" 
+        [(selection)]="selectedNodes"
+        (onNodeSelect)="onNodeSelect($event)"
+        (onNodeUnselect)="onNodeUnselect($event)" />
         
-           </div>
-                 <p-tree 
-                 [value]="ItemsModulosAtributos" 
-                 selectionMode="checkbox" 
-                 class="w-full md:w-30rem" 
-                 [(selection)]="selectedNodes"
-                 (onNodeSelect)="onNodeSelect($event)"
-                 (onNodeUnselect)="onNodeUnselect($event)" />
-                 
-               </div>
-    
-    
-            </div>
-            </div>
-        </app-card>
       </div>
-    </div>
+
+
+      </div>
+      </div>
   </p-tabPanel>
   <p-tabPanel header="Roles">
-    <app-lista-roles *ngIf="this.Modulos.length>0" [ModulosTodos]="this.Modulos"></app-lista-roles>
+<app-lista-roles *ngIf="this.Modulos.length>0" [ModulosTodos]="this.Modulos" [ConfigInicial]="this.ConfigInicial"></app-lista-roles>
 
   </p-tabPanel>
 </p-tabView>
-
-
-
 

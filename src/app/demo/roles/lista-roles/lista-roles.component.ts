@@ -19,6 +19,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 })
 export default class ListaRolesComponent implements OnInit {
   @Input() Atributos:any
+  @Input() ConfigInicial:boolean=false
   Roles:any=[]
   RolSeleccionado:any
   usuario:any=[]

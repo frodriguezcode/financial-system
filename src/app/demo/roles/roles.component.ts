@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 // project import
@@ -20,6 +20,7 @@ import ListaRolesComponent from './lista-roles/lista-roles.component';
   styleUrls: ['./roles.component.scss']
 })
 export default class RolesComponent implements OnInit {
+  @Input() ConfigInicial:boolean=false
   constructor(private authS:AuthService,private datePipe: DatePipe,private toastr: ToastrService,private cdr: ChangeDetectorRef) {
   }
   Modulos:any=[]

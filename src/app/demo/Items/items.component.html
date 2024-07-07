@@ -55,7 +55,6 @@
         <div class="form-group">
           <label for="exampleInputPassword1">Categoria</label>
           <select formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
-            <option value="0">Escoja un tipo de categoria</option>
             <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}</option>
           </select>
         </div>
@@ -140,6 +139,7 @@
                     </select>
                   </ng-template>
                 </td>
+       
                 <td *ngIf="!item.Editando" class="text-center">
                   <!-- Botón de editar -->
                   <button (click)="toggleEdicion(item)" type="button" class="btn btn-success text-center">

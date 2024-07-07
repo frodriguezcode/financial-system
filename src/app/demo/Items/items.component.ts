@@ -135,14 +135,19 @@ this.todasSucursales=true
       this.ItemForm.get('Sucursales').setValue(this.SucursalesSelected);
       ItemForm.Sucursales=this.SucursalesSelected
     }
+    else if(this.todasSucursales==true){
+      ItemForm.Sucursales=this.Sucursales
+    }
     else {
       let _SucursalSeleccionada:any=[]
       _SucursalSeleccionada=this.Sucursales.filter((suc:any)=>suc.id==this.ItemForm.value['Sucursales'])
       this.ItemForm.get('Sucursales').setValue(_SucursalSeleccionada);
       ItemForm.Sucursales=_SucursalSeleccionada
     }
-    console.log('ItemForm',ItemForm)
+
     ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
+    console.log('ItemForm',ItemForm)
+    console.log('todasSucursales',this.todasSucursales)
     this.conS.crearItem(ItemForm).then(resp=>{
       Swal.fire({
         position: "center",

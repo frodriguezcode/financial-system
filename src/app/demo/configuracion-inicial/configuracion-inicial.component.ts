@@ -16,6 +16,8 @@ import { EmpresasService } from 'src/app/services/empresa.service';
 import { RouterModule,Router } from '@angular/router';
 import Swal from 'sweetalert2'
 import RolesComponent from '../roles/roles.component';
+import { AuthService } from 'src/app/services/auth.service';
+import { ConfigurationService } from 'src/app/services/configuration.service';
 // import { StepperModule } from 'primeng/stepper';
 
 @Component({
@@ -38,23 +40,230 @@ import RolesComponent from '../roles/roles.component';
 })
 export default class ConfiguracionInicialComponent implements OnInit {
 usuario:any
-constructor(private emS:EmpresasService,private readonly router: Router){}
+showText: boolean = true;
+showComponent: boolean = false;
+Empresas:any=[]
+Sucursales:any=[]
+Roles:any=[]
+Usuarios:any=[]
+SociosNegocio:any=[]
+CuentasBancarias:any=[]
+CuentasContables:any=[]
+SaldosIniciales:any=[]
+
+textoInfo:string='Bienvenidos al sistema financiero, a continuación empezaremos la configuración inicial'
+constructor(
+private emS:EmpresasService,
+private conS:ConfigurationService,
+private readonly router: Router,
+private authS:AuthService){}
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.obtenerEmpresas()
+  this.obtenerRoles()
+  this.obtenerSociosNegocio()
+  this.obtenerCuentasBancarias()
+  this.obtenerCuentasContables()
+  this.obtenerSaldosIniciales()
+  setTimeout(() => {
+    this.hideText();
+    this.showComponent = true;
+  }, 5000);
+}
+obtenerEmpresas(){
+  this.emS.obtenerEmpresa(this.usuario.idMatriz).subscribe((res:any) => {
+    this.Empresas=res
+  })
+}
+obtenerRoles(){
+  this.authS.obtenerRoles(this.usuario.idEmpresa).subscribe((res:any) => {
+    this.Roles=res
+  })
+}
+obtenerSociosNegocio(){
+  this.conS.obtenerSocios(this.usuario.idEmpresa).subscribe((res:any) => {
+    this.SociosNegocio=res
+  })
+}
+obtenerCuentasBancarias(){
+  this.conS.obtenerBancos(this.usuario.idEmpresa).subscribe((res:any) => {
+    this.CuentasBancarias=res
+  })
+}
+obtenerCuentasContables(){
+  this.conS.obtenerItems(this.usuario.idEmpresa).subscribe((res:any) => {
+    this.CuentasContables=res
+  })
+}
+obtenerSaldosIniciales(){
+  this.conS.obtenerSaldoInicial(this.usuario.idEmpresa).subscribe((res:any) => {
+    this.SaldosIniciales=res
+  })
 }
 
   currentStep = 1;
   totalSteps = 8;
-
+  hideText() {
+    const element = document.getElementById('animatedText');
+    if (element) {
+      element.classList.add('animate__fadeOut');
+      setTimeout(() => {
+        this.showText = false;
+        
+      }, 1000); // Duración de la animación de salida (ajusta según tu preferencia)
+    }
+  }
   
 
   nextStep() {
     if (this.currentStep < this.totalSteps) {
+      
       this.addAnimationOut();
       setTimeout(() => {
+        
+        console.log('currentStep',this.currentStep)
+        this.showComponent = false;
+
+        if(this.currentStep==1){
+          this.currentStep++;
+          this.textoInfo='En este momento crearemos las sucursales de tu empresa'
+          this.showText=true
+          
+          setTimeout(() => {
+            this.hideText();
+            this.showComponent = true;
+          }, 2000);
+        }
+     else   if(this.currentStep==2){
+          this.currentStep++;
+          this.textoInfo='A continuación crearemos los roles y accesos del sistema'
+          this.showText=true
+          
+          setTimeout(() => {
+            this.hideText();
+            this.showComponent = true;
+          }, 2000);
+        }
+
+
+     else if(this.currentStep==3){
+           if(this.Roles.length==0){
+            this.showComponent = true;
+             Swal.fire({
+               position: "center",
+               icon: "warning",
+               title: "Debe ingresar al menos 1 rol",
+               showConfirmButton: false,
+               timer: 1500
+             });
+
+           }
+           else {
+             this.currentStep++;
+             this.textoInfo='Bien, ahora crearemos los usuarios de tu empresa'
+             this.showText=true
+             
+             setTimeout(() => {
+               this.hideText();
+               this.showComponent = true;
+             }, 2000);
+           }
+        
+      }
+
+   else   if(this.currentStep==4){
         this.currentStep++;
+        this.textoInfo='En esta sección crearemos los socios de negocio (clientes y proveedores)'
+        this.showText=true
+        
+        setTimeout(() => {
+          this.hideText();
+          this.showComponent = true;
+        }, 2000);
+      }
+
+      else if(this.currentStep==5){
+        if(this.SociosNegocio.length==0){
+         this.showComponent = true;
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Debe ingresar al menos 1 socio de negocio",
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+        }
+        else {
+          this.currentStep++;
+          this.textoInfo='Bien, ahora crearemos las cuentas bancarias de tu empresa'
+          this.showText=true
+          
+          setTimeout(() => {
+            this.hideText();
+            this.showComponent = true;
+          }, 2000);
+        }
+     
+   }
+      else if(this.currentStep==6){
+        if(this.CuentasBancarias.length==0){
+         this.showComponent = true;
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Debe ingresar al menos 1 cuenta bancaria",
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+        }
+        else {
+          this.currentStep++;
+          this.textoInfo='En esta sección crearemos las cuentas contables de tu empresa'
+          this.showText=true
+          
+          setTimeout(() => {
+            this.hideText();
+            this.showComponent = true;
+          }, 2000);
+        }
+     
+   }
+      else if(this.currentStep==7){
+        if(this.CuentasContables.length==0){
+         this.showComponent = true;
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Debe ingresar al menos 1 cuenta contable",
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+        }
+        else {
+          this.currentStep++;
+          this.textoInfo='Llegamos a la parte final, la creación de saldos iniciales'
+          this.showText=true
+          
+          setTimeout(() => {
+            this.hideText();
+            this.showComponent = true;
+          }, 2000);
+        }
+     
+   }
+
+
+
+
+
         this.addAnimationIn();
       }, 200);
+
+
+
     }
   }
   

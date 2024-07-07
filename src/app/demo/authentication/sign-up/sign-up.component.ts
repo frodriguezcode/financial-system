@@ -41,6 +41,7 @@ export default class SignUpComponent implements OnInit {
   ngOnInit() {
     this.idPlan= this.rutaActiva.snapshot.paramMap.get('idPlan')!;
     console.log('idPlan',this.idPlan)
+
     this.MesesTodos = [
       {
         Mes: 'Sin Mes',
@@ -158,6 +159,7 @@ formatFechaVencimiento(event: Event) {
       Activo: new FormControl(true),
       idRol: new FormControl(1),
       IdSucursal: new FormControl(0),
+      idPlan:new FormControl(this.idPlan),
       ConfigInicialCompletado:new FormControl(false),
       Correo: new FormControl('', [Validators.email, Validators.required]),
       // TODO VERIFICACIONES, CONTRASENA AUTOMATICA, API QUE ENVIA AL CORREO.

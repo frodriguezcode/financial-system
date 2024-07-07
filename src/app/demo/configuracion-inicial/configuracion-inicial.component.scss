@@ -74,3 +74,27 @@ button {
   width: 200px;
   justify-content: space-between;
 }
+
+#animatedText {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+#componentes {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+}
+.textoAnimado{
+  color: #4154f1;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight:bold ;
+  font-style: normal;
+}

@@ -110,6 +110,7 @@
                 <ng-template #editarSucursal>
                   <select [(ngModel)]="usuario.IdSucursal" id="inputState" class="form-select">
                     <option value="0">Seleccione una sucursal</option>
+                    <option value="1">Todas</option>
                     <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
                   </select>
                 </ng-template>

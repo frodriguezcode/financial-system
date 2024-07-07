@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-  urlSeverMailLocal = 'http://localhost:3000/formulario/';
+  //urlSeverMailLocal = 'http://localhost:3000/formulario/';
+  urlSeverMailLocal = 'https://apisistemafinanciero.onrender.com/formulario/';
   Atributos:any=[]
   constructor(
     private afs: AngularFirestore,
