@@ -133,7 +133,7 @@ export default class BancosComponent implements OnInit {
       Cuenta: new FormControl('',[Validators.required]), 
       Activo: new FormControl(true), 
       Editando: new FormControl(false), 
-      idMoneda: new FormControl('',[Validators.required]), 
+      idMoneda: new FormControl(''), 
       idSucursal: new FormControl('0',[Validators.required]), 
       idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 

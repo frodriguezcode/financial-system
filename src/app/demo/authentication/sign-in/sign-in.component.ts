@@ -67,7 +67,7 @@ export default class SignInComponent {
   async  obtenerAtributos(idEmpresa: any, idRol: string) {
     try {
       const atributos = await this.obtenerRoles(idEmpresa, idRol);
-      console.log(atributos);
+      console.log('atributos,',atributos);
       localStorage.setItem('AtributosUsuarioFinancial_System', JSON.stringify(atributos));
     } catch (error) {
       console.error(error);

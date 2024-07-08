@@ -79,6 +79,8 @@ ngOnInit(): void {
     this.showComponent = true;
   }, 5000);
 }
+
+
 obtenerEmpresas(){
   this.emS.obtenerEmpresa(this.usuario.idMatriz).subscribe((res:any) => {
     this.Empresas=res
@@ -303,27 +305,40 @@ obtenerSaldosIniciales(){
   }
   
   complete() {
+    if(this.SaldosIniciales.length==0){
+      this.showComponent = true;
+       Swal.fire({
+         position: "center",
+         icon: "warning",
+         title: "Debe ingresar al menos 1 saldo inicial",
+         showConfirmButton: false,
+         timer: 1500
+       });
 
-    Swal.fire({
-      title: "¿Desea terminar la configuración inicial?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Si",
-      cancelButtonText: "No"
-    }).then((result) => {
-      if (result.isConfirmed) {
+     }
+     else {
+       Swal.fire({
+         title: "¿Desea terminar la configuración inicial?",
+         icon: "question",
+         showCancelButton: true,
+         confirmButtonColor: "#3085d6",
+         cancelButtonColor: "#d33",
+         confirmButtonText: "Si",
+         cancelButtonText: "No"
+       }).then((result) => {
+         if (result.isConfirmed) {
         this.emS.ActualizarEmpresaConfigInicial(this.usuario.idEmpresa).then(resp=>{
           let _RolesEmpresa:any=[]
-          _RolesEmpresa=this.Roles.filter((rol:any)=>rol.idEmpresa==this.usuario.idEmpresa)
-          localStorage.setItem('AtributosUsuarioFinancial_System', JSON.stringify(_RolesEmpresa[0].Atributos));
-          this.router.navigate(['/analytics'])
-          localStorage.removeItem("idMenu")
-          localStorage.removeItem("TextoConfigInicial")
-        })
-      }
-    });
+              _RolesEmpresa=this.Roles.filter((rol:any)=>rol.idEmpresa==this.usuario.idEmpresa)
+              localStorage.setItem('AtributosUsuarioFinancial_System', JSON.stringify(_RolesEmpresa[0].Atributos));
+              this.router.navigate(['/analytics'])
+              localStorage.removeItem("idMenu")
+              localStorage.removeItem("TextoConfigInicial")
+           })
+         }
+       });
+
+     }
 
     
   }

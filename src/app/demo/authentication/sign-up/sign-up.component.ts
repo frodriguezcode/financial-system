@@ -26,6 +26,7 @@ export default class SignUpComponent implements OnInit {
   usuarioForm!: FormGroup;
   visible: boolean = false;
   Fecha: any = new Date();
+  Atributos:any=[]
   CardNumber:FormControl=new FormControl('')
   FechaVencimiento:FormControl=new FormControl('')
   cardType: string | null = null;
@@ -41,7 +42,7 @@ export default class SignUpComponent implements OnInit {
   ngOnInit() {
     this.idPlan= this.rutaActiva.snapshot.paramMap.get('idPlan')!;
     console.log('idPlan',this.idPlan)
-
+this. obtenerAtributos()
     this.MesesTodos = [
       {
         Mes: 'Sin Mes',
@@ -113,6 +114,14 @@ export default class SignUpComponent implements OnInit {
 
   }
 
+  obtenerAtributos(){
+    this.authS.obtenerAtributos().subscribe((data:any)=>{
+      this.Atributos=data.map((atributo: any) => {
+        return { ...atributo, Seleccionado: true };
+      });
+    })
+  }
+
   showDialog() {
     this.visible = true;
 }
@@ -159,6 +168,7 @@ formatFechaVencimiento(event: Event) {
       Activo: new FormControl(true),
       idRol: new FormControl(1),
       IdSucursal: new FormControl(0),
+      Pagado: new FormControl(true),
       idPlan:new FormControl(this.idPlan),
       ConfigInicialCompletado:new FormControl(false),
       Correo: new FormControl('', [Validators.email, Validators.required]),
@@ -186,7 +196,7 @@ formatFechaVencimiento(event: Event) {
   // Enviar correo electrónico
   this.authS.sendMail(this.usuarioCreado).subscribe();
 
-    this.authS.crearUsuarioRegistro(this.usuarioForm.value).then((resp:any)=>{
+    this.authS.crearUsuarioRegistro(this.usuarioForm.value,this.Atributos).then((resp:any)=>{
       this.router.navigate(['/auth/signin'])
       Swal.fire({
         position: "center",

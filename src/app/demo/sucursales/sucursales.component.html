@@ -9,7 +9,7 @@
   <div class="form-group">
     <label for="exampleInputPassword1">Sucursal</label>
     <input (input)="verificarSucursal()" type="text" formControlName="Nombre" class="form-control"
-      id="exampleInputPassword1" placeholder="Escriba una cuenta" />
+      id="exampleInputPassword1" placeholder="Escriba el nombre de la sucursal" />
     <span *ngIf="sucursalFound==true" style="color: red;">
       <p>Ya existe ya existe una sucursal con este nombre</p>
     </span>

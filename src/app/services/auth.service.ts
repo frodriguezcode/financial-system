@@ -44,10 +44,19 @@ console.log('Atributos', this.Atributos)
       .doc(id)
       .ref.set(Object.assign(user, { id: id }));
   }
-  crearUsuarioRegistro(user: any) {
+
+  guardarRolSignUp(Rol:any,idRol:any){
+  
+   return this.afs
+   .collection('Roles')
+   .doc(idRol)
+   .ref.set(Object.assign(Rol, { id: idRol }));
+  }
+  crearUsuarioRegistro(user: any,Atributos:any) {
     const id = this.afs.createId();
     const idEmpresa = this.afs.createId();
     const idMatriz= this.afs.createId();
+    const idRol= this.afs.createId();
     let _Empresa={
       Activo:true,
       Editando:false,
@@ -63,6 +72,18 @@ console.log('Atributos', this.Atributos)
       Nombre:user.Matriz,
       Empresas:[_Empresa]
     }
+    let _Rol={
+      "Rol":"Administrador",
+      "Atributos":Atributos,
+      "idEmpresa":idEmpresa,
+      "idUsuario":user.Usuario,
+      "Usuario":id,
+      "FechaRegistro":user.FechaRegistro
+    }
+
+    this.guardarRolSignUp(_Rol,idRol).then(resp=>{
+      
+    })
 
     this.crearMatriz(_Matriz,idMatriz).then(resp=>{
       
@@ -73,7 +94,7 @@ console.log('Atributos', this.Atributos)
 
     user.idEmpresa=idEmpresa
     user.idMatriz=idMatriz
-
+    user.idRol=idRol
     return this.afs
       .collection('Usuarios')
       .doc(id)
