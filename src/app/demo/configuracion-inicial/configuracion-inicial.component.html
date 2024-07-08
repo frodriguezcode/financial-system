@@ -6,47 +6,54 @@
 </div> -->
 
 <div style="margin-top: -5px;" class="stepper-container">
-  <div class="stepper-header">
-    <div class="step" [class.active]="currentStep === 1">
-      <div class="step-number">1</div>
-      <div class="step-title">Empresas</div>
-    </div>
-    <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep === 2">
-      <div class="step-number">2</div>
-      <div class="step-title">Sucursales</div>
-    </div>
-    <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep === 3">
-      <div class="step-number">3</div>
-      <div class="step-title">Roles de usuarios</div>
-    </div>
-    <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep === 4">
-      <div class="step-number">4</div>
-      <div class="step-title">Usuarios</div>
-    </div>
-    <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep === 5">
-      <div class="step-number">4</div>
-      <div class="step-title">Socios de Negocios</div>
-    </div>
-    <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep === 6">
-      <div class="step-number">5</div>
-      <div class="step-title">Cuentas de Banco</div>
-    </div>
-    <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep === 7">
-      <div class="step-number">6</div>
-      <div class="step-title">Cuentas Contables</div>
-    </div>
-    <div class="step-connector"></div>
-    <div class="step" [class.active]="currentStep === 8">
-      <div class="step-number">7</div>
-      <div class="step-title">Saldos Iniciales</div>
+<div class="sticky-top">
+  <div class="card ">
+    <div class="card-body custom-padding">
+      <div class="stepper-header">
+        <div class="step" [class.active]="currentStep === 1">
+          <div class="step-number">1</div>
+          <div class="step-title">Empresas</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" [class.active]="currentStep === 2">
+          <div class="step-number">2</div>
+          <div class="step-title">Sucursales</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" [class.active]="currentStep === 3">
+          <div class="step-number">3</div>
+          <div class="step-title">Roles de usuarios</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" [class.active]="currentStep === 4">
+          <div class="step-number">4</div>
+          <div class="step-title">Usuarios</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" [class.active]="currentStep === 5">
+          <div class="step-number">5</div>
+          <div class="step-title">Socios de Negocios</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" [class.active]="currentStep === 6">
+          <div class="step-number">6</div>
+          <div class="step-title">Cuentas de Banco</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" [class.active]="currentStep === 7">
+          <div class="step-number">7</div>
+          <div class="step-title">Cuentas Contables</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" [class.active]="currentStep === 8">
+          <div class="step-number">8</div>
+          <div class="step-title">Saldos Iniciales</div>
+        </div>
+      </div>
     </div>
   </div>
+
+</div>
 
   <div *ngIf="showText" id="animatedText" class="animate__animated animate__fadeIn">
     <h4 class="textoAnimado">{{textoInfo}}</h4> 
@@ -59,14 +66,14 @@
   <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 1 }" *ngIf=" showComponent && currentStep === 1">
 
     <app-empresas></app-empresas>
-    <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
+    <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Siguiente</button>
   </div>
   <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 2 }" *ngIf=" showComponent && currentStep === 2">
 
     <app-sucursal></app-sucursal>
     <div class="group-buttons">
-      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Back</button>
-      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
+      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Anterior</button>
+      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Siguiente</button>
     </div>
   </div>
 
@@ -74,8 +81,8 @@
 
     <app-roles></app-roles>
     <div class="group-buttons">
-      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Back</button>
-      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
+      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Anterior</button>
+      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Siguiente</button>
     </div>
   </div>
 
@@ -83,8 +90,8 @@
 
     <app-crear-usuario></app-crear-usuario>
     <div class="group-buttons">
-      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Back</button>
-      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
+      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Anterior</button>
+      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Siguiente</button>
     </div>
   </div>
 
@@ -92,8 +99,8 @@
     <app-socios></app-socios>
 
     <div class="group-buttons">
-      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Back</button>
-      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
+      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Anterior</button>
+      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Siguiente</button>
     </div>
   </div>
 
@@ -101,16 +108,16 @@
 
     <app-bancos></app-bancos>
     <div class="group-buttons">
-      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Back</button>
-      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
+      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Anterior</button>
+      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Siguiente</button>
     </div>
   </div>
   <div class="stepper-content animate__animated" [ngClass]="{ 'animate__fadeIn': currentStep === 7 }" *ngIf="showComponent && currentStep === 7">
 
     <app-elemento></app-elemento>
     <div class="group-buttons">
-      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Back</button>
-      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Next</button>
+      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Anterior</button>
+      <button type="button" (click)="nextStep()" class="btn btn-info shadow-4 mx-auto">Siguiente</button>
     </div>
   </div>
 
@@ -118,8 +125,8 @@
     <app-ajuste-saldo></app-ajuste-saldo>
   
     <div class="group-buttons">
-      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Back</button>
-      <button type="button" (click)="complete()" class="btn btn-info shadow-4 mx-auto">Complete</button>
+      <button type="button" (click)="previousStep()" class="btn btn-danger shadow-4 mx-auto">Anterior</button>
+      <button type="button" (click)="complete()" class="btn btn-info shadow-4 mx-auto">Terminar</button>
     </div>
   </div>
 </div>

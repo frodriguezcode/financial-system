@@ -1,6 +1,6 @@
-<app-card cardTitle="Módulo Socios de negocios" [options]="false" >
+<app-card cardTitle="Módulo Socios de negocios" [options]="false">
   <!-- <div class="icon-socio"> <i class="fa-solid fa-user-tie"></i></div> -->
- 
+
   <div class="row">
     <div class="col-md-4">
       <h5>Crear Socio</h5>
@@ -9,13 +9,13 @@
 
         <div class="form-group">
           <label for="exampleInputEmail1">Nombre</label>
-          <input (input)="verificarSocio()"  type="text" formControlName="Nombre" class="form-control" id="exampleInputEmail1"
-            aria-describedby="emailHelp" placeholder="Escriba un nombre del socio" />
-            <span *ngIf="socioFound==true" style="color: red;">
-              <p>Ya existe una cuenta con este numero</p>
-            </span>
+          <input (input)="verificarSocio()" type="text" formControlName="Nombre" class="form-control"
+            id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Escriba un nombre del socio" />
+          <span *ngIf="socioFound==true" style="color: red;">
+            <p>Ya existe una cuenta con este numero</p>
+          </span>
         </div>
-    
+
         <div class="form-group">
           <label for="exampleInputPassword1">Tipo de Socio</label>
           <select formControlName="Tipo" class="form-control" id="exampleFormControlSelect1">
@@ -32,66 +32,69 @@
     </div>
 
     <!-- ~Tabla -->
+
+
+
+
+
     <div class="col-md-8">
       <h5>Lista de Socios de Negocio</h5>
       <hr />
       <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th class="text-center">#</th>
-              <th class="text-center">Nombre</th>
-              <th class="text-center">Tipo</th>
-              <!-- <th class="text-center">Sucursal</th> -->
-              <th class="text-center">Editar</th>
-              <th class="text-center">Inactivar</th> 
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let socio of Socios;index as i">
-              <th class="text-center" scope="row">{{i+1}}</th>
-              <td class="text-center">
-                <ng-container *ngIf="!socio.Editando; else editarSocio">
-                  {{socio.Nombre}}
-                </ng-container>
-                <ng-template #editarSocio>
-                  <input [(ngModel)]="socio.Nombre" class="form-control text-center col-4">
-                </ng-template>
-              </td>
-              <td class="text-center">
-                <ng-container *ngIf="!socio.Editando; else editarTipo">
-                  {{this.getNameTipo(socio.Tipo)}}
-                </ng-container>
-                <ng-template #editarTipo>
-                  <select [(ngModel)]="socio.Tipo" class="form-control" id="exampleFormControlSelect1">
-                    <option value="0">Seleccione una opcion</option>
-                    <option value="{{tipoSocio.id}}" *ngFor="let tipoSocio of tipoSocios">{{tipoSocio.name}}</option>
-                  </select>
-                </ng-template>
-              </td>
-              
-              <td *ngIf="!socio.Editando" class="text-center">
-                <!-- ~Botón de editar -->
-                <button (click)="toggleEdicion(socio)" type="button" class="btn btn-success text-center">
-                  <i class="fa-regular fa-pen-to-square"></i>
-                </button>
-              </td>
-              <td *ngIf="socio.Editando">
-                <!-- ~Botón de editar -->
-                <button (click)="actualizarSocio(socio)" type="button" class="btn btn-info text-center">
-                  <i class="fa solid fa-check"></i>
-                </button>
-              </td>
-              <td class="text-center" *ngIf="socio.Activo"><button (click)="ActualizarSocioEstado(socio,false)"
-                  type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
-              <td class="text-center" *ngIf="!socio.Activo"><button (click)="ActualizarSocioEstado(socio,true)"
-                  type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
-
-            </tr>
-
-
-          </tbody>
-        </table>
+        <p-table [value]="Socios" [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '50rem' }"
+        [rowsPerPageOptions]="[5, 10, 20]">
+        <ng-template pTemplate="header">
+          <tr>
+            <!-- <th class="text-center">#</th> -->
+            <th class="text-center">Nombre</th>
+            <th class="text-center">Tipo</th>
+            <th class="text-center">Editar</th>
+            <th class="text-center">Inactivar</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-socio>
+          <tr>
+            <!-- <th class="text-center" scope="row">{{i+1}}</th> -->
+            <td class="text-center">
+              <ng-container *ngIf="!socio.Editando; else editarSocio">
+                {{socio.Nombre}}
+              </ng-container>
+              <ng-template #editarSocio>
+                <input [(ngModel)]="socio.Nombre" class="form-control text-center col-4">
+              </ng-template>
+            </td>
+            <td class="text-center">
+              <ng-container *ngIf="!socio.Editando; else editarTipo">
+                {{this.getNameTipo(socio.Tipo)}}
+              </ng-container>
+              <ng-template #editarTipo>
+                <select [(ngModel)]="socio.Tipo" class="form-control" id="exampleFormControlSelect1">
+                  <option value="0">Seleccione una opcion</option>
+                  <option value="{{tipoSocio.id}}" *ngFor="let tipoSocio of tipoSocios">{{tipoSocio.name}}</option>
+                </select>
+              </ng-template>
+            </td>
+  
+            <td *ngIf="!socio.Editando" class="text-center">
+              <!-- ~Botón de editar -->
+              <button (click)="toggleEdicion(socio)" type="button" class="btn btn-success text-center">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+            </td>
+            <td *ngIf="socio.Editando">
+              <!-- ~Botón de editar -->
+              <button (click)="actualizarSocio(socio)" type="button" class="btn btn-info text-center">
+                <i class="fa solid fa-check"></i>
+              </button>
+            </td>
+            <td class="text-center" *ngIf="socio.Activo"><button (click)="ActualizarSocioEstado(socio,false)"
+                type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
+            <td class="text-center" *ngIf="!socio.Activo"><button (click)="ActualizarSocioEstado(socio,true)"
+                type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+  
+          </tr>
+        </ng-template>
+      </p-table>
       </div>
     </div>
     <!-- ~Tabla -->

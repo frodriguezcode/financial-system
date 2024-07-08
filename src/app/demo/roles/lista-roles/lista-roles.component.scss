@@ -1,0 +1,72 @@
+.scroll-container {
+    max-height: 400px; /* Ajusta este valor según lo necesites */
+    overflow-y: auto;
+  
+  }
+
+  .groupToggle{
+    margin-left: 60px;
+  }
+  .groupToggleConfig{
+    margin-left: 2px;
+  }
+
+
+
+
+  @media (min-width: 1280px) and (max-width: 1580px) {
+    .saveButtonConfig{
+        margin-left: 2px;
+      }
+    
+      .saveButton{
+        margin-left:100px;
+    
+      }
+    .toggleButtonConfig{
+        margin-left: 2px;
+      }
+    
+      .toggleButton{
+        margin-left:70px;
+    
+      }
+      
+      .labeltoggleButtonConfig{
+        margin-left: 2px;
+      }
+    
+      .labeltoggleButton{
+        margin-left:50px;
+       
+      }
+
+  }
+  @media (min-width: 1600px) and (max-width: 2000px) {
+    .saveButtonConfig{
+        margin-left: 2px;
+      }
+    
+      .saveButton{
+        margin-left:100px;
+    
+      }
+    .toggleButtonConfig{
+        margin-left: 2px;
+      }
+    
+      .toggleButton{
+        margin-left:120px;
+    
+      }
+
+      .labeltoggleButtonConfig{
+        margin-left: 2px;
+      }
+    
+      .labeltoggleButton{
+        margin-left:100px;
+       
+      }
+
+  }

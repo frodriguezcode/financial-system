@@ -10,11 +10,21 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { BuscarPipe } from '../../theme/shared/filter/buscar.pipe';
+import { TableModule } from 'primeng/table';
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+
 @Component({
   selector: 'app-elemento',
   standalone: true,
-  imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule,RadioButtonModule,TabViewModule],
+  imports: [CommonModule, SharedModule, 
+    FormsModule,
+    ReactiveFormsModule,
+    RadioButtonModule,
+    TabViewModule,
+    TableModule,
+    InputIconModule,
+    IconFieldModule],
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
 })
@@ -152,7 +162,7 @@ this.todasSucursales=true
       Swal.fire({
         position: "center",
         icon: "success",
-        title: "Item creado",
+        title: "Cuenta contable creada",
         showConfirmButton: false,
         timer: 1500
       });

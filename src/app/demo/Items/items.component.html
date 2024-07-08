@@ -1,6 +1,3 @@
-
-
-
 <app-card *ngIf="this.Categorias.length>0" cardTitle="Módulo Cuentas" [options]="false">
   <div class="row">
     <div class="col-md-4 col-lg-4 col-12">
@@ -9,14 +6,13 @@
       <form *ngIf="ItemForm" [formGroup]="ItemForm">
         <div class="form-group">
           <label for="exampleInputEmail1">Nombre</label>
-          <input (input)="verificarItem()" type="text" formControlName="Nombre" class="form-control" id="exampleInputEmail1"
-          
-            aria-describedby="emailHelp" placeholder="Escriba un centro de costo" />
-            <span *ngIf="ItemFound==true" style="color: red;">
-              <p>Ya existe un item con este nombre</p>
-            </span>
+          <input (input)="verificarItem()" type="text" formControlName="Nombre" class="form-control"
+            id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Escriba un centro de costo" />
+          <span *ngIf="ItemFound==true" style="color: red;">
+            <p>Ya existe un item con este nombre</p>
+          </span>
         </div>
-  
+
 
         <div class="form-group">
           <label for="exampleInputPassword1">Empresa</label>
@@ -25,33 +21,35 @@
             <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
           </select>
         </div>
-  
+
         <div class="form-group">
 
           <div class="row">
             <div class="col-8">
               <label for="exampleInputPassword1">Sucursal</label>
-              <select (change)="verificarSelect($any($event.target).value)" formControlName="Sucursales" class="form-control"  id="exampleFormControlSelect1">
+              <select (change)="verificarSelect($any($event.target).value)" formControlName="Sucursales"
+                class="form-control" id="exampleFormControlSelect1">
                 <option value="0">Seleccione una sucursal</option>
                 <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
-    
-              </select>            
+
+              </select>
             </div>
-            <div  class="col-4"> 
+            <div class="col-4">
               <div style="margin-top: 25%;">
-                <div class="form-check mt-2" >
-                  <input [disabled]="BlocCheck==false" (change)="getTodasSucursales()" class="form-check-input" type="checkbox" value="" [checked]="todasSucursales" id="flexCheckChecked">
+                <div class="form-check mt-2">
+                  <input [disabled]="BlocCheck==false" (change)="getTodasSucursales()" class="form-check-input"
+                    type="checkbox" value="" [checked]="todasSucursales" id="flexCheckChecked">
                   <label class="form-check-label" for="flexCheckChecked">
                     Todas
                   </label>
                 </div>
-              
+
+              </div>
             </div>
-            </div>
-        </div>
+          </div>
         </div>
 
-        
+
         <div class="form-group">
           <label for="exampleInputPassword1">Categoria</label>
           <select formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
@@ -67,35 +65,48 @@
     <div class="col-md-4 col-lg-8 col-12">
       <h5>Lista de Centros de Costos/Ingresos</h5>
       <hr />
-      <div class="input-group mb-3 mt-2">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Buscar</span
-        >
-        <input
-          type="text"
-          [(ngModel)]="buscarItem"
-          name="buscarProducto"
-          class="form-control"
-          aria-label="Sizing example input"
-          aria-describedby="inputGroup-sizing-default"
-        />
-      </div>
+      <!-- <div class="input-group mb-3 mt-2">
+        <span class="input-group-text" id="inputGroup-sizing-default">Buscar</span>
+        <input type="text" [(ngModel)]="buscarItem" name="buscarProducto" class="form-control"
+          aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+      </div> -->
       <div class="table-container">
         <div class="table-responsive">
-          <table class="table">
-            <thead>
+          <p-table 
+          #dt2
+          [value]="Items" 
+          [paginator]="true" 
+          [globalFilterFields]="['Nombre']"
+          [rows]="5" 
+          [tableStyle]="{ 'min-width': '50rem' }"
+          [rowsPerPageOptions]="[5, 10, 20]">
+          <ng-template pTemplate="caption">
+            <div class="flex">
+              <p-iconField iconPosition="left" class="ml-auto">
+                    <p-inputIcon>
+                        <i class="pi pi-search"></i>
+                    </p-inputIcon>
+                    <input 
+                        pInputText 
+                        type="text" 
+                        (input)="dt2.filterGlobal($any($event.target).value, 'contains')" 
+                        placeholder="Buscar cuenta contable" />
+                </p-iconField>
+            </div>
+        </ng-template>
+            <ng-template pTemplate="header">
               <tr>
-                <th class="text-center">#</th>
+                <!-- <th class="text-center">#</th> -->
                 <th class="text-center">Item</th>
                 <th class="text-center">Categoría</th>
                 <th class="text-center">Empresa</th>
                 <th class="text-center">Editar</th>
                 <th class="text-center">Inactivar</th>
               </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of Items | buscar : buscarItem;index as i">
-                <th class="text-center" scope="row">{{i+1}}</th>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <!-- <th class="text-center" scope="row">{{i+1}}</th> -->
                 <td class="text-center">
                   <ng-container *ngIf="!item.Editando; else editarItem">
                     {{item.Nombre}}
@@ -104,30 +115,19 @@
                     <input [(ngModel)]="item.Nombre" class="form-control text-center col-4">
                   </ng-template>
                 </td>
-          
+
                 <td class="text-center">
-                 
+
                   <ng-container *ngIf="!item.Editando; else editarCategoria">
                     {{getNombreCategoria(item.idCategoria)}}
                   </ng-container>
                   <ng-template #editarCategoria>
                     <select [(ngModel)]="item.idCategoria" id="inputState" class="form-select">
                       <option value="0">Seleccione una sucursal</option>
-                      <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}</option>
+                      <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}
+                      </option>
                     </select>
                   </ng-template>
-                </td>
-                <!-- <td class="text-center">
-                  <ng-container *ngIf="!item.Editando; else editarSucursal">
-                    {{getNombreSucursal(item.idSucursal)}}
-                  </ng-container>
-                  <ng-template #editarSucursal>
-                    <select [(ngModel)]="item.idSucursal" id="inputState" class="form-select">
-                      <option value="0">Seleccione una sucursal</option>
-                      <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
-                    </select>
-                  </ng-template>
-                </td> -->
                 <td class="text-center">
                   <ng-container *ngIf="!item.Editando; else editarEmpresa">
                     {{getNombreEmpresa(item.idEmpresa)}}
@@ -139,7 +139,7 @@
                     </select>
                   </ng-template>
                 </td>
-       
+
                 <td *ngIf="!item.Editando" class="text-center">
                   <!-- Botón de editar -->
                   <button (click)="toggleEdicion(item)" type="button" class="btn btn-success text-center">
@@ -156,12 +156,11 @@
                     type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
                 <td class="text-center" *ngIf="!item.Activo"><button (click)="ActualizarItemEstado(item,true)"
                     type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
-  
               </tr>
-  
-  
-            </tbody>
-          </table>
+            </ng-template>
+          </p-table>
+
+
         </div>
 
       </div>

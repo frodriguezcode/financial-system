@@ -50,7 +50,8 @@ SociosNegocio:any=[]
 CuentasBancarias:any=[]
 CuentasContables:any=[]
 SaldosIniciales:any=[]
-
+idMenu:any=1
+currentStep:any = 1;
 textoInfo:string='Bienvenidos al sistema financiero, a continuación empezaremos la configuración inicial'
 constructor(
 private emS:EmpresasService,
@@ -59,6 +60,14 @@ private readonly router: Router,
 private authS:AuthService){}
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  if(localStorage.getItem('idMenu')!=null)
+    {
+      this.currentStep =Number(localStorage.getItem('idMenu'));
+    }
+    if(localStorage.getItem('TextoConfigInicial')!=null)
+    {
+      this.textoInfo =localStorage.getItem('TextoConfigInicial');
+    }
   this.obtenerEmpresas()
   this.obtenerRoles()
   this.obtenerSociosNegocio()
@@ -78,6 +87,7 @@ obtenerEmpresas(){
 obtenerRoles(){
   this.authS.obtenerRoles(this.usuario.idEmpresa).subscribe((res:any) => {
     this.Roles=res
+    console.log('Roles',this.Roles)
   })
 }
 obtenerSociosNegocio(){
@@ -101,7 +111,7 @@ obtenerSaldosIniciales(){
   })
 }
 
-  currentStep = 1;
+
   totalSteps = 8;
   hideText() {
     const element = document.getElementById('animatedText');
@@ -120,13 +130,14 @@ obtenerSaldosIniciales(){
       
       this.addAnimationOut();
       setTimeout(() => {
-        
-        console.log('currentStep',this.currentStep)
         this.showComponent = false;
 
         if(this.currentStep==1){
           this.currentStep++;
-          this.textoInfo='En este momento crearemos las sucursales de tu empresa'
+          this.textoInfo='Bien, ahora crearemos las sucursales, sino es necesario puedes pasar al siguiente módulo'
+          localStorage.setItem('idMenu', this.currentStep)
+          localStorage.setItem('TextoConfigInicial',this.textoInfo)
+          this.showText=true
           this.showText=true
           
           setTimeout(() => {
@@ -137,6 +148,8 @@ obtenerSaldosIniciales(){
      else   if(this.currentStep==2){
           this.currentStep++;
           this.textoInfo='A continuación crearemos los roles y accesos del sistema'
+          localStorage.setItem('idMenu', this.currentStep)
+          localStorage.setItem('TextoConfigInicial',this.textoInfo)
           this.showText=true
           
           setTimeout(() => {
@@ -161,6 +174,8 @@ obtenerSaldosIniciales(){
            else {
              this.currentStep++;
              this.textoInfo='Bien, ahora crearemos los usuarios de tu empresa'
+             localStorage.setItem('idMenu', this.currentStep)
+             localStorage.setItem('TextoConfigInicial',this.textoInfo)
              this.showText=true
              
              setTimeout(() => {
@@ -174,6 +189,8 @@ obtenerSaldosIniciales(){
    else   if(this.currentStep==4){
         this.currentStep++;
         this.textoInfo='En esta sección crearemos los socios de negocio (clientes y proveedores)'
+        localStorage.setItem('idMenu', this.currentStep)
+        localStorage.setItem('TextoConfigInicial',this.textoInfo)
         this.showText=true
         
         setTimeout(() => {
@@ -197,6 +214,8 @@ obtenerSaldosIniciales(){
         else {
           this.currentStep++;
           this.textoInfo='Bien, ahora crearemos las cuentas bancarias de tu empresa'
+          localStorage.setItem('idMenu', this.currentStep)
+          localStorage.setItem('TextoConfigInicial',this.textoInfo)
           this.showText=true
           
           setTimeout(() => {
@@ -221,6 +240,8 @@ obtenerSaldosIniciales(){
         else {
           this.currentStep++;
           this.textoInfo='En esta sección crearemos las cuentas contables de tu empresa'
+          localStorage.setItem('idMenu', this.currentStep)
+          localStorage.setItem('TextoConfigInicial',this.textoInfo)
           this.showText=true
           
           setTimeout(() => {
@@ -245,6 +266,8 @@ obtenerSaldosIniciales(){
         else {
           this.currentStep++;
           this.textoInfo='Llegamos a la parte final, la creación de saldos iniciales'
+          localStorage.setItem('idMenu', this.currentStep)
+          localStorage.setItem('TextoConfigInicial',this.textoInfo)
           this.showText=true
           
           setTimeout(() => {
@@ -273,6 +296,7 @@ obtenerSaldosIniciales(){
       this.addAnimationOut();
       setTimeout(() => {
         this.currentStep--;
+        localStorage.setItem('idMenu', this.currentStep)
         this.addAnimationIn();
       }, 200);
     }
@@ -291,13 +315,22 @@ obtenerSaldosIniciales(){
     }).then((result) => {
       if (result.isConfirmed) {
         this.emS.ActualizarEmpresaConfigInicial(this.usuario.idEmpresa).then(resp=>{
+          let _RolesEmpresa:any=[]
+          _RolesEmpresa=this.Roles.filter((rol:any)=>rol.idEmpresa==this.usuario.idEmpresa)
+          localStorage.setItem('AtributosUsuarioFinancial_System', JSON.stringify(_RolesEmpresa[0].Atributos));
           this.router.navigate(['/analytics'])
+          localStorage.removeItem("idMenu")
+          localStorage.removeItem("TextoConfigInicial")
         })
       }
     });
 
     
   }
+
+
+
+
 
   calculateProgress(): number {
     return Math.ceil((this.currentStep / this.totalSteps) * 100);

@@ -17,7 +17,7 @@ export class AuthService {
     this.Atributos= JSON.parse(localStorage.getItem('AtributosUsuarioFinancial_System')!);
   }
   validarAtributo(idAtributo:string,Atributos:any) {
-
+console.log('Atributos', this.Atributos)
     let _Atributo:any=[]
     _Atributo= this.Atributos.filter((atr:any)=>atr.id==idAtributo && atr.Seleccionado==true)
   

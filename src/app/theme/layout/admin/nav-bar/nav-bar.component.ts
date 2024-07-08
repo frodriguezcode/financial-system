@@ -1,19 +1,22 @@
 // Angular Import
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.scss']
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnInit {
   // public props
   menuClass = false;
   collapseStyle = 'none';
   windowWidth = window.innerWidth;
   @Output() NavCollapse = new EventEmitter();
   @Output() NavCollapsedMob = new EventEmitter();
+  ngOnInit(): void {
 
+    this.navCollapse()
+  }
   // public method
   toggleMobOption() {
     this.menuClass = !this.menuClass;

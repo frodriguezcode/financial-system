@@ -17,15 +17,6 @@
     label="Mostrar solo totales mensuales"/>
     
   </div>
-
-
-    
-
-  
-
-
-  
-
   <div class="table-responsive mt-3">
     <table *ngIf="SaldosSemanales.length > 0" class="table table-100">
       <thead class="cabecera">
@@ -118,3 +109,10 @@
                   <td class="text-center">{{ "$" + " " + (semana.SaldoFinal | number) }}</td>
                 </ng-container>
               </ng-container>
+              <td style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center" >
+                
+               {{ "$" + " " + (this.getSaldoFinalMensual(mes.NumMes, anio.Anio) | number) }}
+    
+            </ng-container>
+          </ng-container>
+        </tr>

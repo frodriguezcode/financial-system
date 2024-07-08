@@ -9,11 +9,11 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AuthService } from 'src/app/services/auth.service';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { TableModule } from 'primeng/table';
 @Component({
   selector: 'app-crear-usuario',
   standalone: true,
-  imports: [CommonModule, SharedModule, RouterModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, RouterModule, FormsModule, ReactiveFormsModule,TableModule],
   templateUrl: './crear-usuario.component.html',
   styleUrls: ['./crear-usuario.component.scss']
 })

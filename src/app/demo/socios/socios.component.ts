@@ -8,11 +8,12 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-socios',
   standalone: true,
-  imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule,TableModule],
   templateUrl: './socios.component.html',
   styleUrls: ['./socios.component.scss']
 })

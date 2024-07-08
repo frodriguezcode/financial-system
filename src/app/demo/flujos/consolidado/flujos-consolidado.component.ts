@@ -556,7 +556,6 @@ return Valor
   sem.Anio==Anio
 )
 
-
 if(_SemanasMes.length>0){
   return _SemanasMes
 }

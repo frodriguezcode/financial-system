@@ -8,11 +8,12 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-bancos',
   standalone: true,
-  imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, FormsModule,ReactiveFormsModule,TableModule],
   templateUrl: './bancos.component.html',
   styleUrls: ['./bancos.component.scss']
 })

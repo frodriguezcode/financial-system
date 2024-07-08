@@ -35,6 +35,7 @@ export default class SignInComponent {
            if(empresa[0].ConfigInicial==false){
              this.router.navigate(['/configuracion-inicial'])
              Swal.close()
+             this.obtenerAtributos(resp[0].idEmpresa,resp[0].idRol)
            }
            else{
             this.obtenerAtributos(resp[0].idEmpresa,resp[0].idRol)

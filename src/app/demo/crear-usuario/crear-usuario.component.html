@@ -1,143 +1,166 @@
 <app-card cardTitle="Módulo Usuarios" [options]="false">
-  <div class="row">
-    <div class="col-md-3 col-lg-3 col-12">
-      <h5>Crear Usuario</h5>
-      <hr />
-      <form *ngIf="usuarioForm" [formGroup]="usuarioForm">
-        <div class="form-group">
-          <label for="exampleInputEmail1">Nombres</label>
-          <input type="text" formControlName="Nombres" class="form-control" id="exampleInputEmail1"
-            aria-describedby="emailHelp" placeholder="Escriba el nombre del usuario" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Usuario</label>
-          <input  type="text" formControlName="Usuario" class="form-control"
-            id="exampleInputPassword1" placeholder="Escriba un nombre de usuario" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Contraseña</label>
-          <input  type="password" formControlName="Password" class="form-control"
-            id="exampleInputPassword1" placeholder="Escriba una contraseña" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Correo</label>
-          <input  type="text" formControlName="Correo" class="form-control"
-            id="exampleInputPassword1" placeholder="Escriba el correo del usuario" />
-            <p style="color: red;  display: block; margin-top: -7px;" 
-            *ngIf="(usuarioForm.get('Correo')?.touched || usuarioForm.get('Correo')?.dirty) && usuarioForm.get('Correo')?.hasError('required')">
-              Este campo es obligatorio
-            </p>
-            <p class="alerts-validators" style="color: red;  display: block; margin-top: -7px;" *ngIf="usuarioForm.get('Correo')?.hasError('email')">
-              Este campo debe ser tipo correo
-            </p>
-        </div>
-
-        <div class="form-group">
-          <label for="exampleInputPassword1">Sucursal</label>
-          <select formControlName="IdSucursal" class="form-control" id="exampleFormControlSelect1">
-            <option value="0">Seleccione una sucursal</option>
-            <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
-
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Rol</label>
-          <select formControlName="idRol" id="inputState" class="form-select">
-            <option selected>Escoja un rol</option>
-            <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>
-        </select>
-        <p style="color: red;" 
-        *ngIf="(usuarioForm.get('idRol')?.touched || usuarioForm.get('idRol')?.dirty) && usuarioForm.get('idRol')?.hasError('required')">
-          Este campo es obligatorio
-        </p>
-        </div>
-
-
-        <button [disabled]="this.usuarioForm.invalid" (click)="crearUsuario()" type="button"
-          class="btn btn-primary">Guardar</button>
-      </form>
-    </div>
-
-    <div class="col-md-9 col-lg-9 col-12">
-      <h5>Lista de Usuarios</h5>
-      <hr />
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th class="text-center">#</th>
-              <th class="text-center">Nombre</th>
-              <th class="text-center">Correo</th>
-              <th class="text-center">Rol</th>
-              <th class="text-center">Sucursal</th>
-              <th class="text-center">Editar</th>
-              <th class="text-center">Inactivar</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let usuario of Usuarios;index as i">
-              <th class="text-center" scope="row">{{i+1}}</th>
-              <td class="text-center">
-                <ng-container *ngIf="!usuario.Editando; else editarBanco">
-                  {{usuario.Nombres}}
-                </ng-container>
-                <ng-template #editarBanco>
-                  <input [(ngModel)]="usuario.Nombres" class="form-control text-center col-4">
-                </ng-template>
-              </td>
-              <td class="text-center">
-                <ng-container *ngIf="!usuario.Editando; else editarCorreo">
-                  {{usuario.Correo}}
-                </ng-container>
-                <ng-template #editarCorreo>
-                  <input [(ngModel)]="usuario.Correo" class="form-control text-center col-4">
-                </ng-template>
-              </td>
-              <td class="text-center">
-                <ng-container *ngIf="!usuario.Editando; else editarRol">
-                  {{getNombreRol(usuario.idRol)}}
-                </ng-container>
-                <ng-template #editarRol>
-                  <select [(ngModel)]="usuario.idRol" id="inputState" class="form-select">
-                    <option value="0">Seleccione un rol</option>
-                    <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>                      </select>
-                </ng-template>
-              </td>
-              <td class="text-center">
-                <ng-container *ngIf="!usuario.Editando; else editarSucursal">
-                  {{getNombreSucursal(usuario.IdSucursal)}}
-                </ng-container>
-                <ng-template #editarSucursal>
-                  <select [(ngModel)]="usuario.IdSucursal" id="inputState" class="form-select">
+<div style="margin-top: -50px;">
+    <div class="row">
+      <div class="col-md-4 col-lg-4 col-12">
+        <h5>Crear Usuario</h5>
+        <hr />
+        <form *ngIf="usuarioForm" [formGroup]="usuarioForm">
+          <div class="row">
+              <div class="col-12 col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Nombres</label>
+                  <input type="text" formControlName="Nombres" class="form-control" id="exampleInputEmail1"
+                    aria-describedby="emailHelp" placeholder="Escriba el nombre del usuario" />
+                </div>
+              </div>
+  
+              <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Usuario</label>
+                  <input type="text" formControlName="Usuario" class="form-control" id="exampleInputPassword1"
+                    placeholder="Escriba un nombre de usuario" />
+                </div>
+              </div>
+  
+              <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Contraseña</label>
+                  <input type="password" formControlName="Password" class="form-control" id="exampleInputPassword1"
+                    placeholder="Escriba una contraseña" />
+                </div>
+              </div>
+  
+              <div class="col-12 col-lg-12 col-md-12">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Correo</label>
+                  <input type="text" formControlName="Correo" class="form-control" id="exampleInputPassword1"
+                    placeholder="Escriba el correo del usuario" />
+                  <p style="color: red;  display: block; margin-top: -7px;"
+                    *ngIf="(usuarioForm.get('Correo')?.touched || usuarioForm.get('Correo')?.dirty) && usuarioForm.get('Correo')?.hasError('required')">
+                    Este campo es obligatorio
+                  </p>
+                  <p class="alerts-validators" style="color: red;  display: block; margin-top: -7px;"
+                    *ngIf="usuarioForm.get('Correo')?.hasError('email')">
+                    Este campo debe ser tipo correo
+                  </p>
+                </div>
+              </div>
+  
+              <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Sucursal</label>
+                  <select formControlName="IdSucursal" class="form-control" id="exampleFormControlSelect1">
                     <option value="0">Seleccione una sucursal</option>
-                    <option value="1">Todas</option>
                     <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+        
                   </select>
-                </ng-template>
-              </td>
-              <td *ngIf="!usuario.Editando" class="text-center">
-                <!-- Botón de editar -->
-                <button (click)="toggleEdicion(usuario)" type="button" class="btn btn-success text-center">
-                  <i class="fa-regular fa-pen-to-square"></i>
-                </button>
-              </td>
-              <td *ngIf="usuario.Editando">
-                <!-- Botón de editar -->
-                <button (click)="actualizarUsuario(usuario)" type="button" class="btn btn-info text-center">
-                  <i class="fa solid fa-check"></i>
-                </button>
-              </td>
-              <td class="text-center" *ngIf="usuario.Activo"><button (click)="ActualizarUsuarioEstado(usuario,false)"
-                  type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
-              <td class="text-center" *ngIf="!usuario.Activo"><button (click)="ActualizarUsuarioEstado(usuario,true)"
-                  type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
-
-            </tr>
-
-
-          </tbody>
-        </table>
+                </div>
+              </div>
+  
+              <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Rol</label>
+                  <select formControlName="idRol" id="inputState" class="form-select">
+                    <option selected>Escoja un rol</option>
+                    <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>
+                  </select>
+                  <p style="color: red;"
+                    *ngIf="(usuarioForm.get('idRol')?.touched || usuarioForm.get('idRol')?.dirty) && usuarioForm.get('idRol')?.hasError('required')">
+                    Este campo es obligatorio
+                  </p>
+                </div>
+              </div>
+          </div>
+    
+          <button [disabled]="this.usuarioForm.invalid" (click)="crearUsuario()" type="button"
+            class="btn btn-primary">Guardar</button>
+        </form>
       </div>
-    </div>
+  
+      <div class="col-md-8 col-lg-8 col-12">
+        <h5>Lista de Usuarios</h5>
+        <hr />
+  
+        <div class="table-responsive">
+          <p-table [value]="Usuarios" [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '50rem' }"
+            [rowsPerPageOptions]="[5, 10, 20]">
+            <ng-template pTemplate="header">
+              <tr>
+                <!-- <th class="text-center">#</th> -->
+                <th class="text-center">Nombre</th>
+                <th class="text-center">Correo</th>
+                <th class="text-center">Rol</th>
+                <th class="text-center">Sucursal</th>
+                <th class="text-center">Editar</th>
+                <th class="text-center">Inactivar</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-usuario>
+              <tr>
+                <!-- <th class="text-center" scope="row">{{i+1}}</th> -->
+                <td class="text-center">
+                  <ng-container *ngIf="!usuario.Editando; else editarBanco">
+                    {{usuario.Nombres}}
+                  </ng-container>
+                  <ng-template #editarBanco>
+                    <input [(ngModel)]="usuario.Nombres" class="form-control text-center col-4">
+                  </ng-template>
+                </td>
+                <td class="text-center">
+                  <ng-container *ngIf="!usuario.Editando; else editarCorreo">
+                    {{usuario.Correo}}
+                  </ng-container>
+                  <ng-template #editarCorreo>
+                    <input [(ngModel)]="usuario.Correo" class="form-control text-center col-4">
+                  </ng-template>
+                </td>
+                <td class="text-center">
+                  <ng-container *ngIf="!usuario.Editando; else editarRol">
+                    {{getNombreRol(usuario.idRol)}}
+                  </ng-container>
+                  <ng-template #editarRol>
+                    <select [(ngModel)]="usuario.idRol" id="inputState" class="form-select">
+                      <option value="0">Seleccione un rol</option>
+                      <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>
+                    </select>
+                  </ng-template>
+                </td>
+                <td class="text-center">
+                  <ng-container *ngIf="!usuario.Editando; else editarSucursal">
+                    {{getNombreSucursal(usuario.IdSucursal)}}
+                  </ng-container>
+                  <ng-template #editarSucursal>
+                    <select [(ngModel)]="usuario.IdSucursal" id="inputState" class="form-select">
+                      <option value="0">Seleccione una sucursal</option>
+                      <option value="1">Todas</option>
+                      <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+                    </select>
+                  </ng-template>
+                </td>
+                <td *ngIf="!usuario.Editando" class="text-center">
+                  <!-- Botón de editar -->
+                  <button (click)="toggleEdicion(usuario)" type="button" class="btn btn-success text-center">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                </td>
+                <td *ngIf="usuario.Editando">
+                  <!-- Botón de editar -->
+                  <button (click)="actualizarUsuario(usuario)" type="button" class="btn btn-info text-center">
+                    <i class="fa solid fa-check"></i>
+                  </button>
+                </td>
+                <td class="text-center" *ngIf="usuario.Activo"><button (click)="ActualizarUsuarioEstado(usuario,false)"
+                    type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
+                <td class="text-center" *ngIf="!usuario.Activo"><button (click)="ActualizarUsuarioEstado(usuario,true)"
+                    type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+              </tr>
+            </ng-template>
+          </p-table>
+  
+        </div>
+      </div>
+
+
   </div>
+</div>
 </app-card>
