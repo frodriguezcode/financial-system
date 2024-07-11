@@ -1,4 +1,4 @@
-<app-card cardTitle="REGISTROS" [options]="false">
+<app-card cardTitle="REGISTROS" [options]="false" >
 <div style="margin-top: -42px;">
   <button type="button" (click)="crearCuenta()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
     >Crear Cuenta Bancaria <i class="fa-solid fa-plus"></i
@@ -23,10 +23,11 @@
     [tableStyle]="{ 'min-width': '50rem' }"
     [globalFilterFields]="['AnioRegistro', 'FechaRegistro', 'MesRegistro', 'Semana', 'NombreElemento','NumCuenta','CategoriaNombre','SocioNegocio']"
     currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
-    [rowsPerPageOptions]="[5, 10, 20]"
+    [rowsPerPageOptions]="[5, 10, 20]" 
+    
   >
 
-    <ng-template pTemplate="caption">
+    <ng-template pTemplate="caption" >
       <div class="row">
         <div class="col-3">
           <p-iconField iconPosition="left">
@@ -117,36 +118,28 @@
             ><i class="fa-solid fa-trash"></i
           ></button>
         </td>
-        <td class="text-center">
-          <!-- <p-dropdown
-            [options]="ItemsCategGroup"
-            [(ngModel)]="registros.Elemento"
-            name="ItemSeleccionados"
-            optionLabel="Nombre"
-            [filter]="true"
-            filterBy="Nombre"
-            [showClear]="false"
-            class=""
-            placeholder="Seleccione elemento"
-          >
-            <ng-template pTemplate="selectedItem" let-selectedItem>
-              <div class="flex align-items-center gap-2">
-                <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
-              </div>
-            </ng-template>
-          </p-dropdown> -->
+        <td class="text-center" >
+   
 
-          <p-dropdown [options]="getItemsCategGroup(registros.idTipo)"
-           [(ngModel)]="registros.Elemento"
-            placeholder="Seleccione un elemento"
-            [filter]="true" filterBy="label"
-            [group]="true">
-            <ng-template let-group pTemplate="group">
-                <div class="flex align-items-center">
-                    <span>{{ group.label }}</span>
-                </div>
-            </ng-template>
-        </p-dropdown>
+            <p-dropdown [options]="getItemsCategGroup(registros.idTipo)"
+            [(ngModel)]="registros.Elemento"
+             placeholder="Seleccione un elemento"
+             [filter]="true" filterBy="label"
+             [group]="true"
+             appendTo="body"
+          
+             >
+             <ng-template let-group pTemplate="group">
+                 <div class="flex align-items-center">
+                     <span>{{ group.label }}</span>
+                 </div>
+             </ng-template>
+         </p-dropdown>
+      
+
+        
+
+        
         <ng-template pTemplate="selectedItem" let-selectedItem>
           <div class="flex align-items-center gap-2">
             <div class="seleccion-item">{{ selectedItem.label }}</div>
@@ -164,6 +157,7 @@
             filterBy="Cuenta"
             [showClear]="false"
             placeholder="Seleccione una cuenta"
+            appendTo="body"
           >
             <ng-template pTemplate="selectedItem" let-selectedItem>
               <div class="flex align-items-lg-start gap-2">
@@ -183,7 +177,8 @@
           [filter]="true"
           filterBy="Sucursal"
           [showClear]="false"
-          placeholder="Seleccione una sucursal">
+          placeholder="Seleccione una sucursal"
+          appendTo="body">
           <ng-template pTemplate="selectedItem" let-selectedItem>
             <div class="flex align-items-lg-start gap-2">
               <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
@@ -215,6 +210,7 @@
             filterBy="name"
             [showClear]="false"
             placeholder="Seleccione un flujo"
+            appendTo="body"
           >
             <ng-template pTemplate="selectedItem" let-selectedItem>
               <div class="flex align-items-center gap-2">
@@ -233,6 +229,7 @@
             filterBy="Nombre"
             [showClear]="false"
             placeholder="Seleccione un socio de negocios"
+            appendTo="body"
           >
             <ng-template pTemplate="selectedItem" let-selectedItem>
               <div class="flex align-items-lg-start gap-2">
@@ -319,6 +316,7 @@
           filterBy="Nombre"
           [showClear]="true"
           placeholder="Seleccione un elemento"
+          appendTo="body"
         >
           <ng-template pTemplate="selectedItem" let-selectedItem>
             <div class="flex align-items-center gap-2">
@@ -347,6 +345,7 @@
           filterBy="Nombre"
           [showClear]="true"
           placeholder="Seleccione una categoría"
+          appendTo="body"
         >
           <ng-template pTemplate="selectedItem" let-selectedItem>
             <div class="flex align-items-lg-start gap-2">
@@ -385,6 +384,7 @@
               filterBy="Nombre"
               [showClear]="true"
               placeholder="Seleccione un socio de negocio"
+              appendTo="body"
             >
               <ng-template pTemplate="selectedItem" let-selectedItem>
                 <div class="flex align-items-center gap-2">
