@@ -79,12 +79,40 @@ File: style.css
 }
 
 
-// .dropdown{
-//   z-index: 3000;
+// .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  
+//   padding: -1.25rem 3.25rem;
+//   border: 0 none;
+//   color: #4b5563;
+//   background: red;
+//   transition: box-shadow 0.2s;
+//   border-radius: 0;
 // }
 
 
-// .p-dropdown-items-wrapper{
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item {
 
- 
-// }
+  padding: 0.25rem;
+  font-size: 13px;
+  border: 0 none;
+  color: #4b5563;
+  background: transparent;
+  transition: box-shadow 0.2s;
+  border-radius: 0;
+}
+
+.p-dropdown .p-dropdown-label {
+  background: transparent;
+  border: 0 none;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+
+input, button, select, optgroup, textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  height: 2.5rem;
+}
