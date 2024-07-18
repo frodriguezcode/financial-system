@@ -495,21 +495,49 @@ if(_ValorSemana.length==0){
   }
  }
 
- getSaldoInicial(NumSemana:number,NumMes:number,Anio:number){
-  let _ValorSemana:any=[]
-  let Valor:number=0
-  _ValorSemana=this.SaldoInicial.filter((data:any)=>data.SemanaNum==NumSemana && data.NumMes==NumMes && data.AnioRegistro==Anio)
-if(_ValorSemana.length>0){
-  _ValorSemana.forEach((dataValor:any) => {
-    Valor+=dataValor.Valor
-  });
-}
-else {
-  Valor=this.SaldoFinalBySemana
+//  getSaldoInicial(NumSemana:number,NumMes:number,Anio:number){
+//   let _ValorSemana:any=[]
+//   let Valor:number=0
+//   _ValorSemana=this.SaldoInicial.filter((data:any)=>data.SemanaNum==NumSemana && data.NumMes==NumMes && data.AnioRegistro==Anio)
+// if(_ValorSemana.length>0){
+//   _ValorSemana.forEach((dataValor:any) => {
+//     Valor+=dataValor.Valor
+//   });
+// }
+// else {
+//   Valor=this.SaldoFinalBySemana
   
+// }
+// return Valor
+//  }
+
+
+getSaldoInicial(NumSemana: number, NumMes: number, Anio: number): number {
+  let _ValorSemana: any[] = [];
+  let Valor: number = 0; // Valor predeterminado
+
+  // Asegúrate de que this.SaldoInicial sea un array válido
+  if (Array.isArray(this.SaldoInicial)) {
+    _ValorSemana = this.SaldoInicial.filter((data: any) => data.SemanaNum == NumSemana && data.NumMes == NumMes && data.AnioRegistro == Anio);
+  }
+
+  if (_ValorSemana.length > 0) {
+    _ValorSemana.forEach((dataValor: any) => {
+      Valor += dataValor.Valor;
+    });
+  } else {
+    // Verifica que this.SaldoFinalBySemana tenga un valor válido
+    if (typeof this.SaldoFinalBySemana === 'number') {
+      Valor = this.SaldoFinalBySemana;
+    } else {
+      // Si this.SaldoFinalBySemana no es un número, establece un valor predeterminado
+      Valor = 0;
+    }
+  }
+
+  return Valor;
 }
-return Valor
- }
+
 
  getSaldoFinal(NumSemana:number,NumMes:number,Anio:number){
   let Valor:number=0
@@ -518,25 +546,59 @@ return Valor
   return Valor
  }
 
-getSaldoInicialMensual(NumMes:number,Anio:number){
-  let _ValorSemana:any=[]
-  let Valor:number=0
-  _ValorSemana=this.SaldoInicial.filter((data:any)=> data.NumMes==NumMes && data.AnioRegistro==Anio)
-if(_ValorSemana.length>0){
-  _ValorSemana.forEach((dataValor:any) => {
-    Valor+=dataValor.Valor
-  });
-}
-else {
-  let _ValorMensual:any=[]
-  _ValorMensual=this.SaldosSemanales.filter((data:any)=>data.NumMes==NumMes && data.Anio==Anio && data.Posicion=='Inicial' )
+// getSaldoInicialMensual(NumMes:number,Anio:number){
+//   let _ValorSemana:any=[]
+//   let Valor:number=0
+//   _ValorSemana=this.SaldoInicial.filter((data:any)=> data.NumMes==NumMes && data.AnioRegistro==Anio)
+// if(_ValorSemana.length>0){
+//   _ValorSemana.forEach((dataValor:any) => {
+//     Valor+=dataValor.Valor
+//   });
+// }
+// else {
+//   let _ValorMensual:any=[]
+//   _ValorMensual=this.SaldosSemanales.filter((data:any)=>data.NumMes==NumMes && data.Anio==Anio && data.Posicion=='Inicial' )
 
- // console.log('SemanasValores',this.SaldosSemanales)
 
-  Valor=_ValorMensual[0].SaldoInicial
+
+//   Valor=_ValorMensual[0].SaldoInicial
+// }
+// return Valor
+//  }
+
+getSaldoInicialMensual(NumMes: number, Anio: number): number {
+  let _ValorSemana: any[] = [];
+  let Valor: number = 0; // Valor predeterminado
+
+  // Asegúrate de que this.SaldoInicial sea un array válido
+  if (Array.isArray(this.SaldoInicial)) {
+    _ValorSemana = this.SaldoInicial.filter((data: any) => data.NumMes == NumMes && data.AnioRegistro == Anio);
+  }
+
+  if (_ValorSemana.length > 0) {
+    _ValorSemana.forEach((dataValor: any) => {
+      Valor += dataValor.Valor;
+    });
+  } else {
+    let _ValorMensual: any[] = [];
+    
+    // Asegúrate de que this.SaldosSemanales sea un array válido
+    if (Array.isArray(this.SaldosSemanales)) {
+      _ValorMensual = this.SaldosSemanales.filter((data: any) => data.NumMes == NumMes && data.Anio == Anio && data.Posicion == 'Inicial');
+    }
+
+    if (_ValorMensual.length > 0) {
+      Valor = _ValorMensual[0].SaldoInicial;
+    } else {
+      // Si no se encuentra un valor válido, establece un valor predeterminado
+      Valor = 0;
+    }
+  }
+
+  return Valor;
 }
-return Valor
- }
+
+
 
  getSaldoFinalMensual(NumMes:number,Anio:number){
   let Valor:number=0
