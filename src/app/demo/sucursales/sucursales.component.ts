@@ -74,7 +74,7 @@ ActualizaEstadoSucursal(Sucursal:any,Estado:boolean){
 
 verificarSucursal(){
   let sucursalEncontrada:any=[]
-  sucursalEncontrada=this.Sucursales.filter((sucursal:any)=>sucursal.Sucursal==this.SucursalForm.value['Sucursal'])
+  sucursalEncontrada=this.Sucursales.filter((sucursal:any)=>sucursal.Nombre==this.SucursalForm.value['Sucursal'])
   if(sucursalEncontrada.length>0){
     this.sucursalFound=true
   }

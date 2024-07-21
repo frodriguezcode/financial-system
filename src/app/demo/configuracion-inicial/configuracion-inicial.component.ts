@@ -331,7 +331,7 @@ obtenerSaldosIniciales(){
           let _RolesEmpresa:any=[]
               _RolesEmpresa=this.Roles.filter((rol:any)=>rol.idEmpresa==this.usuario.idEmpresa)
               localStorage.setItem('AtributosUsuarioFinancial_System', JSON.stringify(_RolesEmpresa[0].Atributos));
-              this.router.navigate(['/analytics'])
+              this.router.navigate(['/registros'])
               localStorage.removeItem("idMenu")
               localStorage.removeItem("TextoConfigInicial")
            })

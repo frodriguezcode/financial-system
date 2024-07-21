@@ -10,8 +10,11 @@ export class EmpresasService {
 
 
     //*Creamos una empresa
-    crearEmpresa(empresa: any){
+    crearEmpresa(empresa: any,Matriz:any){
         const id = this.afs.createId();
+        this.actualizarCorporacion(Matriz).then(resp=>{
+            
+        })
         return this.afs
         .collection('Empresa')
         .doc(id)
@@ -24,6 +27,11 @@ export class EmpresasService {
         .collection('Empresa',(ref)=>ref.where('idMatriz','==',idMatriz))
         .valueChanges();
     }
+    obtenerCorporaciones(idMatriz:string){
+        return this.afs
+        .collection('Corporaciones',(ref)=>ref.where('id','==',idMatriz))
+        .valueChanges();
+    }
 
     //~Actualizar Empresa
     actualizarEmpresa(empresa: any){
@@ -31,6 +39,13 @@ export class EmpresasService {
         .collection('Empresa')
         .doc(empresa.id)
         .ref.update(empresa)
+    }
+    //~Actualizar Matriz
+    actualizarCorporacion(corporacion: any){
+        return this.afs
+        .collection('Corporaciones')
+        .doc(corporacion.id)
+        .ref.update(corporacion)
     }
 
     // ~Actualizar estado Empresa

@@ -32,6 +32,7 @@ export default class ItemsComponent  implements OnInit{
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService,private formBuilder: FormBuilder) {}
   Items:any=[]
   Categorias:any=[]
+  CategoriasBack:any=[]
   Sucursales:any=[]
   SucursalesSelected:any=[]
   Empresas:any=[]
@@ -42,6 +43,7 @@ export default class ItemsComponent  implements OnInit{
   buscarItem:string=''
   todasSucursales:boolean=true
   BlocCheck!:boolean
+  TipoCateg:number=1
   ngOnInit(): void {
 this.todasSucursales=true
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
@@ -50,6 +52,11 @@ this.todasSucursales=true
     this.obtenerSucursales()
     this.obtenerItems()
 
+  }
+
+  getidCategoria(event:any){
+    console.log('event',event.target.value)
+    this.CategoriasBack=this.Categorias.filter((cat:any)=>cat.Tipo==event.target.value)
   }
 
   cargarFormulario(){
@@ -107,6 +114,7 @@ this.todasSucursales=true
   obtenerCategorias(){
     this.conS.obtenerCategorias().subscribe(resp=>{
       this.Categorias=resp
+      this.CategoriasBack=resp
       console.log('Categorias',this.Categorias)
     })
   }

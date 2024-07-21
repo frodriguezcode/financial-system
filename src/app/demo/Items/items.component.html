@@ -1,7 +1,7 @@
 <app-card *ngIf="this.Categorias.length>0" cardTitle="Módulo Cuentas" [options]="false">
   <div class="row">
     <div class="col-md-4 col-lg-4 col-12">
-      <h5>Crear Centro de Costos/Ingresos</h5>
+      <h5>Ingresos y Egresos</h5>
       <hr />
       <form *ngIf="ItemForm" [formGroup]="ItemForm">
         <div class="form-group">
@@ -51,10 +51,26 @@
 
 
         <div class="form-group">
-          <label for="exampleInputPassword1">Categoria</label>
-          <select formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
-            <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}</option>
-          </select>
+          <div class="row">
+              <div class="col-12 col-md-4 col-lg-4">
+                <label for="exampleInputPassword1">Tipo de Cuenta</label>
+                <div class="form-check form-check-inline">                
+                  <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="1">
+                  <label class="form-check-label" for="inlineRadio1">Ingreso</label>
+                </div>
+                <div class="form-check form-check-inline">    
+                  <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" [value]="2">
+                  <label class="form-check-label" for="inlineRadio2">Egreso</label>
+                </div>
+              </div>
+              <div class="col-12 col-md-8 col-lg-8">
+                <label for="exampleInputPassword1">Categoria</label>
+                <select formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
+                  <option value="{{categoria.id}}" *ngFor="let categoria of CategoriasBack">{{categoria.Nombre}}</option>
+                </select>
+              </div>
+          </div>
+      
         </div>
 
         <button [disabled]="this.ItemForm.invalid || ItemFound==true" (click)="crearItem()" type="button"
@@ -63,7 +79,7 @@
     </div>
 
     <div class="col-md-4 col-lg-8 col-12">
-      <h5>Lista de Centros de Costos/Ingresos</h5>
+      <h5>Lista de INGRESOS Y EGRESOS según su origen y aplicación</h5>
       <hr />
       <!-- <div class="input-group mb-3 mt-2">
         <span class="input-group-text" id="inputGroup-sizing-default">Buscar</span>

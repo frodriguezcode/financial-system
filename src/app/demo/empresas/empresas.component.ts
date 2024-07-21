@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
 export default class EmpresasComponent implements OnInit {
   empresaFound: boolean = false;
   Empresas: any = [];
+  Matrices: any = [];
   EmpresaForm!: FormGroup;
   Fecha: any = new Date();
   usuario:any
@@ -31,6 +32,7 @@ export default class EmpresasComponent implements OnInit {
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerEmpresas();
+    this.obtenerCorporaciones();
     
   }
 
@@ -46,7 +48,18 @@ export default class EmpresasComponent implements OnInit {
 
   // ~Crear empresa
   crearEmpresa() {
-    this.empS.crearEmpresa(this.EmpresaForm.value).then((resp) => {
+
+    let _Empresa={
+      Activo:true,
+      Editando:false,
+      FechaCreacion:this.EmpresaForm.value.FechaCreacion,
+      Nombre:this.EmpresaForm.value.Nombre,
+      idMatriz:this.usuario.idMatriz,
+      ConfigInicial:true
+    }
+
+    this.Matrices[0].Empresas.push(_Empresa)
+    this.empS.crearEmpresa(_Empresa,this.Matrices[0]).then((resp) => {
       Swal.fire({
         position: 'center',
         icon: 'success',
@@ -81,6 +94,13 @@ export default class EmpresasComponent implements OnInit {
     this.empS.obtenerEmpresa(this.usuario.idMatriz).subscribe(resp=>{
       this.Empresas=resp
       this.cargarFormulario()
+    })
+  }
+  obtenerCorporaciones(){
+    this.empS.obtenerCorporaciones(this.usuario.idMatriz).subscribe(resp=>{
+      this.Matrices=resp
+      console.log('Matrices',this.Matrices)
+     
     })
   }
 
