@@ -55,7 +55,6 @@ this.todasSucursales=true
   }
 
   getidCategoria(event:any){
-    console.log('event',event.target.value)
     this.CategoriasBack=this.Categorias.filter((cat:any)=>cat.Tipo==event.target.value)
   }
 

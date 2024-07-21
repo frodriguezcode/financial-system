@@ -53,7 +53,7 @@
         <div class="form-group">
           <div class="row">
               <div class="col-12 col-md-4 col-lg-4">
-                <label for="exampleInputPassword1">Tipo de Cuenta</label>
+                <label for="exampleInputPassword1">Tipo de Operación</label>
                 <div class="form-check form-check-inline">                
                   <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="1">
                   <label class="form-check-label" for="inlineRadio1">Ingreso</label>
@@ -99,9 +99,6 @@
           <ng-template pTemplate="caption">
             <div class="flex">
               <p-iconField iconPosition="left" class="ml-auto">
-                    <p-inputIcon>
-                        <i class="pi pi-search"></i>
-                    </p-inputIcon>
                     <input 
                         pInputText 
                         type="text" 
