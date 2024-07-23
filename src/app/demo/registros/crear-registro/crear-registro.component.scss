@@ -4,7 +4,7 @@
   max-width: 10rem;
   min-width: 10rem;
   text-align: left;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: bold;
 }
 
@@ -13,6 +13,13 @@
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
+}
+
+.textoInputNegativo{
+  color: red;
+}
+.textoInputPositivo{
+  color: black;
 }
 
 .radio-departamentos {

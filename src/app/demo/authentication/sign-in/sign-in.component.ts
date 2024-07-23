@@ -39,7 +39,7 @@ export default class SignInComponent {
            }
            else{
             this.obtenerAtributos(resp[0].idEmpresa,resp[0].idRol)
-             this.router.navigate(['/analytics'])
+             this.router.navigate(['/registros'])
              Swal.fire({
                position: "center",
                icon: "success",

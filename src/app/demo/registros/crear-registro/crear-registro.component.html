@@ -97,9 +97,10 @@
         <th style="text-transform: uppercase;font-size: 13px;">Centro de costo</th>
         <th style="text-transform: uppercase;font-size: 13px;">banco <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th style="text-transform: uppercase;font-size: 13px;">Valor</th>
+        <th style="text-transform: uppercase;font-size: 13px;">Importe</th>
         <th style="text-transform: uppercase;font-size: 13px;">Flujo</th>
         <th style="text-transform: uppercase;font-size: 13px;">Socio Negocios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+        <th style="text-transform: uppercase;font-size: 13px;">Comentarios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th style="text-transform: uppercase;font-size: 13px;">Fecha</th>
         <th style="text-transform: uppercase;font-size: 13px;">Guardar</th>
       </tr>
@@ -190,14 +191,21 @@
 
 
         <td class="text-center">
-          <div class="animate__animated animate__bounceIn custom-alert shadow-1" style="color: red; font-size: 11px;" *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo</div>
-          <input
-            (keyup.enter)="salvarRegistro(registros)"
-            (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)"
-            style="min-width: 9rem; min-height: 3rem; font-weight: bolder"
-            [(ngModel)]="registros.Valor"
-            class="form-control text-center col-4"
-          />
+          <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
+          style="color: red; font-size: 11px;" 
+          *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo
+        </div>
+              <input
+              [ngClass]="registros.idTipo == 1 ? 'textoInputPositivo' : 'textoInputNegativo'"
+              (keyup.enter)="salvarRegistro(registros)"
+              (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden);onInput($event)"
+              style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
+              [(ngModel)]="registros.Valor "
+              [ngModel]="registros.Valor | currencySymbol"
+              class="form-control text-center col-6"/>
+       
+        
+       
         </td>
 
         <td class="text-center">
@@ -238,6 +246,13 @@
             </ng-template>
           </p-dropdown>
         </td>
+        <td class="text-center">
+              <input
+              (keyup.enter)="salvarRegistro(registros)"
+              style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
+              [(ngModel)]="registros.Comentarios "
+              class="form-control text-center col-6"/>
+        </td>
 
         <td class="text-center">
           <input style="min-height: 3rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
@@ -250,6 +265,7 @@
       </tr>
     </ng-template>
   </p-table>
+  <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;">Importe Total {{ " $ " + ImporteTotal}}</p>
 </app-card>
 
 <p-dialog

@@ -1,6 +1,6 @@
 // angular import
 import { Component, Injectable, OnInit, importProvidersFrom } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -31,6 +31,7 @@ import BancosComponent from '../../bancos/bancos.component';
 import ItemsComponent from '../../Items/items.component';
 import SocioNegocioComponent from '../../socios/socios.component';
 import { AuthService } from 'src/app/services/auth.service';
+import { CurrencySymbolPipe } from 'src/app/pipe/currency.pipe';
 
 @Component({
   selector: 'app-crear',
@@ -61,7 +62,8 @@ import { AuthService } from 'src/app/services/auth.service';
     IconFieldModule,
     BancosComponent,
     ItemsComponent,
-    SocioNegocioComponent
+    SocioNegocioComponent,
+    CurrencySymbolPipe
     
    ],
   templateUrl: './crear-registro.component.html',
@@ -123,6 +125,7 @@ export default class CrearRegistroComponent implements OnInit {
   ]
 
   Fecha:any= new Date();
+  ImporteTotal:number=0
 ngOnInit(): void {
   this.MesesTodos= [
     
@@ -201,6 +204,15 @@ ngOnInit(): void {
   this.obtenerCategorias()
 
 
+
+}
+onInput(event: any) {
+  let valor = event.target.value;
+  if (!valor.startsWith('$')) {
+    valor = '$' + valor;
+  }
+  // Remover todo menos dígitos y el símbolo de $
+  valor = '$' + valor.replace(/[^\d]/g, '');
 
 }
 obtenerSucursales(){
@@ -314,13 +326,14 @@ obtenerRegistros(){
         "NumCuenta":element.Cuenta.Cuenta || '',
         "CategoriaNombre":element.idCategoria.Nombre || '',
         "SocioNegocio":element.idSocioNegocio.Nombre || '',
+        "Comentarios":element.Comentarios || '',
 
       }
       this.Registros.push(_Registro)
     })
     console.log('Registros',this.Registros)
     this.registrosBackUp=this.Registros
- 
+    this.calcularImporteTotal(this.Registros)
     this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
       return Math.max(maxOrden, objeto.Orden);
   }, 0);
@@ -328,6 +341,12 @@ obtenerRegistros(){
   })
 }
 
+calcularImporteTotal(registros:any){
+  this.ImporteTotal=0
+  registros.forEach((element:any) => {
+    this.ImporteTotal+= element.Valor=='' ? 0 : element.Valor
+  });
+}
 getWeek(date: Date): number {
   var d = new Date(date);
   d.setHours(0, 0, 0, 0);
@@ -396,6 +415,7 @@ getTipo(idCategoria){
 
 
 salvarRegistro(Registro:any){
+  console.log('Registro',Registro)
   if(this.validarEgreso(Registro.idTipo,Registro.Valor,Registro.Orden)==false){
     Swal.fire({
       position: "center",
@@ -405,8 +425,7 @@ salvarRegistro(Registro:any){
       timer: 1500
     });
   }
-  else {
-    if(Registro.Elemento==""){
+  else if(Registro.Elemento==""){
       Swal.fire({
         position: "center",
         icon: "warning",
@@ -439,7 +458,7 @@ salvarRegistro(Registro:any){
   
     }
   
-    if(Registro.idFlujo.id=="1" && Registro.Cuenta==""){
+   else if(Registro.idFlujo.id=="1" && Registro.Cuenta==""){
       Swal.fire({
         position: "center",
         icon: "warning",
@@ -464,14 +483,15 @@ salvarRegistro(Registro:any){
       Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
       Registro.idUsuario=this.usuario.id
       Registro.TipoRegistro="Normal"
-      Registro.Valor=Number(Registro.Valor)
+      Registro.Valor=Number(this.quitarSimbolo(Registro.Valor))
       Registro.Usuario=this.usuario.Usuario
+      console.log('Registro',Registro)
       
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
         })
   
-    }
+    
 
   }
 }
@@ -501,6 +521,16 @@ addRow() {
   this._Registros = [newRow, ...this._Registros];
 
 
+}
+
+quitarSimbolo(valor: string): string {
+  if ( typeof valor=='string' && valor.startsWith('$')) {
+    return valor.replace('$', '');
+
+  }
+  else {
+    return valor
+  }
 }
 
 
@@ -657,6 +687,7 @@ cargarFormulario(){
     idCategoria: new FormControl(''), 
     NombreElemento:new FormControl('NombreElemento'),
     NumCuenta:new FormControl('NumCuenta'),
+    Comentarios:new FormControl(''),
     CategoriaNombre:new FormControl('CategoriaNombre'),
     SocioNegocio:new FormControl('SocioNegocio'),
     idSucursal: new FormControl(this.usuario.IdSucursal,[Validators.required]), 

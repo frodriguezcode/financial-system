@@ -26,6 +26,16 @@ export const NavigationItems: NavigationItem[] = [
       icon: 'icon-group',
       children: [
         {
+          id: 'item',
+          title: 'Registros',
+          type: 'item',
+          url: '/registros',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-file-pen',
+       
+          breadcrumbs: false
+        },
+        {
           id: 'flujos',
           title: 'Flujos Financieros',
           type: 'item',
@@ -55,16 +65,6 @@ export const NavigationItems: NavigationItem[] = [
        
           breadcrumbs: false
         },
-        {
-          id: 'item',
-          title: 'Crear Registro',
-          type: 'item',
-          url: '/registros',
-          // icon: 'feather icon-bold',
-          icon: 'fa-solid fa-file-pen',
-       
-          breadcrumbs: false
-        },
     
         {
           id: 'roles',
@@ -80,7 +80,7 @@ export const NavigationItems: NavigationItem[] = [
     ,
         {
           id: 'signin',
-          title: 'Sign in',
+          title: 'Salir',
           type: 'item',
           url: '/auth/signin',
           // icon: 'feather icon-log-in',
