@@ -7,6 +7,9 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 
 import { CheckboxModule } from 'primeng/checkbox';
+import { AuthService } from 'src/app/services/auth.service';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-flujo-consolidado',
   standalone: true,
@@ -15,7 +18,13 @@ import { CheckboxModule } from 'primeng/checkbox';
   styleUrls: ['./flujos-consolidado.component.scss']
 })
 export default class FlujoConsolidadoComponent implements OnInit {
-  constructor(private conS:ConfigurationService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private conS:ConfigurationService, 
+    private cdr: ChangeDetectorRef,
+    private authS:AuthService,
+    private toastr: ToastrService,
+    private router: Router
+  ) {}
   Categorias:any=[]
   Items:any=[]
   semanas: any[] = [];
@@ -57,6 +66,17 @@ export default class FlujoConsolidadoComponent implements OnInit {
   mostrarSoloTotales: boolean = false;
 
  ngOnInit(): void {
+  if(this.authS.validarAtributo('vTMvQD4PmBQn4fXS2h0P',[])==true){
+
+ 
+  
+  }
+  else {
+    this.router.navigate(['/registros']) 
+    this.toastr.warning('', '¡Acceso Denegado!',{
+      timeOut: 1000,
+    });
+}
 
   this.conS.getDaysOfMonth('Europe/London').subscribe((data: any) => {
     // Supongamos que data contiene un campo 'days' con los días del mes

@@ -168,21 +168,32 @@ cargarFormulario() {
   });
 }
 toggleEdicion(Usuario: any) {
+  if(this.authS.validarAtributo('JCcvjQOlOQ7ktXNPORzL',[])==true){
+    Usuario.Editando = !Usuario.Editando;
+  }
 
-  Usuario.Editando = !Usuario.Editando;
+  else {
+    this.toastr.warning('', '¡Acceso Denegado!',{
+      timeOut: 1000,
+    });
+ }
 }
 actualizarUsuario(Usuario:any){
-  let _usuario= this.Usuarios;
-  const usuarioEncontrado = _usuario.filter((user:any) => user.id == Usuario.id);
-  usuarioEncontrado[0].Nombres=Usuario.Nombres
-  usuarioEncontrado[0].Correo=Usuario.Correo
-  usuarioEncontrado[0].Password=Usuario.Password
-  usuarioEncontrado[0].IdSucursal=Usuario.IdSucursal
-  usuarioEncontrado[0].Editando = !Usuario.Editando;
-  usuarioEncontrado[0].idRol=Usuario.idRol
-  this.authS.ActualizarUsuario(usuarioEncontrado[0]).then(resp=>{
-    this.toastr.success('Banco editado', '¡Exito!');
-  })
+    let _usuario= this.Usuarios;
+    const usuarioEncontrado = _usuario.filter((user:any) => user.id == Usuario.id);
+    usuarioEncontrado[0].Nombres=Usuario.Nombres
+    usuarioEncontrado[0].Correo=Usuario.Correo
+    usuarioEncontrado[0].Password=Usuario.Password
+    usuarioEncontrado[0].IdSucursal=Usuario.IdSucursal
+    usuarioEncontrado[0].Editando = !Usuario.Editando;
+    usuarioEncontrado[0].idRol=Usuario.idRol
+    this.authS.ActualizarUsuario(usuarioEncontrado[0]).then(resp=>{
+      this.toastr.success('Banco editado', '¡Exito!');
+    })
+
+
+  
+
 }
 
 

@@ -297,7 +297,7 @@ restablecer(){
 obtenerRegistros(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
     this.Registros=[]
-    resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+    resp.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
       let _Registro={
         "Activo":element.Activo,
         "AnioRegistro":element.AnioRegistro,

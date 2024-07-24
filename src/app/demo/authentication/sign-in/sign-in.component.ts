@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { RouterModule,Router } from '@angular/router';
@@ -15,13 +15,17 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })
-export default class SignInComponent {
+export default class SignInComponent implements OnInit {
   constructor(private autS:AuthService,private readonly router: Router,private conS:ConfigurationService){}
   Usuario:FormControl=new FormControl('');
   Password:FormControl=new FormControl('');
   Empresas:any=[]
-
+ngOnInit(): void {
+  localStorage.removeItem('AtributosUsuarioFinancial_System');
+  localStorage.removeItem('usuarioFinancialSystems');
+}
   login(){
+
     Swal.fire({
       title: 'Iniciando sesión....'
      });

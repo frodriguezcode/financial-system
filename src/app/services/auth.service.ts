@@ -14,12 +14,15 @@ export class AuthService {
     private afs: AngularFirestore,
     private _http: HttpClient
   ) {
-    this.Atributos= JSON.parse(localStorage.getItem('AtributosUsuarioFinancial_System')!);
+    
   }
   validarAtributo(idAtributo:string,Atributos:any) {
+    this.Atributos=[]
+    this.Atributos= JSON.parse(localStorage.getItem('AtributosUsuarioFinancial_System')!);
     let _Atributo:any=[]
+    console.log('Atributos',this.Atributos)
     _Atributo= this.Atributos.filter((atr:any)=>atr.id==idAtributo && atr.Seleccionado==true)
-  
+    console.log('_Atributo',_Atributo)
     if(_Atributo.length>0){
       return true
     }
@@ -27,6 +30,8 @@ export class AuthService {
       return false
     }
   } 
+
+
 
   obtenerRolesbyId(idEmpresa:string,idRol:string) {
  
