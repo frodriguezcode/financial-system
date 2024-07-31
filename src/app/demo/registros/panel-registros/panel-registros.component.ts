@@ -14,6 +14,7 @@ import SocioNegocioComponent from '../../socios/socios.component';
 import SucursalesComponent from '../../sucursales/sucursales.component';
 import EmpresasComponent from '../../empresas/empresas.component';
 import CrearUsuarioComponent from '../../crear-usuario/crear-usuario.component';
+import ProyectosComponent from '../../proyectos/proyectos.component';
 @Component({
   selector: 'app-panel-registros',
   standalone: true,
@@ -29,8 +30,8 @@ import CrearUsuarioComponent from '../../crear-usuario/crear-usuario.component';
   SocioNegocioComponent,
   EmpresasComponent,
   SucursalesComponent,
-  CrearUsuarioComponent
-  
+  CrearUsuarioComponent,
+  ProyectosComponent
   ],
   templateUrl: './panel-registros.component.html',
   styleUrls: ['./panel-registros.component.scss']
