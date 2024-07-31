@@ -106,6 +106,7 @@ export default class CrearRegistroComponent implements OnInit {
   itemsFiltrados: any;
   // Categorias: any=[];
   Categorias!: SelectItem[] | any;
+  CategoriaContable:any
   SociosNegocios: any=[];
   MesesTodos: any=[];
   Registros: any=[];
@@ -118,6 +119,7 @@ export default class CrearRegistroComponent implements OnInit {
   ItemsCategGroupBack:any= [];
   OrdenMax: number = 0;
   Sucursales: any=[];
+  CuentasContables:any=[]
   Flujos: any = [
     {id: "1", name: "Banco"},
     {id: "2", name: "Caja"},
@@ -218,7 +220,7 @@ onInput(event: any) {
 obtenerSucursales(){
   this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe(resp=>{
     this.Sucursales=resp
-    console.log('Sucursales',this.Sucursales)
+
     this.obtenerRegistros()
   })
 }
@@ -415,6 +417,7 @@ getTipo(idCategoria){
 
 
 salvarRegistro(Registro:any){
+  Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
   console.log('Registro',Registro)
   if(this.validarEgreso(Registro.idTipo,Registro.Valor,Registro.Orden)==false){
     Swal.fire({
@@ -578,7 +581,7 @@ getItemsByCategory(idCategoria:string){
 obtenerCategorias(){
   this.conS.obtenerCategorias().subscribe(resp=>{
     this.Categorias=resp
-  
+    console.log('Categorias',this.Categorias)
     this.Categorias.forEach((element)=>{
       let _GroupItems= {
         label:element.Nombre,
@@ -590,6 +593,24 @@ obtenerCategorias(){
     this.ItemsCategGroupBack=this.ItemsCategGroup
 
   })
+}
+
+getCuentabyCategoria(Categoria:any){
+let cuentaContable:any=[]
+this.Items.filter((item:any)=>item.idCategoria==Categoria.id).forEach((cuenta:any) => {
+  cuentaContable.push({
+    "id":cuenta.id,
+    "idCategoria":cuenta.idCategoria,
+    "label":cuenta.Nombre,
+  })
+  
+});
+return cuentaContable
+
+}
+
+getElementoRegistro(Elemento:any){
+  console.log('Elemento',Elemento)
 }
 
 getMonthName(Fecha:string){
