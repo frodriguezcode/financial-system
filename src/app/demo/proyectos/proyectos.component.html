@@ -1,0 +1,84 @@
+
+<app-card cardTitle="Módulo Proyectos" [options]="false">
+  <div class="row">
+    <div class="col-md-4">
+      <h5>Crear Proyecto</h5>
+      <hr />
+<form *ngIf="ProyectoForm" [formGroup]="ProyectoForm">
+
+  <div class="form-group">
+    <label for="exampleInputPassword1">Proyecto</label>
+    <input (input)="verificarProyecto()" type="text" formControlName="Nombre" class="form-control"
+      id="exampleInputPassword1" placeholder="Escriba el nombre del proyecto" />
+    <span *ngIf="proyectoFound==true" style="color: red;">
+      <p>Ya existe un proyecto con este nombre</p>
+    </span>
+
+  </div>
+
+  <div *ngIf="this.usuario.idRol==1" class="form-group">
+    <label for="exampleInputPassword1">Empresa</label>
+    <select formControlName="idEmpresa" class="form-control" id="exampleFormControlSelect1">
+      <option value="0">Seleccione una empresa</option>
+      <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
+
+    </select>
+  </div>
+
+
+  <button [disabled]="this.ProyectoForm.invalid || proyectoFound==true" (click)="crearProyecto()" type="button"
+    class="btn btn-primary">Guardar</button>
+</form>
+
+    </div>
+    <div class="col-md-8">
+      <h5>Lista de Proyectos</h5>
+      <hr />
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-center">#</th>
+              <th class="text-center">Proyecto</th>
+              <th class="text-center">Editar</th>
+              <th class="text-center">Inactivar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let proyecto of Proyectos;index as i">
+              <th class="text-center" scope="row">{{i+1}}</th>
+              <td class="text-center">
+                <ng-container *ngIf="!proyecto.Editando; else editarProyecto">
+                  {{proyecto.Nombre}}
+                </ng-container>
+                <ng-template #editarProyecto>
+                  <input [(ngModel)]="proyecto.Nombre" class="form-control text-center col-4">
+                </ng-template>
+              </td>
+
+     
+              <td *ngIf="!proyecto.Editando" class="text-center">
+                <!-- Botón de editar -->
+                <button (click)="toggleEdicion(proyecto)" type="button" class="btn btn-success text-center">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </button>
+              </td>
+              <td class="text-center" *ngIf="proyecto.Editando">
+                <!-- Botón de editar -->
+                <button (click)="actualizarProyecto(proyecto)" type="button" class="btn btn-info text-center">
+                  <i class="fa solid fa-check"></i>
+                </button>
+              </td>
+              <td class="text-center" *ngIf="proyecto.Activo"><button (click)="ActualizaEstadoProyecto(proyecto,false)"
+                  type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
+              <td class="text-center" *ngIf="!proyecto.Activo"><button (click)="ActualizaEstadoProyecto(proyecto,true)"
+                  type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+            </tr>
+
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</app-card>

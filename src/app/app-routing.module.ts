@@ -50,6 +50,10 @@ const routes: Routes = [
         loadComponent: () => import('./demo/sucursales/sucursales.component')
       },
       {
+        path: 'Proyectos',
+        loadComponent: () => import('./demo/proyectos/proyectos.component')
+      },
+      {
         path: 'empresas',
         loadComponent: () => import('./demo/empresas/empresas.component')
       },

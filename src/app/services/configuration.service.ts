@@ -183,6 +183,41 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     //?------------SUCURSALES------------
 
 
+        //?------------PROYECTOS------------
+
+  
+  obtenerProyectos(idEmpresa:any) {
+    return this.afs
+    .collection('Proyectos',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+    .valueChanges();
+  }
+  crearProyecto(proyecto:any) {
+    const id = this.afs.createId();
+    return this.afs
+      .collection('Proyectos')
+      .doc(id)
+      .ref.set(Object.assign(proyecto, { id: id }));
+  }
+
+  ActualizarProyecto(proyecto: any) {
+    return this.afs
+      .collection('Sucursales')
+      .doc(proyecto.id)
+      .ref.update(proyecto);
+  }
+
+  ActualizaEstadoProyecto(Proyecto: any,Activo:boolean) {
+    return this.afs
+      .collection('Proyectos')
+      .doc(Proyecto.id)
+      .ref.update({Activo:Activo});
+  }
+
+
+
+    //?------------PROYECTOS------------
+
+
      //!------------DEPARTAMENTOS------------
 
      //   !Creando un departamento
