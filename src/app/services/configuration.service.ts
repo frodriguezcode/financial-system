@@ -201,7 +201,7 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
   ActualizarProyecto(proyecto: any) {
     return this.afs
-      .collection('Sucursales')
+      .collection('Proyectos')
       .doc(proyecto.id)
       .ref.update(proyecto);
   }

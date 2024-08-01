@@ -119,6 +119,7 @@ export default class CrearRegistroComponent implements OnInit {
   ItemsCategGroupBack:any= [];
   OrdenMax: number = 0;
   Sucursales: any=[];
+  SucursaleSeleccionada: any=[];
   CuentasContables:any=[]
   Flujos: any = [
     {id: "1", name: "Banco"},

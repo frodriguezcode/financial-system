@@ -29,7 +29,7 @@
 
     <ng-template pTemplate="caption" >
       <div class="row">
-        <div class="col-3">
+        <div class="col-4">
           <p-iconField iconPosition="left">
             <label for="formGroupExampleInput" class="form-label">Buscar por cualquier campo</label>
 
@@ -47,6 +47,28 @@
             />
           </p-iconField>
         </div>
+        <div class="col-4">
+          <label for="formGroupExampleInput" class="form-label">Buscar por sucursal</label>
+          <br>
+          <p-dropdown 
+          [options]="Sucursales" 
+          [(ngModel)]="SucursaleSeleccionada" 
+          optionLabel="Nombre" 
+          placeholder="Seleccione una sucursal" />
+        </div>
+        <div class="col-4">
+          <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
+          <br>
+          <p-dropdown 
+          [options]="Sucursales" 
+          [(ngModel)]="SucursaleSeleccionada" 
+          optionLabel="Nombre" 
+          placeholder="Seleccione una sucursal" />
+        </div>
+
+
+
+
         <div class="col-2">
 
           <div class="mb-3">
