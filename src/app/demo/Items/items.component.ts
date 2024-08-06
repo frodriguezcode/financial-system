@@ -76,7 +76,6 @@ this.todasSucursales=true
   }
 
   verificarSelect(idSucursal){
-    console.log('idSucursal',idSucursal)
     if(idSucursal==0){
       this.BlocCheck=true
 
@@ -96,7 +95,7 @@ this.todasSucursales=true
       this.ItemForm.get('Sucursales').enable();
       this.SucursalesSelected=[];
     }
-    console.log("Seleccionadas",this.SucursalesSelected)
+
   }
 
   verificarItem(){
@@ -114,7 +113,7 @@ this.todasSucursales=true
     this.conS.obtenerCategorias().subscribe(resp=>{
       this.Categorias=resp
       this.CategoriasBack=resp
-      console.log('Categorias',this.Categorias)
+
     })
   }
   obtenerSucursales(){
@@ -163,8 +162,7 @@ this.todasSucursales=true
     }
 
     ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
-    console.log('ItemForm',ItemForm)
-    console.log('todasSucursales',this.todasSucursales)
+
     this.conS.crearItem(ItemForm).then(resp=>{
       Swal.fire({
         position: "center",
@@ -193,7 +191,7 @@ this.todasSucursales=true
     itemEncontrado[0].idEmpresa=item.idEmpresa
     itemEncontrado[0].Editando = !item.Editando;
     this.conS.ActualizarItem(itemEncontrado[0]).then(resp=>{
-      console.log('itemEncontrado',itemEncontrado[0])
+   
       this.toastr.success('Item  editado', '¡Exito!');
     })
   }

@@ -12,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
 import { DialogModule } from 'primeng/dialog';
 import AjusteSaldoComponent from '../../ajuste-saldos/ajuste-saldo.component';
+import ConsolidadoMejoradoComponent from '../consolidado-mejorado/consolidado-mejorado.component';
 @Component({
   selector: 'app-flujos-panel',
   standalone: true,
@@ -25,7 +26,8 @@ import AjusteSaldoComponent from '../../ajuste-saldos/ajuste-saldo.component';
     ButtonModule,
     StyleClassModule,
     DialogModule,
-    AjusteSaldoComponent
+    AjusteSaldoComponent,
+    ConsolidadoMejoradoComponent
   ],
   templateUrl: './flujos-panel.component.html',
   styleUrls: ['./flujos-panel.component.scss']

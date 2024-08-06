@@ -1,0 +1,265 @@
+.negativo {
+    color: red;
+  }
+
+  .table-100 th,
+.table-100 td {
+  width:100%;
+  min-width: 120px; /* Ajusta el tamaño mínimo según tus necesidades */
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 100;
+}
+
+th:first-child,
+td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+
+}
+
+  .cabecera{
+    color: white;
+    background-color: #0c8c86;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+
+
+  .categoria-toggle {
+    cursor: pointer;
+
+  }
+
+  .fa-square-minus:hover{
+    color: #0c8c86;
+  }
+  
+  .categoria-toggle-icon {
+    margin-left: 5px;
+  }
+  .cabecera-categoria{
+    // background-color: rgba(0, 157, 178, 0.1);
+    background-color: #ceecf0;
+  }
+  .cabecera-categoria-no-calc{
+    background-color:white ;
+  }
+
+
+
+  .cabecera-flujo-efectivo-libre{
+    background-color: rgb(12,140,134,0.2)
+  }
+
+  .filters-buttons{
+   display: flex;
+   align-items: flex-start;
+  //  justify-content: space-between;
+  //  background-color: #0c8c86;
+  }
+
+  .filters-buttons p-checkbox{
+    margin-top: 1rem;
+  }
+
+  
+
+
+
+.nombre-concepto{
+  position:sticky;
+  left:0px;
+}
+
+
+.text-center {
+    text-align: center;
+  }
+  
+  .vertical-align-center {
+    vertical-align: middle;
+  }
+  .centered-th {
+    text-align: center;
+  }
+.form-check{
+  cursor: pointer;
+}
+  .table-100 {
+    width: 250px;
+    table-layout: fixed;
+  }
+  .input-group{
+    width:100%;
+  }
+  .truncate-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: rgb(113, 189, 158);
+    color: white;
+    width: 220px !important
+  }
+
+.table-100 th,
+.table-100 td {
+  width:250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
+  .fixed-width {
+    width: 150px;
+  }
+  table {
+    table-layout: auto;
+    width: auto;
+    white-space: nowrap;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .NombrePL{
+    background-color: rgb(255, 255, 255);
+    color:black;
+
+  }
+  .NombrePL2{
+    background-color: rgb(239, 237, 237);
+    color:black;
+  
+  }
+
+  .concepto{
+    background-color: rgb(139, 225, 251);
+    color:white
+  }
+  .nombreConcepto{
+    text-align: right;
+  }
+  .concepto2{
+    background-color: rgb(255, 255, 255);
+    color:rgb(0, 0, 0)
+  }
+  .total{
+    background-color: #d3d3d4;
+    color:black;
+   
+  }
+  table {
+    border-collapse: collapse; 
+ 
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+ 
+  }
+
+
+
+.titulo-seccion{
+
+  font-size: 18px;
+  font-weight: 500;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+}
+
+.totales{
+    background-color: #ebebee;
+
+}
+
+.table-container {
+  max-height: 800px; 
+  overflow-y: auto; 
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 100;
+}
+.cabeceraConcepto{
+  background-color: rgb(113,189,158,255);
+  color:white;
+  position: sticky;
+  width: 100%;
+  left: 0;
+  z-index: 2;
+}
+.cabeceraNombre{
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+tbody {
+  max-height: 400px; 
+  overflow-y: auto; 
+}
+
+.color-rojo {
+  color: red;
+}
+
+.color-negro {
+  color: black;
+}
+
+.btn-success{
+  z-index: 1;
+}
+
+
+
+thead.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+th.cabeceraConcepto {
+  background-color: rgb(113, 189, 158);
+  color: white;
+  width: 300px;
+}
+
+.text-center {
+  text-align: center;
+
+}
+
+
+
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; /* Opcional, para que los elementos se muevan a la siguiente línea si hay demasiados */
+  gap: 0.5rem; /* Ajusta el espacio entre los elementos según sea necesario */
+}
+
+.form-check-input {
+  margin-right: 0.5rem; /* Ajusta este valor según el espacio deseado */
+}

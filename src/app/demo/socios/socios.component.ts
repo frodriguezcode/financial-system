@@ -43,8 +43,6 @@ export default class SocioNegocioComponent implements OnInit {
     this.conS.obtenerSocios(this.usuario.idEmpresa).subscribe(resp=>{
       this.Socios=resp
       this.cargarFormulario()
-    console.log("socios",this.Socios);
-
     })
   }
 

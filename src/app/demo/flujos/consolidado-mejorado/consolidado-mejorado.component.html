@@ -1,0 +1,66 @@
+<div class="table-responsive">
+<table class="table">
+  <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header">
+    <ng-container  *ngFor="let cab of Cabecera">
+      <th>{{cab.Nombre}}</th>
+    </ng-container>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let categoria of Categorias; let j = index">
+      <tr [ngClass]="{'cabecera-categoria': categoria.Calculado == true}" (click)="toggleCategoria(categoria.id)">
+        <td [ngClass]="{'cabecera-categoria': categoria.Calculado == true, 'cabecera-categoria-no-calc': categoria.Calculado == false }">
+          <span class="categoria-toggle">{{ categoria.Nombre }}</span>
+          <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
+            <span *ngIf="categoria.Calculado == false">
+              <i style="cursor: pointer;" class="fa-solid fa-square-minus"></i>
+            </span>
+          </span>
+          <span *ngIf="categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
+            <span *ngIf="categoria.Calculado == false">
+              <i style="cursor: pointer;" class="fa-solid fa-square-plus"></i>
+            </span>
+          </span>
+        </td>
+        <ng-container *ngFor="let anio of Anios">
+          <ng-container  *ngFor="let mes of Meses">   
+              <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
+                <td class="text-center" >
+                  <span>10</span>
+                </td>
+              </ng-container>
+            <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
+              20
+            </td>
+            
+          </ng-container>
+          <td  class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
+           30
+          </td>
+        </ng-container>
+      </tr>
+      <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
+        <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
+          <tr style="background-color: #FAFAFA">
+            <td style="background-color: white"><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
+            <ng-container *ngFor="let anio of Anios">
+              <ng-container *ngFor="let mes of Meses">
+                  <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
+                    <td style="font-weight: bolder;" class="text-center" >
+                     10
+                    </td>
+                  </ng-container>
+                <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
+                 20
+                </td>
+              </ng-container>
+              <td  class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
+                30
+               </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </tbody>
+</table>
+</div>

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Registro } from '../models/registro';
-import { error } from 'console';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 @Injectable({
@@ -174,7 +173,7 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
     // !Obtener las empresas
     obtenerEmpresas(idMatriz:any) {
-      console.log('idMatriz',idMatriz)
+
       return this.afs
       .collection('Empresa',(ref)=>ref.where('idMatriz','==',idMatriz))
       .valueChanges();
@@ -449,7 +448,7 @@ crearValorPlan(Valor: any) {
     .ref.set(Object.assign(Valor, { id: id }));
 }
 ActualizarValorPlan(Valor: any) {
-  console.log('Valor',Valor)
+
   return this.afs
     .collection('PlanificacionValores')
     .doc(Valor.id)

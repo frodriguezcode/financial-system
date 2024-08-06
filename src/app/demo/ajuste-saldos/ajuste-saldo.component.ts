@@ -113,7 +113,7 @@ obtenerBancos(){
 obtenerSaldoInicial(){
   this.conS.obtenerSaldoInicial(this.usuario.idEmpresa).subscribe(resp=>{
   this.SaldosIniciales=resp
-  console.log('SaldosIniciales',this.SaldosIniciales)
+
 
   })
 }
@@ -161,7 +161,7 @@ guuardarAjuste(){
     "idMatriz":this.usuario.idMatriz,
     "idSucursal":this.idSucursal.value,
   }
-  console.log('_Ajuste',_Ajuste)
+
   this.conS.crearSaldoInicial(_Ajuste).then(resp=>{
     this.resetCampos()
   })
@@ -192,7 +192,7 @@ actualizarSaldo(saldo:any){
   saldoEncontrado[0].idCuenta=this.getIdCuenta(saldo.NumCuenta)
   saldoEncontrado[0].SemanaNum=saldo.SemanaNum
   saldoEncontrado[0].Editando = !saldo.Editando;
-console.log('SaldoEncontrado', saldoEncontrado[0])
+
   this.conS.ActualizarSaldo(saldoEncontrado[0]).then(resp=>{
     this.toastr.success('Saldo editado', '¡Exito!');
   })

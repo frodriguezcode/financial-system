@@ -334,7 +334,7 @@ obtenerRegistros(){
       }
       this.Registros.push(_Registro)
     })
-    console.log('Registros',this.Registros)
+
     this.registrosBackUp=this.Registros
     this.calcularImporteTotal(this.Registros)
     this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
@@ -419,7 +419,7 @@ getTipo(idCategoria){
 
 salvarRegistro(Registro:any){
   Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
-  console.log('Registro',Registro)
+
   if(this.validarEgreso(Registro.idTipo,Registro.Valor,Registro.Orden)==false){
     Swal.fire({
       position: "center",
@@ -489,7 +489,7 @@ salvarRegistro(Registro:any){
       Registro.TipoRegistro="Normal"
       Registro.Valor=Number(this.quitarSimbolo(Registro.Valor))
       Registro.Usuario=this.usuario.Usuario
-      console.log('Registro',Registro)
+
       
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
@@ -582,7 +582,7 @@ getItemsByCategory(idCategoria:string){
 obtenerCategorias(){
   this.conS.obtenerCategorias().subscribe(resp=>{
     this.Categorias=resp
-    console.log('Categorias',this.Categorias)
+
     this.Categorias.forEach((element)=>{
       let _GroupItems= {
         label:element.Nombre,
@@ -611,7 +611,7 @@ return cuentaContable
 }
 
 getElementoRegistro(Elemento:any){
-  console.log('Elemento',Elemento)
+
 }
 
 getMonthName(Fecha:string){

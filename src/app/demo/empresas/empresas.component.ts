@@ -78,7 +78,7 @@ export default class EmpresasComponent implements OnInit {
   }
   actualizarEmpresa(empresa:any){
     let _empresa= this.Empresas;
-    console.log(this.Empresas);
+   
     const empresaEncontrada = _empresa.filter((empr:any) => empr.id == empresa.id);
     empresaEncontrada[0].Nombre=empresa.Nombre
     // bancoEncontrado[0].Cuenta=empresa.Cuenta
@@ -99,7 +99,7 @@ export default class EmpresasComponent implements OnInit {
   obtenerCorporaciones(){
     this.empS.obtenerCorporaciones(this.usuario.idMatriz).subscribe(resp=>{
       this.Matrices=resp
-      console.log('Matrices',this.Matrices)
+
      
     })
   }
