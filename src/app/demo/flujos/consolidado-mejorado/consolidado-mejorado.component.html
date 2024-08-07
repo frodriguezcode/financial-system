@@ -1,4 +1,4 @@
-<div class="table-responsive">
+<div *ngIf="cargar" class="table-responsive">
 <table class="table">
   <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header">
     <ng-container  *ngFor="let cab of Cabecera">
@@ -24,11 +24,12 @@
         <ng-container *ngFor="let anio of Anios">
           <ng-container  *ngFor="let mes of Meses">   
               <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
-                <td class="text-center" >
-                  <span>10</span>
-                </td>
+                <th class="text-center">
+                {{ "$ " + ( DataCategorias[anio.Anio + '-' + mes.NumMes + '-' + categoria.id + '-' + semana.NumSemana]?.[0]?.Valor| number) }}
+                </th>
+               
               </ng-container>
-            <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
+            <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" class="text-center"style="font-weight: bolder;" class="text-center">
               20
             </td>
             
@@ -46,10 +47,10 @@
               <ng-container *ngFor="let mes of Meses">
                   <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
                     <td style="font-weight: bolder;" class="text-center" >
-                     10
+                      {{ "$ " + ( DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id + '-' + semana.NumSemana]?.[0]?.Valor| number) }}
                     </td>
                   </ng-container>
-                <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
+                <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" style="font-weight: bolder" class="text-center">
                  20
                 </td>
               </ng-container>

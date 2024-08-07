@@ -35,6 +35,13 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   Anios:any=[]
   Cabecera:any=[]
   usuario:any
+  cargar:boolean=false
+  DataCategorias:any=[]
+  DataCategoriasMensual:any=[]
+  DataCategoriasAnual:any=[]
+  DataItems:any=[]
+  DataItemsMensual:any=[]
+  DataItemsAnual:any=[]
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerCategorias()
@@ -59,6 +66,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
      obtenerItems(){
       this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
           this.Items=resp;
+          console.log('Items',this.Items)
          this.obtenerRegistros()
       })
      }
@@ -119,6 +127,151 @@ getSemanasByMesAnio(Anio:any,NumMes:any){
   return this.Semanas.filter((sem:any)=>sem.Mes==NumMes && sem.Anio==Anio)
 }
 
+getValorCategoria(idCategoria:any,NumSemana:any,Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>registro
+  .idCategoria.id==idCategoria
+  && registro.NumSemana==NumSemana
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+    return Valor
+  }
+  else {
+    return 0
+  }
+
+
+}
+
+getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>registro
+  .idCategoria.id==idCategoria
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+
+getDataCategorias(){
+  this.DataCategorias=[]
+this.Categorias.forEach((categ:any) => {
+  this.Anios.forEach((anio:any) => {
+    this.Meses.forEach((mes:any) => {
+      this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
+
+        const key = `${anio.Anio}-${mes.NumMes}-${categ.id}-${sem.NumSemana}`;  
+        if (!this.DataCategorias[key]) {
+          this.DataCategorias[key] =[];
+        }
+        this.DataCategorias[key].push({
+          "Valor": this.getValorCategoria(categ.id,sem.NumSemana,mes.NumMes,anio.Anio)
+
+        });
+
+        })
+      })
+    })
+  
+});
+this.getDataItems()
+}
+getDataCategoriasMensual(){
+  this.DataCategoriasMensual=[]
+this.Categorias.forEach((categ:any) => {
+  this.Anios.forEach((anio:any) => {
+    this.Meses.forEach((mes:any) => {
+        const key = `${anio.Anio}-${mes.NumMes}-${categ.id}`;  
+        if (!this.DataCategoriasMensual[key]) {
+          this.DataCategoriasMensual[key] =[];
+        }
+        this.DataCategoriasMensual[key].push({
+          "Valor": this.getValorCategoriaMensual(categ.id,mes.NumMes,anio.Anio)
+
+        });
+
+       
+      })
+    })
+  
+});
+
+}
+
+getValorItem(idElemento:any,NumSemana:any,Mes:any,Anio:any){
+  let _Data: any=[];
+  let Valor: number =0
+  _Data=this.Registros.filter((registro:any)=>
+    registro.idElemento==idElemento 
+    && registro.NumSemana==NumSemana 
+    && registro.NumMes==Mes
+    && registro.AnioRegistro==Anio
+    )
+  
+  if(_Data.length>0){
+    _Data.forEach((element:any) => {
+      Valor+=Number(element.Valor);
+    });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+    return Number(Valor)
+  }
+  else {
+    return 0
+  }
+}
+
+getDataItems(){
+  this.DataItems=[]
+  this.Items.forEach((item:any) => {
+    this.Anios.forEach((anio:any) => {
+      this.Meses.forEach((mes:any) => {
+        this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
+          const key = `${anio.Anio}-${mes.NumMes}-${item.id}-${sem.NumSemana}`;  
+          if (!this.DataItems[key]) {
+            this.DataItems[key] =[];
+          }
+          this.DataItems[key].push({
+            "Valor": this.getValorItem(item.id,sem.NumSemana,mes.NumMes,anio.Anio)
+  
+          });
+  
+          })
+        })
+      })
+    
+  });
+  this.cargar=true
+  }
+  
+
+
+
    construirCabecera(){
     this.Cabecera=[]
     this.Cabecera.push({
@@ -160,7 +313,8 @@ getSemanasByMesAnio(Anio:any,NumMes:any){
       })
     });
     console.log('Cabecera',this.Cabecera)
-  
+    this.getDataCategorias()
+   
    }
    getItems(idCategoria:any){
     let _Items:any=[]
