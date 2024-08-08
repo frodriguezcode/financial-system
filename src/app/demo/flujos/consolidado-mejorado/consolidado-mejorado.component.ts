@@ -36,9 +36,11 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   Cabecera:any=[]
   usuario:any
   cargar:boolean=false
+  //Categorías
   DataCategorias:any=[]
   DataCategoriasMensual:any=[]
   DataCategoriasAnual:any=[]
+  //Items
   DataItems:any=[]
   DataItemsMensual:any=[]
   DataItemsAnual:any=[]
@@ -177,13 +179,13 @@ getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
 }
 
 getDataCategorias(){
-  this.DataCategorias=[]
+this.DataCategorias=[]
 this.Categorias.forEach((categ:any) => {
   this.Anios.forEach((anio:any) => {
     this.Meses.forEach((mes:any) => {
       this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
 
-        const key = `${anio.Anio}-${mes.NumMes}-${categ.id}-${sem.NumSemana}`;  
+        const key = `${anio.Anio}-${mes.NumMes}-${categ.id}-${sem.NumSemana}`;  //2023-2-kndkfdnfjk-7
         if (!this.DataCategorias[key]) {
           this.DataCategorias[key] =[];
         }
@@ -197,6 +199,7 @@ this.Categorias.forEach((categ:any) => {
     })
   
 });
+console.log('DataCategorias',this.DataCategorias)
 this.getDataItems()
 }
 getDataCategoriasMensual(){
