@@ -8,7 +8,12 @@
   <tbody>
     <ng-container *ngFor="let categoria of Categorias; let j = index">
       <tr [ngClass]="{'cabecera-categoria': categoria.Calculado == true}" (click)="toggleCategoria(categoria.id)">
-        <td [ngClass]="{'cabecera-categoria': categoria.Calculado == true, 'cabecera-categoria-no-calc': categoria.Calculado == false }">
+        <td [ngClass]="{
+         'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
+         'cabecera-categoria-no-calc': categoria.Calculado == false ,
+         'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
+         
+         }">
           <span class="categoria-toggle">{{ categoria.Nombre }}</span>
           <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
             <span *ngIf="categoria.Calculado == false">
@@ -24,18 +29,29 @@
         <ng-container *ngFor="let anio of Anios">
           <ng-container  *ngFor="let mes of Meses">   
               <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
-                <th class="text-center">
+                <th 
+                class="text-center"
+                [ngClass]="{
+                  'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
+                  'cabecera-categoria-no-calc': categoria.Calculado == false ,
+                  'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
+                  
+                  }"
+                >
                 {{ "$ " + ( DataCategorias[anio.Anio + '-' + mes.NumMes + '-' + categoria.id + '-' + semana.NumSemana]?.[0]?.Valor| number) }}
                 </th>
                
               </ng-container>
-            <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" class="text-center"style="font-weight: bolder;" class="text-center">
-              20
+            <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" 
+              class="text-center"
+              
+              style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+              {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor| number) }}
             </td>
             
           </ng-container>
           <td  class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
-           30
+            {{ "$ " + ( DataCategoriasAnual[anio.Anio + '-' + categoria.id]?.[0]?.Valor| number) }}
           </td>
         </ng-container>
       </tr>
@@ -50,12 +66,14 @@
                       {{ "$ " + ( DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id + '-' + semana.NumSemana]?.[0]?.Valor| number) }}
                     </td>
                   </ng-container>
-                <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" style="font-weight: bolder" class="text-center">
-                 20
+                <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" 
+                  style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);"class="text-center">
+                  {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
+
                 </td>
               </ng-container>
               <td  class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
-                30
+                {{ "$ " + ( DataItemsAnual[anio.Anio + '-' + item.id]?.[0]?.Valor| number) }}
                </td>
             </ng-container>
           </tr>
