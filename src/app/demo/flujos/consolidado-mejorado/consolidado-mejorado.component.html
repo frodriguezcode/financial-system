@@ -1,8 +1,9 @@
 <div *ngIf="cargar" class="table-responsive">
 <table class="table">
-  <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header">
+  <!-- <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header categoria-toggle"> -->
+    <thead style="color:white" class="sticky-header categoria-toggle">
     <ng-container  *ngFor="let cab of Cabecera">
-      <th>{{cab.Nombre}}</th>
+      <th style="background-color: rgb(113,189,158,255); ">{{cab.Nombre}}</th>
     </ng-container>
   </thead>
   <tbody>
