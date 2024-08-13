@@ -26,6 +26,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   categoriasExpandidas: { [id: number]: boolean } = {};
   Items:any=[]
   Registros:any=[]
+  RegistrosBackUp:any=[]
   Semanas:any=[]
   SemanasSingle:any=[]
   SemanasSeleccionadas:any=[]
@@ -53,22 +54,82 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   //SaldosIniciales
   SaldoInicial:any=[]
+  SaldoInicialBack:any=[]
   DataSaldoInicial:any=[]
   DataSaldoInicialMensual:any=[]
   DataSaldoInicialAnual:any=[]
   DataSaldoFinal:any=[]
   DataSaldoFinalMensual:any=[]
   DataSaldoFinalAnual:any=[]
+
+  Sucursales:any=[]
+  SucursalSeleccionada
+
+  CuentasBancarias:any=[]
+  CuentaBancariaSeleccionada
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
    
     this. obtenerSaldoInicial()
+    this. obtenerSucursales()
+    this.obtenerBancos()
 
+  }
+
+  filtrarData(){
+    let SemanasRegistros:any=[]
+    let Cuentas:any=[]
+    let CriteriosRegistros:any=[]
+    let CriteriosSaldos:any=[]
+
+
+    if(this.SemanasSeleccionadas.length>0){
+      this.SemanasSeleccionadas.forEach((element:any) => {
+        SemanasRegistros.push(element.NumSemana)
+      });
+    }
+    if(this.CuentaBancariaSeleccionada.length>0){
+      this.CuentaBancariaSeleccionada.forEach((element:any) => {
+        Cuentas.push(element.Cuenta)
+      });
+    }
+
+    CriteriosRegistros={
+      NumSemana:SemanasRegistros,
+      NumCuenta:Cuentas
+
+    }
+    CriteriosSaldos={
+      SemanaNum:SemanasRegistros,
+      NumCuenta:Cuentas
+
+    }
+    this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
+    this.SaldoInicial= this.conS.filtradoDinamico(CriteriosSaldos,this.SaldoInicialBack)
+
+   this.construirCabecera()
+
+  
+  }
+
+  obtenerSucursales(){
+    this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe((resp:any)=>{
+      this.Sucursales=resp
+    })
+  }
+  obtenerBancos(){
+    this.conS.obtenerBancos( this.usuario.idEmpresa).subscribe((resp:any)=>{
+      this.CuentasBancarias=resp
+      this.CuentasBancarias.map((c:any)=> c.CuentaNombre= c.Nombre + ' - ' + c.Cuenta)
+
+
+    })
   }
   obtenerSaldoInicial(){
     this.conS.obtenerSaldoInicial( this.usuario.idEmpresa).subscribe((resp:any)=>{
       this.SaldoInicial=resp
-      console.log('SaldoInicial',this.SaldoInicial)
+      this.SaldoInicialBack=resp
+
       this.obtenerCategorias()
     })
   }
@@ -171,6 +232,7 @@ obtenerRegistros(){
           }
           this.Registros.push(_Registro)
           });
+          this.RegistrosBackUp=this.Registros
        
           const uniqueMesNumMesSet = new Set(this.Registros.map(item => JSON.stringify({ Mes: item.MesRegistro, NumMes: item.NumMes })));
           this.SaldoInicial.forEach(item => {
@@ -205,10 +267,7 @@ obtenerRegistros(){
 
           this.Meses=uniqueMesNumMes.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=uniqueAnios.sort((a:any, b:any) => a.Anio- b.Anio)
-          console.log('Semanas',this.Semanas)
-          console.log('Meses',this.Meses)
-          console.log('Anios',this.Anios)
-          console.log('Registros',this.Registros)
+  
           this.construirCabecera()
 });
 }
@@ -786,6 +845,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
 
 
    construirCabecera(){
+
     this.Cabecera=[]
     this.Cabecera.push({
       "Nombre":"Concepto",
