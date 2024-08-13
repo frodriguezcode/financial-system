@@ -14,25 +14,25 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-consolidado-mejorado',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule],
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
 })
 export default class ConsolidadoMejoradoComponent implements OnInit {
   constructor(
-    private conS:ConfigurationService, 
-    private cdr: ChangeDetectorRef,
-    private authS:AuthService,
-    private toastr: ToastrService,
-    private router: Router
+    private conS:ConfigurationService
   ) {}
   Categorias:any=[]
   categoriasExpandidas: { [id: number]: boolean } = {};
   Items:any=[]
   Registros:any=[]
   Semanas:any=[]
+  SemanasSingle:any=[]
+  SemanasSeleccionadas:any=[]
   Meses:any=[]
+  MesesSeleccionadas:any=[]
   Anios:any=[]
+  AniosSeleccionados:any=[]
   Cabecera:any=[]
   usuario:any
   cargar:boolean=false
@@ -56,6 +56,9 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   DataSaldoInicial:any=[]
   DataSaldoInicialMensual:any=[]
   DataSaldoInicialAnual:any=[]
+  DataSaldoFinal:any=[]
+  DataSaldoFinalMensual:any=[]
+  DataSaldoFinalAnual:any=[]
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
    
@@ -175,9 +178,17 @@ obtenerRegistros(){
           });
           const uniqueMesNumMes = Array.from(uniqueMesNumMesSet).map((item:any) => JSON.parse(item));
 
-          const uniqueNumSemanaSet = new Set(this.Registros.map(item => JSON.stringify({ NumSemana: item.NumSemana, Semana: "Semana " + item.NumSemana, Mes:item.NumMes,Anio:item.AnioRegistro  })));
+          const uniqueNumSemanaSet = new Set(this.Registros.map(item => JSON.stringify({ 
+            NumSemana: item.NumSemana,
+            Semana: "Semana " + item.NumSemana, 
+            SemanaAnio: "Semana " + item.NumSemana + ' ' + '(' + item.AnioRegistro + ')', 
+            Mes:item.NumMes,
+            Anio:item.AnioRegistro  })));
           this.SaldoInicial.forEach(item => {
-            uniqueNumSemanaSet.add(JSON.stringify({ NumSemana: item.SemanaNum, Semana: "Semana " + item.SemanaNum, Mes:Number(item.NumMes),Anio:item.AnioRegistro }));
+            uniqueNumSemanaSet.add(JSON.stringify({ NumSemana: item.SemanaNum, 
+              Semana: "Semana " + item.SemanaNum, 
+              SemanaAnio: "Semana " + item.SemanaNum + ' ' + '(' + item.AnioRegistro + ')', 
+              Mes:Number(item.NumMes),Anio:item.AnioRegistro }));
           });         
           const uniqueNumSemana = Array.from(uniqueNumSemanaSet).map((item:any) => JSON.parse(item));
 
@@ -191,11 +202,15 @@ obtenerRegistros(){
           const semanasIdentificadas = this.conS.posicionarSemanas(uniqueNumSemana);
           //this.Semanas=uniqueNumSemana.sort((a:any, b:any) => a.NumSemana- b.NumSemana)
           this.Semanas=semanasIdentificadas
-          console.log('semanasIdentificadas',semanasIdentificadas)
+
           this.Meses=uniqueMesNumMes.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=uniqueAnios.sort((a:any, b:any) => a.Anio- b.Anio)
+          console.log('Semanas',this.Semanas)
+          console.log('Meses',this.Meses)
+          console.log('Anios',this.Anios)
+          console.log('Registros',this.Registros)
           this.construirCabecera()
-          });
+});
 }
 
 getSemanasByMesAnio(Anio:any,NumMes:any){
@@ -364,7 +379,7 @@ this.Categorias.forEach((categ:any) => {
         if(categ.Orden==0) {
           
           this.DataCategorias[key].push({
-            "Valor": this.getValorSaldoInicial(sem.NumSemana,mes.NumMes,anio.Anio,sem.posicion)
+            "Valor": this.obtenerValorSaldoInicial(sem.NumSemana,mes.NumMes,anio.Anio)
   
           });
         }
@@ -394,7 +409,7 @@ this.Categorias.forEach((categ:any) => {
         }
       else if(categ.Orden==11) {     
           this.DataCategorias[key].push({
-            "Valor": this.getValorSaldoFinal(sem.NumSemana,mes.NumMes,anio.Anio,sem.posicion)
+            "Valor": this.obtenerValorSaldoFinal(sem.NumSemana,mes.NumMes,anio.Anio)
   
           });
         }
@@ -415,6 +430,8 @@ this.getDataItems()
 this.getDataItemMensual()
 this.getDataItemAnual()
 }
+
+
 getDataCategoriasMensual(){
   this.DataCategoriasMensual=[]
 this.Categorias.forEach((categ:any) => {
@@ -427,12 +444,35 @@ this.Categorias.forEach((categ:any) => {
         
         if(categ.Orden==0) {
           this.DataCategoriasMensual[key].push({
-            "Valor": this.getSaldoInicialMensual(mes.NumMes,anio.Anio)
+            "Valor": this.obtenerValorSaldoInicialMensual(mes.NumMes,anio.Anio)
           });
         }
+
+      else if(categ.Orden==3) {
+          
+          this.DataCategoriasMensual[key].push({
+            "Valor": this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio)
+  
+          });
+      }
+      else if(categ.Orden==6) {
+          
+          this.DataCategoriasMensual[key].push({
+            "Valor": this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio)
+  
+          });
+      }
+      else if(categ.Orden==9) {
+          
+          this.DataCategoriasMensual[key].push({
+            "Valor": this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio)
+  
+          });
+      }
+
       else  if(categ.Orden==11) {
           this.DataCategoriasMensual[key].push({
-            "Valor": this.getSaldoFinalMensual(mes.NumMes,anio.Anio)
+            "Valor": this.obtenerValorSaldoFinalMensual(mes.NumMes,anio.Anio)
           });
         }
         else {
@@ -624,6 +664,27 @@ getDataFlujoOperativo(NumSemana:any,Mes:any,Anio:any){
       return 0
     }
 } 
+getDataFlujoOperativoMensual(Mes:any,Anio:any){
+    let _Data: any=[];
+    _Data=this.Registros.filter((registro:any)=>
+    (registro.idCategoria.Orden==2
+    || registro.idCategoria.Orden==1)
+    && registro.NumMes==Mes
+    && registro.AnioRegistro==Anio
+    )
+  
+    if(_Data.length>0){
+      let Valor:number=0
+      _Data.forEach((data:any) => {
+          Valor+=Number(data.Valor)
+      });
+  
+      return Valor
+    }
+    else {
+      return 0
+    }
+} 
 
 getDataFlujoInversion(NumSemana:any,Mes:any,Anio:any){
   let _Data: any=[];
@@ -631,6 +692,27 @@ getDataFlujoInversion(NumSemana:any,Mes:any,Anio:any){
   (registro.idCategoria.Orden==4
   || registro.idCategoria.Orden==5)
   && registro.NumSemana==NumSemana
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+getDataFlujoInversionMensual(Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>
+  (registro.idCategoria.Orden==4
+  || registro.idCategoria.Orden==5)
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
@@ -669,12 +751,38 @@ getDataFlujoFinanciero(NumSemana:any,Mes:any,Anio:any){
     return 0
   }
 }
+getDataFlujoFinancieroMensual(Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>
+  (registro.idCategoria.Orden==7
+  || registro.idCategoria.Orden==8)
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
 
 getDataFlujoLibre(NumSemana:any,Mes:any,Anio:any){
 return this.getDataFlujoOperativo(NumSemana,Mes,Anio) 
 + this.getDataFlujoInversion(NumSemana,Mes,Anio)
 + this.getDataFlujoFinanciero(NumSemana,Mes,Anio)
 }
+getDataFlujoLibreMensual(Mes:any,Anio:any){
+  return this.getDataFlujoOperativoMensual(Mes,Anio) 
+  + this.getDataFlujoInversionMensual(Mes,Anio)
+  + this.getDataFlujoFinancieroMensual(Mes,Anio)
+  }
 
 
    construirCabecera(){
@@ -718,6 +826,69 @@ return this.getDataFlujoOperativo(NumSemana,Mes,Anio)
       })
     });
 
+    this.DataSaldoInicial=[]
+    this.DataSaldoFinal=[]
+    this.DataSaldoInicialMensual=[]
+    this.DataSaldoFinalMensual=[]
+    this.Anios.forEach((anio:any) => {
+      this.Meses.forEach((mes:any) => {
+        this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
+          let _SemanaDataInicial:any=[]
+          _SemanaDataInicial=this.DataSaldoInicial.filter((data:any)=>data.NumSemana==sem.NumSemana && data.Anio==anio.Anio && data.Mes==sem.Mes)
+          if(_SemanaDataInicial.length==0){
+            this.DataSaldoInicial.push({
+              "NumSemana":sem.NumSemana,
+              "Mes":sem.Mes,
+              "Anio":sem.Anio,
+              "Valor":this.getValorSaldoInicial(sem.NumSemana,sem.Mes,anio.Anio,sem.posicion)
+  
+            })
+
+          }
+          let _SemanaDataFinal:any=[]
+          _SemanaDataFinal=this.DataSaldoFinal.filter((data:any)=>data.NumSemana==sem.NumSemana && data.Anio==anio.Anio && data.Mes==sem.Mes)
+          if(_SemanaDataFinal.length==0){
+            this.DataSaldoFinal.push({
+              "NumSemana":sem.NumSemana,
+              "Mes":sem.Mes,
+              "Anio":sem.Anio,
+              "Valor":this.getValorSaldoFinal(sem.NumSemana,sem.Mes,anio.Anio,sem.posicion)
+  
+            })
+
+          }
+        })  
+        //DataMensual
+        let _MesDataInicial:any=[]
+        _MesDataInicial=this.DataSaldoInicialMensual.filter((data:any)=>data.Anio==anio.Anio && data.Mes==mes.NumMes)
+        if(_MesDataInicial.length==0){
+          this.DataSaldoInicialMensual.push({
+            "Mes":mes.NumMes,
+            "Anio":anio.Anio,
+            "Valor":this.getSaldoInicialMensual(mes.NumMes,anio.Anio)
+
+          })
+
+        }    
+
+        let _MesDataFinal:any=[]
+        _MesDataFinal=this.DataSaldoFinalMensual.filter((data:any)=>data.Anio==anio.Anio && data.Mes==mes.NumMes)
+        if(_MesDataFinal.length==0){
+          this.DataSaldoFinalMensual.push({
+            "Mes":mes.NumMes,
+            "Anio":anio.Anio,
+            "Valor":this.getSaldoFinalMensual(mes.NumMes,anio.Anio)
+
+          })
+
+        }    
+
+
+      })      
+    })      
+
+
+
     this.getDataCategorias()
     this.getDataCategoriasMensual()
     this.getDataCategoriasAnual()
@@ -729,5 +900,46 @@ return this.getDataFlujoOperativo(NumSemana,Mes,Anio)
     return _Items
     }
 
+obtenerValorSaldoInicial(NumSemana:any,Mes:any,Anio:any){
+let _ValorInicial:any=[]
+_ValorInicial=this.DataSaldoInicial.filter((data:any)=>data.NumSemana==NumSemana && data.Mes==Mes && data.Anio==Anio)
+if(_ValorInicial.length>0){
+  return _ValorInicial[0].Valor
+}
+else {
+  return 0
+}
+}
+obtenerValorSaldoFinal(NumSemana:any,Mes:any,Anio:any){
+let _ValorFinal:any=[]
+_ValorFinal=this.DataSaldoFinal.filter((data:any)=>data.NumSemana==NumSemana && data.Mes==Mes && data.Anio==Anio)
+if(_ValorFinal.length>0){
+  return _ValorFinal[0].Valor
+}
+else {
+  return 0
+}
+}
+
+obtenerValorSaldoInicialMensual(Mes:any,Anio:any){
+  let _ValorInicialMensual:any=[]
+  _ValorInicialMensual=this.DataSaldoInicialMensual.filter((data:any)=>data.Mes==Mes && data.Anio==Anio)
+  if(_ValorInicialMensual.length>0){
+    return _ValorInicialMensual[0].Valor
+  }
+  else {
+    return 0
+  }
+}
+obtenerValorSaldoFinalMensual(Mes:any,Anio:any){
+  let _ValorFinalMensual:any=[]
+  _ValorFinalMensual=this.DataSaldoFinalMensual.filter((data:any)=>data.Mes==Mes && data.Anio==Anio)
+  if(_ValorFinalMensual.length>0){
+    return _ValorFinalMensual[0].Valor
+  }
+  else {
+    return 0
+  }
+}
 
 }
