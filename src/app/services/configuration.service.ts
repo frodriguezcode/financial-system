@@ -411,6 +411,34 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .ref.update({Activo:false});
     }
 
+  posicionarSemanas(semanas:any){
+    semanas.sort((a, b) => {
+      if (a.Anio !== b.Anio) return a.Anio - b.Anio;
+      if (a.Mes !== b.Mes) return a.Mes - b.Mes;
+      return a.NumSemana - b.NumSemana;
+  });
+  
+  // Paso 2: Encontrar las semanas iniciales y finales por mes
+  const semanasConPosicion = semanas.map((semana, index, array) => {
+    const esPrimeraSemana = index === 0 || semana.Anio !== array[index - 1].Anio || semana.Mes !== array[index - 1].Mes;
+    const esUltimaSemana = index === array.length - 1 || semana.Anio !== array[index + 1].Anio || semana.Mes !== array[index + 1].Mes;
+
+    let posicion = 3;
+    if (esPrimeraSemana && esUltimaSemana) {
+        posicion = 0; // Si es la única semana del mes, es "inicial"
+    } else if (esPrimeraSemana) {
+        posicion = 1;
+    } else if (esUltimaSemana) {
+        posicion = 2;
+    }
+
+    return {
+        ...semana,
+        posicion
+    };
+});
+  return semanasConPosicion
+  }
 
     
   identificarSemanas(semanas: any[]): any[] {

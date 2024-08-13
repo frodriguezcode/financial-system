@@ -50,15 +50,30 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   DataItems:any=[]
   DataItemsMensual:any=[]
   DataItemsAnual:any=[]
+
+  //SaldosIniciales
+  SaldoInicial:any=[]
+  DataSaldoInicial:any=[]
+  DataSaldoInicialMensual:any=[]
+  DataSaldoInicialAnual:any=[]
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-    this.obtenerCategorias()
+   
+    this. obtenerSaldoInicial()
 
+  }
+  obtenerSaldoInicial(){
+    this.conS.obtenerSaldoInicial( this.usuario.idEmpresa).subscribe((resp:any)=>{
+      this.SaldoInicial=resp
+      console.log('SaldoInicial',this.SaldoInicial)
+      this.obtenerCategorias()
+    })
   }
 
   obtenerCategorias(){
     this.conS.obtenerCategoriasFlujos().subscribe((data:any)=>{
       // this.Categorias=data.filter((cate:any)=>cate.Mostrar==true)
+      this.Categorias=[]
      this.Categorias.push(
       {
       "Calculado":true,
@@ -96,7 +111,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
       })
 
 
-    console.log('Categorias',this.Categorias)
+   
     
     this.Categorias.forEach(categoria => {
       this.toggleCategoria(categoria.id)
@@ -108,15 +123,16 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
     this.categoriasExpandidas[id] = !this.categoriasExpandidas[id];
   }
   
-     obtenerItems(){
+obtenerItems(){
       this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
+        this.Items=[]
           this.Items=resp;
-          console.log('Items',this.Items)
+      
          this.obtenerRegistros()
       })
-     }
+}
   
-     obtenerRegistros(){
+obtenerRegistros(){
       this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
         this.Registros=[]  
         resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
@@ -153,23 +169,116 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
           this.Registros.push(_Registro)
           });
        
-          console.log('Registros',this.Registros)
           const uniqueMesNumMesSet = new Set(this.Registros.map(item => JSON.stringify({ Mes: item.MesRegistro, NumMes: item.NumMes })));
+          this.SaldoInicial.forEach(item => {
+            uniqueMesNumMesSet.add(JSON.stringify({ Mes: item.MesRegistro, NumMes: Number(item.NumMes) }));
+          });
           const uniqueMesNumMes = Array.from(uniqueMesNumMesSet).map((item:any) => JSON.parse(item));
+
           const uniqueNumSemanaSet = new Set(this.Registros.map(item => JSON.stringify({ NumSemana: item.NumSemana, Semana: "Semana " + item.NumSemana, Mes:item.NumMes,Anio:item.AnioRegistro  })));
+          this.SaldoInicial.forEach(item => {
+            uniqueNumSemanaSet.add(JSON.stringify({ NumSemana: item.SemanaNum, Semana: "Semana " + item.SemanaNum, Mes:Number(item.NumMes),Anio:item.AnioRegistro }));
+          });         
           const uniqueNumSemana = Array.from(uniqueNumSemanaSet).map((item:any) => JSON.parse(item));
+
+
           const uniqueAniosSet = new Set(this.Registros.map(item => JSON.stringify({ Anio: item.AnioRegistro})));
+          this.SaldoInicial.forEach(item => {
+            uniqueAniosSet.add(JSON.stringify({Anio:item.AnioRegistro }));
+          });   
           const uniqueAnios= Array.from(uniqueAniosSet).map((item:any) => JSON.parse(item));
 
-          this.Semanas=uniqueNumSemana.sort((a:any, b:any) => a.NumSemana- b.NumSemana)
+          const semanasIdentificadas = this.conS.posicionarSemanas(uniqueNumSemana);
+          //this.Semanas=uniqueNumSemana.sort((a:any, b:any) => a.NumSemana- b.NumSemana)
+          this.Semanas=semanasIdentificadas
+          console.log('semanasIdentificadas',semanasIdentificadas)
           this.Meses=uniqueMesNumMes.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=uniqueAnios.sort((a:any, b:any) => a.Anio- b.Anio)
           this.construirCabecera()
           });
-   }
+}
 
 getSemanasByMesAnio(Anio:any,NumMes:any){
   return this.Semanas.filter((sem:any)=>sem.Mes==NumMes && sem.Anio==Anio)
+}
+
+getValorSaldoInicial(NumSemana:any,Mes:any,Anio:any,Posicion:any){
+if(Posicion==0 || Posicion==1){
+  let _Data: any=[];
+  _Data=this.SaldoInicial.filter((saldo:any)=>saldo
+  && saldo.SemanaNum==NumSemana
+  && saldo.NumMes==Mes
+  && saldo.AnioRegistro==Anio
+  )
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    let UltimaSemana:any=[]
+    if(Mes==1){
+      UltimaSemana= this.getSemanasByMesAnio(Anio-1,12).filter((sem:any)=>(sem.posicion==0 || sem.posicion==2))
+
+    }
+    else{
+      UltimaSemana= this.getSemanasByMesAnio(Anio,(Mes-1)).filter((sem:any)=>(sem.posicion==0 || sem.posicion==2))
+
+    }
+  
+    if(UltimaSemana.length>0){
+      return this.getValorSaldoFinal(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes,UltimaSemana[0].Anio,UltimaSemana[0].posicion)
+  
+    }
+    else {
+      return 0
+    }
+
+
+   
+  }
+
+}
+else if(Posicion==2){
+ return 20
+}
+else {
+  return 30
+}
+
+}
+
+getValorSaldoFinal(NumSemana:any,Mes:any,Anio:any,Posicion:any){
+
+  return  this.getValorSaldoInicial(NumSemana,Mes,Anio,Posicion) + this.getDataFlujoLibre(NumSemana,Mes,Anio)
+
+}
+getSaldoInicialMensual(Mes:any,Anio:any){
+  let UltimaSemana:any=[]
+  UltimaSemana= this.getSemanasByMesAnio(Anio,Mes).filter((sem:any)=>(sem.posicion==0 || sem.posicion==1))
+
+  if(UltimaSemana.length>0){
+    return this.getValorSaldoInicial(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes,UltimaSemana[0].Anio,UltimaSemana[0].posicion)
+
+  }
+  else {
+    return 0
+  }
+}
+getSaldoFinalMensual(Mes:any,Anio:any){
+  let UltimaSemana:any=[]
+  UltimaSemana= this.getSemanasByMesAnio(Anio,Mes).filter((sem:any)=>(sem.posicion==0 || sem.posicion==2))
+
+  if(UltimaSemana.length>0){
+    return this.getValorSaldoFinal(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes,UltimaSemana[0].Anio,UltimaSemana[0].posicion)
+
+  }
+  else {
+    return 0
+  }
 }
 
 getValorCategoria(idCategoria:any,NumSemana:any,Mes:any,Anio:any){
@@ -252,7 +361,14 @@ this.Categorias.forEach((categ:any) => {
         if (!this.DataCategorias[key]) {
           this.DataCategorias[key] =[];
         }
-        if(categ.Orden==3) {
+        if(categ.Orden==0) {
+          
+          this.DataCategorias[key].push({
+            "Valor": this.getValorSaldoInicial(sem.NumSemana,mes.NumMes,anio.Anio,sem.posicion)
+  
+          });
+        }
+     else if(categ.Orden==3) {
           
           this.DataCategorias[key].push({
             "Valor": this.getDataFlujoOperativo(sem.NumSemana,mes.NumMes,anio.Anio)
@@ -276,6 +392,12 @@ this.Categorias.forEach((categ:any) => {
   
           });
         }
+      else if(categ.Orden==11) {     
+          this.DataCategorias[key].push({
+            "Valor": this.getValorSaldoFinal(sem.NumSemana,mes.NumMes,anio.Anio,sem.posicion)
+  
+          });
+        }
         else {
           this.DataCategorias[key].push({
             "Valor": this.getValorCategoria(categ.id,sem.NumSemana,mes.NumMes,anio.Anio) 
@@ -288,7 +410,7 @@ this.Categorias.forEach((categ:any) => {
     })
   
 });
-console.log('DataCategorias',this.DataCategorias)
+
 this.getDataItems()
 this.getDataItemMensual()
 this.getDataItemAnual()
@@ -302,10 +424,24 @@ this.Categorias.forEach((categ:any) => {
         if (!this.DataCategoriasMensual[key]) {
           this.DataCategoriasMensual[key] =[];
         }
-        this.DataCategoriasMensual[key].push({
-          "Valor": this.getValorCategoriaMensual(categ.id,mes.NumMes,anio.Anio)
+        
+        if(categ.Orden==0) {
+          this.DataCategoriasMensual[key].push({
+            "Valor": this.getSaldoInicialMensual(mes.NumMes,anio.Anio)
+          });
+        }
+      else  if(categ.Orden==11) {
+          this.DataCategoriasMensual[key].push({
+            "Valor": this.getSaldoFinalMensual(mes.NumMes,anio.Anio)
+          });
+        }
+        else {
+          this.DataCategoriasMensual[key].push({
+            "Valor": this.getValorCategoriaMensual(categ.id,mes.NumMes,anio.Anio)
+  
+          });
 
-        });
+        }
 
        
       })
@@ -581,15 +717,17 @@ return this.getDataFlujoOperativo(NumSemana,Mes,Anio)
         "Tipo":4
       })
     });
-    console.log('Cabecera',this.Cabecera)
+
     this.getDataCategorias()
     this.getDataCategoriasMensual()
     this.getDataCategoriasAnual()
-   
+  
    }
    getItems(idCategoria:any){
     let _Items:any=[]
     _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria)
     return _Items
     }
+
+
 }
