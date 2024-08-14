@@ -315,6 +315,7 @@ obtenerRegistros(){
         "Orden":element.Orden,
         "Semana":element.Semana,
         "Valor":element.Valor,
+        "Valor2":element.Valor,
         "Tipo":element.Tipo || '',
         "id":element.id,
         "idCategoria":element.idCategoria,
@@ -334,7 +335,7 @@ obtenerRegistros(){
       }
       this.Registros.push(_Registro)
     })
-
+    console.log('Registros',this.Registros)
     this.registrosBackUp=this.Registros
     this.calcularImporteTotal(this.Registros)
     this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
@@ -359,13 +360,22 @@ getWeek(date: Date): number {
 }
 validarEgreso(tipo:any,monto:any,index:any){
   let _RegistroEncontrado:any=[]
+  let ValorRegistro:any
+
   _RegistroEncontrado=this.Registros.find((reg:any)=>reg.Orden==index)
-  if(_RegistroEncontrado.Valor>0 && tipo==2){
+if(typeof _RegistroEncontrado.Valor=='string'){
+  ValorRegistro=Number(_RegistroEncontrado.Valor.replace('$','')) 
+}
+else {
+  ValorRegistro=_RegistroEncontrado.Valor
+}
+  if(ValorRegistro >0 && tipo==2){
     this.isNegativo=false
     return false
   }
   else {
     this.isNegativo=true
+
     return true
   }
 }
@@ -627,6 +637,12 @@ obtenerCuentas(){
     this.cuentas=resp
 
   })
+}
+
+getCategoriasByTipo(tipo:any){
+  let categorias:any=[]
+  categorias=this.Categorias.filter((cat:any)=>cat.Tipo==tipo)
+  return categorias
 }
 crearRegistro(tipo:any) {
 

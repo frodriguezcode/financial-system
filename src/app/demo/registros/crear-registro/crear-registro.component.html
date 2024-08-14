@@ -145,7 +145,7 @@
         <td class="text-center" >
    
           <p-dropdown
-          [options]="Categorias"
+          [options]="this.getCategoriasByTipo(registros.idTipo)"
           [(ngModel)]="registros.idCategoria"
           name="ItemSeleccionados"
           optionLabel="Nombre"
