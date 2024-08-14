@@ -18,7 +18,9 @@
     [(ngModel)]="CuentaBancariaSeleccionada" 
     optionLabel="CuentaNombre" 
     placeholder="Seleccione una cuenta" />
-
+<br>
+<button *ngIf="Expandir==false" (click)="expandirTodo()" type="button" class="btn btn-success m-1 mt-2">Expandir Todo <i class="fa-solid fa-plus"></i></button>    
+<button *ngIf="Expandir==true" (click)="contraerTodo()" type="button" class="btn btn-danger m-1 mt-2">Contraer Todo <i class="fa-solid fa-minus"></i></button>    
 <div *ngIf="cargar" class="table-responsive mt-1">
 <table class="table">
   <!-- <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header categoria-toggle"> -->

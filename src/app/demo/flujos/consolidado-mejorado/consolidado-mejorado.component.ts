@@ -67,6 +67,8 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   CuentasBancarias:any=[]
   CuentaBancariaSeleccionada
+
+  Expandir:boolean=false
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
    
@@ -177,14 +179,30 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
    
     
-    this.Categorias.forEach(categoria => {
-      this.toggleCategoria(categoria.id)
-    }); 
+      this.Categorias.forEach(element => {
+        this.categoriasExpandidas[element.id]=true
+        
+      });
       this.obtenerItems()
     })
   }
   toggleCategoria(id: number) {
+    console.log('categoriasExpandidas',this.categoriasExpandidas)
     this.categoriasExpandidas[id] = !this.categoriasExpandidas[id];
+  }
+  expandirTodo(){
+    this.Expandir=!this.Expandir
+    this.Categorias.forEach(element => {
+      this.categoriasExpandidas[element.id]=false
+      
+    });
+  }
+  contraerTodo(){
+    this.Expandir=!this.Expandir
+    this.Categorias.forEach(element => {
+      this.categoriasExpandidas[element.id]=true
+      
+    });
   }
   
 obtenerItems(){
