@@ -3,17 +3,66 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Registro } from '../models/registro';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigurationService {
   private apiUrl = 'http://worldtimeapi.org/api/timezone';
-  constructor( private afs: AngularFirestore,private http: HttpClient) { }
+  constructor( private afs: AngularFirestore,private http: HttpClient) { 
+    moment.updateLocale('es', {
+      week: {
+        dow: 0, // Sunday is the first day of the week
+        doy: 6  // The week that contains Jan 1st is the first week of the year.
+      }
+    });
+  }
 
   getCalendario(){
     let _Calendario:[
       
     ]
+  }
+  private capitalizeFirstLetter(text: string): string {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+  agruparPorAnoMesSemana(catalogoFechas: any[]): any {
+    const agrupado = catalogoFechas.reduce((acc, current) => {
+      const clave = `${current.año}-${current.numeroMes}-Semana${current.semana}`;
+      if (!acc[clave]) {
+        acc[clave] = {
+          año: current.año,
+          mes: current.mes,
+          numeroMes: current.numeroMes,
+          semana: current.numSemana,
+          fechas: []
+        };
+      }
+      acc[clave].fechas.push(current.fecha);
+      return acc;
+    }, {});
+
+    return Object.values(agrupado);
+  }
+  generarCatalogoFechas(fechaInicio: string): any[] {
+    const catalogoFechas = [];
+    let fecha = moment(fechaInicio);
+    const hoy = moment();  // Fecha de hoy
+
+    while (fecha.isSameOrBefore(hoy)) {
+      catalogoFechas.push({
+        fecha: fecha.format('YYYY-MM-DD'),
+        mes:this.capitalizeFirstLetter(fecha.format('MMMM')),  // Esto ahora estará en español
+        numSemana: fecha.week(),
+        numeroMes:Number(fecha.format('MM')),
+        semana:"Semana "+ fecha.isoWeek(),
+        año: Number(fecha.format('YYYY'))
+      });
+      fecha.add(1, 'days');
+    }
+
+    return catalogoFechas;
   }
   getDaysOfMonth(timezone: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${timezone}`);
@@ -423,8 +472,13 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     const esPrimeraSemana = index === 0 || semana.Anio !== array[index - 1].Anio || semana.Mes !== array[index - 1].Mes;
     const esUltimaSemana = index === array.length - 1 || semana.Anio !== array[index + 1].Anio || semana.Mes !== array[index + 1].Mes;
 
+
     let posicion = 3;
-    if (esPrimeraSemana && esUltimaSemana) {
+    if (semana.Mes === 1 && semana.NumSemana === 52) {
+      posicion = 1;
+    } 
+
+   else if (esPrimeraSemana && esUltimaSemana) {
         posicion = 0; // Si es la única semana del mes, es "inicial"
     } else if (esPrimeraSemana) {
         posicion = 1;

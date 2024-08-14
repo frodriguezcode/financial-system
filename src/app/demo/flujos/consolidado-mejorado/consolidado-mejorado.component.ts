@@ -67,16 +67,43 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   CuentasBancarias:any=[]
   CuentaBancariaSeleccionada
+  SemanasTodas:any=[]
 
   Expandir:boolean=false
+  catalogoFechas: any[] = [];
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
    
     this. obtenerSaldoInicial()
     this. obtenerSucursales()
     this.obtenerBancos()
+    this. getCatalogoFechas()
 
   }
+
+  getCatalogoFechas(){
+    const fechaInicio = '2023-01-01';
+    const dias = 365; // Número de días a generar
+    let _Semanas:any=[]
+    this.catalogoFechas = this.conS.generarCatalogoFechas(fechaInicio);
+
+    let SemanasAgrupadas:any=[]
+    SemanasAgrupadas=this.conS.agruparPorAnoMesSemana(this.catalogoFechas);
+    //console.log('SemanasAgrupadas',SemanasAgrupadas)
+    SemanasAgrupadas.forEach((fecha:any)=>{
+      _Semanas.push(
+        { 
+        NumSemana: fecha.semana, 
+        Semana: "Semana " + fecha.semana, 
+        SemanaAnio: "Semana " + fecha.semana + ' ' + '(' + fecha.año + ')', 
+        Mes:fecha.numeroMes,
+        Anio:fecha.año
+      })
+    })
+   this.SemanasTodas= this.conS.posicionarSemanas(_Semanas);
+   console.log('SemanasTodas',this.SemanasTodas)
+
+   }
 
   filtrarData(){
     let SemanasRegistros:any=[]
@@ -278,6 +305,7 @@ obtenerRegistros(){
             uniqueAniosSet.add(JSON.stringify({Anio:item.AnioRegistro }));
           });   
           const uniqueAnios= Array.from(uniqueAniosSet).map((item:any) => JSON.parse(item));
+          console.log('uniqueSemanas',uniqueNumSemana)
 
           const semanasIdentificadas = this.conS.posicionarSemanas(uniqueNumSemana);
           //this.Semanas=uniqueNumSemana.sort((a:any, b:any) => a.NumSemana- b.NumSemana)

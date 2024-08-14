@@ -64,8 +64,9 @@ export default class FlujoConsolidadoComponent implements OnInit {
   SemanasHeader:any=[];
 
   mostrarSoloTotales: boolean = false;
-
+  catalogoFechas: any[] = [];
  ngOnInit(): void {
+
   if(this.authS.validarAtributo('vTMvQD4PmBQn4fXS2h0P',[])==true){
 
  
@@ -155,7 +156,16 @@ export default class FlujoConsolidadoComponent implements OnInit {
   this.obtenerSucursales()
   this.ObtenerCuentasBanco()
   this.obtenerCategorias()
+  this. getCatalogoFechas()
 
+ }
+
+ getCatalogoFechas(){
+  const fechaInicio = '2023-01-01';
+  const dias = 365; // Número de días a generar
+
+  this.catalogoFechas = this.conS.generarCatalogoFechas(fechaInicio);
+  console.log('catalogoFechas',this.catalogoFechas)
  }
  toggleCategoria(id: number) {
   this.categoriasExpandidas[id] = !this.categoriasExpandidas[id];
