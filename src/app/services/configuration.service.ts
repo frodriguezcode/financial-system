@@ -27,6 +27,40 @@ export class ConfigurationService {
   private capitalizeFirstLetter(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
+
+  posicionarSemanas(semanas:any){
+    semanas.sort((a, b) => {
+      if (a.Anio !== b.Anio) return a.Anio - b.Anio;
+      if (a.Mes !== b.Mes) return a.Mes - b.Mes;
+      return a.NumSemana - b.NumSemana;
+  });
+  
+  // Paso 2: Encontrar las semanas iniciales y finales por mes
+  const semanasConPosicion = semanas.map((semana, index, array) => {
+    const esPrimeraSemana = index === 0 || semana.Anio !== array[index - 1].Anio || semana.Mes !== array[index - 1].Mes;
+    const esUltimaSemana = index === array.length - 1 || semana.Anio !== array[index + 1].Anio || semana.Mes !== array[index + 1].Mes;
+
+
+    let posicion = 3;
+    if (semana.Mes === 1 && semana.NumSemana === 52) {
+      posicion = 1;
+    } 
+
+   else if (esPrimeraSemana && esUltimaSemana) {
+        posicion = 0; // Si es la única semana del mes, es "inicial"
+    } else if (esPrimeraSemana) {
+        posicion = 1;
+    } else if (esUltimaSemana) {
+        posicion = 2;
+    }
+
+    return {
+        ...semana,
+        posicion
+    };
+});
+  return semanasConPosicion
+  }
   agruparPorAnoMesSemana(catalogoFechas: any[]): any {
     const agrupado = catalogoFechas.reduce((acc, current) => {
       const clave = `${current.año}-${current.numeroMes}-Semana${current.semana}`;
@@ -53,8 +87,9 @@ export class ConfigurationService {
     while (fecha.isSameOrBefore(hoy)) {
       catalogoFechas.push({
         fecha: fecha.format('YYYY-MM-DD'),
-        mes:this.capitalizeFirstLetter(fecha.format('MMMM')),  // Esto ahora estará en español
-        numSemana: fecha.week(),
+        mes:this.capitalizeFirstLetter(fecha.format('MMMM')),
+        numSemana: fecha.isoWeek(),
+       // numSemana: fecha.week(),
         numeroMes:Number(fecha.format('MM')),
         semana:"Semana "+ fecha.isoWeek(),
         año: Number(fecha.format('YYYY'))
@@ -460,39 +495,7 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .ref.update({Activo:false});
     }
 
-  posicionarSemanas(semanas:any){
-    semanas.sort((a, b) => {
-      if (a.Anio !== b.Anio) return a.Anio - b.Anio;
-      if (a.Mes !== b.Mes) return a.Mes - b.Mes;
-      return a.NumSemana - b.NumSemana;
-  });
-  
-  // Paso 2: Encontrar las semanas iniciales y finales por mes
-  const semanasConPosicion = semanas.map((semana, index, array) => {
-    const esPrimeraSemana = index === 0 || semana.Anio !== array[index - 1].Anio || semana.Mes !== array[index - 1].Mes;
-    const esUltimaSemana = index === array.length - 1 || semana.Anio !== array[index + 1].Anio || semana.Mes !== array[index + 1].Mes;
 
-
-    let posicion = 3;
-    if (semana.Mes === 1 && semana.NumSemana === 52) {
-      posicion = 1;
-    } 
-
-   else if (esPrimeraSemana && esUltimaSemana) {
-        posicion = 0; // Si es la única semana del mes, es "inicial"
-    } else if (esPrimeraSemana) {
-        posicion = 1;
-    } else if (esUltimaSemana) {
-        posicion = 2;
-    }
-
-    return {
-        ...semana,
-        posicion
-    };
-});
-  return semanasConPosicion
-  }
 
     
   identificarSemanas(semanas: any[]): any[] {

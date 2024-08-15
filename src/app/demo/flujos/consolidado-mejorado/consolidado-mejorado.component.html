@@ -1,7 +1,15 @@
 
 <p-multiSelect 
+ *ngIf="!this.MostrarTodasSemanas"
     class="m-1"
     [options]="Semanas" 
+    [(ngModel)]="SemanasSeleccionadas" 
+    optionLabel="SemanaAnio" 
+    placeholder="Seleccione semanas" />
+<p-multiSelect 
+*ngIf="this.MostrarTodasSemanas"
+    class="m-1"
+    [options]="SemanasTodas" 
     [(ngModel)]="SemanasSeleccionadas" 
     optionLabel="SemanaAnio" 
     placeholder="Seleccione semanas" />
@@ -19,6 +27,14 @@
     optionLabel="CuentaNombre" 
     placeholder="Seleccione una cuenta" />
 <br>
+
+<!-- <div class="form-check">
+  <input (change)="VerTodasSemanas()" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+  <label class="form-check-label" for="flexCheckDefault">
+   Ver solo semanas con valores
+  </label>
+</div> -->
+
 <button *ngIf="Expandir==false" (click)="expandirTodo()" type="button" class="btn btn-success m-1 mt-2">Expandir Todo <i class="fa-solid fa-plus"></i></button>    
 <button *ngIf="Expandir==true" (click)="contraerTodo()" type="button" class="btn btn-danger m-1 mt-2">Contraer Todo <i class="fa-solid fa-minus"></i></button>    
 <div *ngIf="cargar" class="table-responsive mt-1">

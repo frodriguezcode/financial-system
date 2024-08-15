@@ -37,6 +37,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   Cabecera:any=[]
   usuario:any
   cargar:boolean=false
+  MostrarTodasSemanas:boolean=false
   //Categorías
   DataCategorias:any=[]
   DataCategoriasMensual:any=[]
@@ -97,6 +98,9 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
         Semana: "Semana " + fecha.semana, 
         SemanaAnio: "Semana " + fecha.semana + ' ' + '(' + fecha.año + ')', 
         Mes:fecha.numeroMes,
+        NumMes:fecha.numeroMes,
+        MesNombre:fecha.mes,
+        Fechas:fecha.fechas,
         Anio:fecha.año
       })
     })
@@ -310,6 +314,7 @@ obtenerRegistros(){
           const semanasIdentificadas = this.conS.posicionarSemanas(uniqueNumSemana);
           //this.Semanas=uniqueNumSemana.sort((a:any, b:any) => a.NumSemana- b.NumSemana)
           this.Semanas=semanasIdentificadas
+      
 
           this.Meses=uniqueMesNumMes.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=uniqueAnios.sort((a:any, b:any) => a.Anio- b.Anio)
@@ -318,8 +323,21 @@ obtenerRegistros(){
 });
 }
 
+VerTodasSemanas(){
+  this.MostrarTodasSemanas=!this.MostrarTodasSemanas
+  console.log('SemanasTodas',this.SemanasTodas)
+  this.construirCabecera()
+}
 getSemanasByMesAnio(Anio:any,NumMes:any){
-  return this.Semanas.filter((sem:any)=>sem.Mes==NumMes && sem.Anio==Anio)
+  if(this.MostrarTodasSemanas==true){
+
+    return this.SemanasTodas.filter((sem:any)=>sem.Mes==NumMes && sem.Anio==Anio)
+  }
+
+  else {
+
+    return this.Semanas.filter((sem:any)=>sem.Mes==NumMes && sem.Anio==Anio)
+  }
 }
 
 getValorSaldoInicial(NumSemana:any,Mes:any,Anio:any,Posicion:any){
@@ -362,12 +380,28 @@ if(Posicion==0 || Posicion==1){
   }
 
 }
-else if(Posicion==2){
- return 20
+else if (Posicion == 2) {
+  let DataSaldoFinal:any=[]
+  let Valor:any
+  DataSaldoFinal=this.DataSaldoFinal.filter((saldo:any)=>saldo.Mes==Mes && saldo.Anio==Anio && saldo.NumSemana==NumSemana - 1)
+  if (DataSaldoFinal.length >= 1) {
+   Valor=DataSaldoFinal[0].Valor
+  } else {
+    Valor= 0; // Condición de terminación cuando NumSemana es menor o igual a 1
+  }
+  return Valor
+} else {
+  let DataSaldoFinal:any=[]
+  let Valor:any
+  DataSaldoFinal=this.DataSaldoFinal.filter((saldo:any)=>saldo.Mes==Mes && saldo.Anio==Anio && saldo.NumSemana==NumSemana - 1)
+  if (DataSaldoFinal.length >= 1) {
+   Valor=DataSaldoFinal[0].Valor
+  } else {
+    Valor= 0; // Condición de terminación cuando NumSemana es menor o igual a 1
+  }
+  return Valor
 }
-else {
-  return 30
-}
+
 
 }
 
@@ -992,9 +1026,6 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
 
       })      
     })      
-
-
-
     this.getDataCategorias()
     this.getDataCategoriasMensual()
     this.getDataCategoriasAnual()
