@@ -5,16 +5,12 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { MultiSelectModule } from 'primeng/multiselect';
-
-import { CheckboxModule } from 'primeng/checkbox';
-import { AuthService } from 'src/app/services/auth.service';
-import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { TreeSelectModule } from 'primeng/treeselect';
 
 @Component({
   selector: 'app-consolidado-mejorado',
   standalone: true,
-  imports: [CommonModule, SharedModule,MultiSelectModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule],
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
 })
@@ -30,6 +26,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   Semanas:any=[]
   SemanasSingle:any=[]
   SemanasSeleccionadas:any=[]
+  CatalogoFechas:any=[]
   Meses:any=[]
   MesesSeleccionadas:any=[]
   Anios:any=[]
@@ -72,6 +69,8 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   Expandir:boolean=false
   catalogoFechas: any[] = [];
+  MaestroSemanasMesAnio:any=[]
+  MaestroSeleccionado:any
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
    
@@ -105,7 +104,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
       })
     })
    this.SemanasTodas= this.conS.posicionarSemanas(_Semanas);
-   console.log('SemanasTodas',this.SemanasTodas)
+
 
    }
 
@@ -218,7 +217,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
     })
   }
   toggleCategoria(id: number) {
-    console.log('categoriasExpandidas',this.categoriasExpandidas)
+
     this.categoriasExpandidas[id] = !this.categoriasExpandidas[id];
   }
   expandirTodo(){
@@ -283,9 +282,9 @@ obtenerRegistros(){
           });
           this.RegistrosBackUp=this.Registros
        
-          const uniqueMesNumMesSet = new Set(this.Registros.map(item => JSON.stringify({ Mes: item.MesRegistro, NumMes: item.NumMes })));
+          const uniqueMesNumMesSet = new Set(this.Registros.map(item => JSON.stringify({ Mes: item.MesRegistro, NumMes: item.NumMes})));
           this.SaldoInicial.forEach(item => {
-            uniqueMesNumMesSet.add(JSON.stringify({ Mes: item.MesRegistro, NumMes: Number(item.NumMes) }));
+            JSON.stringify({ Mes: item.MesRegistro, NumMes: Number(item.NumMes) })
           });
           const uniqueMesNumMes = Array.from(uniqueMesNumMesSet).map((item:any) => JSON.parse(item));
 
@@ -309,7 +308,7 @@ obtenerRegistros(){
             uniqueAniosSet.add(JSON.stringify({Anio:item.AnioRegistro }));
           });   
           const uniqueAnios= Array.from(uniqueAniosSet).map((item:any) => JSON.parse(item));
-          console.log('uniqueSemanas',uniqueNumSemana)
+     
 
           const semanasIdentificadas = this.conS.posicionarSemanas(uniqueNumSemana);
           //this.Semanas=uniqueNumSemana.sort((a:any, b:any) => a.NumSemana- b.NumSemana)
@@ -318,14 +317,65 @@ obtenerRegistros(){
 
           this.Meses=uniqueMesNumMes.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=uniqueAnios.sort((a:any, b:any) => a.Anio- b.Anio)
+
+        console.log('Anios',this.Anios)
+        console.log('Meses',this.Meses)
+        console.log('Semanas',this.Semanas)
+          let contador:number=0
+          let contadorMes:number=1
+          let dataFechas:any={}
+          this.Anios.forEach(anio => {
+            dataFechas={
+              key: '0' + anio.Anio + contador,
+              label: anio.Anio,
+              data: anio.Anio,
+              icon: 'pi pi-calendar',
+            }
+            let _Children:any=[
+
+            ]
+            this.Meses.forEach(mes => {
+              contadorMes+=1
+              _Children.push({
+                key: '0-0' + contadorMes, 
+                label: mes.Mes || 'Unknown Month', 
+                data: mes.Mes || 'Unknown Data', 
+                icon: 'pi pi-calendar',
+                children: this.getSemanas(anio.Anio, mes.NumMes) || []
+            })
+              
+            });
+            dataFechas.children= _Children
+        this.MaestroSemanasMesAnio.push(dataFechas)
+            
+     });
+          console.log('catalogoFechas',this.MaestroSemanasMesAnio)
   
           this.construirCabecera()
 });
 }
 
+getSemanas(Anio:any,Mes:any){
+  let semanas: any= [];
+  this.Semanas.filter((sem:any)=>sem.Mes==Mes && sem.Anio==Anio).forEach((semana:any) => {
+    semanas.push({ 
+      key: '0-0-0'+semana.NumSemana, 
+      label: semana.Semana, 
+      Mes:semana.Mes,
+      Anio:semana.Anio,
+      posicion:semana.posicion,
+      NumSemana:semana.NumSemana,
+      icon: 'pi pi-calendar', 
+      data: semana.Semana },)
+  });
+
+  return semanas.sort((a:any, b:any) => a.NumSemana - b.NumSemana)
+
+}
+
 VerTodasSemanas(){
   this.MostrarTodasSemanas=!this.MostrarTodasSemanas
-  console.log('SemanasTodas',this.SemanasTodas)
+
   this.construirCabecera()
 }
 getSemanasByMesAnio(Anio:any,NumMes:any){

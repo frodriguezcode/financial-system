@@ -1,4 +1,17 @@
 
+
+<p-treeSelect 
+  *ngIf="MaestroSemanasMesAnio.length > 0"
+  class="custom-tree-select" 
+  [(ngModel)]="MaestroSeleccionado" 
+  [options]="MaestroSemanasMesAnio" 
+  display="chip" 
+  [metaKeySelection]="false" 
+  selectionMode="checkbox" 
+  placeholder="Selector de Semanas por año" 
+/>
+
+
 <p-multiSelect 
  *ngIf="!this.MostrarTodasSemanas"
     class="m-1"
