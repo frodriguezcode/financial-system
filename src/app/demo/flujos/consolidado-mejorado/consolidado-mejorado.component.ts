@@ -80,6 +80,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
     this. getCatalogoFechas()
 
   }
+ 
 
   getCatalogoFechas(){
     const fechaInicio = '2023-01-01';
@@ -107,6 +108,44 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
 
    }
+   filtrarBySemanas(){
+    let SemanasRegistros:any=[]
+    let MesesRegistros:any=[]
+    let AniosRegistros:any=[]
+    let CriteriosRegistros:any=[]
+    let CriteriosSaldos:any=[]
+
+    if(this.MaestroSeleccionado.length>0 ){
+      let MaestroSelec=this.MaestroSeleccionado.filter(obj => !('expanded' in obj));
+        MaestroSelec.forEach((maestro:any) => {
+        AniosRegistros.push(maestro.Anio)
+        MesesRegistros.push(maestro.parent.data)
+        SemanasRegistros.push(maestro.NumSemana)
+      
+        
+      });
+    
+    }
+
+
+    CriteriosRegistros={
+      NumSemana:SemanasRegistros,
+      AnioRegistro:AniosRegistros,
+      MesRegistro:MesesRegistros,
+
+    }
+    CriteriosSaldos={
+      SemanaNum:SemanasRegistros,
+      AnioRegistro:AniosRegistros,
+      MesRegistro:MesesRegistros,
+
+    }
+    this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
+    this.SaldoInicial= this.conS.filtradoDinamico(CriteriosSaldos,this.SaldoInicialBack)
+
+   this.construirCabecera()
+
+  }
 
   filtrarData(){
     let SemanasRegistros:any=[]
