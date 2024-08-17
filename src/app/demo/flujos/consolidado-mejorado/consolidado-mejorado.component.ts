@@ -360,36 +360,7 @@ obtenerRegistros(){
         console.log('Anios',this.Anios)
         console.log('Meses',this.Meses)
         console.log('Semanas',this.Semanas)
-          let contador:number=0
-          let contadorMes:number=1
-          let dataFechas:any={}
-          this.Anios.forEach(anio => {
-            dataFechas={
-              key: '0' + anio.Anio + contador,
-              label: anio.Anio,
-              data: anio.Anio,
-              icon: 'pi pi-calendar',
-            }
-            let _Children:any=[
 
-            ]
-            this.Meses.forEach(mes => {
-              contadorMes+=1
-              _Children.push({
-                key: '0-0' + contadorMes, 
-                label: mes.Mes || 'Unknown Month', 
-                data: mes.Mes || 'Unknown Data', 
-                icon: 'pi pi-calendar',
-                children: this.getSemanas(anio.Anio, mes.NumMes) || []
-            })
-              
-            });
-            dataFechas.children= _Children
-        this.MaestroSemanasMesAnio.push(dataFechas)
-            
-     });
-          console.log('catalogoFechas',this.MaestroSemanasMesAnio)
-  
           this.construirCabecera()
 });
 }
