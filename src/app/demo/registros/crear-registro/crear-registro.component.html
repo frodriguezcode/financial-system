@@ -1,17 +1,22 @@
 <app-card cardTitle="REGISTROS" [options]="false" >
 <div style="margin-top: -42px;">
   <button type="button" (click)="crearCuenta()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
-    >Crear Cuenta Bancaria <i class="fa-solid fa-plus"></i
+    >Cuenta Bancaria <i class="fa-solid fa-plus"></i
   ></button>
   <button type="button" (click)="crearElemento()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
-    >Crear Centro de Costo <i class="fa-solid fa-plus"></i
+    >Centro de Costo <i class="fa-solid fa-plus"></i
   ></button>
   <button type="button" (click)="crearSocioNegocio()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
-    >Crear Socio de Negocio <i class="fa-solid fa-plus"></i
+    >Socio de Negocio <i class="fa-solid fa-plus"></i
   ></button>
 
 </div>
 
+<div class="d-flex justify-content-center">
+
+  <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info m-1">General</button>
+  <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos</button>
+</div>
 
   <p-table
     #dt1
@@ -47,7 +52,7 @@
             />
           </p-iconField>
         </div>
-        <div class="col-4">
+        <div *ngIf="idTipoRegistro==1" class="col-4">
           <label for="formGroupExampleInput" class="form-label">Buscar por sucursal</label>
           <br>
           <p-dropdown 
@@ -56,14 +61,14 @@
           optionLabel="Nombre" 
           placeholder="Seleccione una sucursal" />
         </div>
-        <div class="col-4">
+        <div  *ngIf="idTipoRegistro==2" class="col-4">
           <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
           <br>
           <p-dropdown 
-          [options]="Sucursales" 
-          [(ngModel)]="SucursaleSeleccionada" 
-          optionLabel="Nombre" 
-          placeholder="Seleccione una sucursal" />
+          [options]="Proyectos" 
+          [(ngModel)]="ProyectoSeleccionado" 
+          optionLabel="NombreSucursal" 
+          placeholder="Seleccione un proyecto" />
         </div>
 
 
@@ -119,7 +124,8 @@
         <th style="text-transform: uppercase;font-size: 13px;">Categoría</th>
         <th style="text-transform: uppercase;font-size: 13px;">Cuenta Contable</th>
         <th style="text-transform: uppercase;font-size: 13px;">banco <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+        <th *ngIf="this.idTipoRegistro==1" style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+        <th *ngIf="this.idTipoRegistro==2" style="text-transform: uppercase;font-size: 13px;">Proyecto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th style="text-transform: uppercase;font-size: 13px;">Importe</th>
         <th style="text-transform: uppercase;font-size: 13px;">Flujo</th>
         <th style="text-transform: uppercase;font-size: 13px;">Socio Negocios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
@@ -204,9 +210,9 @@
           </p-dropdown>
         </td>
 
-        <td class="text-center">
+        <td *ngIf="registros.TipoRegistro==1" class="text-center">
           <p-dropdown
-          [options]="Sucursales"
+          [options]="Proyectos"
           [(ngModel)]="registros.Sucursal"
           name="SucursalesSeleccionadas"
           optionLabel="Nombre"
@@ -219,6 +225,26 @@
           <ng-template pTemplate="selectedItem" let-selectedItem>
             <div class="flex align-items-lg-start gap-2">
               <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        
+        </td>
+        <td *ngIf="registros.TipoRegistro==2" class="text-center">
+          <p-dropdown
+          [options]="Proyectos"
+          [(ngModel)]="registros.Proyecto"
+          name="SucursalesSeleccionadas"
+          optionLabel="NombreSucursal"
+          optionValue="NombreSucursal"
+          [filter]="true"
+          filterBy="NombreSucursal"
+          [showClear]="false"
+          placeholder="Seleccione una sucursal"
+          appendTo="body">
+          <ng-template pTemplate="selectedItem" let-selectedItem>
+            <div class="flex align-items-lg-start gap-2">
+              <div class="seleccion-item">{{ selectedItem.NombreSucursal }}</div>
             </div>
           </ng-template>
         </p-dropdown>

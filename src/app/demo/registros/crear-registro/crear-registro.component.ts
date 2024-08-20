@@ -1,5 +1,5 @@
 // angular import
-import { Component, Injectable, OnInit, importProvidersFrom } from '@angular/core';
+import { Component, Injectable, Input, OnInit, importProvidersFrom } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 // project import
@@ -32,6 +32,7 @@ import ItemsComponent from '../../Items/items.component';
 import SocioNegocioComponent from '../../socios/socios.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { CurrencySymbolPipe } from 'src/app/pipe/currency.pipe';
+import { TabViewModule } from 'primeng/tabview';
 
 @Component({
   selector: 'app-crear',
@@ -63,7 +64,9 @@ import { CurrencySymbolPipe } from 'src/app/pipe/currency.pipe';
     BancosComponent,
     ItemsComponent,
     SocioNegocioComponent,
-    CurrencySymbolPipe
+    CurrencySymbolPipe,
+    TabViewModule,
+    ButtonModule
     
    ],
   templateUrl: './crear-registro.component.html',
@@ -71,6 +74,8 @@ import { CurrencySymbolPipe } from 'src/app/pipe/currency.pipe';
   providers: [MessageService]
 })
 export default class CrearRegistroComponent implements OnInit {
+@Input() TipoRegistro: any;
+activeIndex: number = 0;
   constructor(
     private conS:ConfigurationService,private datePipe: DatePipe, 
     private messageService: MessageService,
@@ -92,7 +97,7 @@ export default class CrearRegistroComponent implements OnInit {
   // *Registros desde la promesa
   _Registros: Registro[];
   clonedRegistros: { [s: string]: Registro } = {};
-
+  idTipoRegistro:number=1
 
   // *Registros desde la promesa
   inputVal = ''; // Initialize inputVal to be empty
@@ -119,6 +124,8 @@ export default class CrearRegistroComponent implements OnInit {
   ItemsCategGroupBack:any= [];
   OrdenMax: number = 0;
   Sucursales: any=[];
+  Proyectos: any=[];
+  ProyectoSeleccionado: any=[];
   SucursaleSeleccionada: any=[];
   CuentasContables:any=[]
   Flujos: any = [
@@ -130,6 +137,7 @@ export default class CrearRegistroComponent implements OnInit {
   Fecha:any= new Date();
   ImporteTotal:number=0
 ngOnInit(): void {
+  console.log('TipoRegistro',this.TipoRegistro)
   this.MesesTodos= [
     
     {
@@ -221,11 +229,34 @@ onInput(event: any) {
 obtenerSucursales(){
   this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe(resp=>{
     this.Sucursales=resp
+    this.obtenerProyectos()
 
-    this.obtenerRegistros()
+    
+  })
+}
+obtenerProyectos(){
+  this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
+  this.Proyectos=resp
+  this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+  this.obtenerRegistros()
+
   })
 }
 
+getNameSucursal(idSucursal:any){
+  if(idSucursal=='0'){
+    return 'General'
+  }
+  else {
+    let sucursal = this.Sucursales.filter((suc: any) => suc.id==idSucursal)
+    if(sucursal.length){
+      return sucursal[0].Sucursal
+    }
+    else{
+      return 'General'
+    }
+  }
+}
 
 obtenerSocios(){
   this.conS.obtenerSocios(this.usuario.idEmpresa).subscribe(resp=>{
@@ -299,7 +330,7 @@ restablecer(){
 }
 obtenerRegistros(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
-    this.Registros=[]
+    this.registrosBackUp=[]
     resp.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
       let _Registro={
         "Activo":element.Activo,
@@ -317,6 +348,7 @@ obtenerRegistros(){
         "Valor":element.Valor,
         "Valor2":element.Valor,
         "Tipo":element.Tipo || '',
+        "TipoRegistro":element.TipoRegistro,
         "id":element.id,
         "idCategoria":element.idCategoria,
         "idEmpresa":element.idEmpresa,
@@ -326,6 +358,7 @@ obtenerRegistros(){
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
         "Sucursal":element.Sucursal || '',
+        "Proyecto":element.Proyecto || '',
         "NombreElemento":element.Elemento.label || '',
         "NumCuenta":element.Cuenta.Cuenta || '',
         "CategoriaNombre":element.idCategoria.Nombre || '',
@@ -333,16 +366,20 @@ obtenerRegistros(){
         "Comentarios":element.Comentarios || '',
 
       }
-      this.Registros.push(_Registro)
+      this.registrosBackUp.push(_Registro)
     })
     console.log('Registros',this.Registros)
-    this.registrosBackUp=this.Registros
+    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
     this.calcularImporteTotal(this.Registros)
     this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
       return Math.max(maxOrden, objeto.Orden);
   }, 0);
     this.cargarFormulario()
   })
+}
+switchTipoRegistro(idTipo){
+  this.idTipoRegistro=idTipo
+  this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
 }
 
 calcularImporteTotal(registros:any){
@@ -496,10 +533,11 @@ salvarRegistro(Registro:any){
       Registro.NumMes=_MesRegistro[0].id
       Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
       Registro.idUsuario=this.usuario.id
-      Registro.TipoRegistro="Normal"
+      Registro.idProyecto=this.getIdProyecto(Registro.Proyecto)
       Registro.Valor=Number(this.quitarSimbolo(Registro.Valor))
       Registro.Usuario=this.usuario.Usuario
 
+      console.log('Registro',Registro)
       
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
@@ -507,6 +545,17 @@ salvarRegistro(Registro:any){
   
     
 
+  }
+}
+
+getIdProyecto(proyectoNombre){
+  let _idProyecto:any=[]
+  _idProyecto=this.Proyectos.filter((proyect:any)=>proyect.NombreSucursal==proyectoNombre)
+  if(_idProyecto.length>0){
+    return _idProyecto[0].id
+  }
+  else {
+    return ''
   }
 }
 
@@ -729,7 +778,6 @@ cargarFormulario(){
     CategoriaNombre:new FormControl('CategoriaNombre'),
     SocioNegocio:new FormControl('SocioNegocio'),
     idSucursal: new FormControl(this.usuario.IdSucursal,[Validators.required]), 
-    Sucursal: new FormControl(this.getNombreSucursal(this.usuario.IdSucursal),[Validators.required]), 
     FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
 }
@@ -760,8 +808,15 @@ hideDialog() {
   this.submitted = false;
 }
 guardarRegistro(idTipo:number){
-
 this.registroForm.value.idTipo=idTipo;
+this.registroForm.value.TipoRegistro=this.idTipoRegistro;
+if(this.idTipoRegistro==1){
+  this.registroForm.value.Sucursal=this.getNombreSucursal(this.usuario.IdSucursal);
+}
+else {
+  this.registroForm.value.Proyecto=this.Proyectos[0].NombreSucursal;
+  console.log('registroForm',this.registroForm.value)
+}
 this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 
 

@@ -80,7 +80,9 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
     this. getCatalogoFechas()
 
   }
- 
+
+
+
 
   getCatalogoFechas(){
     const fechaInicio = '2023-01-01';

@@ -1,7 +1,9 @@
 
 <p-tabView>
   <p-tabPanel header="Registros">
-   <app-crear></app-crear>
+
+        <app-crear [TipoRegistro]="idTipo"></app-crear>
+
   </p-tabPanel>
   <p-tabPanel header="Cuentas Contables">
  <app-elemento></app-elemento>

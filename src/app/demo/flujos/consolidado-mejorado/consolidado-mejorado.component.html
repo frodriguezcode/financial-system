@@ -72,6 +72,7 @@
         </td>
         <ng-container *ngFor="let anio of Anios">
           <ng-container  *ngFor="let mes of Meses">   
+         
               <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
                 <th 
                 class="text-center"

@@ -19,6 +19,7 @@ import { ToastrService } from 'ngx-toastr';
 export default class ProyectosComponent implements OnInit {
   Proyectos:any=[]
   Empresas:any=[]
+  Sucursales:any=[]
   proyectoFound:boolean=false
   ProyectoForm!:FormGroup
   Fecha:any= new Date();
@@ -30,7 +31,7 @@ ngOnInit(): void {
 
   this.obtenerProyectos()
   this.obtenerEmpresas()
-
+  this.obtenerSucursales()
   
 }
 
@@ -41,6 +42,7 @@ cargarFormulario(){
     idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
     Activo: new FormControl(true), 
     Editando: new FormControl(false), 
+    idSucursal: new FormControl('0'), 
     FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
 }
@@ -100,6 +102,13 @@ obtenerProyectos(){
   this.Proyectos=resp
   })
 }
+obtenerSucursales(){
+  this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe((resp: any)=>{
+  this.Sucursales=resp
+  })
+}
+
+
 obtenerEmpresas(){
   this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp: any)=>{
 
