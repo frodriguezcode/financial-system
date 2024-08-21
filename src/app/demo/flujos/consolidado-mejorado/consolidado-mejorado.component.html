@@ -1,8 +1,3 @@
-
-
-
-
-
 <!-- <p-multiSelect 
  *ngIf="!this.MostrarTodasSemanas"
     class="m-1"
@@ -17,36 +12,13 @@
     [(ngModel)]="SemanasSeleccionadas" 
     optionLabel="SemanaAnio" 
     placeholder="Seleccione semanas" /> -->
-<p-multiSelect 
-   
-    class="m-1"
-    [options]="Meses" 
-    [(ngModel)]="MesesSeleccionados" 
-    optionLabel="Mes" 
-    placeholder="Meses" />
-<p-multiSelect 
-    [disabled]="ProyectoSeleccionado.length>0"
-    class="m-1"
-    (onChange)=" filtrarData()"
-    [options]="Sucursales" 
-    [(ngModel)]="SucursalSeleccionada" 
-    optionLabel="Nombre" 
-    placeholder="Seleccione una sucursal" />
-<p-multiSelect 
-    [disabled]="SucursalSeleccionada.length>0"
-    class="m-1"
-    (onChange)=" filtrarData()"
-    [options]="Proyectos" 
-    [(ngModel)]="ProyectoSeleccionado" 
-    optionLabel="NombreSucursal" 
-    placeholder="Seleccione un proyecto" />
-<p-multiSelect 
-    (onChange)=" filtrarData()"
-    class="m-1"
-    [options]="CuentasBancarias" 
-    [(ngModel)]="CuentaBancariaSeleccionada" 
-    optionLabel="CuentaNombre" 
-    placeholder="Seleccione una cuenta" />
+<p-multiSelect class="m-1" [options]="Meses" [(ngModel)]="MesesSeleccionados" optionLabel="Mes" placeholder="Meses" />
+<p-multiSelect [disabled]="ProyectoSeleccionado.length>0" class="m-1" (onChange)=" filtrarData()" [options]="Sucursales"
+  [(ngModel)]="SucursalSeleccionada" optionLabel="Nombre" placeholder="Seleccione una sucursal" />
+<p-multiSelect [disabled]="SucursalSeleccionada.length>0" class="m-1" (onChange)=" filtrarData()" [options]="Proyectos"
+  [(ngModel)]="ProyectoSeleccionado" optionLabel="NombreSucursal" placeholder="Seleccione un proyecto" />
+<p-multiSelect (onChange)=" filtrarData()" class="m-1" [options]="CuentasBancarias"
+  [(ngModel)]="CuentaBancariaSeleccionada" optionLabel="CuentaNombre" placeholder="Seleccione una cuenta" />
 <br>
 
 <!-- <div class="form-check">
@@ -56,114 +28,122 @@
   </label>
 </div> -->
 
-<button *ngIf="Expandir==false" (click)="expandirTodo()" type="button" class="btn btn-success m-1 mt-2">Expandir Todo <i class="fa-solid fa-plus"></i></button>    
-<button *ngIf="Expandir==true" (click)="contraerTodo()" type="button" class="btn btn-danger m-1 mt-2">Contraer Todo <i class="fa-solid fa-minus"></i></button>    
+<button *ngIf="Expandir==false" (click)="expandirTodo()" type="button" class="btn btn-success m-1 mt-2">Expandir Todo <i
+    class="fa-solid fa-plus"></i></button>
+<button *ngIf="Expandir==true" (click)="contraerTodo()" type="button" class="btn btn-danger m-1 mt-2">Contraer Todo <i
+    class="fa-solid fa-minus"></i></button>
 <div *ngIf="this.Cabecera.length>0" class="table-responsive mt-1">
-<table class="table">
-  <!-- <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header categoria-toggle"> -->
+  <table class="table">
+    <!-- <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header categoria-toggle"> -->
     <thead style="color:white" class="sticky-header categoria-toggle">
-    <ng-container  *ngFor="let cab of Cabecera">
-      <ng-container *ngIf="cab.Tipo === 3">
-        <td>
-          <button *ngIf="cab.MostrarBoton==true"  type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)" class="btn btn-danger"><i class="fa-solid fa-minus"></i> </button>
-          <button *ngIf="cab.MostrarBoton==false"  type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)" class="btn btn-success"><i class="fa-solid fa-plus"></i></button>
-        </td>
-      </ng-container>
-        <th *ngIf="cab.Mostrar==true"   class="text-center" style="background-color: rgb(113,189,158,255); ">{{cab.Nombre}}</th>
+      <ng-container *ngFor="let cab of Cabecera">
+        <ng-container *ngIf="cab.Tipo === 3">
+          <td > 
+            <div
+              style="position: absolute; top: -11px; z-index: 5; width: 3rem; display: flex; background-color: transparent;">
+              <button *ngIf="cab.MostrarBoton==true" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+                class="btn btn-danger" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-minus"></i> </button>
+              <button *ngIf="cab.MostrarBoton==false" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+                class="btn btn-warning" style="position: absolute; z-index: 10; left: -20px;"><i class="fa-solid fa-plus"></i></button>
+            </div>
 
-    </ng-container>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let categoria of Categorias; let j = index">
-      <tr [ngClass]="{'cabecera-categoria': categoria.Calculado == true}" (click)="toggleCategoria(categoria.id)">
-        <td [ngClass]="{
+          </td>
+        </ng-container>
+        <th *ngIf="cab.Mostrar==true" class="text-center" style="background-color: rgb(113,189,158,255); ">
+          {{cab.Nombre}}</th>
+
+      </ng-container>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let categoria of Categorias; let j = index">
+        <tr [ngClass]="{'cabecera-categoria': categoria.Calculado == true}" (click)="toggleCategoria(categoria.id)">
+          <td [ngClass]="{
          'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
          'cabecera-categoria-no-calc': categoria.Calculado == false ,
          'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
          
          }">
-          <span class="categoria-toggle">{{ categoria.Nombre }}</span>
-          <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
-            <span *ngIf="categoria.Calculado == false">
-              <i style="cursor: pointer;" class="fa-solid fa-square-minus"></i>
+            <span class="categoria-toggle">{{ categoria.Nombre }}</span>
+            <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
+              <span *ngIf="categoria.Calculado == false">
+                <i style="cursor: pointer;" class="fa-solid fa-square-minus"></i>
+              </span>
             </span>
-          </span>
-          <span *ngIf="categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
-            <span *ngIf="categoria.Calculado == false">
-              <i style="cursor: pointer;" class="fa-solid fa-square-plus"></i>
+            <span *ngIf="categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
+              <span *ngIf="categoria.Calculado == false">
+                <i style="cursor: pointer;" class="fa-solid fa-square-plus"></i>
+              </span>
             </span>
-          </span>
-        </td>
-        <ng-container *ngFor="let anio of Anios">
-          <ng-container  *ngFor="let mes of Meses">   
-        
+          </td>
+          <ng-container *ngFor="let anio of Anios">
+            <ng-container *ngFor="let mes of Meses">
+
               <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
                 <ng-container *ngIf="semana.Mostrar==true">
-                  <th 
-                  class="text-center"
-                  [ngClass]="{
+                  <th class="text-center" [ngClass]="{
                     'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
                     'cabecera-categoria-no-calc': categoria.Calculado == false ,
                     'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
                     
-                    }"
-                  >
-                  {{ "$ " + ( DataCategorias[anio.Anio + '-' + mes.NumMes + '-' + categoria.id + '-' + semana.NumSemana]?.[0]?.Valor| number) }}
+                    }">
+                    {{ "$ " + ( DataCategorias[anio.Anio + '-' + mes.NumMes + '-' + categoria.id + '-' +
+                    semana.NumSemana]?.[0]?.Valor| number) }}
                   </th>
 
                 </ng-container>
-               
+
               </ng-container>
 
-             <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" >
-              <td style="background-color: white;"></td>
-               <td 
-                 class="text-center"
-                 
-                 style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                 {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor| number) }}
-               </td>
+              <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0">
+                <td style="background-color: white;"></td>
+                <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                  {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|
+                  number) }}
+                </td>
 
-             </ng-container> 
-            
+              </ng-container>
+
+            </ng-container>
+            <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
+              class="text-center">
+              {{ "$ " + ( DataCategoriasAnual[anio.Anio + '-' + categoria.id]?.[0]?.Valor| number) }}
+            </td>
           </ng-container>
-          <td  class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
-            {{ "$ " + ( DataCategoriasAnual[anio.Anio + '-' + categoria.id]?.[0]?.Valor| number) }}
-          </td>
-        </ng-container>
-      </tr>
-      <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
-        <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
-          <tr style="background-color: #FAFAFA">
-            <td style="background-color: white"><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
-            <ng-container *ngFor="let anio of Anios">
-              <ng-container *ngFor="let mes of Meses;index as i">
-                <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
+        </tr>
+        <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
+          <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
+            <tr style="background-color: #FAFAFA">
+              <td style="background-color: white"><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre
+                  }}</span></td>
+              <ng-container *ngFor="let anio of Anios">
+                <ng-container *ngFor="let mes of Meses;index as i">
+                  <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
                     <ng-container *ngIf="semana.Mostrar==true">
-                    <td style="font-weight: bolder;" class="text-center" >
-                      {{ "$ " + ( DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id + '-' + semana.NumSemana]?.[0]?.Valor| number) }}
-                    </td>
+                      <td style="font-weight: bolder;" class="text-center">
+                        {{ "$ " + ( DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id + '-' +
+                        semana.NumSemana]?.[0]?.Valor| number) }}
+                      </td>
+                    </ng-container>
+
                   </ng-container>
 
+                  <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0">
+                    <td style="background-color: white;"></td>
+                    <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+                      {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
+
+                    </td>
+                  </ng-container>
                 </ng-container>
-
-                <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" >
-                  <td style="background-color: white;"></td>
-                <td  
-                  style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);"class="text-center">
-                  {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
-
+                <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
+                  class="text-center">
+                  {{ "$ " + ( DataItemsAnual[anio.Anio + '-' + item.id]?.[0]?.Valor| number) }}
                 </td>
-                </ng-container>
               </ng-container>
-              <td  class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
-                {{ "$ " + ( DataItemsAnual[anio.Anio + '-' + item.id]?.[0]?.Valor| number) }}
-               </td>
-            </ng-container>
-          </tr>
+            </tr>
+          </ng-container>
         </ng-container>
       </ng-container>
-    </ng-container>
-  </tbody>
-</table>
+    </tbody>
+  </table>
 </div>
