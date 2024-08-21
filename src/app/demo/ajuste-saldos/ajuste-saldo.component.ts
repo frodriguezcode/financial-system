@@ -18,6 +18,7 @@ export default class AjusteSaldoComponent implements OnInit {
 MesesTodos: any=[];
 Cuentas: any=[];
 SaldosIniciales: any=[];
+Proyectos: any=[];
 usuario:any
 Sucursales:any=[]
 Valor:FormControl=new FormControl(0)
@@ -27,7 +28,9 @@ Semana:FormControl=new FormControl()
 Cuenta:FormControl=new FormControl('')
 Flujo:FormControl=new FormControl('')
 idSucursal:FormControl=new FormControl('')
+idProyecto:FormControl=new FormControl('')
 Fecha:any= new Date();
+idTipoRegistro:number=0
 
 constructor(private conS:ConfigurationService,private datePipe: DatePipe,private toastr: ToastrService){}
 ngOnInit(): void {
@@ -97,6 +100,7 @@ ngOnInit(): void {
   
   ]
   this.obtenerSucursales()
+  this.obtenerProyectos()
   this.obtenerBancos()
   this.obtenerSaldoInicial()
 }
@@ -108,6 +112,34 @@ obtenerBancos(){
     this.Cuentas=resp
 
   })
+}
+
+verifyIdSucursal(){
+ 
+  if(this.idSucursal.value!= '' && this.idSucursal.value!='0'){
+      console.log('idSucursal:', this.idSucursal.value);
+      this.idProyecto.disable();
+      this.idTipoRegistro=1
+    }
+    else {
+      this.idProyecto.enable();
+      this.idTipoRegistro=0
+    }
+
+
+}
+verifyIdProyecto(){
+ 
+  if(this.idProyecto.value!= '' && this.idProyecto.value!='0'){
+      this.idSucursal.disable();
+      this.idTipoRegistro=2
+    }
+    else {
+      this.idSucursal.enable();
+      this.idTipoRegistro=0
+    }
+
+
 }
 
 obtenerSaldoInicial(){
@@ -123,6 +155,29 @@ obtenerSucursales(){
     this.Sucursales=resp
  
   })
+}
+obtenerProyectos(){
+  this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
+    this.Proyectos=resp
+    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+    console.log('Proyectos',this.Proyectos)
+ 
+  })
+}
+
+getNameSucursal(idSucursal:any){
+  if(idSucursal=='0'){
+    return 'General'
+  }
+  else {
+    let sucursal = this.Sucursales.filter((suc: any) => suc.id==idSucursal)
+    if(sucursal.length){
+      return sucursal[0].Sucursal
+    }
+    else{
+      return 'General'
+    }
+  }
 }
 
 getMes(NumMes:number){
@@ -147,24 +202,33 @@ getIdCuenta(Cuenta:string){
 }
 
 guuardarAjuste(){
-  let _Ajuste={
-    "AnioRegistro":this.Anio.value,
-    "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-    "MesRegistro":this.getMes(this.Mes.value),
-    "NumCuenta":this.Cuenta.value,
-    "idCuenta":this.getIdCuenta(this.Cuenta.value),
-    "NumMes":Number(this.Mes.value),
-    "SemanaNum":this.Semana.value,
-    "Valor":this.Valor.value,
-    "Flujo":this.Flujo.value,
-    "idEmpresa":this.usuario.idEmpresa,
-    "idMatriz":this.usuario.idMatriz,
-    "idSucursal":this.idSucursal.value,
+  if(this.idTipoRegistro==0){
+    this.toastr.warning('Debe elegir una sucursal o proyecto', 'Alerta!');
   }
+  else {
+    let _Ajuste={
+      "AnioRegistro":this.Anio.value,
+      "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+      "MesRegistro":this.getMes(this.Mes.value),
+      "NumCuenta":this.Cuenta.value,
+      "idCuenta":this.getIdCuenta(this.Cuenta.value),
+      "NumMes":Number(this.Mes.value),
+      "SemanaNum":this.Semana.value,
+      "Valor":this.Valor.value,
+      "Flujo":this.Flujo.value,
+      "idEmpresa":this.usuario.idEmpresa,
+      "TipoRegistro":this.idTipoRegistro,
+      "idMatriz":this.usuario.idMatriz,
+      "idSucursal":this.idSucursal.value,
+      "idProyecto":this.idProyecto.value,
+    }
+  
+    this.conS.crearSaldoInicial(_Ajuste).then(resp=>{
+      this.resetCampos()
+      this.toastr.success('Saldo editado', '¡Exito!');
+    })
 
-  this.conS.crearSaldoInicial(_Ajuste).then(resp=>{
-    this.resetCampos()
-  })
+  }
 }
 resetCampos(){
   this.Anio.setValue(0)

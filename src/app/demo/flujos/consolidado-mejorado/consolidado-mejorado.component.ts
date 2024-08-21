@@ -28,10 +28,11 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   SemanasSeleccionadas:any=[]
   CatalogoFechas:any=[]
   Meses:any=[]
-  MesesSeleccionadas:any=[]
+  MesesSeleccionados:any=[]
   Anios:any=[]
   AniosSeleccionados:any=[]
   Cabecera:any=[]
+  CabeceraBack:any=[]
   usuario:any
   cargar:boolean=false
   MostrarTodasSemanas:boolean=false
@@ -61,10 +62,12 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   DataSaldoFinalAnual:any=[]
 
   Sucursales:any=[]
-  SucursalSeleccionada
+  SucursalSeleccionada:any=[]
+  Proyectos:any=[]
+  ProyectoSeleccionado:any=[]
 
   CuentasBancarias:any=[]
-  CuentaBancariaSeleccionada
+  CuentaBancariaSeleccionada:any=[]
   SemanasTodas:any=[]
 
   Expandir:boolean=false
@@ -74,15 +77,68 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
    
-    this. obtenerSaldoInicial()
-    this. obtenerSucursales()
+    this.obtenerSaldoInicial()
+    this.obtenerSucursales()
+    this.obtenerProyectos()
     this.obtenerBancos()
-    this. getCatalogoFechas()
+    this.getCatalogoFechas()
 
   }
 
+ocultarMostrar(NumMes:any,Anio:any){
+  this.Semanas.forEach(semana => {
+    if (semana.Mes == NumMes && semana.Anio == Anio) {
+      semana.Mostrar = !semana.Mostrar;
+    }
+  });
+  this.Cabecera.forEach(cab => {
+    if (cab.NumMes == NumMes && cab.Anio == Anio && (cab.Tipo==2)) {
+      cab.Mostrar = !cab.Mostrar;
+    
+    }
+    if (cab.NumMes == NumMes && cab.Anio == Anio && (cab.Tipo==3)) {
+     
+      cab.MostrarBoton = !cab.MostrarBoton;
+    }
+  });
 
 
+
+
+}
+  filtrarMeses(numMes:any){
+    let _MesEncontrado:any=[]
+    _MesEncontrado=this.MesesSeleccionados.filter((mes:any)=>mes.NumMes==numMes)
+   
+    if(_MesEncontrado.length>0){
+      return true
+    }
+    else {
+      return false
+    }
+  }
+
+  obtenerProyectos(){
+    this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
+      this.Proyectos=resp
+      this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+
+    })
+  }
+  getNameSucursal(idSucursal:any){
+    if(idSucursal=='0'){
+      return 'General'
+    }
+    else {
+      let sucursal = this.Sucursales.filter((suc: any) => suc.id==idSucursal)
+      if(sucursal.length){
+        return sucursal[0].Sucursal
+      }
+      else{
+        return 'General'
+      }
+    }
+  }
 
   getCatalogoFechas(){
     const fechaInicio = '2023-01-01';
@@ -154,27 +210,42 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
     let Cuentas:any=[]
     let CriteriosRegistros:any=[]
     let CriteriosSaldos:any=[]
+    let Sucursales:any=[]
+    let Proyectos:any=[]
 
-
-    if(this.SemanasSeleccionadas.length>0){
-      this.SemanasSeleccionadas.forEach((element:any) => {
-        SemanasRegistros.push(element.NumSemana)
-      });
-    }
+    // if(this.SemanasSeleccionadas.length>0){
+    //   this.SemanasSeleccionadas.forEach((element:any) => {
+    //     SemanasRegistros.push(element.NumSemana)
+    //   });
+    // }
     if(this.CuentaBancariaSeleccionada.length>0){
       this.CuentaBancariaSeleccionada.forEach((element:any) => {
         Cuentas.push(element.Cuenta)
       });
     }
+    if(this.SucursalSeleccionada.length>0){
+      this.SucursalSeleccionada.forEach((element:any) => {
+        Sucursales.push(element.id)
+      });
+    }
+    if(this.ProyectoSeleccionado.length>0){
+      this.ProyectoSeleccionado.forEach((element:any) => {
+        Proyectos.push(element.id)
+      });
+    }
 
     CriteriosRegistros={
       NumSemana:SemanasRegistros,
-      NumCuenta:Cuentas
+      NumCuenta:Cuentas,
+      idProyecto:Proyectos,
+      idSucursal:Sucursales
 
     }
     CriteriosSaldos={
       SemanaNum:SemanasRegistros,
-      NumCuenta:Cuentas
+      NumCuenta:Cuentas,
+      idProyecto:Proyectos,
+      idSucursal:Sucursales
 
     }
     this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
@@ -312,6 +383,7 @@ obtenerRegistros(){
             "idMatriz":element.idMatriz,
             "idSocioNegocio":element.idSocioNegocio,
             "idSucursal":element.idSucursal,
+            "idProyecto":element.idProyecto,
             "NombreElemento":element.Elemento.label || '',
             "idElemento":element.Elemento.id || '',
             "NumCuenta":element.Cuenta.Cuenta || '',
@@ -334,10 +406,12 @@ obtenerRegistros(){
             Semana: "Semana " + item.NumSemana, 
             SemanaAnio: "Semana " + item.NumSemana + ' ' + '(' + item.AnioRegistro + ')', 
             Mes:item.NumMes,
+         
             Anio:item.AnioRegistro  })));
           this.SaldoInicial.forEach(item => {
             uniqueNumSemanaSet.add(JSON.stringify({ NumSemana: item.SemanaNum, 
               Semana: "Semana " + item.SemanaNum, 
+            
               SemanaAnio: "Semana " + item.SemanaNum + ' ' + '(' + item.AnioRegistro + ')', 
               Mes:Number(item.NumMes),Anio:item.AnioRegistro }));
           });         
@@ -354,14 +428,19 @@ obtenerRegistros(){
           const semanasIdentificadas = this.conS.posicionarSemanas(uniqueNumSemana);
           //this.Semanas=uniqueNumSemana.sort((a:any, b:any) => a.NumSemana- b.NumSemana)
           this.Semanas=semanasIdentificadas
-      
-
+          this.Semanas.map((sem:any)=>sem.Mostrar=true)
+          
           this.Meses=uniqueMesNumMes.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=uniqueAnios.sort((a:any, b:any) => a.Anio- b.Anio)
+          this.Anios.map((anio:any)=>anio.Mostrar=true)
+          this.Meses.map((mes:any)=>mes.Mostrar=true)
 
-        console.log('Anios',this.Anios)
-        console.log('Meses',this.Meses)
-        console.log('Semanas',this.Semanas)
+          this.MesesSeleccionados=this.Meses
+          console.log('Semanas',this.Semanas)
+          console.log('MesesSeleccionados',this.MesesSeleccionados)
+          console.log('Anios',this.Anios)
+     
+          
 
           this.construirCabecera()
 });
@@ -391,15 +470,15 @@ VerTodasSemanas(){
   this.construirCabecera()
 }
 getSemanasByMesAnio(Anio:any,NumMes:any){
-  if(this.MostrarTodasSemanas==true){
 
-    return this.SemanasTodas.filter((sem:any)=>sem.Mes==NumMes && sem.Anio==Anio)
-  }
+  return this.Semanas.filter((sem:any)=>sem.Mes==NumMes && sem.Anio==Anio)
 
-  else {
+   // return this.SemanasTodas.filter((sem:any)=>sem.Mes==NumMes && sem.Anio==Anio)
+  
 
-    return this.Semanas.filter((sem:any)=>sem.Mes==NumMes && sem.Anio==Anio)
-  }
+
+
+  
 }
 
 getValorSaldoInicial(NumSemana:any,Mes:any,Anio:any,Posicion:any){
@@ -994,7 +1073,9 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
       "Mes":"",
       "NumMes":"",
       "Anio":"",
-      "Tipo":1
+      "Tipo":1,
+      "Mostrar":true,
+      "MostrarBoton":true
     })
     this.Anios.forEach((anio:any) => {
       this.Meses.forEach((mes:any) => {
@@ -1004,7 +1085,9 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
             "Mes":mes.Mes,
             "NumMes":mes.NumMes,
             "Anio":anio.Anio,
-            "Tipo":2
+            "Tipo":2,
+            "Mostrar":true,
+            "MostrarBoton":true
           })
           
         });
@@ -1014,7 +1097,9 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
             "Mes":mes.Mes,
             "NumMes":mes.NumMes,
             "Anio":anio.Anio,
-            "Tipo":3
+            "Tipo":3,
+            "Mostrar":true,
+            "MostrarBoton":true
           })
 
         }
@@ -1024,10 +1109,13 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
         "Mes":"",
         "NumMes":"",
         "Anio":anio.Anio,
-        "Tipo":4
+        "Tipo":4,
+        "Mostrar":true,
+        "MostrarBoton":true
       })
     });
-
+    console.log('Cabecera',this.Cabecera)
+    this.CabeceraBack=this.Cabecera
     this.DataSaldoInicial=[]
     this.DataSaldoFinal=[]
     this.DataSaldoInicialMensual=[]

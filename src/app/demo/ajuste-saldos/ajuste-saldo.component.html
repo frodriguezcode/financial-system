@@ -44,9 +44,25 @@
         
         <div class="form-group col-md-6 col-lg-6 col-12">
           <label for="exampleInputPassword1">Sucursal</label>
-          <select [formControl]="idSucursal" class="form-control" id="exampleFormControlSelect1">
+          <select 
+            (change)="verifyIdSucursal()"
+            [formControl]="idSucursal" 
+            class="form-control" 
+            id="exampleFormControlSelect1">
             <option value="0">Escoja una sucursal</option>
             <option [value]="sucursal.id" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+          </select>
+        </div>
+        
+        <div class="form-group col-md-6 col-lg-6 col-12">
+          <label for="exampleInputPassword1">Proyecto</label>
+          <select 
+          (change)="verifyIdProyecto()"
+            [formControl]="idProyecto" 
+            class="form-control" 
+            id="exampleFormControlSelect1">
+            <option value="0">Escoja un proyecto</option>
+            <option [value]="proyecto.id" *ngFor="let proyecto of Proyectos">{{proyecto.NombreSucursal}}</option>
           </select>
         </div>
  

@@ -3,26 +3,43 @@
 
 
 
-<p-multiSelect 
+<!-- <p-multiSelect 
  *ngIf="!this.MostrarTodasSemanas"
     class="m-1"
     [options]="Semanas" 
     [(ngModel)]="SemanasSeleccionadas" 
     optionLabel="SemanaAnio" 
-    placeholder="Seleccione semanas" />
-<p-multiSelect 
+    placeholder="Seleccione semanas" /> -->
+<!-- <p-multiSelect 
 *ngIf="this.MostrarTodasSemanas"
     class="m-1"
     [options]="SemanasTodas" 
     [(ngModel)]="SemanasSeleccionadas" 
     optionLabel="SemanaAnio" 
-    placeholder="Seleccione semanas" />
+    placeholder="Seleccione semanas" /> -->
 <p-multiSelect 
+   
     class="m-1"
+    [options]="Meses" 
+    [(ngModel)]="MesesSeleccionados" 
+    optionLabel="Mes" 
+    placeholder="Meses" />
+<p-multiSelect 
+    [disabled]="ProyectoSeleccionado.length>0"
+    class="m-1"
+    (onChange)=" filtrarData()"
     [options]="Sucursales" 
     [(ngModel)]="SucursalSeleccionada" 
     optionLabel="Nombre" 
     placeholder="Seleccione una sucursal" />
+<p-multiSelect 
+    [disabled]="SucursalSeleccionada.length>0"
+    class="m-1"
+    (onChange)=" filtrarData()"
+    [options]="Proyectos" 
+    [(ngModel)]="ProyectoSeleccionado" 
+    optionLabel="NombreSucursal" 
+    placeholder="Seleccione un proyecto" />
 <p-multiSelect 
     (onChange)=" filtrarData()"
     class="m-1"
@@ -41,12 +58,19 @@
 
 <button *ngIf="Expandir==false" (click)="expandirTodo()" type="button" class="btn btn-success m-1 mt-2">Expandir Todo <i class="fa-solid fa-plus"></i></button>    
 <button *ngIf="Expandir==true" (click)="contraerTodo()" type="button" class="btn btn-danger m-1 mt-2">Contraer Todo <i class="fa-solid fa-minus"></i></button>    
-<div *ngIf="cargar" class="table-responsive mt-1">
+<div *ngIf="this.Cabecera.length>0" class="table-responsive mt-1">
 <table class="table">
   <!-- <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header categoria-toggle"> -->
     <thead style="color:white" class="sticky-header categoria-toggle">
     <ng-container  *ngFor="let cab of Cabecera">
-      <th style="background-color: rgb(113,189,158,255); ">{{cab.Nombre}}</th>
+      <ng-container *ngIf="cab.Tipo === 3">
+        <td>
+          <button *ngIf="cab.MostrarBoton==true"  type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)" class="btn btn-danger"><i class="fa-solid fa-minus"></i> </button>
+          <button *ngIf="cab.MostrarBoton==false"  type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)" class="btn btn-success"><i class="fa-solid fa-plus"></i></button>
+        </td>
+      </ng-container>
+        <th *ngIf="cab.Mostrar==true"   class="text-center" style="background-color: rgb(113,189,158,255); ">{{cab.Nombre}}</th>
+
     </ng-container>
   </thead>
   <tbody>
@@ -72,27 +96,35 @@
         </td>
         <ng-container *ngFor="let anio of Anios">
           <ng-container  *ngFor="let mes of Meses">   
-         
+        
               <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
-                <th 
-                class="text-center"
-                [ngClass]="{
-                  'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
-                  'cabecera-categoria-no-calc': categoria.Calculado == false ,
-                  'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
-                  
-                  }"
-                >
-                {{ "$ " + ( DataCategorias[anio.Anio + '-' + mes.NumMes + '-' + categoria.id + '-' + semana.NumSemana]?.[0]?.Valor| number) }}
-                </th>
+                <ng-container *ngIf="semana.Mostrar==true">
+                  <th 
+                  class="text-center"
+                  [ngClass]="{
+                    'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
+                    'cabecera-categoria-no-calc': categoria.Calculado == false ,
+                    'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
+                    
+                    }"
+                  >
+                  {{ "$ " + ( DataCategorias[anio.Anio + '-' + mes.NumMes + '-' + categoria.id + '-' + semana.NumSemana]?.[0]?.Valor| number) }}
+                  </th>
+
+                </ng-container>
                
               </ng-container>
-            <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" 
-              class="text-center"
-              
-              style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-              {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor| number) }}
-            </td>
+
+             <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" >
+              <td style="background-color: white;"></td>
+               <td 
+                 class="text-center"
+                 
+                 style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                 {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor| number) }}
+               </td>
+
+             </ng-container> 
             
           </ng-container>
           <td  class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
@@ -105,17 +137,24 @@
           <tr style="background-color: #FAFAFA">
             <td style="background-color: white"><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre }}</span></td>
             <ng-container *ngFor="let anio of Anios">
-              <ng-container *ngFor="let mes of Meses">
-                  <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
+              <ng-container *ngFor="let mes of Meses;index as i">
+                <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
+                    <ng-container *ngIf="semana.Mostrar==true">
                     <td style="font-weight: bolder;" class="text-center" >
                       {{ "$ " + ( DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id + '-' + semana.NumSemana]?.[0]?.Valor| number) }}
                     </td>
                   </ng-container>
-                <td *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" 
+
+                </ng-container>
+
+                <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0" >
+                  <td style="background-color: white;"></td>
+                <td  
                   style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);"class="text-center">
                   {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
 
                 </td>
+                </ng-container>
               </ng-container>
               <td  class="text-center"style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);" class="text-center">
                 {{ "$ " + ( DataItemsAnual[anio.Anio + '-' + item.id]?.[0]?.Valor| number) }}
