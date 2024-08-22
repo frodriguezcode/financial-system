@@ -1,0 +1,71 @@
+@import '../../flujos/consolidado/flujos-consolidado.component.scss';
+
+.container-table {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 100%;
+  padding: 1rem;
+}
+
+.table {
+  border: 1px solid #e9ecef;
+  align-self: start;
+}
+
+.table-reduced {
+  width: 50%;
+
+  align-self: start;
+  table-layout: fixed;
+}
+
+.cabecera th {
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  min-height: 100%;
+}
+
+.class-2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  text-align: center;
+  background-color: #E5E7EB;
+  font-size: 18px;
+  color: #0C8C86;
+  padding: 3.5px;
+  flex-basis: 8%;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.form-control{
+  padding-left: 5px;
+}
+
+.input-group-text {
+  min-width: 50px;
+}
+
+
+.cabecera-categoria {
+  background-color: #e0f7fa;
+}
+
+.cabecera-categoria-no-calc {
+  background-color: #ffffff;
+}
+
+.text-center {
+  text-align: center;
+}

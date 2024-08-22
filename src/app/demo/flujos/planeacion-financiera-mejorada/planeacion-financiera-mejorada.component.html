@@ -1,0 +1,100 @@
+<div *ngIf="!cargando" class="container-table">
+  <div class="table-responsive mt-3">
+    <table [class]="getTableClass()" class="table table-100">
+      <thead class="cabecera">
+    
+        <ng-container *ngFor="let cab of Cabecera">    
+          <th *ngIf="cab.Tipo==1" class="text-left"
+          style="padding: 0.5rem;background-color: #0c8c86;text-transform: uppercase;"
+          >Naturalezas</th>    
+            <th 
+            *ngIf="cab.Tipo!=1"
+            class="text-center" style="padding: 0.7rem; font-weight: 500; text-transform: uppercase; ">
+              {{ cab.Nombre}}
+            </th> 
+        </ng-container>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let categoria of Categorias; let j = index">
+          <tr [ngClass]="{'cabecera-categoria': categoria.Calculado == true}" >
+            <td [ngClass]="{
+           'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
+           'cabecera-categoria-no-calc': categoria.Calculado == false ,
+           'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
+           
+           }">
+              <span class="categoria-toggle">{{ categoria.Nombre }}</span>
+              <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
+                <span *ngIf="categoria.Calculado == false">
+                  <i (click)="toggleCategoria(categoria.id)" style="cursor: pointer;" class="fa-solid fa-square-minus"></i>
+                </span>
+              </span>
+              <span *ngIf="categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
+                <span *ngIf="categoria.Calculado == false">
+                  <i (click)="toggleCategoria(categoria.id)" style="cursor: pointer;" class="fa-solid fa-square-plus"></i>
+                </span>
+              </span>
+            </td>
+            <ng-container *ngFor="let anio of Anios">
+              <ng-container *ngFor="let mes of Meses">
+         
+                  <td *ngIf="categoria.Tipo!=3" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                    <div class="input-group mb-3">
+                      <span class="input-group-text">$</span>
+                      <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                    </div>
+                  </td>
+                  <td *ngIf="categoria.Tipo==3" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                    {{ 10 }}
+                  </td>
+                  <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                    {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|number) }}                  </td>
+                  <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                    {{ 30 }}
+                  </td>
+                  <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                    {{ 40 }}
+                  </td>
+              </ng-container>
+        
+            </ng-container>
+
+
+            
+          </tr>
+
+          <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
+            <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
+              <tr style="background-color: #FAFAFA">
+                <td style="background-color: white"><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre
+                    }}</span></td>
+                <ng-container *ngFor="let anio of Anios">
+                  <ng-container *ngFor="let mes of Meses;index as i">
+                    <ng-container>
+                      <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+                        <div class="input-group mb-3">
+                          <span class="input-group-text">$</span>
+                          <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                      </td>
+                      <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+                        {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
+                      </td>
+                      <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+                        70
+                      </td>
+                      <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+                        80
+                      </td>
+                    </ng-container>
+                  </ng-container>
+             
+                </ng-container>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

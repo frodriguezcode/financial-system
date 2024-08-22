@@ -79,6 +79,10 @@ const routes: Routes = [
       },
       {
         path: 'planeacion',
+        loadComponent: () => import('./demo/flujos/planeacion-financiera-mejorada/planeacion-financiera-mejorada.component')
+      },
+      {
+        path: 'planeacion-antigua',
         loadComponent: () => import('./demo/flujos/planeacion-financiera/planeacion-financiera.component')
       },
       {
