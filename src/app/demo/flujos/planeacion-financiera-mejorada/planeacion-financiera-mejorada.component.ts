@@ -31,7 +31,7 @@ RegistrosValoresPlanesBackUp:any=[]
 DataCategoriasMensual:any=[]
 DataItemsMensual:any=[]
 RegistrosBackUp:any=[]
-
+DataPlanesMensual:any=[]
 
 cargando:boolean=true
 constructor(private conS:ConfigurationService){}
