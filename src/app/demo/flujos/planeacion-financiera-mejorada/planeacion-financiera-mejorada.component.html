@@ -39,21 +39,35 @@
               <ng-container *ngFor="let mes of Meses">
          
                   <td *ngIf="categoria.Tipo!=3" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                    <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
+                    style="color: red; font-size: 11px;" 
+                    *ngIf="verifyValue(categoria.Tipo,Valor.value)[0].Estado==false">{{verifyValue(categoria.Tipo,Valor.value)[0].Mensaje}}</div>
                     <div class="input-group mb-3">
                       <span class="input-group-text">$</span>
-                      <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                      <input 
+                      #Valor
+                      [value]="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|number)"
+                      (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id,Valor.value,categoria.Tipo,categoria.Orden)"
+                      type="text"
+                      class="form-control text-center"
+                      aria-label="Amount (to the nearest dollar)">
                     </div>
                   </td>
                   <td *ngIf="categoria.Tipo==3" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                    {{ 10 }}
+                    {{"$ " +  (DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|number)}}
                   </td>
                   <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                    {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|number) }}                  </td>
-                  <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                    {{ 30 }}
+                    {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|number) }}                  
                   </td>
                   <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                    {{ 40 }}
+                    {{"$ " +  (DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Diferencia|number)}}
+
+                  </td>
+                  <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                    {{(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion|number) + "%"}}
+                    <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Diferencia) < 0" class="fas fa-arrow-down text-danger"></i>
+                    <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Diferencia) > 0" class="fas fa-arrow-up text-success"></i>
+                    <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Diferencia) == 0" class="fas fa-arrow-right-arrow-left text-warning"></i>
                   </td>
               </ng-container>
         
@@ -74,7 +88,10 @@
                       <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
                         <div class="input-group mb-3">
                           <span class="input-group-text">$</span>
-                          <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                          <input type="text"
+                          
+                          class="form-control"
+                           aria-label="Amount (to the nearest dollar)">
                         </div>
                       </td>
                       <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">

@@ -12,7 +12,7 @@
     [(ngModel)]="SemanasSeleccionadas" 
     optionLabel="SemanaAnio" 
     placeholder="Seleccione semanas" /> -->
-<p-multiSelect class="m-1" [options]="Meses" [(ngModel)]="MesesSeleccionados" optionLabel="Mes" placeholder="Meses" />
+<!-- <p-multiSelect class="m-1" [options]="Meses" [(ngModel)]="MesesSeleccionados" optionLabel="Mes" placeholder="Meses" /> -->
 <p-multiSelect [disabled]="ProyectoSeleccionado.length>0" class="m-1" (onChange)=" filtrarData()" [options]="Sucursales"
   [(ngModel)]="SucursalSeleccionada" optionLabel="Nombre" placeholder="Seleccione una sucursal" />
 <p-multiSelect [disabled]="SucursalSeleccionada.length>0" class="m-1" (onChange)=" filtrarData()" [options]="Proyectos"
@@ -40,11 +40,11 @@
         <ng-container *ngIf="cab.Tipo === 3">
           <td > 
             <div
-              style="position: absolute; top: -11px; z-index: 5; width: 3rem; display: flex; background-color: transparent;">
+              style="position: absolute; top: -11px; z-index: 5; width: 10rem; display: flex; background-color: transparent;">
               <button *ngIf="cab.MostrarBoton==true" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
                 class="btn btn-danger" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-minus"></i> </button>
               <button *ngIf="cab.MostrarBoton==false" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
-                class="btn btn-warning" style="position: absolute; z-index: 10; left: -20px;"><i class="fa-solid fa-plus"></i></button>
+                class="btn btn-warning" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-plus"></i></button>
             </div>
 
           </td>
