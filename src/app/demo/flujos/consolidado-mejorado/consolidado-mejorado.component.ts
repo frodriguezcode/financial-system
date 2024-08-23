@@ -148,7 +148,7 @@ ocultarMostrar(NumMes:any,Anio:any){
 
     let SemanasAgrupadas:any=[]
     SemanasAgrupadas=this.conS.agruparPorAnoMesSemana(this.catalogoFechas);
-    //console.log('SemanasAgrupadas',SemanasAgrupadas)
+   
     SemanasAgrupadas.forEach((fecha:any)=>{
       _Semanas.push(
         { 
@@ -436,9 +436,7 @@ obtenerRegistros(){
           this.Meses.map((mes:any)=>mes.Mostrar=true)
 
           this.MesesSeleccionados=this.Meses
-          console.log('Semanas',this.Semanas)
-          console.log('MesesSeleccionados',this.MesesSeleccionados)
-          console.log('Anios',this.Anios)
+    
      
           
 
@@ -1114,7 +1112,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
         "MostrarBoton":true
       })
     });
-    console.log('Cabecera',this.Cabecera)
+
     this.CabeceraBack=this.Cabecera
     this.DataSaldoInicial=[]
     this.DataSaldoFinal=[]

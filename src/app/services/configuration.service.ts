@@ -546,6 +546,27 @@ obtenerValoresPlanes(idEmpresa:any): Observable<any[]> {
   .valueChanges();
 }
 
+crearValorPlanItem(Valor: any) {
+  const id = this.afs.createId();
+  return this.afs
+    .collection('PlanificacionValoresItems')
+    .doc(id)
+    .ref.set(Object.assign(Valor, { id: id }));
+}
+ActualizarValorPlanItem(Valor: any) {
+
+  return this.afs
+    .collection('PlanificacionValoresItems')
+    .doc(Valor.id)
+    .ref.update(Valor);
+}
+
+obtenerValoresPlanesItems(idEmpresa:any): Observable<any[]> {
+  return this.afs
+  .collection('PlanificacionValoresItems',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+  .valueChanges();
+}
+
 
    
 }

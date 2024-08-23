@@ -28,8 +28,10 @@ categoriasExpandidas: { [id: number]: boolean } = {};
 Items:any=[]
 usuario:any
 Registros:any=[]
-RegistrosValoresPlanes:any=[]
+RegistrosValoresPlanesItems:any=[]
 RegistrosValoresPlanesBackUp:any=[]
+RegistrosValoresPlanes:any=[]
+RegistrosValoresPlanesBackUpItems:any=[]
 DataCategoriasMensual:any=[]
 DataItemsMensual:any=[]
 RegistrosBackUp:any=[]
@@ -107,9 +109,12 @@ ngOnInit(): void {
     },
   
   ]
+  this.AniosSeleccionados=this.Anios
+  this.MesesSeleccionados=this.Meses
 this.obtenerCategorias()  
 this.obtenerRegistros()
 this.obtenerValoresPlanes()
+this.obtenerValoresPlanesItems()
 this.obtenerCategorias()
 }
 getTableClass() {
@@ -265,8 +270,14 @@ obtenerRegistros(){
 obtenerValoresPlanes(){
   this.conS.obtenerValoresPlanes(this.usuario.idEmpresa).subscribe(resp=>{
     this.RegistrosValoresPlanes=resp
-   this.RegistrosBackUp=resp
-   console.log('RegistrosValoresPlanes',this.RegistrosValoresPlanes)
+   this.RegistrosValoresPlanesBackUp=resp
+  })
+}
+obtenerValoresPlanesItems(){
+  this.conS.obtenerValoresPlanesItems(this.usuario.idEmpresa).subscribe(resp=>{
+    this.RegistrosValoresPlanesItems=resp
+   this.RegistrosValoresPlanesBackUpItems=resp
+   console.log('RegistrosValoresPlanesBackUpItems',this.RegistrosValoresPlanesBackUpItems)
   })
 }
 
@@ -334,7 +345,7 @@ getDataCategoriasMensualPlanes(){
 calcularVariacion(ValorA:any,ValorB:any){
  let  Diferencia:any=0
   Diferencia=(ValorA-ValorB).toFixed(0)
-  return ValorA==0 ? 0 :  (((Diferencia / ValorA)))*100 
+  return ValorA==0 || ValorB==0 ? 0 :  (((Diferencia / ValorA)))*100 
 }
 getDataFlujoFinancieroMensualPlanes(Mes:any,Anio:any){
   let _Data: any=[];
@@ -456,13 +467,13 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCateg
     });
   }
   else {
-
+  
     let _Valor:any={
       "AnioRegistro":Anio,
       "MesRegistro":MesRegistro,
       "Orden":Orden,
       "idCategoria":idCategoria,
-      "Valor": Number(Valor),
+      "Valor": TipoCategoria==2 ?  Number(Valor)*-1: Number(Valor),
       "idEmpresa":this.usuario.idEmpresa,
       "IdSucursal":this.usuario.IdSucursal
     }
@@ -477,7 +488,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCateg
     if(_ValorPlanEncontrado.length>0){
       console.log('_ValorPlanEncontrado',_ValorPlanEncontrado)
       console.log('Valor',Valor)
-      _ValorPlanEncontrado[0].Valor=Number(Valor)
+      _ValorPlanEncontrado[0].Valor=TipoCategoria==2 ?  Number(Valor)*-1: Number(Valor)
     this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
     })
@@ -488,7 +499,58 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCateg
         this.toastr.success('Guardado', '¡Exito!');
       })
 
+}
+this.getDataCategoriasMensual()
+this.getDataCategoriasMensualPlanes()
+  }
+}
+
+guardarValorPlanItem(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor:any,TipoCategoria:any,Orden:any){
+  if(this.verifyValue(TipoCategoria,Number(Valor))[0].Estado==false){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: `${this.verifyValue(TipoCategoria,Number(Valor))[0].Mensaje}`,
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  else {
+    if(TipoCategoria==2){
+      Number(Valor)*-1
     }
+
+    let _Valor:any={
+      "AnioRegistro":Anio,
+      "MesRegistro":MesRegistro,
+      "Orden":Orden,
+      "idItem":idItem,
+      "idCategoria":idCategoria,
+      "Valor": Number(Valor),
+      "idEmpresa":this.usuario.idEmpresa,
+      "IdSucursal":this.usuario.IdSucursal
+    }
+  
+    let _ValorPlanEncontrado:any=[]
+    _ValorPlanEncontrado=this.RegistrosValoresPlanesItems.filter((data:any)=>
+      data.idItem==idItem &&
+      data.MesRegistro==MesRegistro &&
+      data.AnioRegistro==Anio &&
+      data.idEmpresa==this.usuario.idEmpresa &&
+      data.IdSucursal==this.usuario.IdSucursal)
+    if(_ValorPlanEncontrado.length>0){
+      _ValorPlanEncontrado[0].Valor=Number(Valor)
+    this.conS.ActualizarValorPlanItem(_ValorPlanEncontrado[0]).then(resp=>{
+      this.toastr.success('Guardado', '¡Exito!');
+    })
+    }  
+    else {
+      
+      this.conS.crearValorPlanItem(_Valor).then(resp=>{
+        this.toastr.success('Guardado', '¡Exito!');
+      })
+
+}
 this.getDataCategoriasMensual()
 this.getDataCategoriasMensualPlanes()
   }

@@ -56,6 +56,7 @@
           <label for="formGroupExampleInput" class="form-label">Buscar por sucursal</label>
           <br>
           <p-dropdown 
+          (onChange)="buscarBySucursal()"
           [options]="Sucursales" 
           [(ngModel)]="SucursaleSeleccionada" 
           optionLabel="Nombre" 
@@ -65,6 +66,7 @@
           <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
           <br>
           <p-dropdown 
+          (onChange)="buscarByProyecto()"
           [options]="Proyectos" 
           [(ngModel)]="ProyectoSeleccionado" 
           optionLabel="NombreSucursal" 
@@ -212,7 +214,7 @@
 
         <td *ngIf="registros.TipoRegistro==1" class="text-center">
           <p-dropdown
-          [options]="Proyectos"
+          [options]="Sucursales"
           [(ngModel)]="registros.Sucursal"
           name="SucursalesSeleccionadas"
           optionLabel="Nombre"
