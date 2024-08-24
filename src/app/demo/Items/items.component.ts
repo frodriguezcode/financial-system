@@ -34,6 +34,8 @@ export default class ItemsComponent  implements OnInit{
   Categorias:any=[]
   CategoriasBack:any=[]
   Sucursales:any=[]
+  Proyectos:any=[]
+  ProyectoSeleccionado:any=[]
   SucursalesSelected:any=[]
   Empresas:any=[]
   ItemForm!:FormGroup
@@ -44,14 +46,38 @@ export default class ItemsComponent  implements OnInit{
   todasSucursales:boolean=true
   BlocCheck!:boolean
   TipoCateg:number=1
+  TipoRubro:number=1
   ngOnInit(): void {
-this.todasSucursales=true
+    this.todasSucursales=true
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerCategorias()
     this.obtenerEmpresas()
     this.obtenerSucursales()
+    this.obtenerProyectos()
     this.obtenerItems()
 
+  }
+
+  obtenerProyectos(){
+    this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
+    this.Proyectos=resp
+    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+    })
+  }
+
+  getNameSucursal(idSucursal:any){
+    if(idSucursal=='0'){
+      return 'General'
+    }
+    else {
+      let sucursal = this.Sucursales.filter((suc: any) => suc.id==idSucursal)
+      if(sucursal.length){
+        return sucursal[0].Sucursal
+      }
+      else{
+        return 'General'
+      }
+    }
   }
 
   getidCategoria(event:any){
@@ -162,7 +188,8 @@ this.todasSucursales=true
     }
 
     ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
-
+    
+    ItemForm.TipoRubro=this.TipoRubro
     this.conS.crearItem(ItemForm).then(resp=>{
       Swal.fire({
         position: "center",
