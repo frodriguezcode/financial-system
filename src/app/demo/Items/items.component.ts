@@ -13,6 +13,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { TableModule } from 'primeng/table';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
+import { AvatarModule } from 'primeng/avatar';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
   selector: 'app-elemento',
@@ -24,7 +26,11 @@ import { IconFieldModule } from 'primeng/iconfield';
     TabViewModule,
     TableModule,
     InputIconModule,
-    IconFieldModule],
+    IconFieldModule,
+    TabViewModule,
+    AvatarModule,
+    BadgeModule 
+  ],
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
 })
@@ -34,7 +40,7 @@ export default class ItemsComponent  implements OnInit{
   Categorias:any=[]
   CategoriasBack:any=[]
   Sucursales:any=[]
-  Proyectos:any=[]
+  Proyectos:any=[] || 'unico'
   ProyectoSeleccionado:any=[]
   SucursalesSelected:any=[]
   Empresas:any=[]
@@ -47,6 +53,9 @@ export default class ItemsComponent  implements OnInit{
   BlocCheck!:boolean
   TipoCateg:number=1
   TipoRubro:number=1
+
+  selectedTab: string = 'sucursales';
+
   ngOnInit(): void {
     this.todasSucursales=true
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
@@ -55,6 +64,7 @@ export default class ItemsComponent  implements OnInit{
     this.obtenerSucursales()
     this.obtenerProyectos()
     this.obtenerItems()
+    console.log('PROYECTOS: ',this.Proyectos)
 
   }
 
@@ -123,6 +133,8 @@ export default class ItemsComponent  implements OnInit{
     }
 
   }
+
+
 
   verificarItem(){
     let ItemEncontrado:any=[]
@@ -262,6 +274,13 @@ export default class ItemsComponent  implements OnInit{
       return 'Sin empresa'
     }
   }
+
+
+
+onTabChange(event: any) {
+  this.selectedTab = event.index === 0 ? 'sucursales' : 'proyectos';
+}
+
 
 
 }
