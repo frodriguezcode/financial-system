@@ -3,21 +3,8 @@
     <div class="col-md-4 col-lg-4 col-12">
       <h5>Ingresos y Egresos</h5>
       <hr />
-      <p-tabView (onChange)="onTabChange($event)" >
-
-        <p-tabPanel header="sucursales">
-          <ng-template pTemplate="header">
-              <div class="flex align-items-center gap-2">
-                  <p-avatar 
-                      image="/assets/images/empresas.png" 
-                     />
-                  <span class="font-bold white-space-nowrap m-0">
-                     Sucursales
-                  </span>
-              </div>
-          </ng-template>
-
-          
+      <button (click)=" SelectGeneral()" type="button" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
+      <button  (click)=" SelectProyecto()" type="button" class="btn btn-warning m-1">Proyecto <i class="fa-solid fa-diagram-project"></i> </button>
               <form *ngIf="ItemForm" [formGroup]="ItemForm">
                 <div class="form-group">
                   <label for="exampleInputEmail1">Nombre</label>
@@ -29,7 +16,7 @@
                 </div>
         
         
-                <div class="form-group">
+                <div *ngIf="TipoRubro==1" class="form-group">
                   <label for="exampleInputPassword1">Empresa</label>
                   <select formControlName="idEmpresa" class="form-control" id="exampleFormControlSelect1">
                     <option value="0">Escoja una empresa</option>
@@ -40,7 +27,7 @@
                 <div class="form-group">
         
                   <div class="row">
-                    <div class="col-8">
+                    <div *ngIf="TipoRubro==1" class="col-8">
                       <label for="exampleInputPassword1">Sucursal</label>
                       <select (change)="verificarSelect($any($event.target).value)" formControlName="Sucursales"
                         class="form-control" id="exampleFormControlSelect1">
@@ -49,7 +36,7 @@
         
                       </select>
                     </div>
-                    <div class="col-4">
+                    <div *ngIf="TipoRubro==1" class="col-4">
                       <div style="margin-top: 25%;">
                         <div class="form-check mt-2">
                           <input [disabled]="BlocCheck==false" (change)="getTodasSucursales()" class="form-check-input"
@@ -67,125 +54,47 @@
         
                 <div class="form-group">
                   <div class="row">
-                      <div class="col-12 col-md-4 col-lg-4">
+                      <div class="col-12 col-md-12 col-lg-12">
                         <label for="exampleInputPassword1">Tipo de Operación</label>
-                        <div class="form-check form-check-inline">                
-                          <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="1">
-                          <label class="form-check-label" for="inlineRadio1">Ingreso</label>
-                        </div>
-                        <div class="form-check form-check-inline">    
-                          <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" [value]="2">
-                          <label class="form-check-label" for="inlineRadio2">Egreso</label>
+                        <div style="margin-left: 5px;">
+                          <div class="form-check form-check-inline">                
+                            <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="1">
+                            <label class="form-check-label" for="inlineRadio1">Ingreso</label>
+                          </div>
+                          <div class="form-check form-check-inline">    
+                            <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" [value]="2">
+                            <label class="form-check-label" for="inlineRadio2">Egreso</label>
+                          </div>
+
                         </div>
                       </div>
-                      <div class="col-12 col-md-8 col-lg-8">
+                      <div class="col-12 col-md-12 col-lg-12">
                         <label for="exampleInputPassword1">Categoria</label>
                         <select formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
+                          <option value="0" >Escoja una categoría</option>
                           <option value="{{categoria.id}}" *ngFor="let categoria of CategoriasBack">{{categoria.Nombre}}</option>
                         </select>
                       </div>
+                      <div *ngIf="TipoRubro==2" class="col-12 col-md-12 col-lg-12">
+                        <label for="exampleInputPassword1">Proyecto</label>
+                        <select (change)="getProyectoSelect($any($event.target).value)"  class="form-control" id="exampleFormControlSelect1">
+                          <option value="0" >Escoja una categoría</option>
+                          <option value="{{proyecto.id}}" *ngFor="let proyecto of Proyectos">{{proyecto.NombreSucursal}}</option>
+                        </select>
+                      </div>
                   </div>
+
               
                 </div>
         
-                <button [disabled]="this.ItemForm.invalid || ItemFound==true" (click)="crearItem()" type="button"
+                <button (click)="crearItem()" type="button"
                   class="btn btn-primary">Guardar</button>
               </form>
       
-    
+          <!-- Proyectos -->
 
-        </p-tabPanel>
 
-        <!-- ? Proyectos  -->
-        <p-tabPanel header="proyectos">
-          <ng-template pTemplate="header">
-              <div class="flex align-items-center gap-2">
-                  <p-avatar 
-                      image="/assets/images/proyectos2.png" 
-                     />
-                  <span class="font-bold white-space-nowrap m-0">
-                     Proyectos
-                  </span>
-              </div>
-          </ng-template>
-          <form *ngIf="ItemForm" [formGroup]="ItemForm">
-            <div class="form-group">
-              <label for="exampleInputEmail1">Nombre</label>
-              <input (input)="verificarItem()" type="text" formControlName="Nombre" class="form-control"
-                id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Escriba un centro de costo" />
-              <span *ngIf="ItemFound==true" style="color: red;">
-                <p>Ya existe un item con este nombre</p>
-              </span>
-            </div>
-    
-    
-            <!-- <div class="form-group">
-              <label for="exampleInputPassword1">Empresa</label>
-              <select formControlName="idEmpresa" class="form-control" id="exampleFormControlSelect1">
-                <option value="0">Escoja una empresa</option>
-                <option value="{{empresa.id}}" *ngFor="let proyecto of Proyectos">{{proyecto.Nombre}}</option>
-              </select>
-            </div> -->
 
-            <!-- !SELECT PARA PROYECTOS -->
-    
-            <!-- <div class="form-group">
-    
-              <div class="row">
-                <div class="col-8">
-                  <label for="exampleInputPassword1">Proyecto</label>
-                  <select (change)="verificarSelect($any($event.target).value)" formControlName="Proyectos"
-                    class="form-control" id="exampleFormControlSelect1">
-                    <option value="0">Seleccione un proyecto</option>
-                    <option value="{{protecto.id}}" *ngFor="let proyecto of Proyectos">{{proyecto.Nombre}}</option>
-    
-                  </select>
-                </div>
-                <div class="col-4">
-                  <div style="margin-top: 25%;">
-                    <div class="form-check mt-2">
-                      <input [disabled]="BlocCheck==false" (change)="obtenerProyectos()" class="form-check-input"
-                        type="checkbox" value="" [checked]="todasSucursales" id="flexCheckChecked">
-                      <label class="form-check-label" for="flexCheckChecked">
-                        Todos
-                      </label>
-                    </div>
-    
-                  </div>
-                </div>
-              </div>
-            </div> -->
-    
-    
-            <div class="form-group">
-              <div class="row">
-                  <div class="col-12 col-md-4 col-lg-4">
-                    <label for="exampleInputPassword1">Tipo de Operación</label>
-                    <div class="form-check form-check-inline">                
-                      <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="1">
-                      <label class="form-check-label" for="inlineRadio1">Ingreso</label>
-                    </div>
-                    <div class="form-check form-check-inline">    
-                      <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" [value]="2">
-                      <label class="form-check-label" for="inlineRadio2">Egreso</label>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-8 col-lg-8">
-                    <label for="exampleInputPassword1">Categoria</label>
-                    <select formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
-                      <option value="{{categoria.id}}" *ngFor="let categoria of CategoriasBack">{{categoria.Nombre}}</option>
-                    </select>
-                  </div>
-              </div>
-          
-            </div>
-    
-            <button [disabled]="this.ItemForm.invalid || ItemFound==true" (click)="crearItem()" type="button"
-              class="btn btn-primary">Guardar</button>
-          </form>
-      </p-tabPanel>
-        
-      </p-tabView>
     </div>
     
     <!-- !TABLAS -->
@@ -250,7 +159,7 @@
                     </ng-container>
                     <ng-template #editarCategoria>
                       <select [(ngModel)]="item.idCategoria" id="inputState" class="form-select">
-                        <option value="0">Seleccione una sucursal</option>
+                        <option value="0">Seleccione una categoría</option>
                         <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}
                         </option>
                       </select>

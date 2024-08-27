@@ -37,6 +37,7 @@ import { BadgeModule } from 'primeng/badge';
 export default class ItemsComponent  implements OnInit{
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService,private formBuilder: FormBuilder) {}
   Items:any=[]
+  ItemsBack:any=[]
   Categorias:any=[]
   CategoriasBack:any=[]
   Sucursales:any=[]
@@ -53,7 +54,7 @@ export default class ItemsComponent  implements OnInit{
   BlocCheck!:boolean
   TipoCateg:number=1
   TipoRubro:number=1
-
+  MaxOrden:number=1
   selectedTab: string = 'sucursales';
 
   ngOnInit(): void {
@@ -64,7 +65,7 @@ export default class ItemsComponent  implements OnInit{
     this.obtenerSucursales()
     this.obtenerProyectos()
     this.obtenerItems()
-    console.log('PROYECTOS: ',this.Proyectos)
+ 
 
   }
 
@@ -72,6 +73,8 @@ export default class ItemsComponent  implements OnInit{
     this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
     this.Proyectos=resp
     this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+
+  
     })
   }
 
@@ -94,14 +97,23 @@ export default class ItemsComponent  implements OnInit{
     this.CategoriasBack=this.Categorias.filter((cat:any)=>cat.Tipo==event.target.value)
   }
 
+  SelectGeneral(){
+    this.TipoRubro=1
+    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+  }
+  SelectProyecto(){
+    this.TipoRubro=2
+    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+  }
+  
   cargarFormulario(){
     this.ItemForm = new FormGroup({
       Nombre: new FormControl('',[Validators.required]), 
       Activo: new FormControl(true), 
-      Orden: new FormControl(this.Items.length+1), 
-      Editando: new FormControl(false), 
+      Orden: new FormControl(this.MaxOrden), 
       Sucursales: new FormControl(''), 
-      idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
+      Editando: new FormControl(false), 
+      idEmpresa: new FormControl(this.usuario.idEmpresa), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
       idCategoria: new FormControl('',[Validators.required]), 
 
@@ -161,8 +173,11 @@ export default class ItemsComponent  implements OnInit{
   }
   obtenerItems(){
     this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
-      this.Items=resp
+      this.ItemsBack=resp
+      this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))
+      this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
       this.cargarFormulario()
+      console.log('Items: ',this.Items)
 
     })
   }
@@ -172,6 +187,7 @@ export default class ItemsComponent  implements OnInit{
     })
   }
   getTipo(idCategoria:string){
+
     let _Tipo:any
     _Tipo=this.Categorias.find((categ:any)=>categ.id==idCategoria)
     if(_Tipo){
@@ -182,26 +198,48 @@ export default class ItemsComponent  implements OnInit{
     }
   }
 
+
+  getProyectoSelect(idProyecto){
+    if(idProyecto!='0'){
+
+      let _ProyectoSelect:any
+      _ProyectoSelect=this.Proyectos.filter((proyect:any)=>proyect.id==idProyecto)
+      this.ProyectoSeleccionado=_ProyectoSelect[0]
+    
+    }
+  }
+
   crearItem(){
     let ItemForm:any
     ItemForm=this.ItemForm.value
-    if(this.SucursalesSelected.length>0){
-      this.ItemForm.get('Sucursales').setValue(this.SucursalesSelected);
-      ItemForm.Sucursales=this.SucursalesSelected
-    }
-    else if(this.todasSucursales==true){
-      ItemForm.Sucursales=this.Sucursales
+    if(this.TipoRubro==1){
+      if(this.SucursalesSelected.length>0){
+        this.ItemForm.get('Sucursales').setValue(this.SucursalesSelected);
+        ItemForm.Sucursales=this.SucursalesSelected
+      }
+      else if(this.todasSucursales==true){
+        ItemForm.Sucursales=this.Sucursales
+      }
+      else {
+        let _SucursalSeleccionada:any=[]
+        _SucursalSeleccionada=this.Sucursales.filter((suc:any)=>suc.id==this.ItemForm.value['Sucursales'])
+        this.ItemForm.get('Sucursales').setValue(_SucursalSeleccionada);
+        ItemForm.Sucursales=_SucursalSeleccionada
+      }
+      ItemForm.Proyecto={}
+
+
     }
     else {
-      let _SucursalSeleccionada:any=[]
-      _SucursalSeleccionada=this.Sucursales.filter((suc:any)=>suc.id==this.ItemForm.value['Sucursales'])
-      this.ItemForm.get('Sucursales').setValue(_SucursalSeleccionada);
-      ItemForm.Sucursales=_SucursalSeleccionada
+      ItemForm.Proyecto=this.ProyectoSeleccionado
+      ItemForm.Sucursales=[]
     }
 
     ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
     
     ItemForm.TipoRubro=this.TipoRubro
+
+    console.log('ItemForm',ItemForm)
     this.conS.crearItem(ItemForm).then(resp=>{
       Swal.fire({
         position: "center",

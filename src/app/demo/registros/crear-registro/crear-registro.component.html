@@ -14,8 +14,8 @@
 
 <div class="d-flex justify-content-center">
 
-  <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info m-1">General</button>
-  <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos</button>
+  <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
+  <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i></button>
 </div>
 
   <p-table
@@ -171,7 +171,9 @@
         </p-dropdown>
         </td>
         <td class="text-center" >
-   
+          <p *ngIf="this.Items.length==0" 
+          class="animate__animated animate__bounceIn"
+          style="color: red;">No tienes cuentas asociadas a este proyecto</p>
           <p-dropdown
           [options]="getCuentabyCategoria(registros.idCategoria)"
           [(ngModel)]="registros.NombreElemento"
@@ -180,6 +182,7 @@
           optionValue="label"
           [filter]="true"
           filterBy="label"
+          [disabled]="this.Items.length==0"
           [showClear]="false"
           placeholder="Seleccione una cuenta"
           appendTo="body"

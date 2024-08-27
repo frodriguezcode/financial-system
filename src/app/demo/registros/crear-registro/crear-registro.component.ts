@@ -117,6 +117,7 @@ activeIndex: number = 0;
   MesesTodos: any=[];
   Registros: any=[];
   Items: any=[];
+  ItemsBack: any=[];
   ItemSeleccionados: any=[];
   usuario:any
   idItem:any=''
@@ -369,9 +370,13 @@ buscarByProyecto(){
   if(this.ProyectoSeleccionado.id!=0){
     console.log('Registros', this.Registros)
    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.idProyecto==this.ProyectoSeleccionado.id)
+   this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro && item.Proyecto.id==this.ProyectoSeleccionado.id )
+
   }
   else {
     this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
+
   }
   this.calcularImporteTotal(this.Registros)
   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
@@ -456,6 +461,9 @@ obtenerRegistros(){
 switchTipoRegistro(idTipo){
   this.idTipoRegistro=idTipo
   this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
+  this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
+  console.log('Items',this.Items)
+  
 }
 
 calcularImporteTotal(registros:any){
@@ -754,7 +762,9 @@ getMonthName(Fecha:string){
  }
 obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
-    this.Items=resp
+    this.ItemsBack=resp
+    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
+  
   })
 }
 obtenerCuentas(){
