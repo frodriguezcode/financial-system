@@ -15,7 +15,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
-
+import { MultiSelectModule } from 'primeng/multiselect';
 @Component({
   selector: 'app-elemento',
   standalone: true,
@@ -29,7 +29,8 @@ import { BadgeModule } from 'primeng/badge';
     IconFieldModule,
     TabViewModule,
     AvatarModule,
-    BadgeModule 
+    BadgeModule,
+    MultiSelectModule 
   ],
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
@@ -41,7 +42,9 @@ export default class ItemsComponent  implements OnInit{
   Categorias:any=[]
   CategoriasBack:any=[]
   Sucursales:any=[]
-  Proyectos:any=[] || 'unico'
+  SucursalesSeleccionadas:any=[]
+  Proyectos:any =[]
+  ProyectosSeleccionado:any=[]
   ProyectoSeleccionado:any=[]
   SucursalesSelected:any=[]
   Empresas:any=[]
@@ -100,10 +103,14 @@ export default class ItemsComponent  implements OnInit{
   SelectGeneral(){
     this.TipoRubro=1
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+
+
   }
   SelectProyecto(){
     this.TipoRubro=2
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+   
+
   }
   
   cargarFormulario(){
@@ -166,9 +173,39 @@ export default class ItemsComponent  implements OnInit{
 
     })
   }
+
+  filtrarCuentasBySucursal(){
+    if(this.TipoRubro==1){
+
+      if( this.SucursalesSeleccionadas.length==0){
+        this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+      }
+      else {
+        this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro
+        &&  item.Sucursales.some(sucursal=>this.SucursalesSeleccionadas.some(sucursalSelect=>sucursalSelect.id==sucursal.id))
+        )
+
+      }
+      
+    }
+    else {
+      if( this.ProyectosSeleccionado.length==0){
+        this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+      }
+      else {
+
+        this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro
+        &&   this.ProyectosSeleccionado.some((proy: any) => proy.id === item.Proyecto.id)
+        )
+      }
+    }
+
+  }
+
   obtenerSucursales(){
     this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
       this.Sucursales=resp
+
     })
   }
   obtenerItems(){
@@ -177,7 +214,6 @@ export default class ItemsComponent  implements OnInit{
       this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))
       this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
       this.cargarFormulario()
-      console.log('Items: ',this.Items)
 
     })
   }
@@ -239,7 +275,6 @@ export default class ItemsComponent  implements OnInit{
     
     ItemForm.TipoRubro=this.TipoRubro
 
-    console.log('ItemForm',ItemForm)
     this.conS.crearItem(ItemForm).then(resp=>{
       Swal.fire({
         position: "center",

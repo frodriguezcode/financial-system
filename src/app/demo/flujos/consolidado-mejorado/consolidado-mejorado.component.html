@@ -13,9 +13,9 @@
     optionLabel="SemanaAnio" 
     placeholder="Seleccione semanas" /> -->
 <!-- <p-multiSelect class="m-1" [options]="Meses" [(ngModel)]="MesesSeleccionados" optionLabel="Mes" placeholder="Meses" /> -->
-<p-multiSelect [disabled]="ProyectoSeleccionado.length>0" class="m-1" (onChange)=" filtrarData()" [options]="Sucursales"
+<p-multiSelect [disabled]="ProyectoSeleccionado.length>0" class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" [options]="Sucursales"
   [(ngModel)]="SucursalSeleccionada" optionLabel="Nombre" placeholder="Seleccione una sucursal" />
-<p-multiSelect [disabled]="SucursalSeleccionada.length>0" class="m-1" (onChange)=" filtrarData()" [options]="Proyectos"
+<p-multiSelect [disabled]="SucursalSeleccionada.length>0" class="m-1" (onChange)=" filtrarData();filtrarCuentas(2)" [options]="Proyectos"
   [(ngModel)]="ProyectoSeleccionado" optionLabel="NombreSucursal" placeholder="Seleccione un proyecto" />
 <p-multiSelect (onChange)=" filtrarData()" class="m-1" [options]="CuentasBancarias"
   [(ngModel)]="CuentaBancariaSeleccionada" optionLabel="CuentaNombre" placeholder="Seleccione una cuenta" />
@@ -39,18 +39,52 @@
       <ng-container *ngFor="let cab of Cabecera">
         <ng-container *ngIf="cab.Tipo === 3">
           <td > 
-            <div
+            <!-- <div
               style="position: absolute; top: -11px; z-index: 5; width: 10rem; display: flex; background-color: transparent;">
               <button *ngIf="cab.MostrarBoton==true" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
                 class="btn btn-danger" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-minus"></i> </button>
               <button *ngIf="cab.MostrarBoton==false" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
                 class="btn btn-warning" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-plus"></i></button>
-            </div>
+            </div> -->
+            <button *ngIf="cab.MostrarBoton==true"
+            style="background-color: rgb(255, 80, 80); color: white;"
+            type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+            class="btn btn-danger" ><i class="fa-solid fa-minus"></i> 
+          </button>
+            <button *ngIf="cab.MostrarBoton==false" 
+            style="background-color: rgb(255, 190, 48); color: white;"
+            type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+            class="btn btn-warning" ><i class="fa-solid fa-plus"></i> 
+          </button>
 
           </td>
         </ng-container>
         <th *ngIf="cab.Mostrar==true" class="text-center" style="background-color: rgb(113,189,158,255); ">
-          {{cab.Nombre}}</th>
+          {{cab.Nombre}}
+        </th>
+        <ng-container *ngIf="cab.Tipo === 3">
+          <td > 
+            <!-- <div
+              style="position: absolute; top: -11px; z-index: 5; width: 10rem; display: flex; background-color: transparent;">
+              <button *ngIf="cab.MostrarBoton==true" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+                class="btn btn-danger" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-minus"></i> </button>
+              <button *ngIf="cab.MostrarBoton==false" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+                class="btn btn-warning" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-plus"></i></button>
+            </div> -->
+            <button *ngIf="cab.MostrarBoton==true"
+            style="background-color: rgb(109, 211, 131); color: white;"
+            type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+            class="btn btn-danger" ><i class="fa-solid fa-minus"></i> 
+          </button>
+            <button *ngIf="cab.MostrarBoton==false" 
+            style="background-color: rgb(125, 202, 253); color: white;"
+            type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+            class="btn btn-warning" ><i class="fa-solid fa-plus"></i> 
+          </button>
+
+          </td>
+        </ng-container>
+
 
       </ng-container>
     </thead>
@@ -100,7 +134,7 @@
                   {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|
                   number) }}
                 </td>
-
+                <td style="background-color: white;"></td>
               </ng-container>
 
             </ng-container>
@@ -133,6 +167,7 @@
                       {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
 
                     </td>
+                    <td style="background-color: white;"></td>
                   </ng-container>
                 </ng-container>
                 <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"

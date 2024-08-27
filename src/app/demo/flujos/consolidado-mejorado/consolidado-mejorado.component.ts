@@ -21,6 +21,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   Categorias:any=[]
   categoriasExpandidas: { [id: number]: boolean } = {};
   Items:any=[]
+  ItemsBack:any=[]
   Registros:any=[]
   RegistrosBackUp:any=[]
   Semanas:any=[]
@@ -351,9 +352,40 @@ obtenerItems(){
       this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
         this.Items=[]
           this.Items=resp;
+          this.ItemsBack=resp;
       
          this.obtenerRegistros()
       })
+}
+
+filtrarCuentas(TipoRubro:any){
+
+  if(TipoRubro==1){
+
+    if( this.SucursalSeleccionada.length==0){
+      this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro)
+    }
+    else {
+      this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro
+      &&  item.Sucursales.some(sucursal=>this.SucursalSeleccionada.some(sucursalSelect=>sucursalSelect.id==sucursal.id))
+      )
+
+    }
+    
+  }
+  else {
+    if( this.ProyectoSeleccionado.length==0){
+      this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro)
+    }
+    else {
+
+      this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro
+      &&   this.ProyectoSeleccionado.some((proy: any) => proy.id === item.Proyecto.id)
+      )
+    }
+  }
+
+
 }
   
 obtenerRegistros(){
@@ -428,12 +460,12 @@ obtenerRegistros(){
           const semanasIdentificadas = this.conS.posicionarSemanas(uniqueNumSemana);
           //this.Semanas=uniqueNumSemana.sort((a:any, b:any) => a.NumSemana- b.NumSemana)
           this.Semanas=semanasIdentificadas
-          this.Semanas.map((sem:any)=>sem.Mostrar=true)
+          this.Semanas.map((sem:any)=>{sem.Mostrar=true,sem.MostrarBoton=true})
           
           this.Meses=uniqueMesNumMes.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=uniqueAnios.sort((a:any, b:any) => a.Anio- b.Anio)
-          this.Anios.map((anio:any)=>anio.Mostrar=true)
-          this.Meses.map((mes:any)=>mes.Mostrar=true)
+          this.Anios.map((anio:any)=>{anio.Mostrar=true,anio.MostrarBoton=true})
+          this.Meses.map((mes:any)=>{mes.Mostrar=true,mes.MostrarBoton=true})
 
           this.MesesSeleccionados=this.Meses
     
@@ -1114,6 +1146,9 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
     });
 
     this.CabeceraBack=this.Cabecera
+    console.log('Cabecera',this.Cabecera)
+    console.log('Meses',this.Meses)
+    console.log('Anios',this.Anios)
     this.DataSaldoInicial=[]
     this.DataSaldoFinal=[]
     this.DataSaldoInicialMensual=[]
@@ -1181,6 +1216,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
    }
    getItems(idCategoria:any){
     let _Items:any=[]
+
     _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria)
     return _Items
     }

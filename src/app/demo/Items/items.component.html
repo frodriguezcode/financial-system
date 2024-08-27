@@ -111,6 +111,7 @@
 
         <div class="table-container">
           <div class="table-responsive">
+
             <p-table 
             #dt2
             [value]="Items" 
@@ -120,7 +121,23 @@
             [tableStyle]="{ 'min-width': '50rem' }"
             [rowsPerPageOptions]="[5, 10, 20]">
             <ng-template pTemplate="caption">
-              <div class="flex">
+              <p-multiSelect 
+              (onChange)="filtrarCuentasBySucursal()"
+              *ngIf="TipoRubro==1"
+              [options]="Sucursales" 
+              [(ngModel)]="SucursalesSeleccionadas" 
+              optionLabel="Nombre" 
+              placeholder="Sucursales" />
+
+              <p-multiSelect 
+              (onChange)="filtrarCuentasBySucursal()"
+              *ngIf="TipoRubro==2"
+              [options]="Proyectos" 
+              [(ngModel)]="ProyectosSeleccionado" 
+              optionLabel="NombreSucursal" 
+              placeholder="Proyectos" />
+
+              <div style="margin-top: -50px;" class="flex">
                 <p-iconField iconPosition="left" class="ml-auto">
                       <input 
                           pInputText 
@@ -129,6 +146,7 @@
                           placeholder="Buscar cuenta contable" />
                   </p-iconField>
               </div>
+
           </ng-template>
               <ng-template pTemplate="header">
                 <tr>
