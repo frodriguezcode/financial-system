@@ -50,11 +50,13 @@
             style="background-color: rgb(255, 80, 80); color: white;"
             type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
             class="btn btn-danger" ><i class="fa-solid fa-minus"></i> 
+         
           </button>
             <button *ngIf="cab.MostrarBoton==false" 
             style="background-color: rgb(255, 190, 48); color: white;"
             type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
             class="btn btn-warning" ><i class="fa-solid fa-plus"></i> 
+           
           </button>
 
           </td>
@@ -73,13 +75,15 @@
             </div> -->
             <button *ngIf="cab.MostrarBoton==true"
             style="background-color: rgb(109, 211, 131); color: white;"
-            type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+            type="button" (click)="ocultarMostrarMeses(cab.NumMes,cab.Anio)"
             class="btn btn-danger" ><i class="fa-solid fa-minus"></i> 
+      
           </button>
             <button *ngIf="cab.MostrarBoton==false" 
             style="background-color: rgb(125, 202, 253); color: white;"
-            type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
+            type="button" (click)="ocultarMostrarMeses(cab.NumMes,cab.Anio)"
             class="btn btn-warning" ><i class="fa-solid fa-plus"></i> 
+        
           </button>
 
           </td>
@@ -111,10 +115,11 @@
           </td>
           <ng-container *ngFor="let anio of Anios">
             <ng-container *ngFor="let mes of Meses">
-
-              <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
-                <ng-container *ngIf="semana.Mostrar==true">
-                  <th class="text-center" [ngClass]="{
+              <ng-container *ngIf="mes.Mostrar==true">
+                <!-- Semanas -->
+                <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
+                  <ng-container *ngIf="semana.Mostrar==true">
+                   <th class="text-center" [ngClass]="{
                     'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
                     'cabecera-categoria-no-calc': categoria.Calculado == false ,
                     'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
@@ -127,7 +132,7 @@
                 </ng-container>
 
               </ng-container>
-
+              
               <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0">
                 <td style="background-color: white;"></td>
                 <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
@@ -136,6 +141,7 @@
                 </td>
                 <td style="background-color: white;"></td>
               </ng-container>
+            </ng-container>
 
             </ng-container>
             <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
@@ -151,6 +157,8 @@
                   }}</span></td>
               <ng-container *ngFor="let anio of Anios">
                 <ng-container *ngFor="let mes of Meses;index as i">
+                  <ng-container *ngIf="mes.Mostrar==true">
+                     <!-- Semanas -->
                   <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
                     <ng-container *ngIf="semana.Mostrar==true">
                       <td style="font-weight: bolder;" class="text-center">
@@ -160,15 +168,16 @@
                     </ng-container>
 
                   </ng-container>
-
+                  
                   <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0">
                     <td style="background-color: white;"></td>
                     <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
                       {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
-
+                      
                     </td>
                     <td style="background-color: white;"></td>
                   </ng-container>
+                </ng-container>
                 </ng-container>
                 <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
                   class="text-center">

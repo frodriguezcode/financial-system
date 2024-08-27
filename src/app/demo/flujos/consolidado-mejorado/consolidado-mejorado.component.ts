@@ -102,10 +102,31 @@ ocultarMostrar(NumMes:any,Anio:any){
       cab.MostrarBoton = !cab.MostrarBoton;
     }
   });
+}
+ocultarMostrarMeses(NumMes:any,Anio:any){
+  this.Anios.forEach(anio => {
 
+    this.Meses.forEach(mes => {
+      if (mes.NumMes == NumMes && anio.Anio == Anio) {
+        mes.Mostrar = !mes.Mostrar;
+      }
+    });
+    
+  });
 
+  this.Cabecera.forEach(cab => {
+    if (cab.NumMes == NumMes && cab.Anio == Anio && (cab.Tipo==3)) {
+      cab.Mostrar = !cab.Mostrar;
+    
+    }
+    if (cab.NumMes == NumMes && cab.Anio == Anio && (cab.Tipo==2)) {
+      cab.Mostrar = !cab.Mostrar;
+      cab.MostrarBoton = !cab.MostrarBoton;
+    }
+ 
+  });
 
-
+  console.log('Cabecera',this.Cabecera)
 }
   filtrarMeses(numMes:any){
     let _MesEncontrado:any=[]
