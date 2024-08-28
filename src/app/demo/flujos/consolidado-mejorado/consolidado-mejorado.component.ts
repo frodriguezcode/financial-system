@@ -99,9 +99,10 @@ ocultarMostrar(NumMes:any,Anio:any){
     }
     if (cab.NumMes == NumMes && cab.Anio == Anio && (cab.Tipo==3)) {
      
-      cab.MostrarBoton = !cab.MostrarBoton;
+      cab.MostrarBotonSemanal = !cab.MostrarBotonSemanal;
     }
   });
+ 
 }
 ocultarMostrarMeses(NumMes:any,Anio:any){
   this.Anios.forEach(anio => {
@@ -117,16 +118,24 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
   this.Cabecera.forEach(cab => {
     if (cab.NumMes == NumMes && cab.Anio == Anio && (cab.Tipo==3)) {
       cab.Mostrar = !cab.Mostrar;
+
+      if(cab.MostrarBotonSemanal==true){
+
+        cab.MostrarBotonSemanal = !cab.MostrarBotonSemanal;
+      }
+      cab.MostrarSemanas= !cab.MostrarSemanas;
     
     }
     if (cab.NumMes == NumMes && cab.Anio == Anio && (cab.Tipo==2)) {
-      cab.Mostrar = !cab.Mostrar;
-      cab.MostrarBoton = !cab.MostrarBoton;
+      if(cab.Mostrar==true){
+
+        cab.Mostrar = !cab.Mostrar;
+        cab.MostrarBotonMensual = !cab.MostrarBotonMensual;
+      }
     }
  
   });
 
-  console.log('Cabecera',this.Cabecera)
 }
   filtrarMeses(numMes:any){
     let _MesEncontrado:any=[]
@@ -1137,8 +1146,11 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
             "NumMes":mes.NumMes,
             "Anio":anio.Anio,
             "Tipo":2,
+            "NumSemana":sem.NumSemana,
             "Mostrar":true,
             "MostrarBoton":true
+            
+          
           })
           
         });
@@ -1150,7 +1162,10 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
             "Anio":anio.Anio,
             "Tipo":3,
             "Mostrar":true,
-            "MostrarBoton":true
+            "MostrarBoton":true,
+            "MostrarBotonSemanal":true,
+            "MostrarBotonMensual":true,
+            "MostrarSemanas":true,
           })
 
         }
@@ -1167,9 +1182,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
     });
 
     this.CabeceraBack=this.Cabecera
-    console.log('Cabecera',this.Cabecera)
-    console.log('Meses',this.Meses)
-    console.log('Anios',this.Anios)
+ 
     this.DataSaldoInicial=[]
     this.DataSaldoFinal=[]
     this.DataSaldoInicialMensual=[]

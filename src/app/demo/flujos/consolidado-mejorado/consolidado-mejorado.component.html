@@ -37,22 +37,16 @@
     <!-- <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header categoria-toggle"> -->
     <thead style="color:white" class="sticky-header categoria-toggle">
       <ng-container *ngFor="let cab of Cabecera">
-        <ng-container *ngIf="cab.Tipo === 3">
+        <ng-container *ngIf="cab.Tipo == 3 && cab.MostrarSemanas==true">
           <td > 
-            <!-- <div
-              style="position: absolute; top: -11px; z-index: 5; width: 10rem; display: flex; background-color: transparent;">
-              <button *ngIf="cab.MostrarBoton==true" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
-                class="btn btn-danger" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-minus"></i> </button>
-              <button *ngIf="cab.MostrarBoton==false" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
-                class="btn btn-warning" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-plus"></i></button>
-            </div> -->
-            <button *ngIf="cab.MostrarBoton==true"
+
+            <button *ngIf="cab.MostrarBotonSemanal==true"
             style="background-color: rgb(255, 80, 80); color: white;"
             type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
             class="btn btn-danger" ><i class="fa-solid fa-minus"></i> 
          
           </button>
-            <button *ngIf="cab.MostrarBoton==false" 
+            <button *ngIf="cab.MostrarBotonSemanal==false" 
             style="background-color: rgb(255, 190, 48); color: white;"
             type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
             class="btn btn-warning" ><i class="fa-solid fa-plus"></i> 
@@ -64,22 +58,16 @@
         <th *ngIf="cab.Mostrar==true" class="text-center" style="background-color: rgb(113,189,158,255); ">
           {{cab.Nombre}}
         </th>
-        <ng-container *ngIf="cab.Tipo === 3">
+        <ng-container *ngIf="cab.Tipo == 3">
           <td > 
-            <!-- <div
-              style="position: absolute; top: -11px; z-index: 5; width: 10rem; display: flex; background-color: transparent;">
-              <button *ngIf="cab.MostrarBoton==true" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
-                class="btn btn-danger" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-minus"></i> </button>
-              <button *ngIf="cab.MostrarBoton==false" type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
-                class="btn btn-warning" style="position: absolute; z-index: 10; left: -18px; width: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-plus"></i></button>
-            </div> -->
-            <button *ngIf="cab.MostrarBoton==true"
+ 
+            <button *ngIf="cab.MostrarSemanas==true"
             style="background-color: rgb(109, 211, 131); color: white;"
             type="button" (click)="ocultarMostrarMeses(cab.NumMes,cab.Anio)"
             class="btn btn-danger" ><i class="fa-solid fa-minus"></i> 
       
           </button>
-            <button *ngIf="cab.MostrarBoton==false" 
+            <button *ngIf="cab.MostrarSemanas==false" 
             style="background-color: rgb(125, 202, 253); color: white;"
             type="button" (click)="ocultarMostrarMeses(cab.NumMes,cab.Anio)"
             class="btn btn-warning" ><i class="fa-solid fa-plus"></i> 
@@ -113,41 +101,48 @@
               </span>
             </span>
           </td>
-          <ng-container *ngFor="let anio of Anios">
-            <ng-container *ngFor="let mes of Meses">
-              <ng-container *ngIf="mes.Mostrar==true">
-                <!-- Semanas -->
-                <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
-                  <ng-container *ngIf="semana.Mostrar==true">
-                   <th class="text-center" [ngClass]="{
-                    'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
-                    'cabecera-categoria-no-calc': categoria.Calculado == false ,
-                    'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
-                    
-                    }">
-                    {{ "$ " + ( DataCategorias[anio.Anio + '-' + mes.NumMes + '-' + categoria.id + '-' +
-                    semana.NumSemana]?.[0]?.Valor| number) }}
-                  </th>
+          <ng-container *ngFor="let cab of Cabecera">
+            <ng-container *ngIf="cab.Tipo!=1">
+                  <!-- Semanas -->
+                  <ng-container *ngIf="cab.Tipo==2 && cab.Mostrar==true">
+                    <th class="text-center" [ngClass]="{
+                     'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
+                     'cabecera-categoria-no-calc': categoria.Calculado == false ,
+                     'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
+                     
+                     }">
+                     {{ "$ " + ( DataCategorias[cab.Anio + '-' + cab.NumMes + '-' + categoria.id + '-' +
+                     cab.NumSemana]?.[0]?.Valor| number) }}
+                   </th>
+
+                  </ng-container>
+
+                  <ng-container *ngIf="cab.Tipo==3 && cab.MostrarSemanas==true ">
+                    <td style="background-color: white;"></td>
+                  </ng-container>
+
+                <ng-container *ngIf="cab.Tipo==3 && cab.Mostrar==true">
+           
+
+                  <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                    {{ "$ " + ( DataCategoriasMensual[cab.Anio  + '-' + cab.NumMes + '-' + categoria.id]?.[0]?.Valor|
+                    number) }}
+                  </td>
+                </ng-container>
+       
+                <ng-container *ngIf="cab.Tipo==3">
+                  <td style="background-color: white;"></td>
+                </ng-container>
+  
+                <ng-container *ngIf="cab.Tipo==4">
+                  <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
+                    class="text-center">
+                    {{ "$ " + ( DataCategoriasAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor| number) }}
+                  </td>
 
                 </ng-container>
-
-              </ng-container>
-              
-              <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0">
-                <td style="background-color: white;"></td>
-                <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                  {{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|
-                  number) }}
-                </td>
-                <td style="background-color: white;"></td>
-              </ng-container>
             </ng-container>
 
-            </ng-container>
-            <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
-              class="text-center">
-              {{ "$ " + ( DataCategoriasAnual[anio.Anio + '-' + categoria.id]?.[0]?.Valor| number) }}
-            </td>
           </ng-container>
         </tr>
         <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
