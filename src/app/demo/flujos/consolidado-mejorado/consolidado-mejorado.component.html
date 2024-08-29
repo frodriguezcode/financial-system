@@ -55,9 +55,11 @@
 
           </td>
         </ng-container>
+
         <th *ngIf="cab.Mostrar==true" class="text-center" style="background-color: rgb(113,189,158,255); ">
           {{cab.Nombre}}
         </th>
+
         <ng-container *ngIf="cab.Tipo == 3">
           <td > 
  
@@ -122,8 +124,6 @@
                   </ng-container>
 
                 <ng-container *ngIf="cab.Tipo==3 && cab.Mostrar==true">
-           
-
                   <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
                     {{ "$ " + ( DataCategoriasMensual[cab.Anio  + '-' + cab.NumMes + '-' + categoria.id]?.[0]?.Valor|
                     number) }}
@@ -150,35 +150,48 @@
             <tr style="background-color: #FAFAFA">
               <td style="background-color: white"><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre
                   }}</span></td>
-              <ng-container *ngFor="let anio of Anios">
-                <ng-container *ngFor="let mes of Meses;index as i">
-                  <ng-container *ngIf="mes.Mostrar==true">
+              <ng-container *ngFor="let cab of Cabecera">
+                 <ng-container *ngIf="cab.Tipo!=1">
                      <!-- Semanas -->
-                  <ng-container *ngFor="let semana of this.getSemanasByMesAnio(anio.Anio,mes.NumMes)">
-                    <ng-container *ngIf="semana.Mostrar==true">
-                      <td style="font-weight: bolder;" class="text-center">
-                        {{ "$ " + ( DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id + '-' +
-                        semana.NumSemana]?.[0]?.Valor| number) }}
-                      </td>
-                    </ng-container>
+                     <ng-container *ngIf="cab.Tipo==2 && cab.Mostrar==true">
 
+                       <td style="font-weight: bolder;" class="text-center">
+                         {{ "$ " + ( DataItems[cab.Anio + '-' + cab.NumMes + '-' + item.id + '-' +
+                        cab.NumSemana]?.[0]?.Valor| number) }}
+                       </td>
+      
+                     </ng-container>
+
+                 <ng-container *ngIf="cab.Tipo==3 && cab.MostrarSemanas==true ">
+                      <td style="background-color: white;"></td>
+                 </ng-container>
+                 
+                 <ng-container *ngIf="cab.Tipo==3 && cab.Mostrar==true">
+              
+                   <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+                     {{ "$ " + ( DataItemsMensual[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
+                     
+                   </td>
+
+                 </ng-container>
+                  <ng-container *ngIf="cab.Tipo==3">
+                      <td style="background-color: white;"></td>
                   </ng-container>
                   
-                  <ng-container *ngIf="this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0">
-                    <td style="background-color: white;"></td>
-                    <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
-                      {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
-                      
-                    </td>
-                    <td style="background-color: white;"></td>
-                  </ng-container>
+
+              
+                  <ng-container *ngIf="cab.Tipo==4">
+                    
+                    <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
+                    class="text-center">
+                    {{ "$ " + ( DataItemsAnual[cab.Anio  + '-' + item.id]?.[0]?.Valor| number) }}
+                  </td>
                 </ng-container>
-                </ng-container>
-                <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
-                  class="text-center">
-                  {{ "$ " + ( DataItemsAnual[anio.Anio + '-' + item.id]?.[0]?.Valor| number) }}
-                </td>
               </ng-container>
+            </ng-container>
+
+
+
             </tr>
           </ng-container>
         </ng-container>

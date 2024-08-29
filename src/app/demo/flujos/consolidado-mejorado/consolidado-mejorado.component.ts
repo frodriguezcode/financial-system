@@ -102,7 +102,7 @@ ocultarMostrar(NumMes:any,Anio:any){
       cab.MostrarBotonSemanal = !cab.MostrarBotonSemanal;
     }
   });
- 
+  console.log('Cabecera',this.Cabecera)
 }
 ocultarMostrarMeses(NumMes:any,Anio:any){
   this.Anios.forEach(anio => {
@@ -135,7 +135,7 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
     }
  
   });
-
+  console.log('Cabecera',this.Cabecera)
 }
   filtrarMeses(numMes:any){
     let _MesEncontrado:any=[]
@@ -1182,6 +1182,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
     });
 
     this.CabeceraBack=this.Cabecera
+    console.log('Cabecera',this.Cabecera)
  
     this.DataSaldoInicial=[]
     this.DataSaldoFinal=[]

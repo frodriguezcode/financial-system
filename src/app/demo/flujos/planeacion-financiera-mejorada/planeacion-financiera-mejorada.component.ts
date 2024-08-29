@@ -26,6 +26,7 @@ Cabecera: any = [];
 Categorias:any=[]
 categoriasExpandidas: { [id: number]: boolean } = {};
 Items:any=[]
+ItemsBack:any=[]
 usuario:any
 Registros:any=[]
 RegistrosValoresPlanesItems:any=[]
@@ -34,10 +35,11 @@ RegistrosValoresPlanes:any=[]
 RegistrosValoresPlanesBackUpItems:any=[]
 DataCategoriasMensual:any=[]
 DataItemsMensual:any=[]
+DataItems:any=[]
 RegistrosBackUp:any=[]
 
 DataPlanesMensual:any=[]
-
+idTipoRegistro:any=1
 cargando:boolean=true
 constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 ngOnInit(): void {
@@ -114,8 +116,15 @@ ngOnInit(): void {
 this.obtenerCategorias()  
 this.obtenerRegistros()
 this.obtenerValoresPlanes()
-this.obtenerValoresPlanesItems()
 this.obtenerCategorias()
+}
+
+switchTipoRegistro(idTipo){
+  this.idTipoRegistro=idTipo
+  this.Registros=this.RegistrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
+  this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
+ console.log('Items',this.ItemsBack)
+  
 }
 getTableClass() {
   return (this.AniosSeleccionados.length === 1 && this.MesesSeleccionados.length === 1) ? 'table table-100 table-reduced' : 'table table-100';
@@ -175,6 +184,7 @@ construirCabecera(){
 
     })
 this.getDataCategoriasMensual()
+this.getDataItemsMensualPlanes()
 this.getDataCategoriasMensualPlanes()
   })
 
@@ -219,7 +229,7 @@ obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
     this.Items=[]
       this.Items=resp;
-  
+      this.ItemsBack=resp
      this.obtenerRegistros()
   })
 }
@@ -273,12 +283,54 @@ obtenerValoresPlanes(){
    this.RegistrosValoresPlanesBackUp=resp
   })
 }
-obtenerValoresPlanesItems(){
-  this.conS.obtenerValoresPlanesItems(this.usuario.idEmpresa).subscribe(resp=>{
-    this.RegistrosValoresPlanesItems=resp
-   this.RegistrosValoresPlanesBackUpItems=resp
-   console.log('RegistrosValoresPlanesBackUpItems',this.RegistrosValoresPlanesBackUpItems)
-  })
+
+
+getDataItemsMensualPlanes(){
+  this.DataItems=[]
+  this.Items.forEach((item:any) => {
+      this.Anios.forEach((anio:any) => {
+        this.Meses.forEach((mes:any) => {
+            const key = `${anio.Anio}-${mes.NumMes}-${item.id}`;  
+            if (!this.DataItems[key]) {
+              this.DataItems[key] =[];
+            }
+              this.DataItems[key].push({
+                "Valor": this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio),
+                "Diferencia":this.getValorItemMensual(item.id,mes.NumMes,anio.Anio)- this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio) ,
+                "Variacion": this.calcularVariacion(this.getValorItemMensual(item.id,mes.NumMes,anio.Anio),this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio))
+      
+              });
+    
+            
+    
+  
+          })
+        })
+      
+    });
+    this.cargando=false 
+    console.log('DataItems',this.DataItems) 
+} 
+
+
+getValorItemsMensualPlanes(idItem:any,Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosValoresPlanes.filter((registro:any)=>registro
+  .idItem==idItem
+  && registro.MesRegistro==Mes
+  && registro.AnioRegistro==Anio
+  )
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+ 
+    return Valor
+  }
+  else {
+    return 0
+  }
 }
 
 getDataCategoriasMensualPlanes(){
@@ -456,7 +508,8 @@ verifyValue(categoriaTipo:any,Monto:any){
 
 }
 
-guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCategoria:any,Orden:any){
+guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor:any,TipoCategoria:any,Orden:any){
+  console.log('Anio',Anio)
   if(this.verifyValue(TipoCategoria,Number(Valor))[0].Estado==false){
     Swal.fire({
       position: "center",
@@ -473,6 +526,9 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCateg
       "MesRegistro":MesRegistro,
       "Orden":Orden,
       "idCategoria":idCategoria,
+      "idItem":idItem,
+      "TipoCategoria":TipoCategoria,
+      "TipoRegistro":this.idTipoRegistro,
       "Valor": TipoCategoria==2 ?  Number(Valor)*-1: Number(Valor),
       "idEmpresa":this.usuario.idEmpresa,
       "IdSucursal":this.usuario.IdSucursal
@@ -486,75 +542,28 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCateg
       data.idEmpresa==this.usuario.idEmpresa &&
       data.IdSucursal==this.usuario.IdSucursal)
     if(_ValorPlanEncontrado.length>0){
-      console.log('_ValorPlanEncontrado',_ValorPlanEncontrado)
-      console.log('Valor',Valor)
+      console.log('_Valor',_Valor)
       _ValorPlanEncontrado[0].Valor=TipoCategoria==2 ?  Number(Valor)*-1: Number(Valor)
     this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
     })
     }  
+    
     else {
+      console.log('_Valor',_Valor)
       
       this.conS.crearValorPlan(_Valor).then(resp=>{
         this.toastr.success('Guardado', '¡Exito!');
       })
 
 }
+this.getDataItemsMensualPlanes()
 this.getDataCategoriasMensual()
 this.getDataCategoriasMensualPlanes()
   }
 }
 
-guardarValorPlanItem(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor:any,TipoCategoria:any,Orden:any){
-  if(this.verifyValue(TipoCategoria,Number(Valor))[0].Estado==false){
-    Swal.fire({
-      position: "center",
-      icon: "warning",
-      title: `${this.verifyValue(TipoCategoria,Number(Valor))[0].Mensaje}`,
-      showConfirmButton: false,
-      timer: 1500
-    });
-  }
-  else {
-    if(TipoCategoria==2){
-      Number(Valor)*-1
-    }
 
-    let _Valor:any={
-      "AnioRegistro":Anio,
-      "MesRegistro":MesRegistro,
-      "Orden":Orden,
-      "idItem":idItem,
-      "idCategoria":idCategoria,
-      "Valor": Number(Valor),
-      "idEmpresa":this.usuario.idEmpresa,
-      "IdSucursal":this.usuario.IdSucursal
-    }
-  
-    let _ValorPlanEncontrado:any=[]
-    _ValorPlanEncontrado=this.RegistrosValoresPlanesItems.filter((data:any)=>
-      data.idItem==idItem &&
-      data.MesRegistro==MesRegistro &&
-      data.AnioRegistro==Anio &&
-      data.idEmpresa==this.usuario.idEmpresa &&
-      data.IdSucursal==this.usuario.IdSucursal)
-    if(_ValorPlanEncontrado.length>0){
-      _ValorPlanEncontrado[0].Valor=Number(Valor)
-    this.conS.ActualizarValorPlanItem(_ValorPlanEncontrado[0]).then(resp=>{
-      this.toastr.success('Guardado', '¡Exito!');
-    })
-    }  
-    else {
-      
-      this.conS.crearValorPlanItem(_Valor).then(resp=>{
-        this.toastr.success('Guardado', '¡Exito!');
-      })
-
-}
-this.getDataCategoriasMensual()
-this.getDataCategoriasMensualPlanes()
-  }
-}
 
 getDataCategoriasMensual(){
   this.DataCategoriasMensual=[]
@@ -617,6 +626,7 @@ getDataCategoriasMensual(){
     });
  this.getDataItemMensual()
 } 
+
 
 getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
       let _Data: any=[];
@@ -731,6 +741,7 @@ this.DataItemsMensual=[]
     });
 
 }
+
 getValorItemMensual(idElemento:any,Mes:any,Anio:any){
       let _Data: any=[];
       let Valor: number =0

@@ -1,3 +1,9 @@
+
+<div class="d-flex justify-content-center">
+
+  <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
+  <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i></button>
+</div>
 <div *ngIf="!cargando" class="container-table">
   <div class="table-responsive mt-3">
     <table [class]="getTableClass()" class="table table-100">
@@ -39,21 +45,7 @@
               <ng-container *ngFor="let mes of Meses">
          
                   <td *ngIf="categoria.Tipo!=3" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                    <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
-                    style="color: red; font-size: 11px;" 
-                    *ngIf="verifyValue(categoria.Tipo,Valor.value)[0].Estado==false">{{verifyValue(categoria.Tipo,Valor.value)[0].Mensaje}}</div>
-                    <div class="input-group mb-3">
-                      <span *ngIf="categoria.Tipo==1" class="input-group-text">$</span>
-                      <span *ngIf="categoria.Tipo==2" class="input-group-text">-$</span>
-                      <input 
-                      #Valor
-                      [value]="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|number)"
-                      (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id,Valor.value,categoria.Tipo,categoria.Orden)"
-                      type="text"
-                      class="form-control text-center"
-
-                      aria-label="Amount (to the nearest dollar)">
-                    </div>
+                  0
                   </td>
                   <td *ngIf="categoria.Tipo==3" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
                     {{"$ " +  (DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|number)}}
@@ -106,7 +98,7 @@
                           <input 
                           #Valor
                           [value]="0"
-                          (keyup.enter)="guardarValorPlanItem(anio.Anio, mes.Mes,categoria.id,item.id,Valor.value,categoria.Tipo,categoria.Orden)"
+                          (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id,item.id,Valor.value,categoria.Tipo,categoria.Orden)"
                           type="text"
                           class="form-control text-center"
     
