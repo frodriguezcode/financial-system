@@ -109,8 +109,8 @@
       </div> -->
       <div *ngIf="selectedTab === 'sucursales'">
 
-        <div class="table-container">
-          <div class="table-responsive">
+        <div class="table-container" >
+          <div class="table-responsive" >
 
             <p-table 
             #dt2
@@ -118,7 +118,7 @@
             [paginator]="true" 
             [globalFilterFields]="['Nombre']"
             [rows]="5" 
-            [tableStyle]="{ 'min-width': '50rem' }"
+            [tableStyle]="{ 'min-width': '50rem', 'min-height': '20rem' }"
             [rowsPerPageOptions]="[5, 10, 20]">
             <ng-template pTemplate="caption">
               <p-multiSelect 
@@ -127,7 +127,9 @@
               [options]="Sucursales" 
               [(ngModel)]="SucursalesSeleccionadas" 
               optionLabel="Nombre" 
-              placeholder="Sucursales" />
+              placeholder="Sucursales" 
+              [appendTo]
+              />
 
               <p-multiSelect 
               (onChange)="filtrarCuentasBySucursal()"
@@ -135,7 +137,9 @@
               [options]="Proyectos" 
               [(ngModel)]="ProyectosSeleccionado" 
               optionLabel="NombreSucursal" 
-              placeholder="Proyectos" />
+              placeholder="Proyectos" 
+              [appendTo]
+              />
 
               <div style="margin-top: -50px;" class="flex">
                 <p-iconField iconPosition="left" class="ml-auto">
