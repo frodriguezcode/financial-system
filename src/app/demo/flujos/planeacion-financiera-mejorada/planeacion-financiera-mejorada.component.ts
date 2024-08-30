@@ -7,11 +7,12 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2'
-
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DropdownModule } from 'primeng/dropdown';
 @Component({
   selector: 'app-planeacion-financiera-mejorada',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule,DropdownModule],
   templateUrl: './planeacion-financiera-mejorada.component.html',
   styleUrls: ['./planeacion-financiera-mejorada.component.scss']
 })
@@ -42,9 +43,20 @@ RegistrosBackUp:any=[]
 DataPlanesMensual:any=[]
 idTipoRegistro:any=0
 cargando:boolean=true
+
+Sucursales:any=[]
+SucursalSeleccionada:any
+ujm 
+Proyectos:any=[]
+ProyectoSeleccionado:any
+
+CuentasBancarias:any=[]
+CuentaBancariaSeleccionada:any=[]
 constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.obtenerSucursales()
+  this.obtenerProyectos()
   this.Anios=[
     {Anio:2023},
     {Anio:2024}]
@@ -119,13 +131,76 @@ this.obtenerRegistros()
 this.obtenerValoresPlanes()
 this.obtenerCategorias()
 }
+obtenerProyectos(){
+  this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
+    this.Proyectos=resp
+    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
 
+  })
+}
+obtenerSucursales(){
+  this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe((resp:any)=>{
+    this.Sucursales=resp
+  })
+}
+getNameSucursal(idSucursal:any){
+  if(idSucursal=='0'){
+    return 'General'
+  }
+  else {
+    let sucursal = this.Sucursales.filter((suc: any) => suc.id==idSucursal)
+    if(sucursal.length){
+      return sucursal[0].Sucursal
+    }
+    else{
+      return 'General'
+    }
+  }
+}
+
+filtrarDataProyecto(){
+
+  let CriteriosRegistros:any=[]
+  this.SucursalSeleccionada={}
+
+  CriteriosRegistros={
+
+    idProyecto:[this.ProyectoSeleccionado.id]
+
+  }
+
+  this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
+  this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
+
+ this.construirCabecera()
+
+
+}
+filtrarDataSucursal(){
+
+  let CriteriosRegistros:any=[]
+  this.ProyectoSeleccionado={}
+
+  CriteriosRegistros={
+    idSucursal:[this.SucursalSeleccionada.id]
+
+  }
+console.log('CriteriosRegistros',CriteriosRegistros)
+  this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
+  this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
+
+ this.construirCabecera()
+
+
+}
 switchTipoRegistro(idTipo){
   if(idTipo==0){
     this.idTipoRegistro=0
     this.Registros=this.RegistrosBackUp
     this.RegistrosValoresPlanes=this.RegistrosValoresPlanesBackUp
     this.Items=this.ItemsBack
+    this.SucursalSeleccionada={}
+    this.ProyectoSeleccionado={}
   }
   else {
 
@@ -134,11 +209,11 @@ switchTipoRegistro(idTipo){
     this.RegistrosValoresPlanes=this.RegistrosValoresPlanesBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
 
-    
+    this.categoriasExpandidas=this.categoriasExpandidasHistory
   }
 
-  this.categoriasExpandidas=this.categoriasExpandidasHistory
- // this.obtenerCategorias()
+
+  this.construirCabecera()
 }
 getTableClass() {
   return (this.AniosSeleccionados.length === 1 && this.MesesSeleccionados.length === 1) ? 'table table-100 table-reduced' : 'table table-100';
@@ -550,7 +625,8 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       "TipoRegistro":this.idTipoRegistro,
       "Valor": Number(Valor.replace(',', '')),
       "idEmpresa":this.usuario.idEmpresa,
-      "IdSucursal":this.usuario.IdSucursal
+      "idSucursal":this.SucursalSeleccionada.id  || '',
+      "idProyecto":this.ProyectoSeleccionado.id || ''
     }
   
     let _ValorPlanEncontrado:any=[]
@@ -563,23 +639,25 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
     if(_ValorPlanEncontrado.length>0){
 
       _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
-
-    this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
-      this.toastr.success('Guardado', '¡Exito!');
-      this.getDataItemsMensualPlanes()
-      this.getDataCategoriasMensual()
-      this.getDataCategoriasMensualPlanes()
-    })
+      console.log('ProyectoSeleccionado',this.ProyectoSeleccionado)
+      console.log('SucursalSeleccionado',this.SucursalSeleccionada)
+    // this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
+    //   this.toastr.success('Guardado', '¡Exito!');
+    //   this.getDataItemsMensualPlanes()
+    //   this.getDataCategoriasMensual()
+    //   this.getDataCategoriasMensualPlanes()
+    // })
     }  
     
     else {
-      
-      this.conS.crearValorPlan(_Valor).then(resp=>{
-        this.toastr.success('Guardado', '¡Exito!');
-        this.getDataItemsMensualPlanes()
-        this.getDataCategoriasMensual()
-        this.getDataCategoriasMensualPlanes()
-      })
+      console.log('ProyectoSeleccionado',this.ProyectoSeleccionado)
+      console.log('SucursalSeleccionado',this.SucursalSeleccionada)
+      // this.conS.crearValorPlan(_Valor).then(resp=>{
+      //   this.toastr.success('Guardado', '¡Exito!');
+      //   this.getDataItemsMensualPlanes()
+      //   this.getDataCategoriasMensual()
+      //   this.getDataCategoriasMensualPlanes()
+      // })
 
 }
 

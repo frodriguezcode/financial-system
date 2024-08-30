@@ -5,6 +5,12 @@
   <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
   <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i></button>
 </div>
+
+<p-dropdown   class="m-1" (onChange)=" filtrarDataSucursal()" [options]="Sucursales"
+  [(ngModel)]="SucursalSeleccionada" optionLabel="Nombre" placeholder="Seleccione una sucursal" />
+<p-dropdown   class="m-1" (onChange)=" filtrarDataProyecto()" [options]="Proyectos"
+  [(ngModel)]="ProyectoSeleccionado" optionLabel="NombreSucursal" placeholder="Seleccione un proyecto" />
+
 <div *ngIf="!cargando" class="container-table">
   <div class="table-responsive mt-3">
     <table [class]="getTableClass()" class="table table-100">
