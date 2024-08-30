@@ -490,6 +490,7 @@ if(typeof _RegistroEncontrado.Valor=='string'){
 else {
   ValorRegistro=_RegistroEncontrado.Valor
 }
+
   if(ValorRegistro >0 && tipo==2){
     this.isNegativo=false
     return false
@@ -550,8 +551,8 @@ getTipo(idCategoria){
 
 salvarRegistro(Registro:any){
   Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
-
-  if(this.validarEgreso(Registro.idTipo,Registro.Valor,Registro.Orden)==false){
+console.log('Registro',Number(Registro.Valor.replace('$', '')))
+  if(this.validarEgreso(Registro.idTipo,Number(Registro.Valor.replace('$', '')),Registro.Orden)==false){
     Swal.fire({
       position: "center",
       icon: "warning",

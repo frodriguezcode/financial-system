@@ -24,6 +24,7 @@ Anios: any = [];
 AniosSeleccionados: any = [];
 Cabecera: any = [];
 Categorias:any=[]
+categoriasExpandidasHistory:any=[]
 categoriasExpandidas: { [id: number]: boolean } = {};
 Items:any=[]
 ItemsBack:any=[]
@@ -39,7 +40,7 @@ DataItems:any=[]
 RegistrosBackUp:any=[]
 
 DataPlanesMensual:any=[]
-idTipoRegistro:any=1
+idTipoRegistro:any=0
 cargando:boolean=true
 constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 ngOnInit(): void {
@@ -120,11 +121,24 @@ this.obtenerCategorias()
 }
 
 switchTipoRegistro(idTipo){
-  this.idTipoRegistro=idTipo
-  this.Registros=this.RegistrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
-  this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
- console.log('Items',this.ItemsBack)
-  
+  if(idTipo==0){
+    this.idTipoRegistro=0
+    this.Registros=this.RegistrosBackUp
+    this.RegistrosValoresPlanes=this.RegistrosValoresPlanesBackUp
+    this.Items=this.ItemsBack
+  }
+  else {
+
+    this.idTipoRegistro=idTipo
+    this.Registros=this.RegistrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
+    this.RegistrosValoresPlanes=this.RegistrosValoresPlanesBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
+    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
+
+    
+  }
+
+  this.categoriasExpandidas=this.categoriasExpandidasHistory
+ // this.obtenerCategorias()
 }
 getTableClass() {
   return (this.AniosSeleccionados.length === 1 && this.MesesSeleccionados.length === 1) ? 'table table-100 table-reduced' : 'table table-100';
@@ -184,6 +198,7 @@ construirCabecera(){
 
     })
 this.getDataCategoriasMensual()
+this.getDataItemMensual()
 this.getDataItemsMensualPlanes()
 this.getDataCategoriasMensualPlanes()
   })
@@ -213,17 +228,21 @@ obtenerCategorias(){
       
     });
     this.obtenerItems()
-    console.log('Categorias',this.Categorias)
+
   })
 }
 toggleCategoria(id: number) {
 
   this.categoriasExpandidas[id] = !this.categoriasExpandidas[id];
+  this.categoriasExpandidasHistory=this.categoriasExpandidas
 }
 getItems(idCategoria:any){
   let _Items:any=[]
-  _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria)
-  return _Items
+ 
+  _Items = this.Items.filter((item: any) => 
+    item.idCategoria == idCategoria && 
+    (this.idTipoRegistro === 0 || item.TipoRubro == this.idTipoRegistro)
+  );  return _Items
   }
 obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
@@ -262,6 +281,7 @@ obtenerRegistros(){
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
         "idProyecto":element.idProyecto,
+        "TipoRegistro":element.TipoRegistro,
         "NombreElemento":element.Elemento.label || '',
         "idElemento":element.Elemento.id || '',
         "NumCuenta":element.Cuenta.Cuenta || '',
@@ -272,6 +292,7 @@ obtenerRegistros(){
       this.Registros.push(_Registro)
 
       });
+
       this.RegistrosBackUp=this.Registros
       this.construirCabecera()
     })
@@ -295,7 +316,7 @@ getDataItemsMensualPlanes(){
               this.DataItems[key] =[];
             }
               this.DataItems[key].push({
-                "Valor": this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio),
+                "Valor": item.Tipo==2 ? this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio)*-1  :this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio),
                 "Diferencia":this.getValorItemMensual(item.id,mes.NumMes,anio.Anio)- this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio) ,
                 "Variacion": this.calcularVariacion(this.getValorItemMensual(item.id,mes.NumMes,anio.Anio),this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio))
       
@@ -309,7 +330,7 @@ getDataItemsMensualPlanes(){
       
     });
     this.cargando=false 
-    console.log('DataItems',this.DataItems) 
+
 } 
 
 
@@ -395,9 +416,8 @@ getDataCategoriasMensualPlanes(){
     this.cargando=false  
 } 
 calcularVariacion(ValorA:any,ValorB:any){
- let  Diferencia:any=0
-  Diferencia=(ValorA-ValorB).toFixed(0)
-  return ValorA==0 || ValorB==0 ? 0 :  (((Diferencia / ValorA)))*100 
+
+  return ValorA==0 || ValorB==0 ? 0 :  (((ValorA / ValorB)-1))*100 
 }
 getDataFlujoFinancieroMensualPlanes(Mes:any,Anio:any){
   let _Data: any=[];
@@ -509,7 +529,6 @@ verifyValue(categoriaTipo:any,Monto:any){
 }
 
 guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor:any,TipoCategoria:any,Orden:any){
-  console.log('Anio',Anio)
   if(this.verifyValue(TipoCategoria,Number(Valor))[0].Estado==false){
     Swal.fire({
       position: "center",
@@ -529,7 +548,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       "idItem":idItem,
       "TipoCategoria":TipoCategoria,
       "TipoRegistro":this.idTipoRegistro,
-      "Valor": TipoCategoria==2 ?  Number(Valor)*-1: Number(Valor),
+      "Valor": Number(Valor.replace(',', '')),
       "idEmpresa":this.usuario.idEmpresa,
       "IdSucursal":this.usuario.IdSucursal
     }
@@ -542,24 +561,29 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       data.idEmpresa==this.usuario.idEmpresa &&
       data.IdSucursal==this.usuario.IdSucursal)
     if(_ValorPlanEncontrado.length>0){
-      console.log('_Valor',_Valor)
-      _ValorPlanEncontrado[0].Valor=TipoCategoria==2 ?  Number(Valor)*-1: Number(Valor)
+
+      _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
+
     this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
+      this.getDataItemsMensualPlanes()
+      this.getDataCategoriasMensual()
+      this.getDataCategoriasMensualPlanes()
     })
     }  
     
     else {
-      console.log('_Valor',_Valor)
       
       this.conS.crearValorPlan(_Valor).then(resp=>{
         this.toastr.success('Guardado', '¡Exito!');
+        this.getDataItemsMensualPlanes()
+        this.getDataCategoriasMensual()
+        this.getDataCategoriasMensualPlanes()
       })
 
 }
-this.getDataItemsMensualPlanes()
-this.getDataCategoriasMensual()
-this.getDataCategoriasMensualPlanes()
+
+
   }
 }
 
@@ -650,6 +674,8 @@ getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
         return 0
       }
 }    
+
+
 getDataFlujoFinancieroMensual(Mes:any,Anio:any){
       let _Data: any=[];
       _Data=this.Registros.filter((registro:any)=>
@@ -750,7 +776,7 @@ getValorItemMensual(idElemento:any,Mes:any,Anio:any){
         && registro.NumMes==Mes
         && registro.AnioRegistro==Anio
         )
-      
+   
       if(_Data.length>0){
         _Data.forEach((element:any) => {
           Valor+=Number(element.Valor);

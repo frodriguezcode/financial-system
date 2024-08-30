@@ -1,6 +1,7 @@
 
 <div class="d-flex justify-content-center">
 
+  <button type="button" (click)="switchTipoRegistro(0)" class="btn btn-success m-1">Todos <i class="fa-solid fa-rotate-right"></i></button>
   <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
   <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i></button>
 </div>
@@ -45,7 +46,17 @@
               <ng-container *ngFor="let mes of Meses">
          
                   <td *ngIf="categoria.Tipo!=3" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                  0
+                  <span 
+                  *ngIf="categoria.Tipo!=2"
+                  style="color: black;"  
+                  >
+                  {{"$ " + (DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor | number)}}                
+                  </span>
+                  <span 
+                  *ngIf="categoria.Tipo==2"
+                  style="color: red;"  
+                  >{{"-$ " + ((DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor*-1) | number)}}                
+                  </span>
                   </td>
                   <td *ngIf="categoria.Tipo==3" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
                     {{"$ " +  (DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|number)}}
@@ -59,7 +70,7 @@
                     <span 
                     *ngIf="categoria.Tipo==2"
                     style="color: red;"  
-                    >{{ "$ " + ( DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor|number) }}                  
+                    >{{ "-$ " + ( (DataCategoriasMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor*-1)|number) }}                  
                     </span>
                   </td>
                   <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
@@ -67,7 +78,16 @@
 
                   </td>
                   <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                    {{(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion|number: '1.0-0') + "%"}}
+                    
+                    <span *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) < 0"
+                    style="color: red;">
+                      {{(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion|number: '1.0-0') + "%"}}
+                    </span>
+                    <span *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) >= 0"
+                    style="color: black;">
+                      {{(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion|number: '1.0-0') + "%"}}
+                    </span>
+
                     <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) < 0" class="fas fa-arrow-down text-danger"></i>
                     <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) > 0" class="fas fa-arrow-up text-success"></i>
                     <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) == 0" class="fas fa-arrow-right-arrow-left text-warning"></i>
@@ -97,7 +117,7 @@
                           <span *ngIf="categoria.Tipo==2" class="input-group-text">-$</span>
                           <input 
                           #Valor
-                          [value]="0"
+                          [value]="DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor | number"
                           (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id,item.id,Valor.value,categoria.Tipo,categoria.Orden)"
                           type="text"
                           class="form-control text-center"
@@ -109,10 +129,23 @@
                         {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
                       </td>
                       <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
-                        70
+                        
+                        {{"$ " + (DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Diferencia | number)}}
                       </td>
                       <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
-                        80
+
+                        <span *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) < 0"
+                        style="color: red;">
+                        {{(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion |number: '1.0-0') + "%"}}
+                        </span>
+                        <span *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) >= 0"
+                        style="color: black;">
+                        {{(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion |number: '1.0-0') + "%"}}
+                        </span>
+                        
+                        <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) < 0" class="fas fa-arrow-down text-danger"></i>
+                        <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) > 0" class="fas fa-arrow-up text-success"></i>
+                        <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) == 0" class="fas fa-arrow-right-arrow-left text-warning"></i>
                       </td>
                     </ng-container>
                   </ng-container>
