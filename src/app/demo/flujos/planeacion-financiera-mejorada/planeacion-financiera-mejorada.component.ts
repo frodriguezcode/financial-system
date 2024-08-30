@@ -171,7 +171,7 @@ filtrarDataProyecto(){
 
   this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
-
+  this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==2  &&  item.Proyecto.id === this.ProyectoSeleccionado.id )
  this.construirCabecera()
 
 
@@ -188,7 +188,7 @@ filtrarDataSucursal(){
 console.log('CriteriosRegistros',CriteriosRegistros)
   this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
-
+  this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==1 && item.Sucursales.some(sucursal=>sucursal.id==this.SucursalSeleccionada.id))
  this.construirCabecera()
 
 
