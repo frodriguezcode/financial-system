@@ -6,6 +6,11 @@
   <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i></button>
 </div>
 
+<p-multiSelect   class="m-1" [options]="Anios"
+  [(ngModel)]="AniosSeleccionados" (onChange)="getAniosActivos()"  optionLabel="Anio" placeholder="Años" />
+<p-multiSelect   class="m-1" (onChange)="getMesesActivos()"  [options]="Meses"
+  [(ngModel)]="MesesSeleccionados" optionLabel="Mes" placeholder="Meses" />
+
 <p-dropdown   class="m-1" (onChange)=" filtrarDataSucursal()" [options]="Sucursales"
   [(ngModel)]="SucursalSeleccionada" optionLabel="Nombre" placeholder="Seleccione una sucursal" />
 <p-dropdown   class="m-1" (onChange)=" filtrarDataProyecto()" [options]="Proyectos"
@@ -49,14 +54,15 @@
               </span>
             </td>
             <ng-container *ngFor="let anio of Anios">
+              <ng-container *ngIf="anio.Mostrar">
               <ng-container *ngFor="let mes of Meses">
-         
+                <ng-container *ngIf="mes.Mostrar">
                   <td *ngIf="categoria.Tipo!=3" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
                   <span 
                   *ngIf="categoria.Tipo!=2"
                   style="color: black;"  
                   >
-                  {{"$ " + (DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor | number)}}                
+                  {{"$ " + (DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Valor | number) }}                
                   </span>
                   <span 
                   *ngIf="categoria.Tipo==2"
@@ -98,8 +104,11 @@
                     <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) > 0" class="fas fa-arrow-up text-success"></i>
                     <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) == 0" class="fas fa-arrow-right-arrow-left text-warning"></i>
                   </td>
+
+                </ng-container>
+
+                </ng-container>
               </ng-container>
-        
             </ng-container>
 
 
@@ -112,48 +121,51 @@
                 <td style="background-color: white"><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre
                     }}</span></td>
                 <ng-container *ngFor="let anio of Anios">
-                  <ng-container *ngFor="let mes of Meses;index as i">
-                    <ng-container>
-                      <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
-                        <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
-                        style="color: red; font-size: 11px;" 
-                        *ngIf="verifyValue(categoria.Tipo,Valor.value)[0].Estado==false">{{verifyValue(categoria.Tipo,Valor.value)[0].Mensaje}}</div>
-                        <div class="input-group mb-3">
-                          <span *ngIf="categoria.Tipo==1" class="input-group-text">$</span>
-                          <span *ngIf="categoria.Tipo==2" class="input-group-text">-$</span>
-                          <input 
-                          #Valor
-                          [value]="DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor | number"
-                          (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id,item.id,Valor.value,categoria.Tipo,categoria.Orden)"
-                          type="text"
-                          class="form-control text-center"
-    
-                          aria-label="Amount (to the nearest dollar)">
-                        </div>
-                      </td>
-                      <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
-                        {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
-                      </td>
-                      <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
-                        
-                        {{"$ " + (DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Diferencia | number)}}
-                      </td>
-                      <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
-
-                        <span *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) < 0"
-                        style="color: red;">
-                        {{(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion |number: '1.0-0') + "%"}}
-                        </span>
-                        <span *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) >= 0"
-                        style="color: black;">
-                        {{(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion |number: '1.0-0') + "%"}}
-                        </span>
-                        
-                        <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) < 0" class="fas fa-arrow-down text-danger"></i>
-                        <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) > 0" class="fas fa-arrow-up text-success"></i>
-                        <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) == 0" class="fas fa-arrow-right-arrow-left text-warning"></i>
-                      </td>
+                  <ng-container *ngIf="anio.Mostrar">
+                    <ng-container *ngFor="let mes of Meses">
+                      <ng-container *ngIf="mes.Mostrar">
+                        <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+                          <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
+                          style="color: red; font-size: 11px;" 
+                          *ngIf="verifyValue(categoria.Tipo,Valor.value)[0].Estado==false">{{verifyValue(categoria.Tipo,Valor.value)[0].Mensaje}}</div>
+                          <div class="input-group mb-3">
+                            <span *ngIf="categoria.Tipo==1" class="input-group-text">$</span>
+                            <span *ngIf="categoria.Tipo==2" class="input-group-text">-$</span>
+                            <input 
+                            #Valor
+                            [value]="DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor | number"
+                            (keyup.enter)="guardarValorPlan(anio.Anio, mes.Mes,categoria.id,item.id,Valor.value,categoria.Tipo,categoria.Orden)"
+                            type="text"
+                            class="form-control text-center"
+      
+                            aria-label="Amount (to the nearest dollar)">
+                          </div>
+                        </td>
+                        <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+                          {{ "$ " + ( DataItemsMensual[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
+                        </td>
+                        <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+                          
+                          {{"$ " + (DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Diferencia | number)}}
+                        </td>
+                        <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
+  
+                          <span *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) < 0"
+                          style="color: red;">
+                          {{(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion |number: '1.0-0') + "%"}}
+                          </span>
+                          <span *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) >= 0"
+                          style="color: black;">
+                          {{(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion |number: '1.0-0') + "%"}}
+                          </span>
+                          
+                          <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) < 0" class="fas fa-arrow-down text-danger"></i>
+                          <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) > 0" class="fas fa-arrow-up text-success"></i>
+                          <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) == 0" class="fas fa-arrow-right-arrow-left text-warning"></i>
+                        </td>
+                      </ng-container>
                     </ng-container>
+
                   </ng-container>
              
                 </ng-container>

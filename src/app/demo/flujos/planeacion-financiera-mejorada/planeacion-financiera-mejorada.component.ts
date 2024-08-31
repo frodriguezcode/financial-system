@@ -24,6 +24,7 @@ MesesSeleccionados: any = [];
 Anios: any = [];
 AniosSeleccionados: any = [];
 Cabecera: any = [];
+CabeceraBack: any = [];
 Categorias:any=[]
 categoriasExpandidasHistory:any=[]
 categoriasExpandidas: { [id: number]: boolean } = {};
@@ -58,74 +59,79 @@ ngOnInit(): void {
   this.obtenerSucursales()
   this.obtenerProyectos()
   this.Anios=[
-    {Anio:2023},
-    {Anio:2024}]
+    {Anio:2023,
+    Mostrar: true
+    },
+    {Anio:2024,
+    Mostrar: true
+
+    }]
   this.Meses= [
 
     {
       Mes: 'Enero',
       NumMes:1,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Febrero',
       NumMes:2,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Marzo',
       NumMes:3,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Abril',
       NumMes:4,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Mayo',
       NumMes:5,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Junio',
       NumMes:6,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Julio',
       NumMes:7,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Agosto',
       NumMes:8,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Septiembre',
       NumMes:9,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Octubre',
       NumMes:10,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Noviembre',
       NumMes:11,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Diciembre',
       NumMes:12,
-      seleccionado: false
+      Mostrar: true
     },
   
   ]
-  this.AniosSeleccionados=this.Anios
-  this.MesesSeleccionados=this.Meses
+console.log('Meses',this.Meses)
+console.log('Anios',this.Anios)
 this.obtenerCategorias()  
 this.obtenerRegistros()
 this.obtenerValoresPlanes()
@@ -176,6 +182,7 @@ filtrarDataProyecto(){
 
 
 }
+
 filtrarDataSucursal(){
 
   let CriteriosRegistros:any=[]
@@ -185,13 +192,69 @@ filtrarDataSucursal(){
     idSucursal:[this.SucursalSeleccionada.id]
 
   }
-console.log('CriteriosRegistros',CriteriosRegistros)
+
   this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
   this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==1 && item.Sucursales.some(sucursal=>sucursal.id==this.SucursalSeleccionada.id))
  this.construirCabecera()
 
 
+}
+
+getMesesActivos(){
+  if(this.MesesSeleccionados.length>0){
+    this.Meses.forEach(mes => {
+      mes.Mostrar = this.MesesSeleccionados.includes(mes);
+    });
+  
+    if(this.AniosSeleccionados.length>0){
+
+      this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+      this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
+      && this.AniosSeleccionados.some((anio: any) => anio.Anio == cab.Anio)
+      || cab.Tipo==1
+      )
+    }
+    else {
+
+      this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+      this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
+      || cab.Tipo==1
+      )
+    }
+
+  }
+  else {
+    if(this.AniosSeleccionados.length>0){
+      this.Cabecera=this.CabeceraBack.filter((cab:any)=>this.AniosSeleccionados.some((anio: any) => anio.Anio == cab.Anio)
+      || cab.Tipo==1
+      )
+    }
+    else {
+      this.Cabecera=this.CabeceraBack
+    }
+    this.Meses.map((mes:any)=>mes.Mostrar=true)
+  
+  }
+console.log('Meses',this.Meses)
+}
+getAniosActivos(){
+  if(this.AniosSeleccionados.length>0){
+    this.Anios.forEach(anio => {
+      anio.Mostrar = this.AniosSeleccionados.includes(anio);
+    });
+  
+    
+    this.Cabecera=this.CabeceraBack.filter((cab:any)=>this.AniosSeleccionados.some((anio: any) => anio.Anio == cab.Anio)
+    || cab.Tipo==1
+    )
+
+  }
+  else {
+    this.AniosSeleccionados.map((mes:any)=>mes.Mostrar=true)
+    this.Cabecera=this.CabeceraBack
+  }
+console.log('Meses',this.Meses)
 }
 switchTipoRegistro(idTipo){
   if(idTipo==0){
@@ -272,12 +335,14 @@ construirCabecera(){
 
 
     })
+
+ this.CabeceraBack=this.Cabecera
 this.getDataCategoriasMensual()
 this.getDataItemMensual()
 this.getDataItemsMensualPlanes()
 this.getDataCategoriasMensualPlanes()
   })
-
+//console.log('Cabecera',this.Cabecera)
 }
 
 obtenerCategorias(){
@@ -639,25 +704,23 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
     if(_ValorPlanEncontrado.length>0){
 
       _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
-      console.log('ProyectoSeleccionado',this.ProyectoSeleccionado)
-      console.log('SucursalSeleccionado',this.SucursalSeleccionada)
-    // this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
-    //   this.toastr.success('Guardado', '¡Exito!');
-    //   this.getDataItemsMensualPlanes()
-    //   this.getDataCategoriasMensual()
-    //   this.getDataCategoriasMensualPlanes()
-    // })
+
+    this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
+      this.toastr.success('Guardado', '¡Exito!');
+      this.getDataItemsMensualPlanes()
+      this.getDataCategoriasMensual()
+      this.getDataCategoriasMensualPlanes()
+    })
     }  
     
     else {
-      console.log('ProyectoSeleccionado',this.ProyectoSeleccionado)
-      console.log('SucursalSeleccionado',this.SucursalSeleccionada)
-      // this.conS.crearValorPlan(_Valor).then(resp=>{
-      //   this.toastr.success('Guardado', '¡Exito!');
-      //   this.getDataItemsMensualPlanes()
-      //   this.getDataCategoriasMensual()
-      //   this.getDataCategoriasMensualPlanes()
-      // })
+ 
+      this.conS.crearValorPlan(_Valor).then(resp=>{
+        this.toastr.success('Guardado', '¡Exito!');
+        this.getDataItemsMensualPlanes()
+        this.getDataCategoriasMensual()
+        this.getDataCategoriasMensualPlanes()
+      })
 
 }
 
