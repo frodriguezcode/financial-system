@@ -178,7 +178,13 @@ filtrarDataProyecto(){
   this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
   this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==2  &&  item.Proyecto.id === this.ProyectoSeleccionado.id )
- this.construirCabecera()
+
+
+
+  this.getDataCategoriasMensual()
+  this.getDataItemMensual()
+  this.getDataItemsMensualPlanes()
+  this.getDataCategoriasMensualPlanes()
 
 
 }
@@ -196,7 +202,10 @@ filtrarDataSucursal(){
   this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
   this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==1 && item.Sucursales.some(sucursal=>sucursal.id==this.SucursalSeleccionada.id))
- this.construirCabecera()
+  this.getDataCategoriasMensual()
+  this.getDataItemMensual()
+  this.getDataItemsMensualPlanes()
+  this.getDataCategoriasMensualPlanes()
 
 
 }
@@ -335,7 +344,7 @@ construirCabecera(){
 
 
     })
-
+  console.log('Cabecera', this.Cabecera)
  this.CabeceraBack=this.Cabecera
 this.getDataCategoriasMensual()
 this.getDataItemMensual()
