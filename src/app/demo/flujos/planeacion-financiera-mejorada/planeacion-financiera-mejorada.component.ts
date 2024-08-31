@@ -248,7 +248,7 @@ getMesesActivos(){
 console.log('Meses',this.Meses)
 }
 getAniosActivos(){
-  if(this.AniosSeleccionados.length>0){
+  if(this.AniosSeleccionados.length>0 && this.MesesSeleccionados.length==0){
     this.Anios.forEach(anio => {
       anio.Mostrar = this.AniosSeleccionados.includes(anio);
     });
@@ -259,11 +259,40 @@ getAniosActivos(){
     )
 
   }
+
+  else if(this.MesesSeleccionados.length>0 && this.AniosSeleccionados.length>0){
+    console.log('MesesSeleccionados',this.MesesSeleccionados)
+    console.log('AniosSeleccionados',this.AniosSeleccionados)
+    this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+    this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
+    && this.AniosSeleccionados.some((anio: any) => anio.Anio == cab.Anio)
+    || cab.Tipo==1
+    )
+    this.Anios.forEach(anio => {
+      anio.Mostrar = this.AniosSeleccionados.includes(anio);
+    });
+    this.Meses.forEach(mes => {
+      mes.Mostrar = this.MesesSeleccionados.includes(mes);
+    });
+
+  }
+
+  else if(this.MesesSeleccionados.length>0 && this.AniosSeleccionados.length==0) {
+    this.Anios.map((mes:any)=>mes.Mostrar=true)
+    this.Meses.forEach(mes => {
+      mes.Mostrar = this.MesesSeleccionados.includes(mes);
+    });
+    this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+      this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
+      || cab.Tipo==1
+      )
+  }
   else {
     this.Anios.map((mes:any)=>mes.Mostrar=true)
     this.Cabecera=this.CabeceraBack
   }
-console.log('Anios',this.Anios)
+
+
 }
 switchTipoRegistro(idTipo){
   if(idTipo==0){
