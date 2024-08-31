@@ -245,7 +245,6 @@ getMesesActivos(){
     this.Meses.map((mes:any)=>mes.Mostrar=true)
   
   }
-console.log('Meses',this.Meses)
 }
 getAniosActivos(){
   if(this.AniosSeleccionados.length>0 && this.MesesSeleccionados.length==0){
