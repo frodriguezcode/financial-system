@@ -78,7 +78,7 @@
                       <div *ngIf="TipoRubro==2" class="col-12 col-md-12 col-lg-12">
                         <label for="exampleInputPassword1">Proyecto</label>
                         <select (change)="getProyectoSelect($any($event.target).value)"  class="form-control" id="exampleFormControlSelect1">
-                          <option value="0" >Escoja una categoría</option>
+                          <option value="0" >Escoja un proyecto</option>
                           <option value="{{proyecto.id}}" *ngFor="let proyecto of Proyectos">{{proyecto.NombreSucursal}}</option>
                         </select>
                       </div>

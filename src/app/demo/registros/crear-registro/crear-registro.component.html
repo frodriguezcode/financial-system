@@ -125,7 +125,7 @@
         <th style="text-transform: uppercase;font-size: 13px;">Borrar</th>
         <th style="text-transform: uppercase;font-size: 13px;">Categoría</th>
         <th style="text-transform: uppercase;font-size: 13px;">Cuenta Contable</th>
-        <th style="text-transform: uppercase;font-size: 13px;">banco <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+        <th style="text-transform: uppercase;font-size: 13px;">Cuenta Bancaria <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th *ngIf="this.idTipoRegistro==1" style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th *ngIf="this.idTipoRegistro==2" style="text-transform: uppercase;font-size: 13px;">Proyecto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th style="text-transform: uppercase;font-size: 13px;">Importe</th>
@@ -173,7 +173,14 @@
         <td class="text-center" >
           <p *ngIf="this.Items.length==0" 
           class="animate__animated animate__bounceIn"
-          style="color: red;">No tienes cuentas asociadas a este proyecto</p>
+          style="color: red; font-size: 10px;">
+          No tienes cuentas asociadas a este proyecto
+          </p>
+          <p *ngIf="getCuentabyCategoria(registros.idCategoria).length==0 && registros.idCategoria!=''" 
+          class="animate__animated animate__bounceIn"
+          style="color: red; font-size: 10px;">
+          No tienes cuentas asociadas a esta categoría
+          </p>
           <p-dropdown
           [options]="getCuentabyCategoria(registros.idCategoria)"
           [(ngModel)]="registros.NombreElemento"
@@ -182,7 +189,7 @@
           optionValue="label"
           [filter]="true"
           filterBy="label"
-          [disabled]="this.Items.length==0"
+          [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
           [showClear]="false"
           placeholder="Seleccione una cuenta"
           appendTo="body"
@@ -265,6 +272,7 @@
               <input
               [ngClass]="registros.idTipo == 1 ? 'textoInputPositivo' : 'textoInputNegativo'"
               (keyup.enter)="salvarRegistro(registros)"
+              [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
               (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden);onInput($event)"
               style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
               [(ngModel)]="registros.Valor "
@@ -316,6 +324,7 @@
         <td class="text-center">
               <input
               (keyup.enter)="salvarRegistro(registros)"
+              [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
               style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
               [(ngModel)]="registros.Comentarios "
               class="form-control text-center col-6"/>
@@ -325,7 +334,7 @@
           <input style="min-height: 3rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
         </td>
         <td class="text-center">
-          <button type="button" [disabled]="isNegativo==false" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"
+          <button type="button" [disabled]="isNegativo==false || this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"
             ><i class="fa-solid fa-floppy-disk"></i
           ></button>
         </td>

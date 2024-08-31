@@ -428,7 +428,7 @@ obtenerRegistros(){
                }
                this.registrosBackUp.push(_Registro)
              })
-             console.log('SucursaleSeleccionada',this.SucursaleSeleccionada)
+    
             if(this.idTipoRegistro==1){
               if(this.SucursaleSeleccionada!=undefined){
                this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idSucursal==this.SucursaleSeleccionada.id)
@@ -459,11 +459,26 @@ obtenerRegistros(){
   
 }
 switchTipoRegistro(idTipo){
-  this.idTipoRegistro=idTipo
-  this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
-  this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
-  console.log('Items',this.Items)
-  
+
+  if(idTipo==2  && this.Proyectos.length==0){
+
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "No tiene proyectos creados",
+      showConfirmButton: false,
+      timer: 1500
+    });
+    this.idTipoRegistro=1
+  }
+  else {
+
+    this.idTipoRegistro=idTipo
+    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
+    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
+    console.log('Registros',this.Registros)
+    
+  }
 }
 
 calcularImporteTotal(registros:any){
