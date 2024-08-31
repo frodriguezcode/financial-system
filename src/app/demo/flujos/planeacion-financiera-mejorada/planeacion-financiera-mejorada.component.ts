@@ -251,10 +251,10 @@ getAniosActivos(){
 
   }
   else {
-    this.AniosSeleccionados.map((mes:any)=>mes.Mostrar=true)
+    this.Anios.map((mes:any)=>mes.Mostrar=true)
     this.Cabecera=this.CabeceraBack
   }
-console.log('Meses',this.Meses)
+console.log('Anios',this.Anios)
 }
 switchTipoRegistro(idTipo){
   if(idTipo==0){
