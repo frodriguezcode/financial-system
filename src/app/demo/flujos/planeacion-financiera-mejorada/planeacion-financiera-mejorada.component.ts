@@ -130,8 +130,7 @@ ngOnInit(): void {
     },
   
   ]
-console.log('Meses',this.Meses)
-console.log('Anios',this.Anios)
+
 this.obtenerCategorias()  
 this.obtenerRegistros()
 this.obtenerValoresPlanes()
@@ -260,8 +259,7 @@ getAniosActivos(){
   }
 
   else if(this.MesesSeleccionados.length>0 && this.AniosSeleccionados.length>0){
-    console.log('MesesSeleccionados',this.MesesSeleccionados)
-    console.log('AniosSeleccionados',this.AniosSeleccionados)
+   
     this.Cabecera=this.CabeceraBack.filter((cab:any)=>
     this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
     && this.AniosSeleccionados.some((anio: any) => anio.Anio == cab.Anio)
@@ -372,7 +370,7 @@ construirCabecera(){
 
 
     })
-  console.log('Cabecera', this.Cabecera)
+
  this.CabeceraBack=this.Cabecera
 this.getDataCategoriasMensual()
 this.getDataItemMensual()

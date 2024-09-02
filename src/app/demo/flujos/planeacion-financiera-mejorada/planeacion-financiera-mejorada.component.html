@@ -24,12 +24,16 @@
         <ng-container *ngFor="let cab of Cabecera">    
           <th *ngIf="cab.Tipo==1" class="text-left"
           style="padding: 0.5rem;background-color: #0c8c86;text-transform: uppercase;"
-          >Naturalezas</th>    
-            <th 
+          >Naturalezas</th>
+          <th 
             *ngIf="cab.Tipo!=1"
             class="text-center" style="padding: 0.7rem; font-weight: 500; text-transform: uppercase; ">
               {{ cab.Nombre}}
-            </th> 
+          </th> 
+    
+
+            <th *ngIf="cab.Tipo==5"><button type="button" class="btn btn-success text-center ">Success</button></th>
+         
         </ng-container>
       </thead>
       <tbody>
@@ -104,9 +108,9 @@
                     <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) > 0" class="fas fa-arrow-up text-success"></i>
                     <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) == 0" class="fas fa-arrow-right-arrow-left text-warning"></i>
                   </td>
-
+                  <td style="background-color: white; width: 10px !important;"></td>
                 </ng-container>
-
+            
                 </ng-container>
               </ng-container>
             </ng-container>
