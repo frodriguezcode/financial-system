@@ -368,7 +368,7 @@ buscarBySucursal(){
 buscarByProyecto(){
   this.Registros=this.registrosBackUp
   if(this.ProyectoSeleccionado.id!=0){
-    console.log('Registros', this.Registros)
+
    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.idProyecto==this.ProyectoSeleccionado.id)
    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro && item.Proyecto.id==this.ProyectoSeleccionado.id )
 
@@ -382,6 +382,8 @@ buscarByProyecto(){
   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
     return Math.max(maxOrden, objeto.Orden);
 }, 0);
+
+
 
 }
 restablecer(){
@@ -428,7 +430,7 @@ obtenerRegistros(){
                }
                this.registrosBackUp.push(_Registro)
              })
-             console.log('SucursaleSeleccionada',this.SucursaleSeleccionada)
+    
             if(this.idTipoRegistro==1){
               if(this.SucursaleSeleccionada!=undefined){
                this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idSucursal==this.SucursaleSeleccionada.id)
@@ -459,11 +461,26 @@ obtenerRegistros(){
   
 }
 switchTipoRegistro(idTipo){
-  this.idTipoRegistro=idTipo
-  this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
-  this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
-  console.log('Items',this.Items)
-  
+
+  if(idTipo==2  && this.Proyectos.length==0){
+
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "No tiene proyectos creados",
+      showConfirmButton: false,
+      timer: 1500
+    });
+    this.idTipoRegistro=1
+  }
+  else {
+
+    this.idTipoRegistro=idTipo
+    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
+    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
+    console.log('Registros',this.Registros)
+    
+  }
 }
 
 calcularImporteTotal(registros:any){
@@ -490,6 +507,7 @@ if(typeof _RegistroEncontrado.Valor=='string'){
 else {
   ValorRegistro=_RegistroEncontrado.Valor
 }
+
   if(ValorRegistro >0 && tipo==2){
     this.isNegativo=false
     return false
@@ -550,8 +568,8 @@ getTipo(idCategoria){
 
 salvarRegistro(Registro:any){
   Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
-
-  if(this.validarEgreso(Registro.idTipo,Registro.Valor,Registro.Orden)==false){
+console.log('Registro',Number(Registro.Valor.replace('$', '')))
+  if(this.validarEgreso(Registro.idTipo,Number(Registro.Valor.replace('$', '')),Registro.Orden)==false){
     Swal.fire({
       position: "center",
       icon: "warning",
@@ -845,7 +863,7 @@ cargarFormulario(){
   this.registroForm = new FormGroup({
     Elemento: new FormControl('',[Validators.required]), 
     Cuenta: new FormControl('',[Validators.required]), 
-    Valor: new FormControl('',[Validators.required]), 
+    Valor: new FormControl(0,[Validators.required]), 
     idFlujo: new FormControl('',[Validators.required]), 
     NumMes: new FormControl(this.getMonthName(_Fecha)), 
     NumSemana: new FormControl(this.getWeekNumber()), 
@@ -910,7 +928,9 @@ else {
 console.log('registroForm',this.registroForm.value)
 this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 
-
+  this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+    return Math.max(maxOrden, objeto.Orden);
+}, 0);
 this.cargarFormulario()
 })
 

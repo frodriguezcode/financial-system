@@ -7,11 +7,12 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2'
-
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DropdownModule } from 'primeng/dropdown';
 @Component({
   selector: 'app-planeacion-financiera-mejorada',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule,DropdownModule],
   templateUrl: './planeacion-financiera-mejorada.component.html',
   styleUrls: ['./planeacion-financiera-mejorada.component.scss']
 })
@@ -23,9 +24,12 @@ MesesSeleccionados: any = [];
 Anios: any = [];
 AniosSeleccionados: any = [];
 Cabecera: any = [];
+CabeceraBack: any = [];
 Categorias:any=[]
+categoriasExpandidasHistory:any=[]
 categoriasExpandidas: { [id: number]: boolean } = {};
 Items:any=[]
+ItemsBack:any=[]
 usuario:any
 Registros:any=[]
 RegistrosValoresPlanesItems:any=[]
@@ -34,88 +38,282 @@ RegistrosValoresPlanes:any=[]
 RegistrosValoresPlanesBackUpItems:any=[]
 DataCategoriasMensual:any=[]
 DataItemsMensual:any=[]
+DataItems:any=[]
 RegistrosBackUp:any=[]
 
 DataPlanesMensual:any=[]
-
+idTipoRegistro:any=0
 cargando:boolean=true
+
+Sucursales:any=[]
+SucursalSeleccionada:any
+ujm 
+Proyectos:any=[]
+ProyectoSeleccionado:any
+
+CuentasBancarias:any=[]
+CuentaBancariaSeleccionada:any=[]
 constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.obtenerSucursales()
+  this.obtenerProyectos()
   this.Anios=[
-    {Anio:2023},
-    {Anio:2024}]
+    {Anio:2023,
+    Mostrar: true
+    },
+    {Anio:2024,
+    Mostrar: true
+
+    }]
   this.Meses= [
 
     {
       Mes: 'Enero',
       NumMes:1,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Febrero',
       NumMes:2,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Marzo',
       NumMes:3,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Abril',
       NumMes:4,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Mayo',
       NumMes:5,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Junio',
       NumMes:6,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Julio',
       NumMes:7,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Agosto',
       NumMes:8,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Septiembre',
       NumMes:9,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Octubre',
       NumMes:10,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Noviembre',
       NumMes:11,
-      seleccionado: false
+      Mostrar: true
     },
     {
       Mes: 'Diciembre',
       NumMes:12,
-      seleccionado: false
+      Mostrar: true
     },
   
   ]
-  this.AniosSeleccionados=this.Anios
-  this.MesesSeleccionados=this.Meses
+console.log('Meses',this.Meses)
+console.log('Anios',this.Anios)
 this.obtenerCategorias()  
 this.obtenerRegistros()
 this.obtenerValoresPlanes()
-this.obtenerValoresPlanesItems()
 this.obtenerCategorias()
+}
+obtenerProyectos(){
+  this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
+    this.Proyectos=resp
+    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+
+  })
+}
+obtenerSucursales(){
+  this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe((resp:any)=>{
+    this.Sucursales=resp
+  })
+}
+getNameSucursal(idSucursal:any){
+  if(idSucursal=='0'){
+    return 'General'
+  }
+  else {
+    let sucursal = this.Sucursales.filter((suc: any) => suc.id==idSucursal)
+    if(sucursal.length){
+      return sucursal[0].Sucursal
+    }
+    else{
+      return 'General'
+    }
+  }
+}
+
+filtrarDataProyecto(){
+
+  let CriteriosRegistros:any=[]
+  this.SucursalSeleccionada={}
+
+  CriteriosRegistros={
+
+    idProyecto:[this.ProyectoSeleccionado.id]
+
+  }
+
+  this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
+  this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
+  this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==2  &&  item.Proyecto.id === this.ProyectoSeleccionado.id )
+
+
+
+  this.getDataCategoriasMensual()
+  this.getDataItemMensual()
+  this.getDataItemsMensualPlanes()
+  this.getDataCategoriasMensualPlanes()
+
+
+}
+
+filtrarDataSucursal(){
+
+  let CriteriosRegistros:any=[]
+  this.ProyectoSeleccionado={}
+
+  CriteriosRegistros={
+    idSucursal:[this.SucursalSeleccionada.id]
+
+  }
+
+  this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
+  this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
+  this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==1 && item.Sucursales.some(sucursal=>sucursal.id==this.SucursalSeleccionada.id))
+  this.getDataCategoriasMensual()
+  this.getDataItemMensual()
+  this.getDataItemsMensualPlanes()
+  this.getDataCategoriasMensualPlanes()
+
+
+}
+
+getMesesActivos(){
+  if(this.MesesSeleccionados.length>0){
+    this.Meses.forEach(mes => {
+      mes.Mostrar = this.MesesSeleccionados.includes(mes);
+    });
+  
+    if(this.AniosSeleccionados.length>0){
+
+      this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+      this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
+      && this.AniosSeleccionados.some((anio: any) => anio.Anio == cab.Anio)
+      || cab.Tipo==1
+      )
+    }
+    else {
+
+      this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+      this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
+      || cab.Tipo==1
+      )
+    }
+
+  }
+  else {
+    if(this.AniosSeleccionados.length>0){
+      this.Cabecera=this.CabeceraBack.filter((cab:any)=>this.AniosSeleccionados.some((anio: any) => anio.Anio == cab.Anio)
+      || cab.Tipo==1
+      )
+    }
+    else {
+      this.Cabecera=this.CabeceraBack
+    }
+    this.Meses.map((mes:any)=>mes.Mostrar=true)
+  
+  }
+}
+getAniosActivos(){
+  if(this.AniosSeleccionados.length>0 && this.MesesSeleccionados.length==0){
+    this.Anios.forEach(anio => {
+      anio.Mostrar = this.AniosSeleccionados.includes(anio);
+    });
+  
+    
+    this.Cabecera=this.CabeceraBack.filter((cab:any)=>this.AniosSeleccionados.some((anio: any) => anio.Anio == cab.Anio)
+    || cab.Tipo==1
+    )
+
+  }
+
+  else if(this.MesesSeleccionados.length>0 && this.AniosSeleccionados.length>0){
+    console.log('MesesSeleccionados',this.MesesSeleccionados)
+    console.log('AniosSeleccionados',this.AniosSeleccionados)
+    this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+    this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
+    && this.AniosSeleccionados.some((anio: any) => anio.Anio == cab.Anio)
+    || cab.Tipo==1
+    )
+    this.Anios.forEach(anio => {
+      anio.Mostrar = this.AniosSeleccionados.includes(anio);
+    });
+    this.Meses.forEach(mes => {
+      mes.Mostrar = this.MesesSeleccionados.includes(mes);
+    });
+
+  }
+
+  else if(this.MesesSeleccionados.length>0 && this.AniosSeleccionados.length==0) {
+    this.Anios.map((mes:any)=>mes.Mostrar=true)
+    this.Meses.forEach(mes => {
+      mes.Mostrar = this.MesesSeleccionados.includes(mes);
+    });
+    this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+      this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
+      || cab.Tipo==1
+      )
+  }
+  else {
+    this.Anios.map((mes:any)=>mes.Mostrar=true)
+    this.Cabecera=this.CabeceraBack
+  }
+
+
+}
+switchTipoRegistro(idTipo){
+  if(idTipo==0){
+    this.idTipoRegistro=0
+    this.Registros=this.RegistrosBackUp
+    this.RegistrosValoresPlanes=this.RegistrosValoresPlanesBackUp
+    this.Items=this.ItemsBack
+    this.SucursalSeleccionada={}
+    this.ProyectoSeleccionado={}
+  }
+  else {
+
+    this.idTipoRegistro=idTipo
+    this.Registros=this.RegistrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
+    this.RegistrosValoresPlanes=this.RegistrosValoresPlanesBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
+    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
+
+    this.categoriasExpandidas=this.categoriasExpandidasHistory
+  }
+
+
+  this.construirCabecera()
 }
 getTableClass() {
   return (this.AniosSeleccionados.length === 1 && this.MesesSeleccionados.length === 1) ? 'table table-100 table-reduced' : 'table table-100';
@@ -174,10 +372,14 @@ construirCabecera(){
 
 
     })
+  console.log('Cabecera', this.Cabecera)
+ this.CabeceraBack=this.Cabecera
 this.getDataCategoriasMensual()
+this.getDataItemMensual()
+this.getDataItemsMensualPlanes()
 this.getDataCategoriasMensualPlanes()
   })
-
+//console.log('Cabecera',this.Cabecera)
 }
 
 obtenerCategorias(){
@@ -203,23 +405,27 @@ obtenerCategorias(){
       
     });
     this.obtenerItems()
-    console.log('Categorias',this.Categorias)
+
   })
 }
 toggleCategoria(id: number) {
 
   this.categoriasExpandidas[id] = !this.categoriasExpandidas[id];
+  this.categoriasExpandidasHistory=this.categoriasExpandidas
 }
 getItems(idCategoria:any){
   let _Items:any=[]
-  _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria)
-  return _Items
+ 
+  _Items = this.Items.filter((item: any) => 
+    item.idCategoria == idCategoria && 
+    (this.idTipoRegistro === 0 || item.TipoRubro == this.idTipoRegistro)
+  );  return _Items
   }
 obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
     this.Items=[]
       this.Items=resp;
-  
+      this.ItemsBack=resp
      this.obtenerRegistros()
   })
 }
@@ -252,6 +458,7 @@ obtenerRegistros(){
         "idSocioNegocio":element.idSocioNegocio,
         "idSucursal":element.idSucursal,
         "idProyecto":element.idProyecto,
+        "TipoRegistro":element.TipoRegistro,
         "NombreElemento":element.Elemento.label || '',
         "idElemento":element.Elemento.id || '',
         "NumCuenta":element.Cuenta.Cuenta || '',
@@ -262,6 +469,7 @@ obtenerRegistros(){
       this.Registros.push(_Registro)
 
       });
+
       this.RegistrosBackUp=this.Registros
       this.construirCabecera()
     })
@@ -273,12 +481,54 @@ obtenerValoresPlanes(){
    this.RegistrosValoresPlanesBackUp=resp
   })
 }
-obtenerValoresPlanesItems(){
-  this.conS.obtenerValoresPlanesItems(this.usuario.idEmpresa).subscribe(resp=>{
-    this.RegistrosValoresPlanesItems=resp
-   this.RegistrosValoresPlanesBackUpItems=resp
-   console.log('RegistrosValoresPlanesBackUpItems',this.RegistrosValoresPlanesBackUpItems)
-  })
+
+
+getDataItemsMensualPlanes(){
+  this.DataItems=[]
+  this.Items.forEach((item:any) => {
+      this.Anios.forEach((anio:any) => {
+        this.Meses.forEach((mes:any) => {
+            const key = `${anio.Anio}-${mes.NumMes}-${item.id}`;  
+            if (!this.DataItems[key]) {
+              this.DataItems[key] =[];
+            }
+              this.DataItems[key].push({
+                "Valor": item.Tipo==2 ? this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio)*-1  :this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio),
+                "Diferencia":this.getValorItemMensual(item.id,mes.NumMes,anio.Anio)- this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio) ,
+                "Variacion": this.calcularVariacion(this.getValorItemMensual(item.id,mes.NumMes,anio.Anio),this.getValorItemsMensualPlanes(item.id,mes.Mes,anio.Anio))
+      
+              });
+    
+            
+    
+  
+          })
+        })
+      
+    });
+    this.cargando=false 
+
+} 
+
+
+getValorItemsMensualPlanes(idItem:any,Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosValoresPlanes.filter((registro:any)=>registro
+  .idItem==idItem
+  && registro.MesRegistro==Mes
+  && registro.AnioRegistro==Anio
+  )
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+ 
+    return Valor
+  }
+  else {
+    return 0
+  }
 }
 
 getDataCategoriasMensualPlanes(){
@@ -343,9 +593,8 @@ getDataCategoriasMensualPlanes(){
     this.cargando=false  
 } 
 calcularVariacion(ValorA:any,ValorB:any){
- let  Diferencia:any=0
-  Diferencia=(ValorA-ValorB).toFixed(0)
-  return ValorA==0 || ValorB==0 ? 0 :  (((Diferencia / ValorA)))*100 
+
+  return ValorA==0 || ValorB==0 ? 0 :  (((ValorA / ValorB)-1))*100 
 }
 getDataFlujoFinancieroMensualPlanes(Mes:any,Anio:any){
   let _Data: any=[];
@@ -456,7 +705,7 @@ verifyValue(categoriaTipo:any,Monto:any){
 
 }
 
-guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCategoria:any,Orden:any){
+guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor:any,TipoCategoria:any,Orden:any){
   if(this.verifyValue(TipoCategoria,Number(Valor))[0].Estado==false){
     Swal.fire({
       position: "center",
@@ -473,9 +722,13 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCateg
       "MesRegistro":MesRegistro,
       "Orden":Orden,
       "idCategoria":idCategoria,
-      "Valor": TipoCategoria==2 ?  Number(Valor)*-1: Number(Valor),
+      "idItem":idItem,
+      "TipoCategoria":TipoCategoria,
+      "TipoRegistro":this.idTipoRegistro,
+      "Valor": Number(Valor.replace(',', '')),
       "idEmpresa":this.usuario.idEmpresa,
-      "IdSucursal":this.usuario.IdSucursal
+      "idSucursal":this.SucursalSeleccionada.id  || '',
+      "idProyecto":this.ProyectoSeleccionado.id || ''
     }
   
     let _ValorPlanEncontrado:any=[]
@@ -486,75 +739,33 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,Valor:any,TipoCateg
       data.idEmpresa==this.usuario.idEmpresa &&
       data.IdSucursal==this.usuario.IdSucursal)
     if(_ValorPlanEncontrado.length>0){
-      console.log('_ValorPlanEncontrado',_ValorPlanEncontrado)
-      console.log('Valor',Valor)
-      _ValorPlanEncontrado[0].Valor=TipoCategoria==2 ?  Number(Valor)*-1: Number(Valor)
+
+      _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
+
     this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
+      this.getDataItemsMensualPlanes()
+      this.getDataCategoriasMensual()
+      this.getDataCategoriasMensualPlanes()
     })
     }  
+    
     else {
-      
+ 
       this.conS.crearValorPlan(_Valor).then(resp=>{
         this.toastr.success('Guardado', '¡Exito!');
+        this.getDataItemsMensualPlanes()
+        this.getDataCategoriasMensual()
+        this.getDataCategoriasMensualPlanes()
       })
 
 }
-this.getDataCategoriasMensual()
-this.getDataCategoriasMensualPlanes()
+
+
   }
 }
 
-guardarValorPlanItem(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor:any,TipoCategoria:any,Orden:any){
-  if(this.verifyValue(TipoCategoria,Number(Valor))[0].Estado==false){
-    Swal.fire({
-      position: "center",
-      icon: "warning",
-      title: `${this.verifyValue(TipoCategoria,Number(Valor))[0].Mensaje}`,
-      showConfirmButton: false,
-      timer: 1500
-    });
-  }
-  else {
-    if(TipoCategoria==2){
-      Number(Valor)*-1
-    }
 
-    let _Valor:any={
-      "AnioRegistro":Anio,
-      "MesRegistro":MesRegistro,
-      "Orden":Orden,
-      "idItem":idItem,
-      "idCategoria":idCategoria,
-      "Valor": Number(Valor),
-      "idEmpresa":this.usuario.idEmpresa,
-      "IdSucursal":this.usuario.IdSucursal
-    }
-  
-    let _ValorPlanEncontrado:any=[]
-    _ValorPlanEncontrado=this.RegistrosValoresPlanesItems.filter((data:any)=>
-      data.idItem==idItem &&
-      data.MesRegistro==MesRegistro &&
-      data.AnioRegistro==Anio &&
-      data.idEmpresa==this.usuario.idEmpresa &&
-      data.IdSucursal==this.usuario.IdSucursal)
-    if(_ValorPlanEncontrado.length>0){
-      _ValorPlanEncontrado[0].Valor=Number(Valor)
-    this.conS.ActualizarValorPlanItem(_ValorPlanEncontrado[0]).then(resp=>{
-      this.toastr.success('Guardado', '¡Exito!');
-    })
-    }  
-    else {
-      
-      this.conS.crearValorPlanItem(_Valor).then(resp=>{
-        this.toastr.success('Guardado', '¡Exito!');
-      })
-
-}
-this.getDataCategoriasMensual()
-this.getDataCategoriasMensualPlanes()
-  }
-}
 
 getDataCategoriasMensual(){
   this.DataCategoriasMensual=[]
@@ -618,6 +829,7 @@ getDataCategoriasMensual(){
  this.getDataItemMensual()
 } 
 
+
 getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
       let _Data: any=[];
       _Data=this.Registros.filter((registro:any)=>registro
@@ -640,6 +852,8 @@ getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
         return 0
       }
 }    
+
+
 getDataFlujoFinancieroMensual(Mes:any,Anio:any){
       let _Data: any=[];
       _Data=this.Registros.filter((registro:any)=>
@@ -731,6 +945,7 @@ this.DataItemsMensual=[]
     });
 
 }
+
 getValorItemMensual(idElemento:any,Mes:any,Anio:any){
       let _Data: any=[];
       let Valor: number =0
@@ -739,7 +954,7 @@ getValorItemMensual(idElemento:any,Mes:any,Anio:any){
         && registro.NumMes==Mes
         && registro.AnioRegistro==Anio
         )
-      
+   
       if(_Data.length>0){
         _Data.forEach((element:any) => {
           Valor+=Number(element.Valor);
