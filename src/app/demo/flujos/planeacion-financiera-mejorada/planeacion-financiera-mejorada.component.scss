@@ -69,3 +69,55 @@
 .text-center {
   text-align: center;
 }
+
+
+.icon-container {
+  display: inline-block;
+  position: relative;
+  width: 45px;  /* Ajusta el tamaño según necesites */
+  height: 8px; /* Ajusta el tamaño según necesites */
+}
+
+.line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 35px;
+  width: 2px;
+  background-color: #1a2438; /* Ajusta el color según necesites */
+}
+
+.arrow-left, .arrow-right {
+  position: absolute;
+  width: 0; 
+  height: 0; 
+  border-style: solid;
+}
+
+.arrow-left {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-40%);
+  transform: rotate(180deg);
+  border-width: 5px 7px 5px 0;
+  border-color: transparent #1a2438 transparent transparent; /* Ajusta el color según necesites */
+}
+
+.arrow-right {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-40%);
+  transform: rotate(180deg);
+  border-width: 5px 0 5px 7px;
+  border-color: transparent transparent transparent #1a2438; /* Ajusta el color según necesites */
+}
+
+
+.td-ancho-fijo{
+
+  background-color: white;
+  text-align: center;
+  border-left: solid 1px grey;
+  border-right: solid 1px grey;
+}
