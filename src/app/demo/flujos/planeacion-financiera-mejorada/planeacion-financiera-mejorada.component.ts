@@ -208,7 +208,24 @@ filtrarDataSucursal(){
 
 
 }
+ocultarMes(anio:any,mes:any){
+  this.Cabecera.forEach((cab:any) => {
+    if(cab.NumMes==mes && cab.Anio==anio){
+      cab.Mostrar=false
+    }
+  });
+  console.log('Cabecera',this.Cabecera)
 
+}
+MostrarMes(anio:any,mes:any){
+  this.Cabecera.forEach((cab:any) => {
+    if(cab.NumMes==mes && cab.Anio==anio){
+      cab.Mostrar=true
+    }
+  });
+  console.log('Cabecera',this.Cabecera)
+
+}
 getMesesActivos(){
   if(this.MesesSeleccionados.length>0){
     this.Meses.forEach(mes => {
@@ -372,7 +389,7 @@ construirCabecera(){
     })
 
  this.CabeceraBack=this.Cabecera
- console.log('Cabecera',this.Cabecera)
+
 this.getDataCategoriasMensual()
 this.getDataItemMensual()
 this.getDataItemsMensualPlanes()
