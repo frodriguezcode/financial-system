@@ -32,7 +32,14 @@
           </th> 
     
 
-            <th *ngIf="cab.Tipo==5"><button type="button" class="btn btn-success text-center ">Success</button></th>
+            <th style="width: 1px;background-color: white;" class="text-center " *ngIf="cab.Tipo==5">
+              <button 
+              style="background-color: rgb(109, 211, 131); color: white;"
+              type="button" 
+              class="btn btn-danger" ><i class="fa-solid fa-minus"></i> 
+        
+            </button>
+            </th>
          
         </ng-container>
       </thead>
@@ -108,8 +115,8 @@
                     <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) > 0" class="fas fa-arrow-up text-success"></i>
                     <i *ngIf="(DataPlanesMensual[anio.Anio + '-' + mes.NumMes + '-' + categoria.id]?.[0]?.Variacion) == 0" class="fas fa-arrow-right-arrow-left text-warning"></i>
                   </td>
-                  <td style=" background-color: white; width: 10px !important;"></td>
                 </ng-container>
+                <td style=" background-color: white; width: 10px !important;"></td>
             
                 </ng-container>
               </ng-container>
@@ -167,6 +174,7 @@
                           <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) > 0" class="fas fa-arrow-up text-success"></i>
                           <i *ngIf="(DataItems[anio.Anio + '-' + mes.NumMes + '-' + item.id]?.[0]?.Variacion) == 0" class="fas fa-arrow-right-arrow-left text-warning"></i>
                         </td>
+                        <td style=" background-color: white; width: 10px !important;"></td>
                       </ng-container>
                     </ng-container>
 

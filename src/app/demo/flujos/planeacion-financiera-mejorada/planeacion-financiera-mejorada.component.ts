@@ -311,7 +311,7 @@ switchTipoRegistro(idTipo){
   }
 
 
-  this.construirCabecera()
+  //this.construirCabecera()
 }
 getTableClass() {
   return (this.AniosSeleccionados.length === 1 && this.MesesSeleccionados.length === 1) ? 'table table-100 table-reduced' : 'table table-100';
@@ -372,6 +372,7 @@ construirCabecera(){
     })
 
  this.CabeceraBack=this.Cabecera
+ console.log('Cabecera',this.Cabecera)
 this.getDataCategoriasMensual()
 this.getDataItemMensual()
 this.getDataItemsMensualPlanes()
@@ -714,7 +715,16 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
     });
   }
   else {
-  
+  if(this.idTipoRegistro==2 && this.ProyectoSeleccionado==undefined){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: `Debe elegir un proyecto`,
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  else {
     let _Valor:any={
       "AnioRegistro":Anio,
       "MesRegistro":MesRegistro,
@@ -725,8 +735,8 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       "TipoRegistro":this.idTipoRegistro,
       "Valor": Number(Valor.replace(',', '')),
       "idEmpresa":this.usuario.idEmpresa,
-      "idSucursal":this.SucursalSeleccionada.id  || '',
-      "idProyecto":this.ProyectoSeleccionado.id || ''
+      "idSucursal": this.SucursalSeleccionada==undefined ? '' : this.SucursalSeleccionada.id  ,
+      "idProyecto": this.ProyectoSeleccionado==undefined ? '' : this.ProyectoSeleccionado.id
     }
   
     let _ValorPlanEncontrado:any=[]
@@ -734,8 +744,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       data.idCategoria==idCategoria &&
       data.MesRegistro==MesRegistro &&
       data.AnioRegistro==Anio &&
-      data.idEmpresa==this.usuario.idEmpresa &&
-      data.IdSucursal==this.usuario.IdSucursal)
+      data.idEmpresa==this.usuario.idEmpresa)
     if(_ValorPlanEncontrado.length>0){
 
       _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
@@ -749,7 +758,6 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
     }  
     
     else {
- 
       this.conS.crearValorPlan(_Valor).then(resp=>{
         this.toastr.success('Guardado', '¡Exito!');
         this.getDataItemsMensualPlanes()
@@ -758,6 +766,8 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       })
 
 }
+
+  }
 
 
   }
