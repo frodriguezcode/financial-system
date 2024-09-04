@@ -214,8 +214,6 @@ ocultarMes(anio:any,mes:any){
       cab.Mostrar=false
     }
   });
-  console.log('Cabecera',this.Cabecera)
-
 }
 MostrarMes(anio:any,mes:any){
   this.Cabecera.forEach((cab:any) => {
@@ -223,8 +221,6 @@ MostrarMes(anio:any,mes:any){
       cab.Mostrar=true
     }
   });
-  console.log('Cabecera',this.Cabecera)
-
 }
 getMesesActivos(){
   if(this.MesesSeleccionados.length>0){

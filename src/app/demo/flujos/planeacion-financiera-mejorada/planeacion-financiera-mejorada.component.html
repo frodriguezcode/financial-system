@@ -141,15 +141,16 @@
                   </ng-container>
                 </ng-container>
 
+                
               
 
-                  <td *ngIf="cab.Tipo==5" class="td-ancho-fijo">
+                <td *ngIf="cab.Tipo==5" class="td-ancho-fijo">
                     <div class="icon-container">
                       <div class="line"></div>
                       <div class="arrow-left"></div>
                       <div class="arrow-right"></div>
                     </div>
-                  </td>
+                </td>
          
 
 
@@ -222,7 +223,9 @@
 
                       </ng-container>
                     </ng-container>
-                    <td *ngIf="cab.Tipo==5" class="td-ancho-fijo" style="background-color: white;"> </td>
+                    <ng-container style="width: 10px;">
+                      <td *ngIf="cab.Tipo==5" class="td-ancho-fijo" style="background-color: white;"> </td>
+                    </ng-container>
                   </ng-container>
 
 
