@@ -18,8 +18,10 @@
 <p-dropdown class="m-1" (onChange)=" filtrarDataProyecto()" [options]="Proyectos" [(ngModel)]="ProyectoSeleccionado"
   optionLabel="NombreSucursal" placeholder="Seleccione un proyecto" />
 
-<div *ngIf="!cargando" class="container-table">
-  <div class="table-responsive mt-3">
+  
+  <div *ngIf="!cargando" class="container-table">
+    <div class="table-responsive mt-3">
+    <button type="button" (click)="descargarExcel()" class="btn btn-success m-1">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
     <table class="table table-100">
       <thead class="cabecera">
 
@@ -224,7 +226,13 @@
                       </ng-container>
                     </ng-container>
                     <ng-container style="width: 10px;">
-                      <td *ngIf="cab.Tipo==5" class="td-ancho-fijo" style="background-color: white;"> </td>
+                      <td *ngIf="cab.Tipo==5" class="td-ancho-fijo" style="background-color: white;">
+                        <div class="icon-container">
+                          <div class="line"></div>
+                          <div class="arrow-left"></div>
+                          <div class="arrow-right"></div>
+                        </div>
+                      </td>
                     </ng-container>
                   </ng-container>
 

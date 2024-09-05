@@ -304,6 +304,51 @@ getAniosActivos(){
 
 
 }
+descargarExcel(){
+ let _Cabecera:any=[]
+ _Cabecera=this.Cabecera.filter((cab:any)=>cab.Mostrar==true)
+  const headerRow: any[] = [];
+  _Cabecera.forEach((element: any) => {
+    headerRow.push(element.Nombre);
+  });
+  let Data: any[] = [];
+  console.log('_Cabecera',_Cabecera)
+  console.log('DataPlanesMensual',this.DataPlanesMensual)
+
+  this.Categorias.forEach((categ:any) => {
+    let fila: any[] = [categ.Nombre];
+    _Cabecera.filter((cab:any)=>cab.Tipo!=1).forEach((cab:any) => {
+      const index = `${cab.Anio}-${cab.NumMes}-${categ.id}`;
+      if(cab.Tipo==2){
+        const valor = this.DataPlanesMensual[index]?.[0]?.Valor || 0;
+        fila.push(valor);
+      }
+     else if(cab.Tipo==3){
+        const valor = this.DataCategoriasMensual[index]?.[0]?.Valor || 0;
+        fila.push(valor);
+      }
+     else if(cab.Tipo==4){
+      const valor = this.DataPlanesMensual[index]?.[0]?.Diferencia || 0;
+      fila.push(valor);
+      }
+     else if(cab.Tipo==5){
+      const valor = this.DataPlanesMensual[index]?.[0]?.Variacion || 0;
+      fila.push(valor);
+      }
+      
+    });
+      this.getItems(categ.id).forEach((item:any) => {
+
+      
+      
+        
+      });
+      console.log('Fila',fila)
+  });
+
+
+
+}
 switchTipoRegistro(idTipo){
   if(idTipo==0){
     this.idTipoRegistro=0
