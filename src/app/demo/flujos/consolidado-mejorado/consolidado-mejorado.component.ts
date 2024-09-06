@@ -6,7 +6,8 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TreeSelectModule } from 'primeng/treeselect';
-
+import * as FileSaver from 'file-saver';
+import * as ExcelJS from 'exceljs';
 @Component({
   selector: 'app-consolidado-mejorado',
   standalone: true,
@@ -85,6 +86,189 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
     this.getCatalogoFechas()
 
   }
+  
+descargarExcel(){
+  let _Cabecera:any=[]
+ _Cabecera=this.Cabecera.filter((cab:any)=>cab.Mostrar==true)
+  const headerRow: any[] = [];
+  _Cabecera.forEach((element: any) => {
+    headerRow.push(element.Nombre);
+  });
+  let Data: any[] = [];
+
+
+  console.log('headerRow',headerRow)
+
+  let Contador:number=1
+  this.Categorias.forEach((categ: any) => {
+    let fila: any[] = [`${Contador}- ${categ.Nombre}`];
+    Contador+=1
+    _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+      const index = `${cab.Anio}-${cab.NumMes}-${categ.id}-${cab.NumSemana}`;
+      const indexMensual = `${cab.Anio}-${cab.NumMes}-${categ.id}`;
+      const indexAnual = `${cab.Anio}-${categ.id}`;
+      let valor = 0;
+      if (cab.Tipo == 2) {
+        valor = this.DataCategorias[index]?.[0]?.Valor || 0;
+      }
+      else if (cab.Tipo == 3) {
+        valor = this.DataCategoriasMensual[indexMensual]?.[0]?.Valor || 0;
+    }
+    else if (cab.Tipo == 4) {
+      valor = this.DataCategoriasAnual[indexAnual]?.[0]?.Valor || 0;
+  }
+
+  fila.push(valor);
+    })
+    Data.push(fila);
+    this.getItems(categ.id).forEach((item: any) => {
+  let filaItem: any[] = [item.Nombre];
+  _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+    const indexItem = `${cab.Anio}-${cab.NumMes}-${item.id}-${cab.NumSemana}`;
+    const indexItemMensual = `${cab.Anio}-${cab.NumMes}-${item.id}`;
+    const indexItemAnual = `${cab.Anio}-${item.id}`;
+    let valorItem = 0;
+    if (cab.Tipo == 2) {
+      valorItem = this.DataItems[indexItem]?.[0]?.Valor || 0;
+  }
+
+  else if (cab.Tipo == 3) {
+    valorItem = this.DataItemsMensual[indexItemMensual]?.[0]?.Valor || 0;
+  }
+  else if (cab.Tipo == 4) {
+    valorItem = this.DataItemsAnual[indexItemAnual]?.[0]?.Valor || 0;
+}
+filaItem.push(valorItem);
+
+  })
+  Data.push(filaItem);
+    })
+
+  })
+
+console.log('Data',Data)
+const workbook = new ExcelJS.Workbook();
+const worksheet = workbook.addWorksheet('Datos');
+const headerRowData = worksheet.addRow(headerRow);
+
+headerRowData.eachCell((cell) => {
+  cell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: '71bd9e' } // Fondo amarillo
+  };
+  cell.font = {
+    bold: true,
+    color: { argb: 'ffffff' } // Texto azul
+  };
+  cell.alignment = {
+    horizontal: 'left',
+    vertical: 'middle'
+  };
+  cell.border = {
+    top: { style: 'thin' },
+    bottom: { style: 'thin' },
+    left: { style: 'thin' },
+    right: { style: 'thin' }
+  };
+});
+
+Data.forEach((row: any, index: any) => {
+  const dataRow = worksheet.addRow(row);
+
+  // Aplicar estilo intercalado (gris suave en filas pares)
+
+  if(row[0].startsWith('1-') || row[0].startsWith('11-') 
+  ){
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'b4b4b4' }, // Gris suave
+      };
+    });
+  }
+ else  if( row[0].startsWith('2-')
+    || row[0].startsWith('3-') 
+    || row[0].startsWith('5-')  
+    || row[0].startsWith('6-') 
+    || row[0].startsWith('8-')  
+    || row[0].startsWith('9-')  
+  ){
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'F2F2F2' }, // Gris suave
+      };
+    });
+  }
+else  if(row[0].startsWith('4-') 
+    || row[0].startsWith('7-')
+    || row[0].startsWith('12-') 
+    || row[0].startsWith('10-')  
+  )
+  {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'afeffb' }, // Gris suave
+      };
+    });
+  }
+else 
+  {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'ffffff' }, // Gris suave
+      };
+    });
+  }
+
+  // if (index % 2 === 0) {
+  //   dataRow.eachCell((cell, colNumber) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'F2F2F2' }
+  //     };
+  //   });
+  // }
+
+
+  // Alinear las celdas, la primera a la izquierda y las demás centradas
+  dataRow.eachCell((cell: any, colNumber: number) => {
+    if (colNumber === 1) {
+      // Si es la primera columna, alinear a la izquierda
+      cell.alignment = {
+        horizontal: 'left',
+        vertical: 'middle'
+      };
+    } else {
+      // Para las demás columnas, alinear al centro
+      cell.alignment = {
+        horizontal: 'center',
+        vertical: 'middle'
+      };
+    }
+  });
+});
+
+worksheet.columns.forEach((column:any) => {
+  const maxLength = column.values.reduce((acc: number, curr: any) => {
+    return curr && curr.toString().length > acc ? curr.toString().length : acc;
+  }, 10);
+  column.width = maxLength + 2; // Ajustar el ancho de la columna
+});
+workbook.xlsx.writeBuffer().then((buffer: any) => {
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  FileSaver.saveAs(blob, 'datos.xlsx');
+});
+
+}
 
 ocultarMostrar(NumMes:any,Anio:any){
   this.Semanas.forEach(semana => {

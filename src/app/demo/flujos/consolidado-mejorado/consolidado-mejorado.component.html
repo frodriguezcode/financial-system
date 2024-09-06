@@ -27,7 +27,7 @@
    Ver solo semanas con valores
   </label>
 </div> -->
-
+<button type="button" (click)="descargarExcel()" class="btn btn-success m-1 mt-2">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
 <button *ngIf="Expandir==false" (click)="expandirTodo()" type="button" class="btn btn-success m-1 mt-2">Expandir Todo <i
     class="fa-solid fa-plus"></i></button>
 <button *ngIf="Expandir==true" (click)="contraerTodo()" type="button" class="btn btn-danger m-1 mt-2">Contraer Todo <i
