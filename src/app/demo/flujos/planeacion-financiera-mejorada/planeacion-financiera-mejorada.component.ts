@@ -9,6 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2'
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DropdownModule } from 'primeng/dropdown';
+import * as FileSaver from 'file-saver';
+import * as ExcelJS from 'exceljs';
 @Component({
   selector: 'app-planeacion-financiera-mejorada',
   standalone: true,
@@ -312,39 +314,169 @@ descargarExcel(){
     headerRow.push(element.Nombre);
   });
   let Data: any[] = [];
-  console.log('_Cabecera',_Cabecera)
-  console.log('DataPlanesMensual',this.DataPlanesMensual)
 
-  this.Categorias.forEach((categ:any) => {
-    let fila: any[] = [categ.Nombre];
-    _Cabecera.filter((cab:any)=>cab.Tipo!=1).forEach((cab:any) => {
-      const index = `${cab.Anio}-${cab.NumMes}-${categ.id}`;
-      if(cab.Tipo==2){
-        const valor = this.DataPlanesMensual[index]?.[0]?.Valor || 0;
-        fila.push(valor);
-      }
-     else if(cab.Tipo==3){
-        const valor = this.DataCategoriasMensual[index]?.[0]?.Valor || 0;
-        fila.push(valor);
-      }
-     else if(cab.Tipo==4){
-      const valor = this.DataPlanesMensual[index]?.[0]?.Diferencia || 0;
-      fila.push(valor);
-      }
-     else if(cab.Tipo==5){
-      const valor = this.DataPlanesMensual[index]?.[0]?.Variacion || 0;
-      fila.push(valor);
-      }
-      
-    });
-      this.getItems(categ.id).forEach((item:any) => {
+  let Contador:number=1
+  this.Categorias.forEach((categ: any) => {
+    let fila: any[] = [`${Contador}- ${categ.Nombre}`];
+    Contador+=1
+    _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
 
-      
-      
+        const index = `${cab.Anio}-${cab.NumMes}-${categ.id}`;
+        let valor = 0;
         
-      });
-      console.log('Fila',fila)
+        // Evaluamos según el tipo de cabecera
+        if (cab.Tipo == 2) {
+            valor = this.DataPlanesMensual[index]?.[0]?.Valor || 0;
+        } else if (cab.Tipo == 3) {
+            valor = this.DataCategoriasMensual[index]?.[0]?.Valor || 0;
+        } else if (cab.Tipo == 4) {
+            valor = this.DataPlanesMensual[index]?.[0]?.Diferencia || 0;
+        } else if (cab.Tipo == 5) {
+            valor = this.DataPlanesMensual[index]?.[0]?.Variacion || 0;
+        }
+        
+        fila.push(valor);
+    });
+
+    // Añadimos la fila de la categoría al Data una vez
+    Data.push(fila);
+
+    // Ahora iteramos sobre los elementos de la categoría
+    this.getItems(categ.id).forEach((item: any) => {
+        let filaItem: any[] = [item.Nombre];
+        _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+
+            const indexItem = `${cab.Anio}-${cab.NumMes}-${item.id}`;
+            let valorItem = 0;
+
+            if (cab.Tipo == 2) {
+                valorItem = this.DataItems[indexItem]?.[0]?.Valor || 0;
+            } else if (cab.Tipo == 3) {
+                valorItem = this.DataItemsMensual[indexItem]?.[0]?.Valor || 0;
+            } else if (cab.Tipo == 4) {
+                valorItem = this.DataItems[indexItem]?.[0]?.Diferencia || 0;
+            } else if (cab.Tipo == 5) {
+                valorItem = this.DataItems[indexItem]?.[0]?.Variacion || 0;
+            }
+            filaItem.push(valorItem);
+        });
+        Data.push(filaItem);
+    });
+
+
+    
   });
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Datos');
+  const headerRowData = worksheet.addRow(headerRow);
+  
+  headerRowData.eachCell((cell) => {
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '71bd9e' } // Fondo amarillo
+    };
+    cell.font = {
+      bold: true,
+      color: { argb: 'ffffff' } // Texto azul
+    };
+    cell.alignment = {
+      horizontal: 'left',
+      vertical: 'middle'
+    };
+    cell.border = {
+      top: { style: 'thin' },
+      bottom: { style: 'thin' },
+      left: { style: 'thin' },
+      right: { style: 'thin' }
+    };
+  });
+
+  Data.forEach((row: any, index: any) => {
+    const dataRow = worksheet.addRow(row);
+
+    // Aplicar estilo intercalado (gris suave en filas pares)
+
+    if(row[0].startsWith('1-') 
+      || row[0].startsWith('2-')
+      || row[0].startsWith('4-') 
+      || row[0].startsWith('5-')  
+      || row[0].startsWith('7-') 
+      || row[0].startsWith('8-')  
+    ){
+      dataRow.eachCell((cell, colNumber) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'F2F2F2' }, // Gris suave
+        };
+      });
+    }
+  else  if(row[0].startsWith('3-') 
+      || row[0].startsWith('6-')
+      || row[0].startsWith('9-') 
+      || row[0].startsWith('10-')  
+    )
+    {
+      dataRow.eachCell((cell, colNumber) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'afeffb' }, // Gris suave
+        };
+      });
+    }
+  else 
+    {
+      dataRow.eachCell((cell, colNumber) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'ffffff' }, // Gris suave
+        };
+      });
+    }
+
+    // if (index % 2 === 0) {
+    //   dataRow.eachCell((cell, colNumber) => {
+    //     cell.fill = {
+    //       type: 'pattern',
+    //       pattern: 'solid',
+    //       fgColor: { argb: 'F2F2F2' }
+    //     };
+    //   });
+    // }
+
+  
+    // Alinear las celdas, la primera a la izquierda y las demás centradas
+    dataRow.eachCell((cell: any, colNumber: number) => {
+      if (colNumber === 1) {
+        // Si es la primera columna, alinear a la izquierda
+        cell.alignment = {
+          horizontal: 'left',
+          vertical: 'middle'
+        };
+      } else {
+        // Para las demás columnas, alinear al centro
+        cell.alignment = {
+          horizontal: 'center',
+          vertical: 'middle'
+        };
+      }
+    });
+  });
+  worksheet.columns.forEach((column:any) => {
+    const maxLength = column.values.reduce((acc: number, curr: any) => {
+      return curr && curr.toString().length > acc ? curr.toString().length : acc;
+    }, 10);
+    column.width = maxLength + 2; // Ajustar el ancho de la columna
+  });
+
+    // 6. Guardar el archivo en formato Excel
+    workbook.xlsx.writeBuffer().then((buffer: any) => {
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      FileSaver.saveAs(blob, 'datos.xlsx');
+    });
 
 
 
