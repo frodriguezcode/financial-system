@@ -76,6 +76,8 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   catalogoFechas: any[] = [];
   MaestroSemanasMesAnio:any=[]
   MaestroSeleccionado:any
+
+  showSemanas:boolean=true
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
    
@@ -97,7 +99,7 @@ descargarExcel(){
   let Data: any[] = [];
 
 
-  console.log('headerRow',headerRow)
+ 
 
   let Contador:number=1
   this.Categorias.forEach((categ: any) => {
@@ -146,7 +148,6 @@ filaItem.push(valorItem);
 
   })
 
-console.log('Data',Data)
 const workbook = new ExcelJS.Workbook();
 const worksheet = workbook.addWorksheet('Datos');
 const headerRowData = worksheet.addRow(headerRow);
@@ -270,6 +271,47 @@ workbook.xlsx.writeBuffer().then((buffer: any) => {
 
 }
 
+ocultarSemanas(){
+  this.Semanas.forEach(semana => {
+ 
+      semana.Mostrar = false;
+    
+  });
+  this.Cabecera.forEach(cab => {
+
+    if (cab.Tipo==2) {
+      cab.Mostrar = false;
+    
+    }
+    if (cab.Tipo==3) {
+     
+      cab.MostrarBotonSemanal = false;
+    }
+    
+  });
+  this.showSemanas=false
+}
+mostrarSemanas(){
+  this.Semanas.forEach(semana => {
+ 
+      semana.Mostrar = true;
+    
+  });
+  this.Cabecera.forEach(cab => {
+
+    if (cab.Tipo==2) {
+      cab.Mostrar = true;
+    
+    }
+    if (cab.Tipo==3) {
+     
+      cab.MostrarBotonSemanal = true;
+    }
+    
+  });
+  this.showSemanas=true
+}
+
 ocultarMostrar(NumMes:any,Anio:any){
   this.Semanas.forEach(semana => {
     if (semana.Mes == NumMes && semana.Anio == Anio) {
@@ -286,7 +328,7 @@ ocultarMostrar(NumMes:any,Anio:any){
       cab.MostrarBotonSemanal = !cab.MostrarBotonSemanal;
     }
   });
-  console.log('Cabecera',this.Cabecera)
+
 }
 ocultarMostrarMeses(NumMes:any,Anio:any){
   this.Anios.forEach(anio => {
@@ -319,7 +361,7 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
     }
  
   });
-  console.log('Cabecera',this.Cabecera)
+ 
 }
   filtrarMeses(numMes:any){
     let _MesEncontrado:any=[]
@@ -1366,7 +1408,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
     });
 
     this.CabeceraBack=this.Cabecera
-    console.log('Cabecera',this.Cabecera)
+ 
  
     this.DataSaldoInicial=[]
     this.DataSaldoFinal=[]
