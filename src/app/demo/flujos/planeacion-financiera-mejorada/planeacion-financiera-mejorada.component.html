@@ -22,7 +22,7 @@
   <div *ngIf="!cargando" class="container-table">
     <div class="table-responsive ">
     <button type="button" (click)="descargarExcel()" class="btn btn-success m-1 float-end">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
-    <button type="button" (click)="descargarExcel()" class="btn btn-primary m-1 float-start">Año <i class="fa-solid fa-plus"></i></button>
+    <button type="button" (click)="showDialog()"  class="btn btn-primary m-1 float-start">Año <i class="fa-solid fa-plus"></i></button>
     <table class="table table-100">
       <thead class="cabecera">
 
@@ -247,4 +247,20 @@
       </tbody>
     </table>
   </div>
+</div>
+
+<div class="card flex justify-content-center">
+
+  <p-dialog header="Agregar Año" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+      <span class="p-text-secondary block mb-5">Agrege un año a su planeación financiera</span>
+
+      <div class="flex align-items-center gap-3 mb-5">
+          <label for="email" class="font-semibold w-6rem">Año</label>
+          <input #Anio pInputText id="number" class="flex-auto" autocomplete="off" />
+      </div>
+      <div class="flex justify-content-end gap-2">
+          <p-button label="Cancelar" severity="secondary" (onClick)="visible = false" />
+          <p-button label="Guardar" (onClick)="guardarAnio(Anio.value)" />
+      </div>
+  </p-dialog>
 </div>

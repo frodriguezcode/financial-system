@@ -264,7 +264,24 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     }
 
     //?------------SUCURSALES------------
-
+    obtenerAniosPlaneacion(idEmpresa:any) {
+      return this.afs
+      .collection('AniosPlaneacion',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+      .valueChanges();
+    }
+    crearAniosPlaneacion(Anios:any) {
+      const id = this.afs.createId();
+      return this.afs
+        .collection('AniosPlaneacion')
+        .doc(id)
+        .ref.set(Object.assign(Anios, { id: id }));
+    }
+    ActualizarAniosPlaneacion(AnioPlaneacion: any) {
+      return this.afs
+        .collection('AniosPlaneacion')
+        .doc(AnioPlaneacion.id)
+        .ref.update(AnioPlaneacion);
+    }
 
         //?------------PROYECTOS------------
 

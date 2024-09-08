@@ -9,12 +9,15 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2'
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 @Component({
   selector: 'app-planeacion-financiera-mejorada',
   standalone: true,
-  imports: [CommonModule, SharedModule,MultiSelectModule,DropdownModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule,DropdownModule,ButtonModule,InputTextModule,DialogModule],
   templateUrl: './planeacion-financiera-mejorada.component.html',
   styleUrls: ['./planeacion-financiera-mejorada.component.scss']
 })
@@ -25,6 +28,7 @@ Meses: any = [];
 MesesSeleccionados: any = [];
 Anios: any = [];
 AniosSeleccionados: any = [];
+AniosPlaneacion: any = [];
 Cabecera: any = [];
 CabeceraBack: any = [];
 Categorias:any=[]
@@ -55,19 +59,14 @@ ProyectoSeleccionado:any
 
 CuentasBancarias:any=[]
 CuentaBancariaSeleccionada:any=[]
+visible: boolean = false;
 constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
   this.obtenerSucursales()
   this.obtenerProyectos()
-  this.Anios=[
-    {Anio:2023,
-    Mostrar: true
-    },
-    {Anio:2024,
-    Mostrar: true
+  
 
-    }]
   this.Meses= [
 
     {
@@ -133,10 +132,80 @@ ngOnInit(): void {
   
   ]
 
-this.obtenerCategorias()  
-this.obtenerRegistros()
-this.obtenerValoresPlanes()
-this.obtenerCategorias()
+this.obtenerAniosPlaneacion()
+}
+
+showDialog() {
+  this.visible = true;
+}
+
+guardarAnio(anio:any){
+  let AnioEncontrado:any=[]
+  AnioEncontrado=this.Anios.filter((a:any)=>a.Anio==Number(anio))
+  if(AnioEncontrado.length>0){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: 'Ya existe este año',
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  else if(anio<2015){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: 'Ingrese un año válido',
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  else {
+    this.AniosPlaneacion[0].Anios.push({Anio:Number(anio),
+      Mostrar: true
+    })
+  this.conS.ActualizarAniosPlaneacion(this.AniosPlaneacion[0]).then(resp=>{
+    this.construirCabecera()
+    this.visible=false
+  })
+
+  }
+  
+}
+
+obtenerAniosPlaneacion(){
+  this.conS.obtenerAniosPlaneacion(this.usuario.idEmpresa).subscribe((resp:any)=>{
+
+    if(resp.length>0){
+      this.AniosPlaneacion=resp
+      this.Anios=resp[0].Anios
+      console.log('resp',resp)
+      console.log('Anios',this.Anios)
+
+    }
+    else {
+      let _AniosPlanes={
+        idEmpresa:this.usuario.idEmpresa,
+        Anios:[
+          {Anio:2023,
+          Mostrar: true
+          },
+          {Anio:2024,
+          Mostrar: true
+      
+          },
+        ]
+      }
+      this.conS.crearAniosPlaneacion(_AniosPlanes).then(resp=>{
+
+ 
+      })
+    }
+    this.obtenerCategorias()  
+    this.obtenerRegistros()
+    this.obtenerValoresPlanes()
+    this.obtenerCategorias()
+  })
 }
 obtenerProyectos(){
   this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
