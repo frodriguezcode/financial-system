@@ -500,6 +500,10 @@ switchTipoRegistro(idTipo){
     this.categoriasExpandidas=this.categoriasExpandidasHistory
   }
 
+  this.getDataCategoriasMensual()
+  this.getDataItemMensual()
+  this.getDataItemsMensualPlanes()
+  this.getDataCategoriasMensualPlanes()
 
   //this.construirCabecera()
 }

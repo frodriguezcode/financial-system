@@ -615,12 +615,16 @@ obtenerItems(){
 }
 
 filtrarCuentas(TipoRubro:any){
+ if( this.ProyectoSeleccionado.length==0 && this.SucursalSeleccionada.length==0){
 
-  if(TipoRubro==1){
+    this.Items=this.ItemsBack
+  }
+ else if(TipoRubro==1){
 
     if( this.SucursalSeleccionada.length==0){
       this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro)
     }
+
     else {
       this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro
       &&  item.Sucursales.some(sucursal=>this.SucursalSeleccionada.some(sucursalSelect=>sucursalSelect.id==sucursal.id))
@@ -630,9 +634,11 @@ filtrarCuentas(TipoRubro:any){
     
   }
   else {
+
     if( this.ProyectoSeleccionado.length==0){
       this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro)
     }
+
     else {
 
       this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro
@@ -640,7 +646,9 @@ filtrarCuentas(TipoRubro:any){
       )
     }
   }
-
+  this.getDataCategorias()
+  this.getDataCategoriasMensual()
+  this.getDataCategoriasAnual()
 
 }
   
