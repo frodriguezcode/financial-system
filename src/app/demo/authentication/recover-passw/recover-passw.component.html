@@ -13,7 +13,7 @@
             </div>
     
             <div class="d-grid">
-              <button  class="btn btn-block btn-primary mb-4">Guardar</button>
+              <button [disabled]="this.Password.value=='' || this.Password.value==null   " (click)="actualizarPass()"  class="btn btn-block btn-primary mb-4">Guardar</button>
             </div>
        
           </div>
