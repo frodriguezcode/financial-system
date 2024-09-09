@@ -9,6 +9,7 @@ import SignUpComponent from './demo/authentication/sign-up/sign-up.component';
 import { ConfigurationComponent } from './theme/layout/admin/configuration/configuration.component';
 import ConfiguracionInicialComponent from './demo/configuracion-inicial/configuracion-inicial.component';
 import PlanesComponent from './demo/authentication/planes/planes.component';
+import RecoverPassw from './demo/authentication/recover-passw/recover-passw.component';
 
 const routes: Routes = [
   {
@@ -103,6 +104,10 @@ const routes: Routes = [
   {
     path: 'auth/signin',
     component:SignInComponent
+  },
+  {
+    path: 'auth/recover/:idUsuario',
+    component:RecoverPassw
   },
   {
     path: 'configuracion-inicial',

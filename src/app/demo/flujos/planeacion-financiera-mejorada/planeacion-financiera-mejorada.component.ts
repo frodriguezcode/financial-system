@@ -53,7 +53,6 @@ cargando:boolean=true
 
 Sucursales:any=[]
 SucursalSeleccionada:any
-ujm 
 Proyectos:any=[]
 ProyectoSeleccionado:any
 

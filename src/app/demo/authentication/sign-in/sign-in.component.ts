@@ -20,6 +20,8 @@ export default class SignInComponent implements OnInit {
   Usuario:FormControl=new FormControl('');
   Password:FormControl=new FormControl('');
   Empresas:any=[]
+  Correo:string=''
+  UsuarioRecover:any=[]
 ngOnInit(): void {
   localStorage.removeItem('AtributosUsuarioFinancial_System');
   localStorage.removeItem('usuarioFinancialSystems');
@@ -68,6 +70,7 @@ ngOnInit(): void {
     })
   }
 
+
   async  obtenerAtributos(idEmpresa: any, idRol: string) {
     try {
       const atributos = await this.obtenerRoles(idEmpresa, idRol);
@@ -88,6 +91,74 @@ ngOnInit(): void {
           reject(error);
         }
       );
+    });
+  }
+
+  modalRecoverPassw(){
+    Swal.fire({
+      title: "Ingrese su correo",
+      text: "El correo debe ser con el que se registró en esta plataforma",
+      input: "text",
+      inputAttributes: {
+        autocapitalize: "off"
+      },
+      showCancelButton: true,
+      confirmButtonText: "Enviar",
+      cancelButtonText:"Cancelar",
+      showLoaderOnConfirm: true,
+      preConfirm: async (login) => {
+        try {
+          this.Correo=login
+    
+      
+        } catch (error) {
+          Swal.showValidationMessage(`
+            Request failed: ${error}
+          `);
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.autS.obtenerUsuariosbyCorreo(this.Correo).subscribe((resp:any)=>{
+          if(resp.length>0){          
+           this.UsuarioRecover=resp
+          console.log('UsuarioRecover',this.UsuarioRecover) 
+              let _User ={
+                "correo":this.UsuarioRecover[0].Correo,
+                "idUser":this.UsuarioRecover[0].id,
+                "nombre":this.UsuarioRecover[0].Nombres,
+              }
+          console.log('_User',_User) 
+          this.autS.sendMailRecoverPassw(_User).subscribe((resp:any)=>{
+
+            Swal.fire({
+             position: "center",
+             icon: "success",
+             title: "Correo enviado",
+             showConfirmButton: false,
+             timer: 1500
+             });
+          })
+          }
+          else{
+            Swal.fire({
+              position: "center",
+              icon: "warning",
+              title: "No se ha encontrado un perfil con este correo, inténtelo nuevamente",
+              showConfirmButton: false,
+              timer: 3000
+              });
+          }
+
+
+
+
+        })
+
+
+
+      }
     });
   }
 

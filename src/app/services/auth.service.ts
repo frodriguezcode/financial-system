@@ -9,6 +9,7 @@ export class AuthService {
 
   //urlSeverMailLocal = 'http://localhost:3000/formulario/';
   urlSeverMailLocal = 'https://apisistemafinanciero.onrender.com/formulario/';
+  urlMailRecoverPassw= 'https://apisistemafinanciero.onrender.com/recuperarPassw/';
   Atributos:any=[]
   constructor(
     private afs: AngularFirestore,
@@ -124,6 +125,9 @@ export class AuthService {
   sendMail(usuario:any): Observable<any>{
     return this._http.post<any>(this.urlSeverMailLocal,usuario);
   }
+  sendMailRecoverPassw(usuario:any): Observable<any>{
+    return this._http.post<any>(this.urlMailRecoverPassw,usuario);
+  }
 
   obtenerUsuarioLogin(usuario:string,password:string) {
     return this.afs
@@ -133,6 +137,11 @@ export class AuthService {
   obtenerUsuarios(idEmpresa:string) {
     return this.afs
       .collection('Usuarios',(ref) => ref.where('idEmpresa', '==', idEmpresa).orderBy('Activo','desc'))
+      .valueChanges();
+  }
+  obtenerUsuariosbyCorreo(Correo:string) {
+    return this.afs
+      .collection('Usuarios',(ref) => ref.where('Correo', '==', Correo))
       .valueChanges();
   }
   ActualizarUsuario(usuario: any) {
