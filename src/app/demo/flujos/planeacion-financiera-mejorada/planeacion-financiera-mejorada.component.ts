@@ -204,7 +204,7 @@ obtenerAniosPlaneacion(){
     this.obtenerCategorias()  
     this.obtenerRegistros()
     this.obtenerValoresPlanes()
-    this.obtenerCategorias()
+
   })
 }
 obtenerProyectos(){
@@ -768,7 +768,7 @@ getDataItemsMensualPlanes(){
         })
       
     });
-    this.cargando=false 
+  
 
 } 
 
