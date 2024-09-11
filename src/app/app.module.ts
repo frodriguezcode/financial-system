@@ -28,6 +28,8 @@ import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { registerLocaleData } from '@angular/common';
+import { DialogModule } from 'primeng/dialog';
+
 import localeEs from '@angular/common/locales/es';
 registerLocaleData(localeEs);
 @NgModule({
@@ -59,6 +61,7 @@ registerLocaleData(localeEs);
     BrowserAnimationsModule, 
     FirebaseModule,
     HttpClientModule,
+    DialogModule,
     ToastrModule.forRoot()
   ],
   providers: [DatePipe],

@@ -7,11 +7,14 @@ import { FormControl } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2'
 import { ConfigurationService } from 'src/app/services/configuration.service';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [CommonModule, SharedModule, RouterModule],
+  imports: [CommonModule, SharedModule, RouterModule,DialogModule,InputTextModule],
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })
@@ -20,19 +23,23 @@ export default class SignInComponent implements OnInit {
   Usuario:FormControl=new FormControl('');
   Password:FormControl=new FormControl('');
   Empresas:any=[]
-  Correo:string=''
+  Correo:FormControl=new FormControl('');
   UsuarioRecover:any=[]
+  visible: boolean = false;
 ngOnInit(): void {
   localStorage.removeItem('AtributosUsuarioFinancial_System');
   localStorage.removeItem('usuarioFinancialSystems');
 }
   login(){
-
+    
     Swal.fire({
       title: 'Iniciando sesión....'
      });
      Swal.showLoading();
-    this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
+     let Subscription:Subscription
+ 
+     Subscription=  this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
+      Subscription.unsubscribe()
       localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0]));
     
       if(resp.length>0){  
@@ -69,7 +76,9 @@ ngOnInit(): void {
       }
     })
   }
-
+  showDialog() {
+    this.visible = true;
+}
 
   async  obtenerAtributos(idEmpresa: any, idRol: string) {
     try {
@@ -94,72 +103,59 @@ ngOnInit(): void {
     });
   }
 
-  modalRecoverPassw(){
+hideModal(){
+  this.visible=false
+}
+
+  recuperarContrasenia(){
+    this.visible=false
     Swal.fire({
-      title: "Ingrese su correo",
-      text: "El correo debe ser con el que se registró en esta plataforma",
-      input: "text",
-      inputAttributes: {
-        autocapitalize: "off"
-      },
-      showCancelButton: true,
-      confirmButtonText: "Enviar",
-      cancelButtonText:"Cancelar",
-      showLoaderOnConfirm: true,
-      preConfirm: async (login) => {
-        try {
-          this.Correo=login
-    
-      
-        } catch (error) {
-          Swal.showValidationMessage(`
-            Request failed: ${error}
-          `);
-        }
-      },
-      allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.autS.obtenerUsuariosbyCorreo(this.Correo).subscribe((resp:any)=>{
-          if(resp.length>0){          
-           this.UsuarioRecover=resp
-          console.log('UsuarioRecover',this.UsuarioRecover) 
-              let _User ={
-                "correo":this.UsuarioRecover[0].Correo,
-                "idUser":this.UsuarioRecover[0].id,
-                "nombre":this.UsuarioRecover[0].Nombres,
-              }
-          console.log('_User',_User) 
-          this.autS.sendMailRecoverPassw(_User).subscribe((resp:any)=>{
-
-            Swal.fire({
-             position: "center",
-             icon: "success",
-             title: "Correo enviado",
-             showConfirmButton: false,
-             timer: 1500
-             });
-          })
+      title: 'Buscando correo en el sistema....'
+     });
+     Swal.showLoading();   
+    let Subscription:Subscription
+    Subscription=   this.autS.obtenerUsuariosbyCorreo(this.Correo.value).subscribe((resp:any)=>{
+      Subscription.unsubscribe()
+      if(resp.length>0){   
+        Swal.fire({
+          title: 'Enviando correo....'
+         });
+         Swal.showLoading();       
+       this.UsuarioRecover=resp
+      console.log('UsuarioRecover',this.UsuarioRecover) 
+          let _User ={
+            "correo":this.UsuarioRecover[0].Correo,
+            "idUser":this.UsuarioRecover[0].id,
+            "nombre":this.UsuarioRecover[0].Nombres,
           }
-          else{
-            Swal.fire({
-              position: "center",
-              icon: "warning",
-              title: "No se ha encontrado un perfil con este correo, inténtelo nuevamente",
-              showConfirmButton: false,
-              timer: 3000
-              });
-          }
+      console.log('_User',_User) 
+      this.autS.sendMailRecoverPassw(_User).subscribe((resp:any)=>{
 
-
-
-
-        })
-
-
-
+        Swal.fire({
+         position: "center",
+         icon: "success",
+         title: "Correo enviado",
+         showConfirmButton: false,
+         timer: 1500
+         });
+         
+      })
       }
-    });
+      else{
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "No se ha encontrado un perfil con este correo, inténtelo nuevamente",
+          showConfirmButton: false,
+          timer: 3000
+          });
+      }
+
+
+
+
+    })
+
   }
 
 }
