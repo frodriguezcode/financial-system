@@ -20,7 +20,7 @@
     <label for="exampleInputPassword1">Sucursal (opcional)</label>
     <select formControlName="idSucursal" class="form-control" id="exampleFormControlSelect1">
       <option value="0">Seleccione una sucursal</option>
-      <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Sucursal}}</option>
+      <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
 
     </select>
   </div>
