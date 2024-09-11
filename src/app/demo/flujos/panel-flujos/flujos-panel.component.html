@@ -4,23 +4,13 @@
 
     <app-card cardTitle="Flujos" [options]="false">
       <button type="button" (click)="showDialog()" class="btn btn-success" ngbTooltip="btn-success">Ajustar Saldos</button>
-      <div class="flex mb-2 gap-2 justify-content-end">
-        <p-button (click)="activeIndex = 0" [rounded]="true" styleClass="w-2rem h-2rem p-0" [outlined]="activeIndex !== 0" label="1" severity="warning"></p-button>
-        <!-- <p-button (click)="activeIndex  icon="pi pi-search" styleClass="w-2rem h-2rem p-0"  [outlined]="activeIndex !== 0" [rounded]="true" severity="success"></p-button> -->
-        <p-button (click)="activeIndex = 1" [rounded]="true" styleClass="w-2rem h-2rem p-0" [outlined]="activeIndex !== 1" label="2" severity="warning"></p-button>
-        <p-button (click)="activeIndex = 2" [rounded]="true" styleClass="w-2rem h-2rem p-0" [outlined]="activeIndex !== 2" label="3" severity="warning"></p-button> 
-      </div>
+     
         <p-tabView [(activeIndex)]="activeIndex">
         <p-tabPanel header="Consolidado">
          <app-consolidado-mejorado></app-consolidado-mejorado>
          <!-- <app-flujo-consolidado></app-flujo-consolidado> -->
         </p-tabPanel>
-        <p-tabPanel header="Bancos">
-          <app-flujo-bancos></app-flujo-bancos>
-        </p-tabPanel>
-        <p-tabPanel header="Cajas">
-          <app-flujo-caja></app-flujo-caja>
-        </p-tabPanel>
+    
         </p-tabView>
 
     </app-card>
