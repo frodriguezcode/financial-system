@@ -28,10 +28,20 @@ export default class ProyectosComponent implements OnInit {
 
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.conS.usuario$.subscribe(usuario => {
+    if (usuario) {
+    this.usuario=usuario
+    }
+    else {
+      this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+    }
+    this.obtenerProyectos()
+    this.obtenerEmpresas()
+    this.obtenerSucursales()
+  
+ 
+  });
 
-  this.obtenerProyectos()
-  this.obtenerEmpresas()
-  this.obtenerSucursales()
   
 }
 

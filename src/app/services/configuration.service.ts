@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Registro } from '../models/registro';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 
@@ -10,6 +10,8 @@ import * as moment from 'moment';
 })
 export class ConfigurationService {
   private apiUrl = 'http://worldtimeapi.org/api/timezone';
+  private usuarioSource = new BehaviorSubject<any>(null);  // BehaviorSubject almacena el último valor emitido
+  usuario$ = this.usuarioSource.asObservable();
   constructor( private afs: AngularFirestore,private http: HttpClient) { 
     moment.updateLocale('es', {
       week: {
@@ -18,6 +20,10 @@ export class ConfigurationService {
       }
     });
   }
+  setUsuario(usuario: any) {
+    this.usuarioSource.next(usuario);
+  }
+
 
   getCalendario(){
     let _Calendario:[

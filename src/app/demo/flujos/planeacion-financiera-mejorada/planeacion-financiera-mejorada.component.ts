@@ -61,10 +61,19 @@ CuentaBancariaSeleccionada:any=[]
 visible: boolean = false;
 constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 ngOnInit(): void {
-  this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-  this.obtenerSucursales()
-  this.obtenerProyectos()
+  this.conS.usuario$.subscribe(usuario => {
+    if (usuario) {
+    this.usuario=usuario
+    }
+    else {
+      this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+    }
+    this.obtenerSucursales()
+    this.obtenerProyectos()
+    this.obtenerAniosPlaneacion()
   
+ 
+  });
 
   this.Meses= [
 
@@ -131,7 +140,6 @@ ngOnInit(): void {
   
   ]
 
-this.obtenerAniosPlaneacion()
 }
 
 showDialog() {

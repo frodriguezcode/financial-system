@@ -26,10 +26,20 @@ export default class SucursalesComponent implements OnInit {
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService) {}
 
 ngOnInit(): void {
-  this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-
-  this.obtenerSucursales()
+  this.conS.usuario$.subscribe(usuario => {
+    if (usuario) {
+    this.usuario=usuario
+    }
+    else {
+      this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+    }
+    this.obtenerSucursales()
   this.obtenerEmpresas()
+  
+ 
+  });
+
+
 
   
 }

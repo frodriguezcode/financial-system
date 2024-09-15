@@ -27,20 +27,33 @@
    Ver solo semanas con valores
   </label>
 </div> -->
-<button type="button" (click)="descargarExcel()" class="btn btn-success m-1 mt-2">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
-<button *ngIf="Expandir==false" (click)="expandirTodo()" type="button" class="btn btn-info m-1 mt-2">Expandir Todo <i
+<button type="button"
+[disabled]="this.Cabecera.length<=1"
+(click)="descargarExcel()" class="btn btn-success m-1 mt-2">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
+<button *ngIf="Expandir==false"
+[disabled]="this.Cabecera.length<=1"
+(click)="expandirTodo()" type="button" class="btn btn-info m-1 mt-2">Expandir Todo <i
     class="fa-solid fa-plus"></i>
 </button>
-<button *ngIf="Expandir==true" (click)="contraerTodo()" type="button" class="btn btn-danger m-1 mt-2">Contraer Todo <i
+<button *ngIf="Expandir==true" 
+[disabled]="this.Cabecera.length<=1"
+(click)="contraerTodo()" type="button" class="btn btn-danger m-1 mt-2">Contraer Todo <i
     class="fa-solid fa-minus"></i>
 </button>
 
-<button *ngIf="showSemanas" (click)="ocultarSemanas()" type="button" class="btn btn-danger m-1 mt-2">Mensual 
+<button *ngIf="showSemanas" 
+[disabled]="this.Cabecera.length<=1"
+(click)="ocultarSemanas()" type="button" class="btn btn-danger m-1 mt-2">Mensual 
 </button>
-<button *ngIf="!showSemanas" (click)="mostrarSemanas()" type="button" class="btn btn-warning m-1 mt-2">Semanal 
+<button *ngIf="!showSemanas"
+[disabled]="this.Cabecera.length<=1"
+(click)="mostrarSemanas()" type="button" class="btn btn-warning m-1 mt-2">Semanal 
 </button>
 
-<div *ngIf="this.Cabecera.length>0" class="table-responsive mt-1">
+<div *ngIf="this.Cabecera.length<=1"  class="alert alert-warning mt-2" role="alert">
+  No tiene registros en esta empresa
+</div>
+<div *ngIf="this.Cabecera.length>1" class="table-responsive mt-1">
   <table class="table">
     <!-- <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header categoria-toggle"> -->
     <thead style="color:white" class="sticky-header categoria-toggle">

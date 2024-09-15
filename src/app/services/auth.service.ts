@@ -122,6 +122,12 @@ export class AuthService {
     .ref.set(Object.assign(Matriz, {id: idMatriz}))
 }
 
+obtenerEmpresas(idMatriz:string) {
+  return this.afs
+    .collection('Empresa',(ref) => ref.where('idMatriz', '==', idMatriz).orderBy('Activo','desc'))
+    .valueChanges();
+}
+
   
   sendMail(usuario:any): Observable<any>{
     return this._http.post<any>(this.urlSeverMailLocal,usuario);

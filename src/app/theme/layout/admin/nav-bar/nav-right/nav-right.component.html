@@ -82,11 +82,12 @@
         </div>
         <ul class="pro-body">
           <li
+            ><a (click)="showDialogEmpresa() " class="dropdown-item"><i class="fa-solid fa-building"></i> {{this.usuario.Empresa}}</a></li
+          >
+          <li
             ><a (click)="showDialog() " class="dropdown-item"><i class="fa-solid fa-user"></i> Perfil</a></li
           >
-          <!-- <li
-            ><a href="javascript:" class="dropdown-item"><i class="feather icon-mail"></i> My Messages</a></li
-          > -->
+     
           <li
             ><a href="javascript:" class="dropdown-item"><i class="fa-solid fa-lock-open"></i> Salir</a></li
           >
@@ -203,3 +204,14 @@
     </div>
 </p-dialog>
 
+<p-dialog header="Cambiar de empresa" [modal]="true" [(visible)]="visibleEmpresa" [style]="{ width: '25rem' }">
+  <span class="p-text-secondary block mb-5">En este momento está en: <strong>{{this.usuario.Empresa}}</strong></span>
+  <div style="margin-top: -30px;" class="flex align-items-center gap-3 mb-3">
+      <select (change)="setEmpresa($any($event.target).value)" class="form-select form-select-sm" aria-label="Small select example">
+        <option selected>Seleccione una empresa</option>
+        <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
+      </select>
+  </div>
+
+
+</p-dialog>

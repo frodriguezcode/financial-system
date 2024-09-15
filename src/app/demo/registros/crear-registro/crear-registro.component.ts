@@ -209,12 +209,20 @@ ngOnInit(): void {
     },
   
   ]
-  this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-  this.obtenerSucursales()
-  this.obtenerItems()
-  this.obtenerCuentas()
-  this.obtenerSocios()
-  this.obtenerCategorias()
+  this.conS.usuario$.subscribe(usuario => {
+    if (usuario) {
+    this.usuario=usuario
+    }
+    else {
+      this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+    }
+    this.obtenerSucursales()
+    this.obtenerItems()
+    this.obtenerCuentas()
+    this.obtenerSocios()
+    this.obtenerCategorias()
+  });
+
 
 
 

@@ -100,7 +100,20 @@ export default class BancosComponent implements OnInit {
     
     ]
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-  this.obtenerSucursales()
+
+  this.conS.usuario$.subscribe(usuario => {
+    if (usuario) {
+    this.usuario=usuario
+    }
+    else {
+      this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+    }
+
+    this.obtenerSucursales()
+  
+ 
+  });
+
 
   }
   getMonthName(Fecha:string){
@@ -198,7 +211,13 @@ export default class BancosComponent implements OnInit {
   getNombreSucursal(idSucursal:string){
     let _sucursal:any=[]
     _sucursal=this.Sucursales.filter((s:any)=> s.id == idSucursal)
-    return _sucursal[0].Nombre
+    if(_sucursal.length>0){
+
+      return _sucursal[0].Nombre
+    }
+    else {
+      return ''
+    }
   }
 
 

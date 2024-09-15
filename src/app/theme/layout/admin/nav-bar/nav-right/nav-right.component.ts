@@ -10,6 +10,8 @@ import { FormControl } from '@angular/forms';
 import Swal from 'sweetalert2'
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { ConfigurationService } from 'src/app/services/configuration.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-nav-right',
   templateUrl: './nav-right.component.html',
@@ -29,6 +31,7 @@ import { of } from 'rxjs';
 export class NavRightComponent implements DoCheck,OnInit {
   // public props
   visibleUserList: boolean;
+  visibleEmpresa: boolean;
   chatMessage: boolean;
   friendId!: number;
   usuario:any
@@ -36,13 +39,13 @@ export class NavRightComponent implements DoCheck,OnInit {
   Nombres:FormControl=new FormControl('')
   Correo:FormControl=new FormControl('')
   Celular:FormControl=new FormControl('')
-
+  Empresas:any=[]
   visible: boolean = false;
   visiblePassw: boolean = false;
   gradientConfig = GradientConfig;
 
   // constructor
-  constructor(   private authS:AuthService) {
+  constructor(   private authS:AuthService,private conS:ConfigurationService,private toastr: ToastrService,) {
     this.visibleUserList = false;
     this.chatMessage = false;
  
@@ -53,11 +56,16 @@ export class NavRightComponent implements DoCheck,OnInit {
     this.Correo.setValue(this.usuario.Correo)
     this.Celular.setValue(this.usuario.Celular || '')
 }
+  showDialogEmpresa() {
+    this.visibleEmpresa = true;
+   
+}
 
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     console.log('usuario',this.usuario)
     this.obtenerRoles()
+    this.obtenerEmpresas()
   }
 
   obtenerRoles(){
@@ -65,12 +73,40 @@ export class NavRightComponent implements DoCheck,OnInit {
       this.Roles=resp;
       console.log('Roles',this.Roles)
     })
-    }
+}
+obtenerEmpresas(){
+    this.authS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp:any)=>{
+      this.Empresas=resp;
+      console.log('Empresas',this.Empresas)
+    })
+}
+
 getRolName(idRol:any){
   let rolName = this.Roles.find((rol:any)=> rol.id == idRol).Rol
   return rolName
 
 }    
+
+getNombreEmpresa(idEmpresa){
+  let _Empresa:any=this.Empresas.filter((emp:any)=>emp.id==idEmpresa)
+  if(_Empresa.length>0){
+    return _Empresa[0].Nombre
+  }
+  else{
+    return ''
+  }
+}
+setEmpresa(idEmpresa:any){
+  this.usuario.idEmpresa = idEmpresa
+  this.usuario.Empresa = this.getNombreEmpresa(idEmpresa)
+  this.conS.setUsuario(this.usuario);
+  localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
+  this.visibleEmpresa = false;
+  this.toastr.success('Hecho', `Se ha cambiado a ${this.usuario.Empresa}`,{
+    timeOut: 3000,
+  });
+
+}
 
 ActualizarUsuario(){
   this.usuario.Nombres=this.Nombres.value

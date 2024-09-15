@@ -79,14 +79,20 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   showSemanas:boolean=true
   ngOnInit(): void {
-    this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+    this.conS.usuario$.subscribe(usuario => {
+      if (usuario) {
+      this.usuario=usuario
+      }
+      else {
+        this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+      }
+      this.obtenerSaldoInicial()
+      this.obtenerSucursales()
+      this.obtenerProyectos()
+      this.obtenerBancos()
+      this.getCatalogoFechas()
    
-    this.obtenerSaldoInicial()
-    this.obtenerSucursales()
-    this.obtenerProyectos()
-    this.obtenerBancos()
-    this.getCatalogoFechas()
-
+    });
   }
   
 descargarExcel(){
@@ -505,6 +511,7 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
       idSucursal:Sucursales
 
     }
+    console.log('Registros',this.Registros)
     this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
     this.SaldoInicial= this.conS.filtradoDinamico(CriteriosSaldos,this.SaldoInicialBack)
 
@@ -821,7 +828,9 @@ else if (Posicion == 2) {
   DataSaldoFinal=this.DataSaldoFinal.filter((saldo:any)=>saldo.Mes==Mes && saldo.Anio==Anio && saldo.NumSemana==NumSemana - 1)
   if (DataSaldoFinal.length >= 1) {
    Valor=DataSaldoFinal[0].Valor
-  } else {
+  } 
+  
+  else {
     Valor= 0; // Condición de terminación cuando NumSemana es menor o igual a 1
   }
   return Valor
@@ -1416,7 +1425,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
     });
 
     this.CabeceraBack=this.Cabecera
- 
+    console.log('Cabecera',this.Cabecera)
  
     this.DataSaldoInicial=[]
     this.DataSaldoFinal=[]

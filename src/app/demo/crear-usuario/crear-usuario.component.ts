@@ -33,7 +33,19 @@ Sucursales: any = [];
 Usuarios: any = [];
 usuario:any
 ngOnInit(): void {
-  this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.conS.usuario$.subscribe(usuario => {
+    if (usuario) {
+    this.usuario=usuario
+    }
+    else {
+      this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+    }
+    this.obtenerUsuarios()
+    this.obtenerSucursales()
+    this.obtenerRoles()
+  
+ 
+  });
   this.MesesTodos = [
     {
       Mes: 'Sin Mes',
@@ -101,9 +113,7 @@ ngOnInit(): void {
       seleccionado: false
     }
   ];
-  this.obtenerUsuarios()
-  this.obtenerSucursales()
-  this.obtenerRoles()
+
 }
 obtenerUsuarios(){
   this.authS.obtenerUsuarios(this.usuario.idEmpresa).subscribe(resp=>{

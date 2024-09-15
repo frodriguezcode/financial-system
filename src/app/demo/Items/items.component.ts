@@ -62,12 +62,21 @@ export default class ItemsComponent  implements OnInit{
 
   ngOnInit(): void {
     this.todasSucursales=true
-    this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-    this.obtenerCategorias()
-    this.obtenerEmpresas()
-    this.obtenerSucursales()
-    this.obtenerProyectos()
-    this.obtenerItems()
+    this.conS.usuario$.subscribe(usuario => {
+      if (usuario) {
+      this.usuario=usuario
+      }
+      else {
+        this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+      }
+      this.obtenerCategorias()
+      this.obtenerEmpresas()
+      this.obtenerSucursales()
+      this.obtenerProyectos()
+      this.obtenerItems()
+   
+    });
+  
  
 
   }
