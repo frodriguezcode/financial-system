@@ -97,16 +97,62 @@ getNombreEmpresa(idEmpresa){
   }
 }
 setEmpresa(idEmpresa:any){
-  this.usuario.idEmpresa = idEmpresa
-  this.usuario.Empresa = this.getNombreEmpresa(idEmpresa)
-  this.conS.setUsuario(this.usuario);
-  localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
-  this.visibleEmpresa = false;
-  this.toastr.success('Hecho', `Se ha cambiado a ${this.usuario.Empresa}`,{
-    timeOut: 3000,
-  });
+  if(idEmpresa=='0'){
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Elija una empresa",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  else {
+
+    this.usuario.idEmpresa = idEmpresa
+    this.usuario.Empresa = this.getNombreEmpresa(idEmpresa)
+    this.conS.setUsuario(this.usuario);
+    localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
+    this.obtenerAtributos(this.usuario.idEmpresa,this.usuario.idRol)
+    this.visibleEmpresa = false;
+    this.toastr.success('Hecho', `Se ha cambiado a ${this.usuario.Empresa}`,{
+      timeOut: 3000,
+    });
+  }
 
 }
+
+
+
+
+async  obtenerAtributos(idEmpresa: any, idRol: string) {
+  try {
+    const atributos = await this.obtenerRolesByEmpresa(idEmpresa, idRol);
+    console.log('atributos',atributos)
+    localStorage.setItem('AtributosUsuarioFinancial_System', JSON.stringify(atributos));
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+obtenerRolesByEmpresa(idEmpresa: any, idRol: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    this.authS.obtenerRolesbyId(idEmpresa, idRol).subscribe(
+      (resp: any) => {
+        if(resp.length>0){
+          resolve(resp[0].Atributos);
+
+        }
+        else {
+          resolve([]);
+        }
+      },
+      (error) => {
+        reject(error);
+      }
+    );
+  });
+}
+
 
 ActualizarUsuario(){
   this.usuario.Nombres=this.Nombres.value
@@ -150,7 +196,7 @@ hideModal(){
   this.visiblePassw=false
 }
 
-  recuperarContrasenia(){
+recuperarContrasenia(){
     Swal.fire({
       title: 'Enviando correo....'
      });
@@ -202,8 +248,12 @@ hideModal(){
 
 
 
-      }
+}
    
+
+
+
+
 
 
     

@@ -12,6 +12,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { ChangeDetectorRef } from '@angular/core';
 import { TabViewModule } from 'primeng/tabview';
 import ListaRolesComponent from './lista-roles/lista-roles.component';
+import { ConfigurationService } from 'src/app/services/configuration.service';
 @Component({
   selector: 'app-roles',
   standalone: true,
@@ -21,7 +22,12 @@ import ListaRolesComponent from './lista-roles/lista-roles.component';
 })
 export default class RolesComponent implements OnInit {
   @Input() ConfigInicial:boolean=false
-  constructor(private authS:AuthService,private datePipe: DatePipe,private toastr: ToastrService,private cdr: ChangeDetectorRef) {
+  constructor(
+    private authS:AuthService,
+    private conS:ConfigurationService,
+    private datePipe: DatePipe,
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef) {
   }
   Modulos:any=[]
   Atributos :any=[]
@@ -32,8 +38,17 @@ export default class RolesComponent implements OnInit {
   Fecha:any= new Date();
   metaKeySelection: boolean = false;
   ngOnInit(): void {
-    this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-    this.obtenerAtributos()
+    this.conS.usuario$.subscribe(usuario => {
+      if (usuario) {
+      this.usuario=usuario
+      }
+      else {
+        this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+      }
+
+   
+      this.obtenerAtributos()
+    });
   }
 
   obtenerAtributos(){
@@ -71,7 +86,6 @@ export default class RolesComponent implements OnInit {
     "Usuario":this.usuario.Usuario,
     "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
   }
-  console.log('ItemsModulosAtributos',this.ItemsModulosAtributos)
 
   this.authS.guardarRol(_Rol).then(resp=>{
 

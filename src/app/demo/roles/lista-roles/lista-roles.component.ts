@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { TreeModule } from 'primeng/tree';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { ConfigurationService } from 'src/app/services/configuration.service';
 
 @Component({
   selector: 'app-lista-roles',
@@ -27,11 +28,24 @@ export default class ListaRolesComponent implements OnInit {
   Modulos:any=[]
   ItemsModulosAtributos: TreeNode[]=[]
   metaKeySelection: boolean = false;
-  constructor(private authS:AuthService,private toastr: ToastrService, private cdr: ChangeDetectorRef ){}
+  constructor(private authS:AuthService,private toastr: ToastrService, 
+    private conS:ConfigurationService,
+    private cdr: ChangeDetectorRef ){}
 @Input() ModulosTodos:any
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-  this.obtenerRoles()
+  this.conS.usuario$.subscribe(usuario => {
+    if (usuario) {
+    this.usuario=usuario
+    }
+    else {
+      this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+    }
+
+ 
+    this.obtenerRoles()
+  });
+ 
 
 
 }
