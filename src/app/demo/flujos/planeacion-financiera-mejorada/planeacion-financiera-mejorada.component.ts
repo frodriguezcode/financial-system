@@ -186,8 +186,7 @@ obtenerAniosPlaneacion(){
     if(resp.length>0){
       this.AniosPlaneacion=resp
       this.Anios=resp[0].Anios
-      console.log('resp',resp)
-      console.log('Anios',this.Anios)
+
 
     }
     else {

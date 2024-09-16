@@ -7,6 +7,7 @@
   <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos <i
       class="fa-solid fa-diagram-project"></i></button>
 </div>
+<button type="button" (click)="showDialog()"  class="btn btn-primary m-1 float-start">Año <i class="fa-solid fa-plus"></i></button>
 
 <p-multiSelect class="m-1" [options]="Anios" [(ngModel)]="AniosSeleccionados" (onChange)="getAniosActivos()"
   optionLabel="Anio" placeholder="Años" />
@@ -23,10 +24,7 @@
    
     <div class="table-responsive ">
 
-      <div class="btn-anio">
-        <button type="button" (click)="showDialog()"  class="btn btn-primary m-1 float-start">Año <i class="fa-solid fa-plus"></i></button>
-
-      </div>
+   
 
       <div class="btn-excel" >
 

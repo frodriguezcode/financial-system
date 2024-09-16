@@ -511,7 +511,7 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
       idSucursal:Sucursales
 
     }
-    console.log('Registros',this.Registros)
+   
     this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
     this.SaldoInicial= this.conS.filtradoDinamico(CriteriosSaldos,this.SaldoInicialBack)
 
@@ -1425,7 +1425,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
     });
 
     this.CabeceraBack=this.Cabecera
-    console.log('Cabecera',this.Cabecera)
+  
  
     this.DataSaldoInicial=[]
     this.DataSaldoFinal=[]

@@ -135,7 +135,7 @@ activeIndex: number = 0;
     {id: "2", name: "Caja"},
     
   ]
-
+cargando:boolean
   Fecha:any= new Date();
   ImporteTotal:number=0
 ngOnInit(): void {
@@ -210,6 +210,7 @@ ngOnInit(): void {
   
   ]
   this.conS.usuario$.subscribe(usuario => {
+    this.cargando=true
     if (usuario) {
     this.usuario=usuario
     }
@@ -463,10 +464,10 @@ obtenerRegistros(){
              this.cargarFormulario()
        
   
+             this.cargando=false
     })
 
  
-  
 }
 switchTipoRegistro(idTipo){
 
