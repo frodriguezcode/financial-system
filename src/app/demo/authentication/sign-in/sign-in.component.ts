@@ -149,6 +149,11 @@ hideModal(){
           showConfirmButton: false,
           timer: 3000
           });
+          this.Correo.setValue('')
+          setTimeout(()=>{            
+            this.visible=true
+        }, 3000);
+          
       }
 
 
