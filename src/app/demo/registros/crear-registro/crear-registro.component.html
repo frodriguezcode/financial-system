@@ -44,6 +44,7 @@
               pInputText
               type="text"
               class="form-control"
+              autocomplete="off"
               (input)="dt1.filterGlobal($any($event.target).value, 'contains')"
               id="exampleInputEmail1"
               aria-describedby="emailHelp"
