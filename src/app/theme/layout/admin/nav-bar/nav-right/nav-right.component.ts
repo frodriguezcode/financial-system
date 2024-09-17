@@ -1,5 +1,5 @@
 // Angular Import
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, DoCheck, inject, OnInit, TemplateRef } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { GradientConfig } from 'src/app/app-config';
 
@@ -12,6 +12,7 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-nav-right',
   templateUrl: './nav-right.component.html',
@@ -31,6 +32,7 @@ import { ToastrService } from 'ngx-toastr';
 export class NavRightComponent implements DoCheck,OnInit {
   // public props
   visibleUserList: boolean;
+  visibleLogin: boolean;
   visibleEmpresa: boolean;
   chatMessage: boolean;
   friendId!: number;
@@ -39,17 +41,32 @@ export class NavRightComponent implements DoCheck,OnInit {
   Nombres:FormControl=new FormControl('')
   Correo:FormControl=new FormControl('')
   Celular:FormControl=new FormControl('')
+  UsuarioLogin:FormControl=new FormControl('')
+  Passw:FormControl=new FormControl('')
+  idEmpresa:string=''
   Empresas:any=[]
+  Usuarios:any=[]
   visible: boolean = false;
   visiblePassw: boolean = false;
   gradientConfig = GradientConfig;
 
+	closeResult = '';
   // constructor
-  constructor(   private authS:AuthService,private conS:ConfigurationService,private toastr: ToastrService,) {
+  constructor(   private authS:AuthService,private conS:ConfigurationService,private toastr: ToastrService,
+
+    config: NgbModalConfig,
+		private modalService: NgbModal,
+
+  ) {
     this.visibleUserList = false;
     this.chatMessage = false;
  
   }
+
+	open(content) {
+		this.modalService.open(content);
+	}
+
   showDialog() {
     this.visible = true;
     this.Nombres.setValue(this.usuario.Nombres)
@@ -57,33 +74,58 @@ export class NavRightComponent implements DoCheck,OnInit {
     this.Celular.setValue(this.usuario.Celular || '')
 }
   showDialogEmpresa() {
-    this.visibleEmpresa = true;
+    if(this.authS.validarAtributo('qWA0Fr8xGLzxhCHwhm1n',[])==true){
+      this.visibleEmpresa = true;
+    }
+  
+    else {
+      this.toastr.warning('', '¡No tiene permitido cambiar de empresa!',{
+        timeOut: 1000,
+      });
+   }
+  
    
 }
 
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+
     console.log('usuario',this.usuario)
     this.obtenerRoles()
+    this.obtenerUsuariosByMatriz()
     this.obtenerEmpresas()
   }
 
   obtenerRoles(){
     this.authS.obtenerRoles(this.usuario.idEmpresa).subscribe((resp:any)=>{
       this.Roles=resp;
-      console.log('Roles',this.Roles)
+
+    })
+}
+obtenerUsuariosByMatriz(){
+    this.authS.obtenerUsuariosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
+      this.Usuarios=resp;
+      console.log('Usuarios',this.Usuarios)
     })
 }
 obtenerEmpresas(){
     this.authS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp:any)=>{
       this.Empresas=resp;
       console.log('Empresas',this.Empresas)
+      this.usuario.Empresa=this.getNombreEmpresa(this.usuario.idEmpresa)
+      localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
     })
 }
 
 getRolName(idRol:any){
   let rolName = this.Roles.find((rol:any)=> rol.id == idRol).Rol
-  return rolName
+  if(rolName){
+    return rolName
+
+  }
+  else {
+    return ''
+  }
 
 }    
 
@@ -96,7 +138,14 @@ getNombreEmpresa(idEmpresa){
     return ''
   }
 }
+
+
+
 setEmpresa(idEmpresa:any){
+this.idEmpresa=idEmpresa
+
+if(this.getRolName(this.usuario.idRol)=='Super Usuario'){
+  console.log('Rol',this.getRolName(this.usuario.idRol))
   if(idEmpresa=='0'){
     Swal.fire({
       position: "center",
@@ -107,7 +156,7 @@ setEmpresa(idEmpresa:any){
     });
   }
   else {
-
+  
     this.usuario.idEmpresa = idEmpresa
     this.usuario.Empresa = this.getNombreEmpresa(idEmpresa)
     this.conS.setUsuario(this.usuario);
@@ -121,6 +170,59 @@ setEmpresa(idEmpresa:any){
 
 }
 
+else {
+  this.visibleEmpresa = false;
+  setTimeout(()=>{ 
+    this.conS.setUsuario(this.usuario); 
+    this.ShowIniciarSesion()
+}, 1000);
+
+}
+
+
+
+}
+
+ShowIniciarSesion(){
+
+this.visibleLogin=true
+}
+
+iniciarSesion(){
+let UsuarioEncontrado:any=[]
+UsuarioEncontrado=this.Usuarios.filter((user:any)=>user.Password==this.Passw.value 
+&& user.Usuario==this.UsuarioLogin.value && user.idEmpresa==this.idEmpresa )
+
+if(UsuarioEncontrado.length>0){
+  this.usuario.Correo=UsuarioEncontrado[0].Correo
+  this.usuario.Usuario=UsuarioEncontrado[0].Usuario
+  this.usuario.idEmpresa=UsuarioEncontrado[0].idEmpresa
+  this.usuario.idRol=UsuarioEncontrado[0].idRol
+  this.usuario.Password=UsuarioEncontrado[0].Password
+  this.usuario.Nombres=UsuarioEncontrado[0].Nombres
+  this.usuario.Activo=UsuarioEncontrado[0].Activo
+  this.usuario.Empresa = this.getNombreEmpresa(UsuarioEncontrado[0].idEmpresa)
+
+  this.conS.setUsuario(this.usuario);
+  localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
+  this.obtenerAtributos(this.usuario.idEmpresa,this.usuario.idRol)
+  this.visibleEmpresa = false;
+  this.toastr.success('Hecho', `Se ha cambiado a ${this.usuario.Empresa}`,{
+    timeOut: 3000,
+  });
+this.visibleLogin=false
+}
+else{
+
+  Swal.fire({
+    position: "center",
+    icon: "warning",
+    title: "Credenciales Incorrectas",
+    showConfirmButton: false,
+    timer: 1500
+  });
+}
+}
 
 
 

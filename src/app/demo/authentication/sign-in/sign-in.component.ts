@@ -40,6 +40,7 @@ ngOnInit(): void {
  
      Subscription=  this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
       Subscription.unsubscribe()
+
       localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0]));
     
       if(resp.length>0){  
@@ -75,6 +76,16 @@ ngOnInit(): void {
         });
       }
     })
+  }
+ 
+  getNombreEmpresa(idEmpresa){
+    let _Empresa:any=this.Empresas.filter((emp:any)=>emp.id==idEmpresa)
+    if(_Empresa.length>0){
+      return _Empresa[0].Nombre
+    }
+    else{
+      return ''
+    }
   }
   showDialog() {
     this.visible = true;

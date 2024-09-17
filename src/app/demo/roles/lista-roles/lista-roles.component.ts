@@ -25,6 +25,7 @@ export default class ListaRolesComponent implements OnInit {
   RolSeleccionado:any
   usuario:any=[]
   selectedNodes:any=[]
+  AtributosSistema:any=[]
   Modulos:any=[]
   ItemsModulosAtributos: TreeNode[]=[]
   metaKeySelection: boolean = false;
@@ -42,14 +43,18 @@ ngOnInit(): void {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
 
- 
+ this.obtenerAtributos()
     this.obtenerRoles()
   });
  
 
 
 }
-
+obtenerAtributos(){
+  this.authS.obtenerAtributos().subscribe((data:any) => {
+    this.AtributosSistema=data
+  })
+}
 obtenerModulos(){
   this.authS.obtenerModulos().subscribe((data:any)=>{
     this.Modulos=data.map((modulo: any) => {
@@ -69,6 +74,21 @@ obtenerRoles(){
 }
 
 rolSelect(rolSelecionado:any){
+  let AtributosNuevos:any=[]
+  AtributosNuevos= this.AtributosSistema.filter(itemA => !rolSelecionado.Atributos.some(itemB => itemB.id === itemA.id));
+
+  if(AtributosNuevos.length>0){
+    AtributosNuevos.forEach(element => {
+      let AtributoNuevo={
+        "Nombre":element.Nombre,
+        "Seleccionado":false,
+        "id":element.id,
+        "idModulo":element.idModulo,
+      }
+      rolSelecionado.Atributos.push(AtributoNuevo)
+    });
+  }
+
   this.metaKeySelection=false
   //this.ItemsModulosAtributos=rolSelecionado.ItemsModulosAtributos
   this.RolSeleccionado=rolSelecionado

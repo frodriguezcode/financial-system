@@ -149,6 +149,11 @@ obtenerEmpresas(idMatriz:string) {
       .collection('Usuarios',(ref) => ref.where('idEmpresa', '==', idEmpresa).orderBy('Activo','desc'))
       .valueChanges();
   }
+  obtenerUsuariosByMatriz(idMatriz:string) {
+    return this.afs
+      .collection('Usuarios',(ref) => ref.where('idMatriz', '==', idMatriz).orderBy('Activo','desc'))
+      .valueChanges();
+  }
   obtenerUsuariosbyCorreo(Correo:string) {
     return this.afs
       .collection('Usuarios',(ref) => ref.where('Correo', '==', Correo))

@@ -210,6 +210,7 @@ ngOnInit(): void {
   
   ]
   this.conS.usuario$.subscribe(usuario => {
+ 
     this.cargando=true
     if (usuario) {
     this.usuario=usuario
@@ -217,15 +218,17 @@ ngOnInit(): void {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
+
     this.obtenerSucursales()
     this.obtenerItems()
     this.obtenerCuentas()
     this.obtenerSocios()
     this.obtenerCategorias()
+
   });
 
 
-
+      
 
 }
 onInput(event: any) {
@@ -400,6 +403,7 @@ restablecer(){
 }
 obtenerRegistros(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
+
              this.registrosBackUp=[]
              resp.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
                let _Registro={
@@ -462,8 +466,7 @@ obtenerRegistros(){
                return Math.max(maxOrden, objeto.Orden);
            }, 0);
              this.cargarFormulario()
-       
-  
+           console.log('Registros',this.Registros)
              this.cargando=false
     })
 
@@ -925,11 +928,11 @@ hideDialog() {
 guardarRegistro(idTipo:number){
 this.registroForm.value.idTipo=idTipo;
 this.registroForm.value.TipoRegistro=this.idTipoRegistro;
-
+console.log('SucursalSeleccionada',this.SucursaleSeleccionada)
 this.registroForm.value.idSucursal=this.SucursaleSeleccionada==undefined ? "":this.SucursaleSeleccionada.id;
 this.registroForm.value.idProyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.id;
 if(this.idTipoRegistro==1){
-  this.registroForm.value.Sucursal=this.getNombreSucursal(this.SucursaleSeleccionada.id);
+  this.registroForm.value.Sucursal=this.getNombreSucursal(this.registroForm.value.idSucursal);
 }
 else {
   this.registroForm.value.Proyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.NombreSucursal;
