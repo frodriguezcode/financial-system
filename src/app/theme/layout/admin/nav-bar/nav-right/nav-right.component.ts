@@ -118,9 +118,10 @@ obtenerEmpresas(){
 }
 
 getRolName(idRol:any){
-  let rolName = this.Roles.find((rol:any)=> rol.id == idRol).Rol
-  if(rolName){
-    return rolName
+  let rolName = this.Roles.filter((rol:any)=> rol.id == idRol)
+
+  if(rolName.length>0){
+    return rolName[0].Rol
 
   }
   else {
@@ -143,7 +144,7 @@ getNombreEmpresa(idEmpresa){
 
 setEmpresa(idEmpresa:any){
 this.idEmpresa=idEmpresa
-
+console.log('idEmpresa',this.idEmpresa)
 if(this.getRolName(this.usuario.idRol)=='Super Usuario'){
   console.log('Rol',this.getRolName(this.usuario.idRol))
   if(idEmpresa=='0'){
@@ -190,9 +191,14 @@ this.visibleLogin=true
 
 iniciarSesion(){
 let UsuarioEncontrado:any=[]
+
 UsuarioEncontrado=this.Usuarios.filter((user:any)=>user.Password==this.Passw.value 
 && user.Usuario==this.UsuarioLogin.value && user.idEmpresa==this.idEmpresa )
 
+console.log('UsuarioEncontrado',UsuarioEncontrado)
+console.log('Usuario',this.UsuarioLogin.value)
+console.log('Password',this.Passw.value)
+console.log('idEmpresa',this.idEmpresa)
 if(UsuarioEncontrado.length>0){
   this.usuario.Correo=UsuarioEncontrado[0].Correo
   this.usuario.Usuario=UsuarioEncontrado[0].Usuario
