@@ -24,12 +24,14 @@ export default class RecoverPassw implements OnInit {
   Empresas:any=[]
   Usuario:any=[]
   idLead:any
+  idEmpresa:any
 ngOnInit(): void {
   this.idLead= this.rutaActiva.snapshot.paramMap.get('idUsuario')!;
+  this.idEmpresa= this.rutaActiva.snapshot.paramMap.get('idEmpresa')!;
   
   this.autS.obtenerUsuariosbyId(this.idLead).subscribe((resp:any)=>{
     this.Usuario=resp
-    console.log('Usuario',this.Usuario)
+    
   })
 
 
