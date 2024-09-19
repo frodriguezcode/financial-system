@@ -241,7 +241,7 @@ getNameSucursal(idSucursal:any){
 }
 
 filtrarDataProyecto(){
-
+  const proyectosIds = this.ProyectoSeleccionado.map(p => p.id);
   let CriteriosRegistros:any=[]
   this.SucursalSeleccionada={}
 
@@ -254,8 +254,7 @@ filtrarDataProyecto(){
   this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
   this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==2 
-  &&  item.Proyectos
-  .some(proy=>proy.id==this.ProyectoSeleccionado.id))
+  &&  item.Proyectos.some(proyecto => proyectosIds.includes(proyecto.id)))
 
 
 
@@ -279,7 +278,8 @@ filtrarDataSucursal(){
 
   this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
-  this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==1 && item.Sucursales.some(sucursal=>sucursal.id==this.SucursalSeleccionada.id))
+  this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==1 
+  && item.Sucursales.some((sucursal: any) => sucursal.id === this.SucursalSeleccionada.id))
   this.getDataCategoriasMensual()
   this.getDataItemMensual()
   this.getDataItemsMensualPlanes()

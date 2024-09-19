@@ -633,9 +633,13 @@ filtrarCuentas(TipoRubro:any){
     }
 
     else {
+      const sucursalesID = this.SucursalSeleccionada.map(p => p.id);
       this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro
-      &&  item.Sucursales.some(sucursal=>this.SucursalSeleccionada.some(sucursalSelect=>sucursalSelect.id==sucursal.id))
+      &&
+
+      item.Sucursales.some(sucursal => sucursalesID.includes(sucursal.id))
       )
+
 
     }
     
@@ -647,11 +651,12 @@ filtrarCuentas(TipoRubro:any){
     }
 
     else {
-
-      this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro
-      &&   this.ProyectoSeleccionado.some((proy: any) => proy.id === item.Proyecto.id)
+      const proyectosIds = this.ProyectoSeleccionado.map(p => p.id);
+      this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro &&
+      item.Proyectos.some(proyecto => proyectosIds.includes(proyecto.id))
       )
     }
+    
   }
   this.getDataCategorias()
   this.getDataCategoriasMensual()

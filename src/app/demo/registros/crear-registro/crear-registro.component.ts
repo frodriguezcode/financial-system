@@ -366,8 +366,13 @@ buscarByFecha(){
 }
 buscarBySucursal(){
   this.Registros=this.registrosBackUp
+
   if(this.SucursaleSeleccionada.id!=0){
    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.idSucursal==this.SucursaleSeleccionada.id)
+   this.Items = this.ItemsBack.filter((item: any) => 
+    item.TipoRubro == this.idTipoRegistro &&
+    item.Sucursales.some((sucursal: any) => sucursal.id === this.SucursaleSeleccionada.id)
+  );
   }
   else {
     this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
@@ -382,7 +387,10 @@ buscarByProyecto(){
   if(this.ProyectoSeleccionado.id!=0){
 
    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.idProyecto==this.ProyectoSeleccionado.id)
-   this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro && item.Proyecto.id==this.ProyectoSeleccionado.id )
+   this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro 
+    &&
+   item.Proyectos.some((proyecto: any) => proyecto.id === this.ProyectoSeleccionado.id )
+  )
 
   }
   else {
@@ -474,7 +482,7 @@ obtenerRegistros(){
 switchTipoRegistro(idTipo){
 
   if(idTipo==2  && this.Proyectos.length==0){
-
+    this.registroForm.value.idSucursal=''
     Swal.fire({
       position: "center",
       icon: "warning",
@@ -647,10 +655,12 @@ salvarRegistro(Registro:any){
       Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
       Registro.idUsuario=this.usuario.id
       Registro.idProyecto=this.getIdProyecto(Registro.Proyecto)
+      Registro.idSucursal=this.getIdSucursal(Registro.Sucursal)
+
       Registro.Valor=Number(this.quitarSimbolo(Registro.Valor))
       Registro.Usuario=this.usuario.Usuario
 
-
+      console.log('Registro',Registro)
       
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
@@ -666,6 +676,16 @@ getIdProyecto(proyectoNombre){
   _idProyecto=this.Proyectos.filter((proyect:any)=>proyect.NombreSucursal==proyectoNombre)
   if(_idProyecto.length>0){
     return _idProyecto[0].id
+  }
+  else {
+    return ''
+  }
+}
+getIdSucursal(nombre){
+  let _idSucursal:any=[]
+  _idSucursal=this.Sucursales.filter((proyect:any)=>proyect.Nombre==nombre)
+  if(_idSucursal.length>0){
+    return _idSucursal[0].id
   }
   else {
     return ''
@@ -931,6 +951,7 @@ this.registroForm.value.TipoRegistro=this.idTipoRegistro;
 this.registroForm.value.idSucursal=this.SucursaleSeleccionada==undefined ? "":this.SucursaleSeleccionada.id;
 this.registroForm.value.idProyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.id;
 if(this.idTipoRegistro==1){
+
   this.registroForm.value.Sucursal=this.getNombreSucursal(this.registroForm.value.idSucursal);
 }
 else {
