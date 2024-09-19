@@ -94,6 +94,7 @@ activeIndex: number = 0;
   submitted: boolean = false;
   isNegativo: boolean = true;
   registros: any=[];
+  registrosSeleccionados: any=[];
   registrosBackUp: any=[];
   // *Registros desde la promesa
   _Registros: Registro[];
@@ -229,6 +230,27 @@ ngOnInit(): void {
 
 
       
+
+}
+
+borrarRegistros(){
+  console.log('RegistrosSeleccionados',this.registrosSeleccionados)
+  if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
+
+   this.registrosSeleccionados.forEach(element => {
+    
+     this.conS.borrarRegistro(element.id).then(resp=>{
+
+
+ 
+     })
+   });
+  }  
+   else {
+    this.toastr.warning('', '¡Acceso Denegado!',{
+      timeOut: 1000,
+    });
+ }
 
 }
 onInput(event: any) {
@@ -587,8 +609,8 @@ getTipo(idCategoria){
 
 salvarRegistro(Registro:any){
   Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
-
-  if(this.validarEgreso(Registro.idTipo,Number(Registro.Valor.replace('$', '')),Registro.Orden)==false){
+console.log('Registro.Valor',Registro.Valor)
+  if(this.validarEgreso(Registro.idTipo,Number(Registro.Valor),Registro.Orden)==false){
     Swal.fire({
       position: "center",
       icon: "warning",

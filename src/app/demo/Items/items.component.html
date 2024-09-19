@@ -118,6 +118,7 @@
               [(ngModel)]="SucursalesSeleccionadas" 
               optionLabel="Nombre" 
               placeholder="Sucursales" 
+              class="m-1"
               [appendTo]
               />
 
@@ -127,7 +128,17 @@
               [options]="Proyectos" 
               [(ngModel)]="ProyectosSeleccionado" 
               optionLabel="NombreSucursal" 
-              placeholder="Proyectos" 
+              placeholder="Proyectos"
+              class="m-1" 
+              [appendTo]
+              />
+              <p-multiSelect 
+              (onChange)="filtrarByCategoria()"
+              [options]="Categorias" 
+              [(ngModel)]="CategoriasSeleccionadas" 
+              optionLabel="Nombre" 
+              placeholder="Categorías"
+              class="m-1" 
               [appendTo]
               />
 

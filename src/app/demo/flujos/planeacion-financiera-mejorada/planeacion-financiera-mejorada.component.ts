@@ -241,7 +241,7 @@ getNameSucursal(idSucursal:any){
 }
 
 filtrarDataProyecto(){
-
+  localStorage.setItem('ProyectoSelectBC', JSON.stringify(this.ProyectoSeleccionado));
   let CriteriosRegistros:any=[]
   this.SucursalSeleccionada={}
 
@@ -572,10 +572,12 @@ switchTipoRegistro(idTipo){
     this.Registros=this.RegistrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
     this.RegistrosValoresPlanes=this.RegistrosValoresPlanesBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
-
+  }
+  
+  if(this.categoriasExpandidasHistory.length>0){
+    console.log('categoriasExpandidasHistory',this.categoriasExpandidasHistory)
     this.categoriasExpandidas=this.categoriasExpandidasHistory
   }
-
   this.getDataCategoriasMensual()
   this.getDataItemMensual()
   this.getDataItemsMensualPlanes()
@@ -859,6 +861,8 @@ getDataCategoriasMensualPlanes(){
         })
       
     });
+
+
     this.cargando=false  
 } 
 calcularVariacion(ValorA:any,ValorB:any){
@@ -1232,7 +1236,7 @@ getValorItemMensual(idElemento:any,Mes:any,Anio:any){
         && registro.NumMes==Mes
         && registro.AnioRegistro==Anio
         )
-   
+       
       if(_Data.length>0){
         _Data.forEach((element:any) => {
           Valor+=Number(element.Valor);
@@ -1243,8 +1247,11 @@ getValorItemMensual(idElemento:any,Mes:any,Anio:any){
           }
         return Number(Valor)
       }
+      
       else {
         return 0
       }
+
+      
 }
 }

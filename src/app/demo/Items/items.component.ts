@@ -16,6 +16,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { Subscriber, Subscription } from 'rxjs';
 @Component({
   selector: 'app-elemento',
   standalone: true,
@@ -40,6 +41,7 @@ export default class ItemsComponent  implements OnInit{
   Items:any=[]
   ItemsBack:any=[]
   Categorias:any=[]
+  CategoriasSeleccionadas:any=[]
   CategoriasBack:any=[]
   Sucursales:any=[]
   SucursalesSeleccionadas:any=[]
@@ -73,8 +75,8 @@ export default class ItemsComponent  implements OnInit{
       this.obtenerCategorias()
       this.obtenerEmpresas()
       this.obtenerSucursales()
+    
       this.obtenerProyectos()
-      this.obtenerItems()
    
     });
   
@@ -85,6 +87,7 @@ export default class ItemsComponent  implements OnInit{
   obtenerProyectos(){
     this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
     this.Proyectos=resp
+      this.obtenerItems()
     this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
     this.cargarFormulario()
   
@@ -174,6 +177,35 @@ export default class ItemsComponent  implements OnInit{
     })
   }
 
+  
+  filtrarByCategoria(){
+    if(this.CategoriasSeleccionadas.length>0){
+      this.Items = this.Items.filter((item: any) => 
+        item.TipoRubro == this.TipoRubro &&
+        
+        this.CategoriasSeleccionadas.some((catego: any) => catego.id == item.idCategoria) &&
+        
+        (
+          (this.SucursalesSeleccionadas.length === 0 || 
+            item.Sucursales.some(sucursal => 
+              this.SucursalesSeleccionadas.some(seleccionada => seleccionada.id === sucursal.id)
+            )
+          ) 
+          ||
+          (this.ProyectosSeleccionado.length === 0 || 
+            item.Proyectos.some(proyecto => 
+              this.ProyectosSeleccionado.some(seleccionada => seleccionada.id === proyecto.id)
+            )
+          )
+        )
+      );
+
+    }
+    else {
+      this.filtrarCuentasBySucursal()
+    }
+  } 
+
   filtrarCuentasBySucursal(){
     if(this.TipoRubro==1){
       if( this.SucursalesSeleccionadas.length==0){
@@ -218,7 +250,18 @@ export default class ItemsComponent  implements OnInit{
     })
   }
   obtenerItems(){
-    this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
+    let subscribe:Subscription
+    subscribe= this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
+      subscribe.unsubscribe()
+      resp.map((item:any)=>{item.Proyectos=this.Proyectos,item.Sucursales=[],delete item.Proyecto})
+    
+
+      // resp.forEach((item:any)=>{
+      //   this.conS.ActualizarItem(item).then(resp=>{
+      //     console.log('Actualizado')
+      //   })
+      // })
+
       if(resp.length>0){
         this.ItemsBack=resp
         this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))
