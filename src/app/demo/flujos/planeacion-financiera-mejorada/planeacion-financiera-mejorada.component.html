@@ -14,9 +14,9 @@
 <p-multiSelect class="m-1" (onChange)="getMesesActivos()" [options]="Meses" [(ngModel)]="MesesSeleccionados"
   optionLabel="Mes" placeholder="Meses" />
 
-<p-dropdown class="m-1" (onChange)=" filtrarDataSucursal()" [options]="Sucursales" [(ngModel)]="SucursalSeleccionada"
+<p-dropdown class="m-1" *ngIf="this.idTipoRegistro==1 || this.idTipoRegistro==0" (onChange)=" filtrarDataSucursal()" [options]="Sucursales" [(ngModel)]="SucursalSeleccionada"
   optionLabel="Nombre" placeholder="Seleccione una sucursal" />
-<p-dropdown class="m-1" (onChange)=" filtrarDataProyecto()" [options]="Proyectos" [(ngModel)]="ProyectoSeleccionado"
+<p-dropdown class="m-1" *ngIf="this.idTipoRegistro==2" (onChange)=" filtrarDataProyecto()" [options]="Proyectos" [(ngModel)]="ProyectoSeleccionado"
   optionLabel="NombreSucursal" placeholder="Seleccione un proyecto" />
 
   
