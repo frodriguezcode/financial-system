@@ -222,7 +222,7 @@ obtenerProyectos(){
 }
 obtenerSucursales(){
   this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe((resp:any)=>{
-    this.Sucursales=resp
+    this.Sucursales=resp.filter((suc:any)=>suc.Activo==true)
   })
 }
 getNameSucursal(idSucursal:any){
@@ -253,7 +253,9 @@ filtrarDataProyecto(){
 
   this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
-  this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==2  &&  item.Proyecto.id === this.ProyectoSeleccionado.id )
+  this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==2 
+  &&  item.Proyectos
+  .some(proy=>proy.id==this.ProyectoSeleccionado.id))
 
 
 

@@ -43,6 +43,7 @@ export default class ItemsComponent  implements OnInit{
   CategoriasBack:any=[]
   Sucursales:any=[]
   SucursalesSeleccionadas:any=[]
+  SucursalSeleccionada:any=[]
   Proyectos:any =[]
   ProyectosSeleccionado:any=[]
   ProyectoSeleccionado:any=[]
@@ -85,7 +86,7 @@ export default class ItemsComponent  implements OnInit{
     this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
     this.Proyectos=resp
     this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
-
+    this.cargarFormulario()
   
     })
   }
@@ -113,11 +114,15 @@ export default class ItemsComponent  implements OnInit{
     this.TipoRubro=1
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
 
+    this.ItemForm.get('Proyectos')?.setValue([])
 
   }
   SelectProyecto(){
     this.TipoRubro=2
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+    this.ItemForm.value.Sucursales=[]
+    this.ItemForm.get('Sucursales')?.setValue([])
+    console.log('itemForm',this.ItemForm.value)
    
 
   }
@@ -127,16 +132,15 @@ export default class ItemsComponent  implements OnInit{
       Nombre: new FormControl('',[Validators.required]), 
       Activo: new FormControl(true), 
       Orden: new FormControl(this.MaxOrden), 
-      Sucursales: new FormControl(''), 
+      Sucursales: new FormControl(this.Sucursales), 
+      Proyectos: new FormControl(this.Proyectos), 
       Editando: new FormControl(false), 
       idEmpresa: new FormControl(this.usuario.idEmpresa), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
       idCategoria: new FormControl('',[Validators.required]), 
 
      })
-     if(this.todasSucursales==true){
-      this.ItemForm.get('Sucursales').disable();
-     }
+    
   }
 
   verificarSelect(idSucursal){
@@ -147,19 +151,6 @@ export default class ItemsComponent  implements OnInit{
     else {
       this.BlocCheck=false
     }
-  }
-
-  getTodasSucursales(){
-    this.todasSucursales=!this.todasSucursales
-    if(this.todasSucursales==true){
-      this.ItemForm.get('Sucursales').disable();
-      this.SucursalesSelected=this.Sucursales
-    }
-    else{
-      this.ItemForm.get('Sucursales').enable();
-      this.SucursalesSelected=[];
-    }
-
   }
 
 
@@ -185,14 +176,18 @@ export default class ItemsComponent  implements OnInit{
 
   filtrarCuentasBySucursal(){
     if(this.TipoRubro==1){
-
       if( this.SucursalesSeleccionadas.length==0){
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
       }
       else {
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro
-        &&  item.Sucursales.some(sucursal=>this.SucursalesSeleccionadas.some(sucursalSelect=>sucursalSelect.id==sucursal.id))
+        &&    
+          item.Sucursales.some(sucursal =>
+          this.SucursalesSeleccionadas.some(seleccionada => seleccionada.id === sucursal.id)
         )
+      
+      )
+        
 
       }
       
@@ -204,8 +199,13 @@ export default class ItemsComponent  implements OnInit{
       else {
 
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro
-        &&   this.ProyectosSeleccionado.some((proy: any) => proy.id === item.Proyecto.id)
+        && 
+        item.Proyectos.some(proyecto =>
+        this.ProyectosSeleccionado.some(seleccionada => seleccionada.id === proyecto.id)
         )
+      
+      )
+        
       }
     }
 
@@ -219,10 +219,17 @@ export default class ItemsComponent  implements OnInit{
   }
   obtenerItems(){
     this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
-      this.ItemsBack=resp
-      this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))
-      this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
-      this.cargarFormulario()
+      if(resp.length>0){
+        this.ItemsBack=resp
+        this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))
+        this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+    
+
+      }
+      else {
+        this.MaxOrden=1
+      
+      }
 
     })
   }
@@ -257,45 +264,59 @@ export default class ItemsComponent  implements OnInit{
   crearItem(){
     let ItemForm:any
     ItemForm=this.ItemForm.value
-    if(this.TipoRubro==1){
-      if(this.SucursalesSelected.length>0){
-        this.ItemForm.get('Sucursales').setValue(this.SucursalesSelected);
-        ItemForm.Sucursales=this.SucursalesSelected
-      }
-      else if(this.todasSucursales==true){
-        ItemForm.Sucursales=this.Sucursales
-      }
-      else {
-        let _SucursalSeleccionada:any=[]
-        _SucursalSeleccionada=this.Sucursales.filter((suc:any)=>suc.id==this.ItemForm.value['Sucursales'])
-        this.ItemForm.get('Sucursales').setValue(_SucursalSeleccionada);
-        ItemForm.Sucursales=_SucursalSeleccionada
-      }
-      ItemForm.Proyecto={}
-
-
-    }
-    else {
-      ItemForm.Proyecto=this.ProyectoSeleccionado
-      ItemForm.Sucursales=[]
-    }
-
     ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
     
     ItemForm.TipoRubro=this.TipoRubro
 
-    this.conS.crearItem(ItemForm).then(resp=>{
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Cuenta contable creada",
-        showConfirmButton: false,
-        timer: 1500
-      });
-      //this.cargarFormulario()
-      this.ItemForm.get('Nombre').setValue('');
-    })
 
+    if(this.TipoRubro==1 && ItemForm.Sucursales.length==0 ){
+          Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Debe seleccionar una o varias sucursales",
+          showConfirmButton: false,
+          timer: 1500
+        });
+    }
+   else if(this.TipoRubro==2 && ItemForm.Proyectos.length==0 ){
+          Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Debe seleccionar una o varios proyectos",
+          showConfirmButton: false,
+          timer: 1500
+        });
+    }
+
+    if(ItemForm.Sucursales.length>0){
+      ItemForm.Proyectos=[]
+    }
+
+    else if(ItemForm.Proyectos.length>0){
+      ItemForm.Sucursales=[]
+    }
+
+      console.log('Registro creado',ItemForm)
+      this.conS.crearItem(ItemForm).then(resp=>{
+        let SucursalesSeleccionadas:any=ItemForm.Sucursales
+        let ProyectosSeleccionados:any=ItemForm.Proyectos
+        let idCategoria:any=ItemForm.idCategoria
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Cuenta contable creada",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        this.ItemForm.get('Nombre').setValue('');
+        this.ItemForm.get('Sucursales').setValue(SucursalesSeleccionadas);
+        this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
+        this.ItemForm.get('idCategoria').setValue(idCategoria);
+     
+      })
+
+    
+    
   }
 
   toggleEdicion(Item: any) {

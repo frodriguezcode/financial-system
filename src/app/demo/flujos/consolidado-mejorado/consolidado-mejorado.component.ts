@@ -522,7 +522,7 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
 
   obtenerSucursales(){
     this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe((resp:any)=>{
-      this.Sucursales=resp
+      this.Sucursales=resp.filter((suc:any)=>suc.Activo==true)
     })
   }
   obtenerBancos(){

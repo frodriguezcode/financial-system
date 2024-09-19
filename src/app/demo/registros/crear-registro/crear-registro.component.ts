@@ -242,7 +242,7 @@ onInput(event: any) {
 }
 obtenerSucursales(){
   this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe(resp=>{
-    this.Sucursales=resp
+    this.Sucursales=resp.filter((suc:any)=>suc.Activo==true)
     this.Sucursales.push({
       "Activo":true,
       "Editando":false,
@@ -466,7 +466,6 @@ obtenerRegistros(){
                return Math.max(maxOrden, objeto.Orden);
            }, 0);
              this.cargarFormulario()
-           console.log('Registros',this.Registros)
              this.cargando=false
     })
 
@@ -490,7 +489,7 @@ switchTipoRegistro(idTipo){
     this.idTipoRegistro=idTipo
     this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
-    console.log('Registros',this.Registros)
+
     
   }
 }
@@ -580,7 +579,7 @@ getTipo(idCategoria){
 
 salvarRegistro(Registro:any){
   Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
-console.log('Registro',Number(Registro.Valor.replace('$', '')))
+
   if(this.validarEgreso(Registro.idTipo,Number(Registro.Valor.replace('$', '')),Registro.Orden)==false){
     Swal.fire({
       position: "center",
@@ -651,7 +650,7 @@ console.log('Registro',Number(Registro.Valor.replace('$', '')))
       Registro.Valor=Number(this.quitarSimbolo(Registro.Valor))
       Registro.Usuario=this.usuario.Usuario
 
-      console.log('Registro',Registro)
+
       
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
@@ -928,7 +927,7 @@ hideDialog() {
 guardarRegistro(idTipo:number){
 this.registroForm.value.idTipo=idTipo;
 this.registroForm.value.TipoRegistro=this.idTipoRegistro;
-console.log('SucursalSeleccionada',this.SucursaleSeleccionada)
+
 this.registroForm.value.idSucursal=this.SucursaleSeleccionada==undefined ? "":this.SucursaleSeleccionada.id;
 this.registroForm.value.idProyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.id;
 if(this.idTipoRegistro==1){
@@ -937,7 +936,7 @@ if(this.idTipoRegistro==1){
 else {
   this.registroForm.value.Proyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.NombreSucursal;
 }
-console.log('registroForm',this.registroForm.value)
+
 this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 
   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
