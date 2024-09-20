@@ -144,9 +144,9 @@ getNombreEmpresa(idEmpresa){
 
 setEmpresa(idEmpresa:any){
 this.idEmpresa=idEmpresa
-console.log('idEmpresa',this.idEmpresa)
+
 if(this.getRolName(this.usuario.idRol)=='Super Usuario'){
-  console.log('Rol',this.getRolName(this.usuario.idRol))
+
   if(idEmpresa=='0'){
     Swal.fire({
       position: "center",
@@ -162,7 +162,7 @@ if(this.getRolName(this.usuario.idRol)=='Super Usuario'){
     this.usuario.Empresa = this.getNombreEmpresa(idEmpresa)
     this.conS.setUsuario(this.usuario);
     localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
-    this.obtenerAtributos(this.usuario.idEmpresa,this.usuario.idRol)
+    //this.obtenerAtributos(this.usuario.idEmpresa,this.usuario.idRol)
     this.visibleEmpresa = false;
     this.toastr.success('Hecho', `Se ha cambiado a ${this.usuario.Empresa}`,{
       timeOut: 3000,
@@ -195,10 +195,6 @@ let UsuarioEncontrado:any=[]
 UsuarioEncontrado=this.Usuarios.filter((user:any)=>user.Password==this.Passw.value 
 && user.Usuario==this.UsuarioLogin.value && user.idEmpresa==this.idEmpresa )
 
-console.log('UsuarioEncontrado',UsuarioEncontrado)
-console.log('Usuario',this.UsuarioLogin.value)
-console.log('Password',this.Passw.value)
-console.log('idEmpresa',this.idEmpresa)
 if(UsuarioEncontrado.length>0){
   this.usuario.Correo=UsuarioEncontrado[0].Correo
   this.usuario.Usuario=UsuarioEncontrado[0].Usuario
