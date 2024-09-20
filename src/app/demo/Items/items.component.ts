@@ -125,7 +125,7 @@ export default class ItemsComponent  implements OnInit{
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
     this.ItemForm.value.Sucursales=[]
     this.ItemForm.get('Sucursales')?.setValue([])
-    console.log('itemForm',this.ItemForm.value)
+
    
 
   }
@@ -207,13 +207,23 @@ export default class ItemsComponent  implements OnInit{
   } 
 
   filtrarCuentasBySucursal(){
+
     if(this.TipoRubro==1){
       if( this.SucursalesSeleccionadas.length==0){
-        this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+        this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro
+        && 
+        (this.CategoriasSeleccionadas.length === 0 || 
+          this.CategoriasSeleccionadas.some((catego: any) => catego.id == item.idCategoria)
+        )
+      
+      )
       }
       else {
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro
         &&    
+        (this.CategoriasSeleccionadas.length === 0 || 
+          this.CategoriasSeleccionadas.some((catego: any) => catego.id == item.idCategoria)
+        ) &&
           item.Sucursales.some(sucursal =>
           this.SucursalesSeleccionadas.some(seleccionada => seleccionada.id === sucursal.id)
         )
@@ -222,16 +232,25 @@ export default class ItemsComponent  implements OnInit{
         
 
       }
-      
+
     }
     else {
       if( this.ProyectosSeleccionado.length==0){
-        this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+        this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro
+        && 
+        (this.CategoriasSeleccionadas.length === 0 || 
+          this.CategoriasSeleccionadas.some((catego: any) => catego.id == item.idCategoria)
+        )
+      )
       }
       else {
 
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro
         && 
+        (this.CategoriasSeleccionadas.length === 0 || 
+          this.CategoriasSeleccionadas.some((catego: any) => catego.id == item.idCategoria)
+        )
+        &&
         item.Proyectos.some(proyecto =>
         this.ProyectosSeleccionado.some(seleccionada => seleccionada.id === proyecto.id)
         )
@@ -253,7 +272,7 @@ export default class ItemsComponent  implements OnInit{
     let subscribe:Subscription
     subscribe= this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
       subscribe.unsubscribe()
-      resp.map((item:any)=>{item.Proyectos=this.Proyectos,item.Sucursales=[],delete item.Proyecto})
+     
     
 
       // resp.forEach((item:any)=>{
@@ -339,7 +358,7 @@ export default class ItemsComponent  implements OnInit{
       ItemForm.Sucursales=[]
     }
 
-      console.log('Registro creado',ItemForm)
+    
       this.conS.crearItem(ItemForm).then(resp=>{
         let SucursalesSeleccionadas:any=ItemForm.Sucursales
         let ProyectosSeleccionados:any=ItemForm.Proyectos
