@@ -103,8 +103,8 @@ activeIndex: number = 0;
 
   // *Registros desde la promesa
   inputVal = ''; // Initialize inputVal to be empty
-  FechaDesde:FormControl=new FormControl()
-  FechaHasta:FormControl=new FormControl()
+  FechaDesde:FormControl=new FormControl('')
+  FechaHasta:FormControl=new FormControl('')
 
   cuentas: any=[];
   selectedRegistros!: any[] | null;
@@ -375,7 +375,9 @@ buscarByFecha(){
  if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
 
   this.Registros=this.registrosBackUp.
-  filter((reg:any)=>reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value)
+  filter((reg:any)=>reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value
+  &&    reg.TipoRegistro == this.idTipoRegistro
+)
   
  }
  else {
@@ -429,7 +431,10 @@ buscarByProyecto(){
 
 }
 restablecer(){
-  this.Registros=this.registrosBackUp
+  this.Registros=this.registrosBackUp.
+  filter((reg:any)=>  reg.TipoRegistro == this.idTipoRegistro)
+  this.FechaDesde.setValue('')
+  this.FechaHasta.setValue('')
 }
 obtenerRegistros(){
   this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
