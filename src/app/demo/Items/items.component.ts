@@ -17,6 +17,9 @@ import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Subscriber, Subscription } from 'rxjs';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+
 @Component({
   selector: 'app-elemento',
   standalone: true,
@@ -31,7 +34,9 @@ import { Subscriber, Subscription } from 'rxjs';
     TabViewModule,
     AvatarModule,
     BadgeModule,
-    MultiSelectModule 
+    ButtonModule,
+    MultiSelectModule,
+    DialogModule 
   ],
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
@@ -39,6 +44,7 @@ import { Subscriber, Subscription } from 'rxjs';
 export default class ItemsComponent  implements OnInit{
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService,private formBuilder: FormBuilder) {}
   Items:any=[]
+  ItemsGroup:any=[]
   ItemsBack:any=[]
   Categorias:any=[]
   CategoriasSeleccionadas:any=[]
@@ -62,7 +68,9 @@ export default class ItemsComponent  implements OnInit{
   TipoRubro:number=1
   MaxOrden:number=1
   selectedTab: string = 'sucursales';
-
+  claseTabla:string='p-datatable-sm'
+  visible: boolean = false;
+  idItems=[]
   ngOnInit(): void {
     this.todasSucursales=true
     this.conS.usuario$.subscribe(usuario => {
@@ -83,6 +91,10 @@ export default class ItemsComponent  implements OnInit{
  
 
   }
+
+  showDialog() {
+    this.visible = true;
+}
 
   obtenerProyectos(){
     this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
@@ -113,19 +125,70 @@ export default class ItemsComponent  implements OnInit{
     this.CategoriasBack=this.Categorias.filter((cat:any)=>cat.Tipo==event.target.value)
   }
 
+  getItemsGroup(){
+    this.ItemsGroup=[]
+    this.Items.forEach((item:any) => {
+      let _Item ={
+        "id":item.id,
+        "name":item.Nombre,
+        "Orden":item.Orden,
+        "Activo":item.Activo,
+        "Editando":item.Editando,
+        "Empresa":this.getNombreEmpresa(item.idEmpresa),
+        "idEmpresa":item.idEmpresa,
+        "TipoRubro":item.TipoRubro,
+        "Sucursales":item.Sucursales,
+        "NombreSucursales":this.getNameSucursales(item.Sucursales),
+        "NombreProyectos":this.getNameProyectos(item.Proyectos),
+        "Proyectos":item.Proyectos,
+        "idCategoria":item.idCategoria,
+        "representative": {
+          name: this.getNombreCategoria(item.idCategoria),
+          image: 'https://firebasestorage.googleapis.com/v0/b/sistemafinanciero-924ff.appspot.com/o/account.png?alt=media&token=a93e4ac2-7102-4920-aaed-13d0a1c3fd43'
+      },
+      }
+      this.ItemsGroup.push(_Item)
+    });
+  }
+
+  getNameSucursales(sucursales:any){
+    let Sucursales=[]
+    if (sucursales.length>0){
+      sucursales.forEach((suc:any) => {
+        Sucursales.push(suc.Nombre)
+      })
+    }
+    else {
+      Sucursales=[]
+    }
+    return Sucursales
+  }
+  getNameProyectos(proyectos:any){
+    let Proyectos=[]
+    if (proyectos.length>0){
+      proyectos.forEach((suc:any) => {
+        Proyectos.push(suc.Nombre)
+      })
+    }
+    else {
+      Proyectos=[]
+    }
+    return Proyectos
+  }
+
   SelectGeneral(){
     this.TipoRubro=1
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
 
     this.ItemForm.get('Proyectos')?.setValue([])
-
+    this.getItemsGroup()
   }
   SelectProyecto(){
     this.TipoRubro=2
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
     this.ItemForm.value.Sucursales=[]
     this.ItemForm.get('Sucursales')?.setValue([])
-
+    this.getItemsGroup()
    
 
   }
@@ -180,7 +243,7 @@ export default class ItemsComponent  implements OnInit{
   
   filtrarByCategoria(){
     if(this.CategoriasSeleccionadas.length>0){
-      this.Items = this.Items.filter((item: any) => 
+      this.Items = this.ItemsBack.filter((item: any) => 
         item.TipoRubro == this.TipoRubro &&
         
         this.CategoriasSeleccionadas.some((catego: any) => catego.id == item.idCategoria) &&
@@ -199,7 +262,7 @@ export default class ItemsComponent  implements OnInit{
           )
         )
       );
-
+ 
     }
     else {
       this.filtrarCuentasBySucursal()
@@ -269,22 +332,19 @@ export default class ItemsComponent  implements OnInit{
     })
   }
   obtenerItems(){
-    let subscribe:Subscription
-    subscribe= this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
-      subscribe.unsubscribe()
-     
-    
-
+   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
       // resp.forEach((item:any)=>{
       //   this.conS.ActualizarItem(item).then(resp=>{
       //     console.log('Actualizado')
       //   })
       // })
 
+
       if(resp.length>0){
-        this.ItemsBack=resp
-        this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))
+        this.ItemsBack=resp.sort((a:any, b:any) => b.Orden - a.Orden)
+        this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))+1
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+     
     
 
       }
@@ -292,9 +352,24 @@ export default class ItemsComponent  implements OnInit{
         this.MaxOrden=1
       
       }
+      this.getItemsGroup()
 
     })
   }
+
+  calculateItemsTotal(name: string) {
+    let total = 0;
+
+    if (this.ItemsGroup) {
+        for (let customer of this.ItemsGroup) {
+            if (customer.representative?.name === name) {
+                total++;
+            }
+        }
+    }
+
+    return total;
+}
   obtenerEmpresas(){
     this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe(resp=>{
       this.Empresas=resp
@@ -313,6 +388,7 @@ export default class ItemsComponent  implements OnInit{
   }
 
 
+
   getProyectoSelect(idProyecto){
     if(idProyecto!='0'){
 
@@ -329,7 +405,7 @@ export default class ItemsComponent  implements OnInit{
     ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
     
     ItemForm.TipoRubro=this.TipoRubro
-
+    ItemForm.Orden=this.MaxOrden
 
     if(this.TipoRubro==1 && ItemForm.Sucursales.length==0 ){
           Swal.fire({
@@ -374,7 +450,7 @@ export default class ItemsComponent  implements OnInit{
         this.ItemForm.get('Sucursales').setValue(SucursalesSeleccionadas);
         this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
         this.ItemForm.get('idCategoria').setValue(idCategoria);
-     
+        this.obtenerItems()
       })
 
     
@@ -386,14 +462,39 @@ export default class ItemsComponent  implements OnInit{
     Item.Editando = !Item.Editando;
   }
 
+  borrarItems(){
+    this.idItems.forEach((id:any)=>{
+      this.conS.borrarItem(id).then(resp=>{
+
+      })
+    })
+    this.idItems=[]
+  }
+
+  acumularIdItems(idItem:string){
+    let idEncontrado:any=[]
+    idEncontrado=this.idItems.filter((id:any)=>id==idItem)
+    if(idEncontrado.length==0){
+      this.idItems.push(idItem)
+    }
+    else{
+      this.idItems.splice(this.idItems.indexOf(idItem),1)
+    }
+
+  }
+
+
   actualizarItem(item:any){
     let _Item= this.Items;
     const itemEncontrado = _Item.filter((it:any) => it.id == item.id);
-    itemEncontrado[0].Nombre=item.Nombre
+    itemEncontrado[0].Nombre=item.name
     itemEncontrado[0].idCategoria=item.idCategoria
     //itemEncontrado[0].idSucursal=item.idSucursal
     itemEncontrado[0].idEmpresa=item.idEmpresa
     itemEncontrado[0].Editando = !item.Editando;
+    itemEncontrado[0].Sucursales = item.Sucursales;
+    itemEncontrado[0].Proyectos =item.Proyectos;
+
     this.conS.ActualizarItem(itemEncontrado[0]).then(resp=>{
    
       this.toastr.success('Item  editado', '¡Exito!');
@@ -408,6 +509,7 @@ export default class ItemsComponent  implements OnInit{
       else{
         this.toastr.success('Cuenta desactivada', '¡Exito!');
       }
+      this.getItemsGroup()
     })
   }
 

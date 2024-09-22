@@ -508,6 +508,9 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     borrarRegistro(id: string) {
       return this.afs.collection('Registro').doc(id).delete();
     }
+    borrarItem(id: string) {
+      return this.afs.collection('Items').doc(id).delete();
+    }
     borrarRegistroFactura(id: string) {
       return this.afs.collection('RegistrosFacturas').doc(id).delete();
     }

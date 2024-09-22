@@ -17,7 +17,11 @@
   </div>
 
   <div class="form-group">
-    <label for="exampleInputPassword1">Sucursal (opcional)</label>
+    <label for="exampleInputPassword1">Sucursal (opcional)
+       <span 
+       *ngIf="this.Sucursales.length==0"
+       style="color: red;"
+       >No tiene sucursales creadas o activas</span></label>
     <select formControlName="idSucursal" class="form-control" id="exampleFormControlSelect1">
       <option value="0">Seleccione una sucursal</option>
       <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>

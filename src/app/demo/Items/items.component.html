@@ -1,102 +1,168 @@
-<app-card *ngIf="this.Categorias.length>0" cardTitle="Módulo Cuentas" [options]="false">
-  <div class="row">
-    <div class="col-md-4 col-lg-4 col-12">
-      <h5>Ingresos y Egresos</h5>
-      <hr />
+
+<button type="button" (click)="showDialog()" class="btn btn-success">Crear Cuenta <i class="fa-solid fa-plus"></i></button>
+    <div class="col-md-12 col-lg-12 col-12">
       <button (click)=" SelectGeneral()" type="button" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
-      <button  (click)=" SelectProyecto()" type="button" class="btn btn-warning m-1">Proyecto <i class="fa-solid fa-diagram-project"></i> </button>
-              <form *ngIf="ItemForm" [formGroup]="ItemForm">
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Nombre</label>
-                  <input (input)="verificarItem()" type="text" formControlName="Nombre" class="form-control"
-                    id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Escriba un centro de costo" />
-                  <span *ngIf="ItemFound==true" style="color: red;">
-                    <p>Ya existe un item con este nombre</p>
-                  </span>
-                </div>
-         
-                <div *ngIf="TipoRubro==1" class="col-12 col-md-12 col-lg-12">
-                  <label for="exampleInputPassword1">Sucursal</label>
-                  <br>
-                  <p-multiSelect 
-                  [options]="Sucursales" 
-                  formControlName="Sucursales"
-                  optionLabel="Nombre" 
-                  placeholder="Seleccione una sucursal"
-                  class="multiselect-fijo"
-                  />
+      <button  (click)=" SelectProyecto()" type="button" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i> </button>
+      <button [disabled]="this.idItems.length==0" (click)=" borrarItems()" type="button" class="btn btn-danger m-1">Borrar <i class="fa-solid fa-trash"></i> </button>
+      <div >
+        <p-table 
+        [value]="ItemsGroup" 
+        sortField="representative.name" 
+        sortMode="single" 
+        dataKey="representative.name" 
+        rowGroupMode="subheader" 
+        groupRowsBy="representative.name" 
+        [tableStyle]="{'min-width': '70rem'}">
+            <ng-template pTemplate="header">
+                <tr>
+                <th class="text-start">Seleccionar</th>
+                 <th class="text-center">Orden</th>
+                 <th class="text-center">Nombre</th>
+                 <th class="text-center">Categoría</th>
+                 <th class="text-center">Empresa</th>
+                 <th *ngIf="this.TipoRubro==1" class="text-center">Sucursales</th>
+                 <th *ngIf="this.TipoRubro==2" class="text-center">Proyectos</th>
+                 <th class="text-center">Editar</th>
+                 <th class="text-center">Inactivar</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="groupheader" let-categ let-rowIndex="rowIndex" let-expanded="expanded">
+                <tr pRowGroupHeader>
+                    <td colspan="5">
+                     <button 
+                     type="button" 
+                     pButton 
+                     pRipple 
+                     [pRowToggler]="categ" 
+                     class="p-button-text p-button-rounded p-button-plain mr-2" 
+                     [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+                 </button>
+                        <img 
+                            [alt]="categ.representative.name" 
+                            src="{{categ.representative.image}}" 
+                            width="32" 
+                            style="vertical-align: middle" />
+                        <span class="font-bold ml-2">{{categ.representative.name}}</span>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="groupfooter" let-item>
+           
+                <tr class="text-end">
+                    <td colspan="5" class="text-end font-bold pr-6">
+                        Total Cuentas: {{calculateItemsTotal(item.representative.name)}}
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-item >
+                <tr>
+                  <td class="text-start">
+                    <input (click)="acumularIdItems(item.id)" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                 </td>
+                 <td class="text-center">
                   
-                </div>
-
+                   {{item.Orden}}
                 
-                <div *ngIf="TipoRubro==2" class="col-12 col-md-12 col-lg-12">
-                  <label for="exampleInputPassword1">Proyecto</label>
-                  <br>
-                  <p-multiSelect 
-                  [options]="Proyectos" 
-                  formControlName="Proyectos"
-                  optionLabel="Nombre" 
-                  placeholder="Seleccione un proyecto"
-                  class="multiselect-fijo"
-                  />
+              
+               </td>
+                    <td class="text-start">
+                     <ng-container *ngIf="!item.Editando; else editarItem">
+                       {{item.name}}
+                     </ng-container>
+                     <ng-template #editarItem>
+                       <input [(ngModel)]="item.name" class="form-control text-center col-4">
+                     </ng-template>
+                       
+                    </td>
+                    <td class="text-center">
+                     <ng-container *ngIf="!item.Editando; else editarCategoria">
+                       {{getNombreCategoria(item.idCategoria)}}
+                     </ng-container>
+                     <ng-template #editarCategoria>
+                       <select [(ngModel)]="item.idCategoria" id="inputState" class="form-select">
+                         <option value="0">Seleccione una categoría</option>
+                         <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}
+                         </option>
+                       </select>
+                     </ng-template>
+                    </td>
+     
+                    <td class="text-center">
+                     <ng-container *ngIf="!item.Editando; else editarEmpresa">
+                       {{item.Empresa}}
+                     </ng-container>
+                     <ng-template #editarEmpresa>
+                       <select [(ngModel)]="item.idEmpresa" id="inputState" class="form-select">
+                         <option value="0">Seleccione una empresa</option>
+                         <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
+                       </select>
+                     </ng-template>
+                   </td>
+                    <td *ngIf="this.TipoRubro==1" class="text-center">
+                     <ng-container *ngIf="!item.Editando; else editarSucursales">
+                       {{item.NombreSucursales}}
+                     </ng-container>
+                     <ng-template #editarSucursales>
                   
-                </div>
-          
-        
-                <div class="form-group">
-                  <div class="row">
-                      <div class="col-12 col-md-12 col-lg-12">
-                        <label for="exampleInputPassword1">Tipo de Operación</label>
-                        <div style="margin-left: 5px;">
-                          <div class="form-check form-check-inline">                
-                            <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="1">
-                            <label class="form-check-label" for="inlineRadio1">Ingreso</label>
-                          </div>
-                          <div class="form-check form-check-inline">    
-                            <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" [value]="2">
-                            <label class="form-check-label" for="inlineRadio2">Egreso</label>
-                          </div>
-
-                        </div>
-                      </div>
-                      <div class="col-12 col-md-12 col-lg-12">
-                        <label for="exampleInputPassword1">Categoria</label>
-                        <select formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
-                          <option value="0" >Escoja una categoría</option>
-                          <option value="{{categoria.id}}" *ngFor="let categoria of CategoriasBack">{{categoria.Nombre}}</option>
-                        </select>
-                      </div>
-             
-                  </div>
-
-              
-                </div>
-        
-                <button 
-              
+                       <p-multiSelect 
+                        [options]="Sucursales" 
+                        [(ngModel)]="item.Sucursales" 
+                        optionLabel="Nombre" 
+                        placeholder="Seleccione las Sucursales" />
+                     </ng-template>
+                   </td>
+                    <td *ngIf="this.TipoRubro==2"  class="text-center">
+                     <ng-container *ngIf="!item.Editando; else editarProyectos">
+                       {{item.NombreProyectos}}
+                     </ng-container>
+                     <ng-template #editarProyectos>
+                  
+                       <p-multiSelect 
+                        [options]="Proyectos" 
+                        [(ngModel)]="item.Proyectos" 
+                        optionLabel="Nombre" 
+                        placeholder="Seleccione los proyectos" />
+                     </ng-template>
+                   </td>
+     
+                  <td *ngIf="!item.Editando" class="text-center">
+                  <button (click)="toggleEdicion(item)" type="button" class="btn btn-success text-center">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                  </td>
+                  <td *ngIf="item.Editando" class="text-center">
                 
-                (click)="crearItem()"
-                [disabled]="this.ItemForm.invalid"
-                type="button"
-                  class="btn btn-primary">Guardar</button>
-              </form>
+                   <button (click)="actualizarItem(item)" type="button" class="btn btn-info text-center">
+                     <i class="fa solid fa-check"></i>
+                   </button>
+                 </td>
+                 <td class="text-center" *ngIf="item.Activo"><button (click)="ActualizarItemEstado(item,false)"
+                     type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button>
+                 </td>
+                 <td class="text-center" *ngIf="!item.Activo"><button (click)="ActualizarItemEstado(item,true)"
+                     type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button>
+                   </td>
+                   
+                  
+                </tr>
+            </ng-template>
+     </p-table>
+      </div>
       
-          <!-- Proyectos -->
-
-
-
-    </div>
+       </div>
+     
+ 
     
     <!-- !TABLAS -->
 
-    <div class="col-md-4 col-lg-8 col-12">
+    <!-- <div class="input-group mb-3 mt-2">
+      <span class="input-group-text" id="inputGroup-sizing-default">Buscar</span>
+      <input type="text" [(ngModel)]="buscarItem" name="buscarProducto" class="form-control"
+        aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+    </div> -->
+    <!-- <div style="height: 1200px;" class="col-md-4 col-lg-8 col-12">
       <h5>Lista de INGRESOS Y EGRESOS según su origen y aplicación</h5>
       <hr />
-      <!-- <div class="input-group mb-3 mt-2">
-        <span class="input-group-text" id="inputGroup-sizing-default">Buscar</span>
-        <input type="text" [(ngModel)]="buscarItem" name="buscarProducto" class="form-control"
-          aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
-      </div> -->
       <div *ngIf="selectedTab === 'sucursales'">
 
         <div class="table-container" >
@@ -107,8 +173,9 @@
             [value]="Items" 
             [paginator]="true" 
             [globalFilterFields]="['Nombre']"
-            [rows]="5" 
-            [tableStyle]="{ 'min-width': '50rem', 'min-height': '20rem' }"
+            [rows]="20" 
+            [styleClass]="claseTabla"
+            [tableStyle]="{ 'min-width': '50rem', 'min-height': '5rem' }"
             [rowsPerPageOptions]="[5, 10, 20]">
             <ng-template pTemplate="caption">
               <p-multiSelect 
@@ -147,77 +214,88 @@
                       <input 
                           pInputText 
                           type="text" 
+                          class="form-control"
                           (input)="dt2.filterGlobal($any($event.target).value, 'contains')" 
                           placeholder="Buscar cuenta contable" />
                   </p-iconField>
               </div>
 
           </ng-template>
-              <ng-template pTemplate="header">
-                <tr>
-                  <!-- <th class="text-center">#</th> -->
-                  <th class="text-center">Item</th>
-                  <th class="text-center">Categoría</th>
-                  <th class="text-center">Empresa</th>
-                  <th class="text-center">Editar</th>
-                  <th class="text-center">Inactivar</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-item>
-                <tr>
-                  <!-- <th class="text-center" scope="row">{{i+1}}</th> -->
-                  <td class="text-center">
-                    <ng-container *ngIf="!item.Editando; else editarItem">
-                      {{item.Nombre}}
-                    </ng-container>
-                    <ng-template #editarItem>
-                      <input [(ngModel)]="item.Nombre" class="form-control text-center col-4">
-                    </ng-template>
-                  </td>
+    
+       <ng-template pTemplate="header">
+         <tr>
+    
+           <th class="text-center">Orden</th>
+           <th class="text-center">Item</th>
+           <th class="text-center">Categoría</th>
+           <th class="text-center">Empresa</th>
+           <th class="text-center">Editar</th>
+           <th class="text-center">Inactivar</th>
+         </tr>
+       </ng-template>
+       <ng-template pTemplate="body" let-item>
+         <tr>
+           
+           <td class="text-center">
+             
+               {{item.Orden}}
+            
+          
+           </td>
+           <td class="text-center">
+             <ng-container *ngIf="!item.Editando; else editarItem">
+               {{item.Nombre}}
+             </ng-container>
+             <ng-template #editarItem>
+               <input [(ngModel)]="item.Nombre" class="form-control text-center col-4">
+             </ng-template>
+           </td>
+
+           <td class="text-center">
+
+             <ng-container *ngIf="!item.Editando; else editarCategoria">
+               {{getNombreCategoria(item.idCategoria)}}
+             </ng-container>
+             <ng-template #editarCategoria>
+               <select [(ngModel)]="item.idCategoria" id="inputState" class="form-select">
+                 <option value="0">Seleccione una categoría</option>
+                 <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}
+                 </option>
+               </select>
+             </ng-template>
+           <td class="text-center">
+             <ng-container *ngIf="!item.Editando; else editarEmpresa">
+               {{getNombreEmpresa(item.idEmpresa)}}
+             </ng-container>
+             <ng-template #editarEmpresa>
+               <select [(ngModel)]="item.idEmpresa" id="inputState" class="form-select">
+                 <option value="0">Seleccione una empresa</option>
+                 <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
+               </select>
+             </ng-template>
+           </td>
+
+           <td *ngIf="!item.Editando" class="text-center">
+           
+             <button (click)="toggleEdicion(item)" type="button" class="btn btn-success text-center">
+               <i class="fa-regular fa-pen-to-square"></i>
+             </button>
+           </td>
+           <td *ngIf="item.Editando">
+           
+             <button (click)="actualizarItem(item)" type="button" class="btn btn-info text-center">
+               <i class="fa solid fa-check"></i>
+             </button>
+           </td>
+           <td class="text-center" *ngIf="item.Activo"><button (click)="ActualizarItemEstado(item,false)"
+               type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
+           <td class="text-center" *ngIf="!item.Activo"><button (click)="ActualizarItemEstado(item,true)"
+               type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+         </tr>
+       </ng-template>
+      
   
-                  <td class="text-center">
-  
-                    <ng-container *ngIf="!item.Editando; else editarCategoria">
-                      {{getNombreCategoria(item.idCategoria)}}
-                    </ng-container>
-                    <ng-template #editarCategoria>
-                      <select [(ngModel)]="item.idCategoria" id="inputState" class="form-select">
-                        <option value="0">Seleccione una categoría</option>
-                        <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}
-                        </option>
-                      </select>
-                    </ng-template>
-                  <td class="text-center">
-                    <ng-container *ngIf="!item.Editando; else editarEmpresa">
-                      {{getNombreEmpresa(item.idEmpresa)}}
-                    </ng-container>
-                    <ng-template #editarEmpresa>
-                      <select [(ngModel)]="item.idEmpresa" id="inputState" class="form-select">
-                        <option value="0">Seleccione una empresa</option>
-                        <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
-                      </select>
-                    </ng-template>
-                  </td>
-  
-                  <td *ngIf="!item.Editando" class="text-center">
-                    <!-- Botón de editar -->
-                    <button (click)="toggleEdicion(item)" type="button" class="btn btn-success text-center">
-                      <i class="fa-regular fa-pen-to-square"></i>
-                    </button>
-                  </td>
-                  <td *ngIf="item.Editando">
-                    <!-- Botón de editar -->
-                    <button (click)="actualizarItem(item)" type="button" class="btn btn-info text-center">
-                      <i class="fa solid fa-check"></i>
-                    </button>
-                  </td>
-                  <td class="text-center" *ngIf="item.Activo"><button (click)="ActualizarItemEstado(item,false)"
-                      type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
-                  <td class="text-center" *ngIf="!item.Activo"><button (click)="ActualizarItemEstado(item,true)"
-                      type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
-                </tr>
-              </ng-template>
-            </p-table>
+      </p-table>
   
   
           </div>
@@ -248,7 +326,7 @@
           </ng-template>
               <ng-template pTemplate="header">
                 <tr>
-                  <!-- <th class="text-center">#</th> -->
+            
                   <th class="text-center">Item</th>
                   <th class="text-center">Categoría</th>
                   <th class="text-center">Empresa</th>
@@ -258,7 +336,7 @@
               </ng-template>
               <ng-template pTemplate="body" let-item>
                 <tr>
-                  <!-- <th class="text-center" scope="row">{{i+1}}</th> -->
+    
                   <td class="text-center">
                     <ng-container *ngIf="!item.Editando; else editarItem">
                       {{item.Nombre}}
@@ -293,13 +371,13 @@
                   </td>
   
                   <td *ngIf="!item.Editando" class="text-center">
-                    <!-- Botón de editar -->
+         
                     <button (click)="toggleEdicion(item)" type="button" class="btn btn-success text-center">
                       <i class="fa-regular fa-pen-to-square"></i>
                     </button>
                   </td>
                   <td *ngIf="item.Editando">
-                    <!-- Botón de editar -->
+                 
                     <button (click)="actualizarItem(item)" type="button" class="btn btn-info text-center">
                       <i class="fa solid fa-check"></i>
                     </button>
@@ -314,6 +392,100 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</app-card>
+    </div> -->
+ 
+    <p-dialog 
+        header="Ingresos y Egresos" 
+        [modal]="true" 
+        [(visible)]="visible" 
+        [style]="{ width: '50rem' }" 
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+        [maximizable]="true">
+        <div class="col-md-12 col-lg-12 col-12">
+          <hr />
+          <button (click)=" SelectGeneral()" type="button" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
+          <button  (click)=" SelectProyecto()" type="button" class="btn btn-warning m-1">Proyecto <i class="fa-solid fa-diagram-project"></i> </button>
+                  <form *ngIf="ItemForm" [formGroup]="ItemForm">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Nombre</label>
+                      <input (input)="verificarItem()" type="text" formControlName="Nombre" class="form-control"
+                        id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Escriba un centro de costo" />
+                      <span *ngIf="ItemFound==true" style="color: red;">
+                        <p>Ya existe un item con este nombre</p>
+                      </span>
+                    </div>
+             
+                    <div *ngIf="TipoRubro==1" class="col-12 col-md-12 col-lg-12">
+                      <label for="exampleInputPassword1">Sucursal</label>
+                      <br>
+                      <p-multiSelect 
+                      [options]="Sucursales" 
+                      formControlName="Sucursales"
+                      optionLabel="Nombre" 
+                      placeholder="Seleccione una sucursal"
+                      class="multiselect-fijo"
+                      />
+                      
+                    </div>
+    
+                    
+                    <div *ngIf="TipoRubro==2" class="col-12 col-md-12 col-lg-12">
+                      <label for="exampleInputPassword1">Proyecto</label>
+                      <br>
+                      <p-multiSelect 
+                      [options]="Proyectos" 
+                      formControlName="Proyectos"
+                      optionLabel="Nombre" 
+                      placeholder="Seleccione un proyecto"
+                      class="multiselect-fijo"
+                      />
+                      
+                    </div>
+              
+            
+                    <div class="form-group">
+                      <div class="row">
+                          <div class="col-12 col-md-12 col-lg-12">
+                            <label for="exampleInputPassword1">Tipo de Operación</label>
+                            <div style="margin-left: 5px;">
+                              <div class="form-check form-check-inline">                
+                                <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="1">
+                                <label class="form-check-label" for="inlineRadio1">Ingreso</label>
+                              </div>
+                              <div class="form-check form-check-inline">    
+                                <input (change)="getidCategoria($event)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" [value]="2">
+                                <label class="form-check-label" for="inlineRadio2">Egreso</label>
+                              </div>
+    
+                            </div>
+                          </div>
+                          <div class="col-12 col-md-12 col-lg-12">
+                            <label for="exampleInputPassword1">Categoria</label>
+                            <select formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
+                              <option value="0" >Escoja una categoría</option>
+                              <option value="{{categoria.id}}" *ngFor="let categoria of CategoriasBack">{{categoria.Nombre}}</option>
+                            </select>
+                          </div>
+                 
+                      </div>
+    
+                  
+                    </div>
+            
+                    <button 
+                  
+                    
+                    (click)="crearItem()"
+                    [disabled]="this.ItemForm.invalid"
+                    type="button"
+                      class="btn btn-primary">Guardar</button>
+                  </form>
+          
+              <!-- Proyectos -->
+    
+    
+    
+        </div>
+    </p-dialog>
+ 
+ 
