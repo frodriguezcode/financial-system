@@ -207,6 +207,12 @@ obtenerEmpresas(idMatriz:string) {
       .collection('Roles',(ref) => ref.where('idEmpresa', '==', idEmpresa))
       .valueChanges();
   }
+  obtenerRolesByMatriz(idMatriz:string) {
+ 
+    return this.afs
+      .collection('Roles',(ref) => ref.where('idMatriz', '==', idMatriz))
+      .valueChanges();
+  }
 
   actualizarRol(Rol:any){
     return  this.afs

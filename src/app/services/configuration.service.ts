@@ -236,7 +236,12 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
   // !Obtener las sucursales
   obtenerSucursales(idEmpresa:any) {
     return this.afs
-    .collection('Sucursales',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+    .collection('Sucursales',(ref)=>ref.where('idMatriz','==',idEmpresa))
+    .valueChanges();
+  }
+  obtenerSucursalesByMatriz(idMatriz:any) {
+    return this.afs
+    .collection('Sucursales',(ref)=>ref.where('idMatriz','==',idMatriz))
     .valueChanges();
   }
   crearSucursal(sucursal:any) {

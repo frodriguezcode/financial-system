@@ -129,7 +129,8 @@ export default class ItemsComponent  implements OnInit{
     this.ItemsGroup=[]
     let _Items:any=[]
     _Items=this.Items.filter((i:any)=>i.idEmpresa==this.usuario.idEmpresa)
-    this.Items.forEach((item:any) => {
+
+    _Items.forEach((item:any) => {
       let _Item ={
         "id":item.id,
         "name":item.Nombre,

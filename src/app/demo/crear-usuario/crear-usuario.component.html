@@ -1,83 +1,11 @@
-<app-card cardTitle="Módulo Usuarios" [options]="false">
-<div style="margin-top: -50px;">
+<button type="button" (click)="showDialog()" class="btn btn-success">Crear Usuario</button>
+
+
+<div class="mt-4">
     <div class="row">
-      <div class="col-md-4 col-lg-4 col-12">
-        <h5>Crear Usuario</h5>
-        <hr />
-        <form *ngIf="usuarioForm" [formGroup]="usuarioForm">
-          <div class="row">
-              <div class="col-12 col-lg-12 col-md-12">
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Nombres</label>
-                  <input type="text" formControlName="Nombres" class="form-control" id="exampleInputEmail1"
-                    aria-describedby="emailHelp" placeholder="Escriba el nombre del usuario" />
-                </div>
-              </div>
+ 
   
-              <div class="col-12 col-lg-6 col-md-6">
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Usuario</label>
-                  <input type="text" formControlName="Usuario" class="form-control" id="exampleInputPassword1"
-                    placeholder="Escriba un nombre de usuario" />
-                </div>
-              </div>
-  
-              <div class="col-12 col-lg-6 col-md-6">
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Contraseña</label>
-                  <input type="password" formControlName="Password" class="form-control" id="exampleInputPassword1"
-                    placeholder="Escriba una contraseña" />
-                </div>
-              </div>
-  
-              <div class="col-12 col-lg-12 col-md-12">
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Correo</label>
-                  <input type="text" formControlName="Correo" class="form-control" id="exampleInputPassword1"
-                    placeholder="Escriba el correo del usuario" />
-                  <p style="color: red;  display: block; margin-top: -7px;"
-                    *ngIf="(usuarioForm.get('Correo')?.touched || usuarioForm.get('Correo')?.dirty) && usuarioForm.get('Correo')?.hasError('required')">
-                    Este campo es obligatorio
-                  </p>
-                  <p class="alerts-validators" style="color: red;  display: block; margin-top: -7px;"
-                    *ngIf="usuarioForm.get('Correo')?.hasError('email')">
-                    Este campo debe ser tipo correo
-                  </p>
-                </div>
-              </div>
-  
-              <div class="col-12 col-lg-6 col-md-6">
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Sucursal</label>
-                  <select formControlName="IdSucursal" class="form-control" id="exampleFormControlSelect1">
-                    <option value="0">Seleccione una sucursal</option>
-                    <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
-        
-                  </select>
-                </div>
-              </div>
-  
-              <div class="col-12 col-lg-6 col-md-6">
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Rol</label>
-                  <select formControlName="idRol" id="inputState" class="form-select">
-                    <option selected>Escoja un rol</option>
-                    <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>
-                  </select>
-                  <p style="color: red;"
-                    *ngIf="(usuarioForm.get('idRol')?.touched || usuarioForm.get('idRol')?.dirty) && usuarioForm.get('idRol')?.hasError('required')">
-                    Este campo es obligatorio
-                  </p>
-                </div>
-              </div>
-          </div>
-    
-          <button [disabled]="this.usuarioForm.invalid" (click)="crearUsuario()" type="button"
-            class="btn btn-primary">Guardar</button>
-        </form>
-      </div>
-  
-      <div class="col-md-8 col-lg-8 col-12">
+      <div class="col-md-12 col-lg-12 col-12">
         <h5>Lista de Usuarios</h5>
         <hr />
   
@@ -89,6 +17,7 @@
                 <!-- <th class="text-center">#</th> -->
                 <th class="text-center">Nombre</th>
                 <th class="text-center">Correo</th>
+                <th class="text-center">Empresa</th>
                 <th class="text-center">Rol</th>
                 <th class="text-center">Sucursal</th>
                 <th class="text-center">Editar</th>
@@ -115,13 +44,19 @@
                   </ng-template>
                 </td>
                 <td class="text-center">
+                  <ng-container >
+                    {{usuario.Empresa}}
+                  </ng-container>
+          
+                </td>
+                <td class="text-center">
                   <ng-container *ngIf="!usuario.Editando; else editarRol">
                     {{getNombreRol(usuario.idRol)}}
                   </ng-container>
                   <ng-template #editarRol>
                     <select [(ngModel)]="usuario.idRol" id="inputState" class="form-select">
                       <option value="0">Seleccione un rol</option>
-                      <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>
+                      <option value="{{rol.id}}" *ngFor="let rol of getRolesByEmpresa(usuario.idEmpresa)">{{rol.Rol}}</option>
                     </select>
                   </ng-template>
                 </td>
@@ -132,8 +67,7 @@
                   <ng-template #editarSucursal>
                     <select [(ngModel)]="usuario.IdSucursal" id="inputState" class="form-select">
                       <option value="0">Seleccione una sucursal</option>
-                      <option value="1">Todas</option>
-                      <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+                      <option value="{{sucursal.id}}" *ngFor="let sucursal of this.getSucursalesByEmpresa(usuario.idEmpresa)">{{sucursal.Nombre}}</option>
                     </select>
                   </ng-template>
                 </td>
@@ -159,8 +93,112 @@
   
         </div>
       </div>
+      <p-dialog 
+      header="Crear Usuario" 
+      [modal]="true"
+      [(visible)]="visible" 
+      [style]="{ width: '50rem' }" 
+      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+      [maximizable]="true">
+      <div class="col-md-12 col-lg-12 col-12">
+        <form *ngIf="usuarioForm" [formGroup]="usuarioForm">
+          <div class="row">
+              <div class="col-6 col-lg-6 col-md-12">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Nombres</label>
+                  <input type="text" formControlName="Nombres" class="form-control" id="exampleInputEmail1"
+                    aria-describedby="emailHelp" placeholder="Escriba el nombre del usuario" />
+                </div>
+              </div>
+  
+              <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Usuario</label>
+                  <input type="text" formControlName="Usuario" class="form-control" id="exampleInputPassword1"
+                    placeholder="Escriba un nombre de usuario" />
+                </div>
+              </div>
+  
+              <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Contraseña</label>
+                  <input type="password" formControlName="Password" class="form-control" id="exampleInputPassword1"
+                    placeholder="Escriba una contraseña" />
+                </div>
+              </div>
+  
+              <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Correo</label>
+                  <input type="text" formControlName="Correo" class="form-control" id="exampleInputPassword1"
+                    placeholder="Escriba el correo del usuario" />
+                  <p style="color: red;  display: block; margin-top: -7px;"
+                    *ngIf="(usuarioForm.get('Correo')?.touched || usuarioForm.get('Correo')?.dirty) && usuarioForm.get('Correo')?.hasError('required')">
+                    Este campo es obligatorio
+                  </p>
+                  <p class="alerts-validators" style="color: red;  display: block; margin-top: -7px;"
+                    *ngIf="usuarioForm.get('Correo')?.hasError('email')">
+                    Este campo debe ser tipo correo
+                  </p>
+                </div>
+              </div>
+              <div *ngIf="this.usuario.Rol=='Super Usuario'" class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Empresa</label>
+                  <select (change)="selectSucursalByEmpresa($any($event.target).value)" formControlName="idEmpresa" class="form-control" id="exampleFormControlSelect1">
+                    <option value="0">Seleccione una empresa</option>
+                    <option value="{{empresa.id}}" *ngFor="let empresa of EmpresasBack">{{empresa.Nombre}}</option>
+        
+                  </select>
+                </div>
+              </div>
+     
+              
+              <div *ngIf="this.usuario.Rol=='Super Usuario'" class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Sucursal</label>
+                  <select formControlName="IdSucursal" class="form-control" id="exampleFormControlSelect1">
+                    <option value="0">Seleccione una sucursal</option>
+                    <option value="{{sucursal.id}}" *ngFor="let sucursal of SucursalesTodas">{{sucursal.Nombre}}</option>
+        
+                  </select>
+                </div>
+              </div>
+
+              <div *ngIf="this.getNombreRol(this.usuario.idRol)!='Super Usuario'" class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Sucursal</label>
+                  <select  formControlName="IdSucursal" class="form-control" id="exampleFormControlSelect1">
+                    <option value="0">Seleccione una sucursal</option>
+                    <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+        
+                  </select>
+                </div>
+              </div>
+  
+              <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Rol</label>
+                  <select formControlName="idRol" id="inputState" class="form-select">
+                    <option selected>Escoja un rol</option>
+                    <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>
+                  </select>
+                  <p style="color: red;"
+                    *ngIf="(usuarioForm.get('idRol')?.touched || usuarioForm.get('idRol')?.dirty) && usuarioForm.get('idRol')?.hasError('required')">
+                    Este campo es obligatorio
+                  </p>
+                </div>
+              </div>
+          </div>
+    
+          <button [disabled]="this.usuarioForm.invalid" (click)="crearUsuario()" type="button"
+            class="btn btn-primary">Guardar</button>
+        </form>
+      </div>
+  </p-dialog>
+
+
 
 
   </div>
 </div>
-</app-card>

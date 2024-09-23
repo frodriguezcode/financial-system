@@ -10,10 +10,11 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { ToastrService } from 'ngx-toastr';
 import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
 @Component({
   selector: 'app-crear-usuario',
   standalone: true,
-  imports: [CommonModule, SharedModule, RouterModule, FormsModule, ReactiveFormsModule,TableModule],
+  imports: [CommonModule, SharedModule, RouterModule, FormsModule, ReactiveFormsModule,TableModule,DialogModule],
   templateUrl: './crear-usuario.component.html',
   styleUrls: ['./crear-usuario.component.scss']
 })
@@ -29,9 +30,17 @@ usuarioForm!: FormGroup;
 Fecha: any = new Date();
 MesesTodos: any = [];
 Roles:any=[]
+RolesBack:any=[]
 Sucursales: any = [];
+SucursalesTodas: any = [];
+SucursalesTodasBack: any = [];
+Empresas: any = [];
+EmpresasBack: any = [];
 Usuarios: any = [];
+UsuariosTodos: any = [];
+UsuariosBack: any = [];
 usuario:any
+visible: boolean = false;
 ngOnInit(): void {
   this.conS.usuario$.subscribe(usuario => {
     if (usuario) {
@@ -40,9 +49,11 @@ ngOnInit(): void {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
-    this.obtenerUsuarios()
+  
+   
     this.obtenerSucursales()
     this.obtenerRoles()
+    this.obtenerEmpresas()
   
  
   });
@@ -115,20 +126,72 @@ ngOnInit(): void {
   ];
 
 }
+showDialog() {
+  this.visible = true;
+}
 obtenerUsuarios(){
-  this.authS.obtenerUsuarios(this.usuario.idEmpresa).subscribe(resp=>{
-    this.Usuarios = resp
+  this.authS.obtenerUsuariosByMatriz(this.usuario.idMatriz).subscribe(resp=>{
+    if(this.getNombreRol(this.usuario.idRol)=='Super Usuario'){
+      this.Usuarios=resp
+    }
+    else {
+      this.Usuarios=resp.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
+
+    }
+
+ 
+
+    if(this.getNombreRol(this.usuario.idRol)=='Super Usuario'){
+      this.Roles=this.RolesBack
+    }
+    else {
+      this.Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
+
+    }
+    this.usuario.Rol=this.getNombreRol(this.usuario.idRol)
+    localStorage.setItem('usuarioFinancialSystems', JSON.stringify( this.usuario)); 
+    this.UsuariosBack=resp
+  })
+}
+obtenerEmpresas(){
+  this.authS.obtenerEmpresas(this.usuario.idMatriz).subscribe(resp=>{
+    this.Empresas = resp.filter((resp:any)=>resp.id==this.usuario.idEmpresa)
+    this.EmpresasBack = resp
   })
 }
 obtenerRoles(){
-  this.authS.obtenerRoles(this.usuario.idEmpresa).subscribe(roles=>{
-    this.Roles=roles
- 
+  this.authS.obtenerRolesByMatriz(this.usuario.idMatriz).subscribe(roles=>{
+
+
+    this.RolesBack=roles
+    this.Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
+    this.obtenerUsuarios()
+
   })
 }
+
+getRolesByEmpresa(idEmpresa:any){
+let _Roles:any=[]
+_Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
+return _Roles
+}
+
+getSucursalesByEmpresa(idEmpresa:any){
+let _Sucursales:any=[]
+_Sucursales=this.SucursalesTodasBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
+return _Sucursales
+}
+getEmpresaByMatriz(idEmpresa:any){
+let _Empresas:any=[]
+_Empresas=this.EmpresasBack.filter((resp:any)=>resp.id==idEmpresa)
+
+return _Empresas
+}
+
+
 getNombreRol(idRol:string){
   let _rol:any=[]
-  _rol=this.Roles.filter((s:any)=> s.id == idRol)
+  _rol=this.RolesBack.filter((s:any)=> s.id == idRol)
   if(_rol.length>0){
     
     return _rol[0].Rol
@@ -139,10 +202,31 @@ getNombreRol(idRol:string){
   }
 }
 obtenerSucursales(){
-  this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
-    this.Sucursales=resp
+  this.conS.obtenerSucursalesByMatriz(this.usuario.idMatriz).subscribe(resp=>{
+    this.Sucursales=resp.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
+    this.SucursalesTodas=resp
+    this.SucursalesTodasBack=resp
     this.cargarFormulario()
   })
+}
+getNombreEmpresa(idEmpresa){
+  let _Empresa:any=this.EmpresasBack.filter((emp:any)=>emp.id==idEmpresa)
+  if(_Empresa.length>0){
+    return _Empresa[0].Nombre
+  }
+  else{
+    return ''
+  }
+}
+selectSucursalByEmpresa(idEmpresa:any){
+ if(idEmpresa=='0') {
+  this.SucursalesTodas=this.SucursalesTodasBack
+ }
+ else {
+   this.SucursalesTodas=this.SucursalesTodasBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
+  this.Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
+ }
+ 
 }
 getNombreSucursal(idSucursal:string){
   let _sucursal:any=[]
@@ -168,9 +252,9 @@ cargarFormulario() {
     AnioRegistro: new FormControl(new Date().getFullYear()),
     Activo: new FormControl(true),
     Editando: new FormControl(false),
-    idEmpresa: new FormControl(this.usuario.idEmpresa),
+    idEmpresa: new FormControl('',[Validators.required]),
     idMatriz: new FormControl(this.usuario.idMatriz),
-    idRol: new FormControl(1),
+    idRol: new FormControl('',[Validators.required]),
     IdSucursal: new FormControl(0),
     ConfigInicialCompletado:new FormControl(false),
     Correo: new FormControl('', [Validators.email, Validators.required]),
@@ -221,10 +305,12 @@ getMonthName(Fecha: string) {
   return Number(Fecha.substring(5).substring(0, 2));
 }
 crearUsuario(){
-
+  this.usuarioForm.value.Empresa=this.getNombreEmpresa(this.usuarioForm.value.idEmpresa)
   this.authS.crearUsuario(this.usuarioForm.value).then((resp:any)=>{
     this.toastr.success('Guardado', '¡Exito!');
-    this.cargarFormulario()
+    this.usuarioForm.get('Nombres').setValue('');
+    this.usuarioForm.get('Password').setValue('');
+    this.usuarioForm.get('Correo').setValue('');
   })
 }
 }

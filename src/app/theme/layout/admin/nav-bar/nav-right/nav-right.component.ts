@@ -105,7 +105,7 @@ export class NavRightComponent implements DoCheck,OnInit {
 obtenerUsuariosByMatriz(){
     this.authS.obtenerUsuariosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
       this.Usuarios=resp;
-      console.log('Usuarios',this.Usuarios)
+   
     })
 }
 obtenerEmpresas(){
@@ -113,7 +113,7 @@ obtenerEmpresas(){
       this.Empresas=resp;
       console.log('Empresas',this.Empresas)
       this.usuario.Empresa=this.getNombreEmpresa(this.usuario.idEmpresa)
-      localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
+
     })
 }
 
@@ -145,7 +145,7 @@ getNombreEmpresa(idEmpresa){
 setEmpresa(idEmpresa:any){
 this.idEmpresa=idEmpresa
 
-if(this.getRolName(this.usuario.idRol)=='Super Usuario'){
+
 
   if(idEmpresa=='0'){
     Swal.fire({
@@ -158,27 +158,16 @@ if(this.getRolName(this.usuario.idRol)=='Super Usuario'){
   }
   else {
   
-    this.usuario.idEmpresa = idEmpresa
-    this.usuario.Empresa = this.getNombreEmpresa(idEmpresa)
-    this.conS.setUsuario(this.usuario);
-    localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
-    //this.obtenerAtributos(this.usuario.idEmpresa,this.usuario.idRol)
+  
     this.visibleEmpresa = false;
-    this.toastr.success('Hecho', `Se ha cambiado a ${this.usuario.Empresa}`,{
-      timeOut: 3000,
-    });
+    setTimeout(()=>{ 
+      this.conS.setUsuario(this.usuario); 
+      this.ShowIniciarSesion()
+  }, 1000);
   }
 
-}
 
-else {
-  this.visibleEmpresa = false;
-  setTimeout(()=>{ 
-    this.conS.setUsuario(this.usuario); 
-    this.ShowIniciarSesion()
-}, 1000);
 
-}
 
 
 
@@ -194,7 +183,7 @@ let UsuarioEncontrado:any=[]
 
 UsuarioEncontrado=this.Usuarios.filter((user:any)=>user.Password==this.Passw.value 
 && user.Usuario==this.UsuarioLogin.value && user.idEmpresa==this.idEmpresa )
-
+console.log('Usuarios',this.Usuarios)
 if(UsuarioEncontrado.length>0){
   this.usuario.Correo=UsuarioEncontrado[0].Correo
   this.usuario.Usuario=UsuarioEncontrado[0].Usuario
@@ -244,6 +233,7 @@ obtenerRolesByEmpresa(idEmpresa: any, idRol: string): Promise<any> {
       (resp: any) => {
         if(resp.length>0){
           resolve(resp[0].Atributos);
+
 
         }
         else {

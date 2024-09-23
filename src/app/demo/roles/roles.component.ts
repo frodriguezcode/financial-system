@@ -82,6 +82,7 @@ export default class RolesComponent implements OnInit {
     "Rol":this.nombreRol.value,
     "Atributos":_AtributosRol,
     "idEmpresa":this.usuario.idEmpresa,
+    "idMatriz":this.usuario.idMatriz,
     "idUsuario":this.usuario.id,
     "Usuario":this.usuario.Usuario,
     "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')

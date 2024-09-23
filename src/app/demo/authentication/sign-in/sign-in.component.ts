@@ -23,6 +23,7 @@ export default class SignInComponent implements OnInit {
   Usuario:FormControl=new FormControl('');
   Password:FormControl=new FormControl('');
   Empresas:any=[]
+  Roles:any=[]
   Correo:FormControl=new FormControl('');
   UsuarioRecover:any=[]
   visible: boolean = false;
@@ -30,6 +31,8 @@ ngOnInit(): void {
   localStorage.removeItem('AtributosUsuarioFinancial_System');
   localStorage.removeItem('usuarioFinancialSystems');
 }
+
+
   login(){
     
     Swal.fire({
@@ -40,9 +43,7 @@ ngOnInit(): void {
  
      Subscription=  this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
       Subscription.unsubscribe()
-
-      localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0]));
-    
+      localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0])); 
       if(resp.length>0){  
          this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((empresa:any)=>{
 
@@ -77,6 +78,19 @@ ngOnInit(): void {
       }
     })
   }
+
+  getNombreRol(idRol:string){
+    let _rol:any=[]
+    _rol=this.Roles.filter((s:any)=> s.id == idRol)
+    if(_rol.length>0){
+      
+      return _rol[0].Rol
+  
+    }
+    else {
+      return 'Sin Rol'
+    }
+  }
  
   getNombreEmpresa(idEmpresa){
     let _Empresa:any=this.Empresas.filter((emp:any)=>emp.id==idEmpresa)
@@ -105,6 +119,7 @@ ngOnInit(): void {
     return new Promise((resolve, reject) => {
       this.autS.obtenerRolesbyId(idEmpresa, idRol).subscribe(
         (resp: any) => {
+          this.Roles=resp
           resolve(resp[0].Atributos);
         },
         (error) => {
