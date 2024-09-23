@@ -127,6 +127,8 @@ export default class ItemsComponent  implements OnInit{
 
   getItemsGroup(){
     this.ItemsGroup=[]
+    let _Items:any=[]
+    _Items=this.Items.filter((i:any)=>i.idEmpresa==this.usuario.idEmpresa)
     this.Items.forEach((item:any) => {
       let _Item ={
         "id":item.id,
@@ -149,6 +151,7 @@ export default class ItemsComponent  implements OnInit{
       }
       this.ItemsGroup.push(_Item)
     });
+
   }
 
   getNameSucursales(sucursales:any){
@@ -295,6 +298,7 @@ export default class ItemsComponent  implements OnInit{
         
 
       }
+   
 
     }
     else {
@@ -322,7 +326,7 @@ export default class ItemsComponent  implements OnInit{
         
       }
     }
-
+    this.getItemsGroup()
   }
 
   obtenerSucursales(){
@@ -341,7 +345,7 @@ export default class ItemsComponent  implements OnInit{
 
 
       if(resp.length>0){
-        this.ItemsBack=resp.sort((a:any, b:any) => b.Orden - a.Orden)
+        this.ItemsBack=resp.sort((a:any, b:any) => a.Orden - b.Orden)
         this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))+1
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
      
@@ -405,7 +409,8 @@ export default class ItemsComponent  implements OnInit{
     ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
     
     ItemForm.TipoRubro=this.TipoRubro
-    ItemForm.Orden=this.MaxOrden
+    ItemForm.Orden=this.getOrdenItem(ItemForm.idCategoria)
+    ItemForm.OrdenReal=this.MaxOrden
 
     if(this.TipoRubro==1 && ItemForm.Sucursales.length==0 ){
           Swal.fire({
@@ -434,18 +439,13 @@ export default class ItemsComponent  implements OnInit{
       ItemForm.Sucursales=[]
     }
 
-    
+      ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
+
       this.conS.crearItem(ItemForm).then(resp=>{
         let SucursalesSeleccionadas:any=ItemForm.Sucursales
         let ProyectosSeleccionados:any=ItemForm.Proyectos
         let idCategoria:any=ItemForm.idCategoria
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Cuenta contable creada",
-          showConfirmButton: false,
-          timer: 1500
-        });
+        this.toastr.success('Cuenta  Creada', '¡Exito!');
         this.ItemForm.get('Nombre').setValue('');
         this.ItemForm.get('Sucursales').setValue(SucursalesSeleccionadas);
         this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
@@ -456,7 +456,31 @@ export default class ItemsComponent  implements OnInit{
     
     
   }
+getOrdenItem(idCategoria:any){
+  let _Items:any=[]
+  let MaxOrden:number=0
+  _Items=this.Items.filter((i:any)=>i.idEmpresa==this.usuario.idEmpresa && i.idCategoria==idCategoria)
+  if(_Items.length>0){
+    MaxOrden=Math.max(..._Items.map(obj => obj.Orden))+1
 
+  }
+  else{
+    MaxOrden=1
+  }
+  return MaxOrden
+}
+
+getIdCategoria(idCategoria:string){
+  let _CategoriaFound:any=[]
+  _CategoriaFound=this.Categorias.filter((categ:any)=>categ.id==idCategoria)
+  if(_CategoriaFound.length>0){
+    return _CategoriaFound[0].idCateg
+  }
+  else {
+    return ''
+  }
+
+}
   toggleEdicion(Item: any) {
 
     Item.Editando = !Item.Editando;

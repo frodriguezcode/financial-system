@@ -5,6 +5,27 @@
       <button  (click)=" SelectProyecto()" type="button" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i> </button>
       <button [disabled]="this.idItems.length==0" (click)=" borrarItems()" type="button" class="btn btn-danger m-1">Borrar <i class="fa-solid fa-trash"></i> </button>
       <div >
+        <p-multiSelect 
+        (onChange)="filtrarCuentasBySucursal()"
+        *ngIf="TipoRubro==1"
+        [options]="Sucursales" 
+        [(ngModel)]="SucursalesSeleccionadas" 
+        optionLabel="Nombre" 
+        placeholder="Sucursales" 
+        class="m-1"
+        [appendTo]
+        />
+
+        <p-multiSelect 
+        (onChange)="filtrarCuentasBySucursal()"
+        *ngIf="TipoRubro==2"
+        [options]="Proyectos" 
+        [(ngModel)]="ProyectosSeleccionado" 
+        optionLabel="NombreSucursal" 
+        placeholder="Proyectos"
+        class="m-1" 
+        [appendTo]
+        />
         <p-table 
         [value]="ItemsGroup" 
         sortField="representative.name" 
@@ -15,7 +36,6 @@
         [tableStyle]="{'min-width': '70rem'}">
             <ng-template pTemplate="header">
                 <tr>
-                <th class="text-start">Seleccionar</th>
                  <th class="text-center">Orden</th>
                  <th class="text-center">Nombre</th>
                  <th class="text-center">Categoría</th>
@@ -56,9 +76,7 @@
             </ng-template>
             <ng-template pTemplate="rowexpansion" let-item >
                 <tr>
-                  <td class="text-start">
-                    <input (click)="acumularIdItems(item.id)" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                 </td>
+            
                  <td class="text-center">
                   
                    {{item.Orden}}
@@ -70,7 +88,9 @@
                        {{item.name}}
                      </ng-container>
                      <ng-template #editarItem>
-                       <input [(ngModel)]="item.name" class="form-control text-center col-4">
+                       <textarea 
+                       (keyup.enter)="actualizarItem(item)"
+                       [(ngModel)]="item.name" style="min-width: 250px;" class="form-control text-center col-12"></textarea>
                      </ng-template>
                        
                     </td>
@@ -79,7 +99,7 @@
                        {{getNombreCategoria(item.idCategoria)}}
                      </ng-container>
                      <ng-template #editarCategoria>
-                       <select [(ngModel)]="item.idCategoria" id="inputState" class="form-select">
+                       <select [(ngModel)]="item.idCategoria" id="inputState" style="min-width: 250px;" class="form-select">
                          <option value="0">Seleccione una categoría</option>
                          <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}
                          </option>
@@ -92,7 +112,7 @@
                        {{item.Empresa}}
                      </ng-container>
                      <ng-template #editarEmpresa>
-                       <select [(ngModel)]="item.idEmpresa" id="inputState" class="form-select">
+                       <select [(ngModel)]="item.idEmpresa" id="inputState" style="min-width: 250px;" class="form-select">
                          <option value="0">Seleccione una empresa</option>
                          <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
                        </select>
@@ -395,7 +415,7 @@
     </div> -->
  
     <p-dialog 
-        header="Ingresos y Egresos" 
+        header="Crear nueva cuenta" 
         [modal]="true" 
         [(visible)]="visible" 
         [style]="{ width: '50rem' }" 

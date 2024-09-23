@@ -591,7 +591,7 @@ getTableClass() {
 construirCabecera(){
   this.Cabecera=[]
   this.Cabecera.push({
-    "Nombre":"Naturalezas",
+    "Nombre":"Catálogo de Cuentas",
     "Mes":"",
     "NumMes":"",
     "Anio":"",
@@ -611,7 +611,7 @@ construirCabecera(){
         "MostrarBoton":true
       })
       this.Cabecera.push({
-        "Nombre":mes.Mes + " " + anio.Anio,
+        "Nombre":"Real "+ mes.Mes + " " + anio.Anio,
         "Mes":mes.Mes,
         "NumMes":mes.NumMes,
         "Anio":anio.Anio,

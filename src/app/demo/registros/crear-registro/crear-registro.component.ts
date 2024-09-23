@@ -133,7 +133,7 @@ activeIndex: number = 0;
   CuentasContables:any=[]
   Flujos: any = [
     {id: "1", name: "Banco"},
-    {id: "2", name: "Caja"},
+    {id: "2", name: "Efectivo"},
     
   ]
 cargando:boolean
@@ -413,7 +413,7 @@ buscarByProyecto(){
    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.idProyecto==this.ProyectoSeleccionado.id)
    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro 
     &&
-   item.Proyectos.some((proyecto: any) => proyecto.id === this.ProyectoSeleccionado.id )
+   item.Proyectos.some((proyecto: any) => proyecto.id == this.ProyectoSeleccionado.id )
   )
 
   }
@@ -422,6 +422,7 @@ buscarByProyecto(){
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
 
   }
+
   this.calcularImporteTotal(this.Registros)
   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
     return Math.max(maxOrden, objeto.Orden);
@@ -817,7 +818,10 @@ obtenerCategorias(){
 
 getCuentabyCategoria(Categoria:any){
 let cuentaContable:any=[]
-this.Items.filter((item:any)=>item.idCategoria==Categoria.id).forEach((cuenta:any) => {
+
+this.Items.filter((item:any)=>item.idCategoria==Categoria.id
+
+).forEach((cuenta:any) => {
   cuentaContable.push({
     "id":cuenta.id,
     "idCategoria":cuenta.idCategoria,

@@ -18,32 +18,32 @@
   optionLabel="Nombre" placeholder="Seleccione una sucursal" />
 <p-dropdown class="m-1" *ngIf="this.idTipoRegistro==2" (onChange)=" filtrarDataProyecto()" [options]="Proyectos" [(ngModel)]="ProyectoSeleccionado"
   optionLabel="NombreSucursal" placeholder="Seleccione un proyecto" />
+  <button type="button" (click)="descargarExcel()" class="btn btn-success m-1 float-end">Descargar
+     <i class="fa-solid fa-file-arrow-down"></i></button>
+
 
   
   <div *ngIf="!cargando" class="container-table">
    
     <div class="table-responsive ">
-
-   
-
-      <div class="btn-excel" >
-
-        <button type="button" (click)="descargarExcel()" class="btn btn-success m-1 float-end">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
-        
-      </div>
     <table class="table table-100">
       <thead class="cabecera">
 
         <ng-container *ngFor="let cab of Cabecera">
-          <th *ngIf="cab.Tipo==1" class="text-left"
-            style="padding: 0.5rem;background-color: #0c8c86;text-transform: uppercase;">Naturalezas</th>
-          <ng-container *ngIf="cab.Mostrar==true">
-            <th *ngIf="cab.Tipo!=1" class="text-center"
-              style="padding: 0.7rem; font-weight: 500; text-transform: uppercase; ">
-              {{ cab.Nombre}}
-            </th>
+         
 
-          </ng-container>
+          <th *ngIf="cab.Tipo==1" class="text-left"
+          style="padding: 0.5rem; background-color: #0c8c86; text-transform: uppercase; position: sticky; top: 0; z-index: 1;">
+        Catálogo de Cuentas
+      </th>
+      <ng-container *ngIf="cab.Mostrar==true">
+        <th *ngIf="cab.Tipo!=1" class="text-center"
+            style="padding: 0.7rem; font-weight: 500; text-transform: uppercase; position: sticky; top: 0; z-index: 1;">
+          {{ cab.Nombre }}
+        </th>
+      </ng-container>
+      
+         
           <th class="text-center" style="background-color: grey;" *ngIf="cab.Tipo==5" >
             <button  *ngIf="cab.Mostrar==true" (click)="ocultarMes(cab.Anio,cab.NumMes)"
               style="background-color: rgb(109, 211, 131); color: white;" type="button" class="btn btn-success"><i

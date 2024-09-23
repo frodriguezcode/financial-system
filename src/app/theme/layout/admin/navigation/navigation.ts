@@ -37,7 +37,7 @@ export const NavigationItems: NavigationItem[] = [
         },
         {
           id: 'flujos',
-          title: 'Flujos Financieros',
+          title: 'Flujo de Efectivo',
           type: 'item',
           url: '/flujos',
           // icon: 'feather icon-bold',

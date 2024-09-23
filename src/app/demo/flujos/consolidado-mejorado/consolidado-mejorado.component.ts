@@ -667,7 +667,7 @@ filtrarCuentas(TipoRubro:any){
 obtenerRegistros(){
       this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
         this.Registros=[]  
-        resp.filter((data:any)=>data.Valor>0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+        resp.filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
           let _Registro={
             "Activo":element.Activo,
             "AnioRegistro":element.AnioRegistro,
@@ -701,6 +701,7 @@ obtenerRegistros(){
           }
           this.Registros.push(_Registro)
           });
+          console.log('Registros',this.Registros)
           this.RegistrosBackUp=this.Registros
        
           const uniqueMesNumMesSet = new Set(this.Registros.map(item => JSON.stringify({ Mes: item.MesRegistro, NumMes: item.NumMes})));
