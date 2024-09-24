@@ -1,15 +1,13 @@
 @import '../../flujos/consolidado/flujos-consolidado.component.scss';
 
-.container-table {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-width: 100%;
-  padding: 1rem;
-  
-  
-}
 
+
+
+.table-custom-container{
+  max-height: 550px;
+  overflow-y: auto;
+  position: relative;
+}
 
 
 .table {
@@ -26,18 +24,7 @@
   table-layout: fixed;
 }
 
-//  th {
-//   position: sticky;
-//   z-index: 1555;
-//   min-width: 200px;
-//   max-width: 200px;
-// }
 
-// tbody{
-//   display: block;
-//   max-height: 200px;
-//   overflow-y: scroll !important;
-// }
 
 .input-group {
   display: flex;
