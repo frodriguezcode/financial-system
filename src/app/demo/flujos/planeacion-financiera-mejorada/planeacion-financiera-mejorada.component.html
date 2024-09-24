@@ -1,31 +1,38 @@
-<div class="d-flex justify-content-center">
-
-  <button type="button" (click)="switchTipoRegistro(0)" class="btn btn-success m-1">Todos <i
+<div class="d-flex justify-content-center" >
+   
+  <div style="position: fixed; z-index: 1555;">
+    <button type="button" (click)="switchTipoRegistro(0)" class="btn btn-success m-1">Todos <i
       class="fa-solid fa-rotate-right"></i></button>
   <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info m-1">General <i
       class="fa-solid fa-building"></i></button>
   <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos <i
       class="fa-solid fa-diagram-project"></i></button>
+
+
+      <button type="button" (click)="showDialog()"  class="btn btn-primary m-1 float-start">Año <i class="fa-solid fa-plus"></i></button>
+      
+      <p-multiSelect class="m-1" [options]="Anios" [(ngModel)]="AniosSeleccionados" (onChange)="getAniosActivos()"
+        optionLabel="Anio" placeholder="Años" />
+      <p-multiSelect class="m-1" (onChange)="getMesesActivos()" [options]="Meses" [(ngModel)]="MesesSeleccionados"
+        optionLabel="Mes" placeholder="Meses" />
+      
+      <p-dropdown class="m-1" *ngIf="this.idTipoRegistro==1 || this.idTipoRegistro==0" (onChange)=" filtrarDataSucursal()" [options]="Sucursales" [(ngModel)]="SucursalSeleccionada"
+        optionLabel="Nombre" placeholder="Seleccione una sucursal" />
+      <p-dropdown class="m-1" *ngIf="this.idTipoRegistro==2" (onChange)=" filtrarDataProyecto()" [options]="Proyectos" [(ngModel)]="ProyectoSeleccionado"
+        optionLabel="NombreSucursal" placeholder="Seleccione un proyecto" />
+        <button type="button" (click)="descargarExcel()" class="btn btn-success m-1 float-end">Descargar
+           <i class="fa-solid fa-file-arrow-down"></i></button>
+
+
+  </div>
+ 
 </div>
-<button type="button" (click)="showDialog()"  class="btn btn-primary m-1 float-start">Año <i class="fa-solid fa-plus"></i></button>
-
-<p-multiSelect class="m-1" [options]="Anios" [(ngModel)]="AniosSeleccionados" (onChange)="getAniosActivos()"
-  optionLabel="Anio" placeholder="Años" />
-<p-multiSelect class="m-1" (onChange)="getMesesActivos()" [options]="Meses" [(ngModel)]="MesesSeleccionados"
-  optionLabel="Mes" placeholder="Meses" />
-
-<p-dropdown class="m-1" *ngIf="this.idTipoRegistro==1 || this.idTipoRegistro==0" (onChange)=" filtrarDataSucursal()" [options]="Sucursales" [(ngModel)]="SucursalSeleccionada"
-  optionLabel="Nombre" placeholder="Seleccione una sucursal" />
-<p-dropdown class="m-1" *ngIf="this.idTipoRegistro==2" (onChange)=" filtrarDataProyecto()" [options]="Proyectos" [(ngModel)]="ProyectoSeleccionado"
-  optionLabel="NombreSucursal" placeholder="Seleccione un proyecto" />
-  <button type="button" (click)="descargarExcel()" class="btn btn-success m-1 float-end">Descargar
-     <i class="fa-solid fa-file-arrow-down"></i></button>
 
 
   
   <div *ngIf="!cargando" class="container-table">
    
-    <div class="table-responsive ">
+    <div class="table-responsive " style="margin-top: 5rem;">
     <table class="table table-100">
       <thead class="cabecera">
 
@@ -33,7 +40,7 @@
          
 
           <th *ngIf="cab.Tipo==1" class="text-left"
-          style="padding: 0.5rem; background-color: #0c8c86; text-transform: uppercase; position: sticky; top: 0; z-index: 1;">
+          style="padding: 0.5rem; background-color: #0c8c86; text-transform: uppercase; position: sticky; top: 0; z-index: 3;">
         Catálogo de Cuentas
       </th>
       <ng-container *ngIf="cab.Mostrar==true">
@@ -62,7 +69,7 @@
 
         </ng-container>
       </thead>
-      <tbody>
+      <tbody >
         <ng-container *ngFor="let categoria of Categorias; let j = index">
           <tr [ngClass]="{'cabecera-categoria': categoria.Calculado == true}" >
             <td [ngClass]="{
