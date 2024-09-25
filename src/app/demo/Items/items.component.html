@@ -3,7 +3,6 @@
     <div class="col-md-12 col-lg-12 col-12">
       <button (click)=" SelectGeneral()" type="button" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
       <button  (click)=" SelectProyecto()" type="button" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i> </button>
-      <button [disabled]="this.idItems.length==0" (click)=" borrarItems()" type="button" class="btn btn-danger m-1">Borrar <i class="fa-solid fa-trash"></i> </button>
       <div >
         <p-multiSelect 
         (onChange)="filtrarCuentasBySucursal()"
@@ -90,7 +89,7 @@
                      <ng-template #editarItem>
                        <textarea 
                        (keyup.enter)="actualizarItem(item)"
-                       [(ngModel)]="item.name" style="min-width: 250px;" class="form-control text-center col-12"></textarea>
+                       [(ngModel)]="item.name" style="min-width: 300px;" class="form-control text-center col-12"></textarea>
                      </ng-template>
                        
                     </td>

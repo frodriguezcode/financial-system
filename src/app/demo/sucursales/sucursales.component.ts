@@ -108,6 +108,7 @@ crearSucursal(){
 obtenerSucursales(){
   this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe((resp: any)=>{
   this.Sucursales=resp
+  console.log('Sucursales',this.Sucursales)
   })
 }
 obtenerEmpresas(){
