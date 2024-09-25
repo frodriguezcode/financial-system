@@ -1009,37 +1009,39 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       "TipoRegistro":this.idTipoRegistro,
       "Valor": Number(Valor.replace(',', '')),
       "idEmpresa":this.usuario.idEmpresa,
-      "idSucursal": this.SucursalSeleccionada==undefined ? '' : this.SucursalSeleccionada.id  ,
-      "idProyecto": this.ProyectoSeleccionado==undefined ? '' : this.ProyectoSeleccionado.id
+      "idSucursal":  Object.keys(this.SucursalSeleccionada).length === 0? '' : this.SucursalSeleccionada.id  ,
+      "idProyecto": Object.keys(this.ProyectoSeleccionado).length === 0 ? '' : this.ProyectoSeleccionado.id
     }
-  
-    let _ValorPlanEncontrado:any=[]
-    _ValorPlanEncontrado=this.RegistrosValoresPlanes.filter((data:any)=>
-      data.idCategoria==idCategoria &&
-      data.MesRegistro==MesRegistro &&
-      data.AnioRegistro==Anio &&
-      data.idEmpresa==this.usuario.idEmpresa)
-    if(_ValorPlanEncontrado.length>0){
+   
+//     let _ValorPlanEncontrado:any=[]
+//     _ValorPlanEncontrado=this.RegistrosValoresPlanes.filter((data:any)=>
+//       data.idCategoria==idCategoria &&
+//       data.MesRegistro==MesRegistro &&
+//       data.AnioRegistro==Anio &&
+//       data.idEmpresa==this.usuario.idEmpresa)
+//     if(_ValorPlanEncontrado.length>0){
 
-      _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
+//       _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
 
-    this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
-      this.toastr.success('Guardado', '¡Exito!');
-      this.getDataItemsMensualPlanes()
-      this.getDataCategoriasMensual()
-      this.getDataCategoriasMensualPlanes()
-    })
-    }  
+//     this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
+//       this.toastr.success('Guardado', '¡Exito!');
+//       this.getDataItemsMensualPlanes()
+//       this.getDataCategoriasMensual()
+//       this.getDataCategoriasMensualPlanes()
+//     })
+//     }  
     
-    else {
-      this.conS.crearValorPlan(_Valor).then(resp=>{
-        this.toastr.success('Guardado', '¡Exito!');
-        this.getDataItemsMensualPlanes()
-        this.getDataCategoriasMensual()
-        this.getDataCategoriasMensualPlanes()
-      })
+//     else {
+//       this.conS.crearValorPlan(_Valor).then(resp=>{
+//         this.toastr.success('Guardado', '¡Exito!');
+//         this.getDataItemsMensualPlanes()
+//         this.getDataCategoriasMensual()
+//         this.getDataCategoriasMensualPlanes()
+//       })
 
-}
+// }
+console.log('_Valor',_Valor)
+console.log('ProyectoSeleccionado',this.ProyectoSeleccionado)
 
   }
 
