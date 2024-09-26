@@ -37,7 +37,7 @@
                 <tr>
                  <th class="text-center">Orden</th>
                  <th class="text-center">Nombre</th>
-                 <th class="text-center">Categoría</th>
+                 <!-- <th class="text-center">Categoría</th> -->
                  <th class="text-center">Empresa</th>
                  <th *ngIf="this.TipoRubro==1" class="text-center">Sucursales</th>
                  <th *ngIf="this.TipoRubro==2" class="text-center">Proyectos</th>
@@ -96,7 +96,7 @@
                      </ng-template>
                        
                     </td>
-                    <td class="text-center">
+                    <!-- <td class="text-center">
                      <ng-container *ngIf="!item.Editando; else editarCategoria">
                        {{getNombreCategoria(item.idCategoria)}}
                      </ng-container>
@@ -107,7 +107,7 @@
                          </option>
                        </select>
                      </ng-template>
-                    </td>
+                    </td> -->
      
                     <td class="text-center">
                      <ng-container *ngIf="!item.Editando; else editarEmpresa">
