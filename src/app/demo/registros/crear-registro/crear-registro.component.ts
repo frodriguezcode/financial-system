@@ -21,6 +21,7 @@ import { Registro } from 'src/app/models/registro';
 import { ToastrService } from 'ngx-toastr';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 
 import { CalendarModule } from 'primeng/calendar';
@@ -81,7 +82,8 @@ activeIndex: number = 0;
     private conS:ConfigurationService,private datePipe: DatePipe, 
     private messageService: MessageService,
     private toastr: ToastrService,
-    private authS:AuthService
+    private authS:AuthService,
+    private firestore: AngularFirestore
   ){}
   registroForm!:FormGroup
   EditRegistroForm!:FormGroup
@@ -234,17 +236,31 @@ ngOnInit(): void {
 }
 
 borrarRegistros(){
-  console.log('RegistrosSeleccionados',this.registrosSeleccionados)
+
   if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
 
    this.registrosSeleccionados.forEach(element => {
-    
+
      this.conS.borrarRegistro(element.id).then(resp=>{
+      this.toastr.success('', 'Registro borrado',{
+        timeOut: 1000,
+      });
 
-
- 
+      this.Registros=this.Registros.filter(reg=>reg.id!=element.id)
      })
    });
+   let OrdenNuevo:number=1
+   const coleccionRef = this.firestore.collection('Registro');
+
+    this.Registros.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
+      
+      const registroRef = coleccionRef.doc(element.id).ref; 
+      const batch = this.firestore.firestore.batch();
+      batch.update(registroRef, { Orden: OrdenNuevo });
+      element.Orden =OrdenNuevo;
+      OrdenNuevo+=1
+
+    })
   }  
    else {
     this.toastr.warning('', '¡Acceso Denegado!',{
@@ -438,8 +454,9 @@ restablecer(){
   this.FechaHasta.setValue('')
 }
 obtenerRegistros(){
-  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
 
+  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
+ 
              this.registrosBackUp=[]
              resp.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
                let _Registro={
@@ -496,7 +513,8 @@ obtenerRegistros(){
              this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
               }
             } 
-             
+
+        
              this.calcularImporteTotal(this.Registros)
              this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
                return Math.max(maxOrden, objeto.Orden);
@@ -615,7 +633,7 @@ getTipo(idCategoria){
 
 salvarRegistro(Registro:any){
   Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
-console.log('Registro.Valor',Registro.Valor)
+
   if(this.validarEgreso(Registro.idTipo,Number(Registro.Valor),Registro.Orden)==false){
     Swal.fire({
       position: "center",
@@ -688,7 +706,6 @@ console.log('Registro.Valor',Registro.Valor)
       Registro.Valor=Number(this.quitarSimbolo(Registro.Valor))
       Registro.Usuario=this.usuario.Usuario
 
-      console.log('Registro',Registro)
       
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
@@ -996,6 +1013,86 @@ this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 }, 0);
 this.cargarFormulario()
 })
+
+}
+copiarRegistro(registro:any){
+
+  if (this.Registros.some(r => r.Orden === registro.Orden + 1 && r.idFlujo === registro.idFlujo)) {
+    console.error('El registro ya ha sido duplicado.');
+    return; // Salir si el registro ya ha sido duplicado
+  }
+  const coleccionRef = this.firestore.collection('Registro');
+  const nuevoDocRef = coleccionRef.doc().ref; 
+  const nuevoId = nuevoDocRef.id;
+  let _RegistroCopy=
+  {
+    "Elemento": registro.Elemento,
+    "Cuenta": registro.Cuenta,
+    "Valor": registro.Valor,
+    "idFlujo": registro.idFlujo,
+    "NumMes": registro.NumMes,
+    "NumSemana": registro.NumSemana,
+    "AnioRegistro": registro.AnioRegistro,
+    "Semana": registro.Semana,
+    "MesRegistro": registro.MesRegistro,
+    "Activo": registro.Activo,
+    "Nuevo": registro.Nuevo,
+    "Editando": registro.Editando,
+    "Orden": registro.Orden+1,
+    "idSocioNegocio": registro.idSocioNegocio,
+    "idEmpresa": registro.idEmpresa,
+    "idMatriz": registro.idMatriz,
+    "idCategoria": registro.idCategoria,
+    "NombreElemento": registro.NombreElemento,
+    "NumCuenta": registro.NumCuenta,
+    "Comentarios": registro.Comentarios,
+    "CategoriaNombre": registro.CategoriaNombre,
+    "SocioNegocio": registro.SocioNegocio,
+    "idSucursal": registro.idSucursal,
+    "FechaRegistro": registro.FechaRegistro,
+    "idTipo": registro.idTipo,
+    "TipoRegistro": registro.TipoRegistro,
+    "idProyecto": registro.idProyecto,
+    "Sucursal": registro.Sucursal,
+    "id":nuevoId
+
+  }
+
+ 
+
+    const indiceRegistro = this.Registros.findIndex(r => r.Orden === registro.Orden);
+    this.Registros.splice(indiceRegistro + 1, 0, _RegistroCopy);
+    const batch = this.firestore.firestore.batch();
+    batch.set(nuevoDocRef, _RegistroCopy);
+  
+    let OrdenNuevo:number=1
+    this.Registros.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
+      
+      const registroRef = coleccionRef.doc(element.id).ref; 
+      batch.update(registroRef, { Orden: OrdenNuevo });
+      element.Orden =OrdenNuevo;
+      OrdenNuevo+=1
+
+    })
+ 
+      // for (let i = indiceRegistro + 2; i < this.Registros.length; i++) {
+      //   const registroRef = coleccionRef.doc(this.Registros[i].id).ref; 
+      //   batch.update(registroRef, { Orden: this.Registros[i].Orden + 1 });
+      //   this.Registros[i].Orden += 1;
+      // }
+    
+
+
+    batch.commit()
+    .then(() => {
+
+    })
+    .catch(error => {
+   
+    });
+
+
+
 
 }
 ActualizarRegistro(){

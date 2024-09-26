@@ -77,15 +77,17 @@
             </ng-template>
             <ng-template pTemplate="rowexpansion" let-item >
            
-                <tr>
+                <tr >
             
-                 <td class="text-center">
+                 <td  class="text-center">
                   
                    {{item.Orden}}
                 
               
                </td>
-                    <td class="text-start">
+                    <td
+                    [ngClass]="[item.animation]"
+                    class="text-start">
                      <ng-container *ngIf="!item.Editando; else editarItem">
                        {{item.name}}
                      </ng-container>

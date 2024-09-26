@@ -136,7 +136,7 @@ export default class ItemsComponent  implements OnInit{
         "name":item.Nombre,
         "Orden":item.Orden,
         "Activo":item.Activo,
-        "animation":'',
+        "animation":'animate__animated animate__fadeIn',
         "Editando":item.Editando,
         "Empresa":this.getNombreEmpresa(item.idEmpresa),
         "idEmpresa":item.idEmpresa,
@@ -389,8 +389,8 @@ getLengItem(idCategoria:string){
       const currentOrder = _Items[index].Orden;
       const nextOrder = _Items[index + 1].Orden;
 
-      this.animateItem(_Items[index], 'animate__fadeInDown');
-      this.animateItem(_Items[index + 1], 'animate__fadeInUp');
+      this.animateItem(_Items[index], 'animate__animated animate__bounce');
+      this.animateItem(_Items[index + 1], 'animate__animated animate__bounce');
       
       // Intercambiamos los valores del campo Orden
       _Items[index].Orden = nextOrder;
@@ -421,8 +421,8 @@ getLengItem(idCategoria:string){
       const currentOrder = _Items[index].Orden;
       const previousOrder = _Items[index - 1].Orden;
 
-      this.animateItem(_Items[index], 'animate__fadeInUp');
-      this.animateItem(_Items[index - 1], 'animate__fadeInDown');
+      this.animateItem(_Items[index], 'animate__animated animate__bounce');
+      this.animateItem(_Items[index - 1], 'animate__animated animate__bounce');
 
       // Intercambiamos los valores del campo Orden
 

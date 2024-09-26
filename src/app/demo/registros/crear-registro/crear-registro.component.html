@@ -152,7 +152,9 @@
     <ng-template pTemplate="header">
       <tr class="text-center">
         <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+        <th style="text-transform: uppercase;font-size: 13px;">Copiar</th>
         <th style="text-transform: uppercase;font-size: 13px;">Orden</th>
+        <th style="text-transform: uppercase;font-size: 13px;">Fecha</th>
         <th style="text-transform: uppercase;font-size: 13px;">Categoría</th>
         <th style="text-transform: uppercase;font-size: 13px;">Cuenta Contable</th>
         <th style="text-transform: uppercase;font-size: 13px;">Cuenta Bancaria <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
@@ -162,7 +164,6 @@
         <th style="text-transform: uppercase;font-size: 13px;">Flujo</th>
         <th style="text-transform: uppercase;font-size: 13px;">Socio Negocios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th style="text-transform: uppercase;font-size: 13px;">Comentarios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th style="text-transform: uppercase;font-size: 13px;">Fecha</th>
         <th style="text-transform: uppercase;font-size: 13px;">Guardar</th>
       </tr>
     </ng-template>
@@ -178,8 +179,21 @@
       </td>
         <td class="text-center">
           <ng-container>
+            <button type="button" (click)="copiarRegistro(registros)" 
+           
+            [ngClass]="registros.idTipo==1 ? 'btn btn-info':'btn btn-danger'" 
+            >
+            
+            <i class="fa-solid fa-copy"></i></button>
+          </ng-container>
+        </td>
+        <td class="text-center">
+          <ng-container>
             {{ registros.Orden }}
           </ng-container>
+        </td>
+        <td class="text-center">
+          <input style="min-height: 3rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
         </td>
    
         <td class="text-center" >
@@ -362,9 +376,7 @@
               class="form-control text-center col-6"/>
         </td>
 
-        <td class="text-center">
-          <input style="min-height: 3rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
-        </td>
+       
         <td class="text-center">
           <button type="button" [disabled]="isNegativo==false || this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"
             ><i class="fa-solid fa-floppy-disk"></i
