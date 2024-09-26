@@ -112,7 +112,7 @@
          'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
          
          }">
-            <span class="categoria-toggle">{{ categoria.Nombre }}</span>
+            <span class="categoria-toggle" style="font-weight: bold;">{{ categoria.Nombre }}</span>
             <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
               <span *ngIf="categoria.Calculado == false">
                 <i style="cursor: pointer;" class="fa-solid fa-square-minus"></i>
@@ -134,8 +134,18 @@
                      'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
                      
                      }">
+                    <span *ngIf="DataCategorias[cab.Anio + '-' + cab.NumMes + '-' + categoria.id + '-' +
+                     cab.NumSemana]?.[0]?.Tipo==1">
                      {{ "$ " + ( DataCategorias[cab.Anio + '-' + cab.NumMes + '-' + categoria.id + '-' +
                      cab.NumSemana]?.[0]?.Valor| number) }}
+                    </span>
+                    <span style="color: red;" *ngIf="DataCategorias[cab.Anio + '-' + cab.NumMes + '-' + categoria.id + '-' +
+                     cab.NumSemana]?.[0]?.Tipo==2">
+                     {{ "-$ " + ( (DataCategorias[cab.Anio + '-' + cab.NumMes + '-' + categoria.id + '-' +
+                     cab.NumSemana]?.[0]?.Valor)*-1 | number) }}
+                    </span>
+
+
                    </th>
 
                   </ng-container>
@@ -146,8 +156,17 @@
 
                 <ng-container *ngIf="cab.Tipo==3 && cab.Mostrar==true">
                   <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
-                    {{ "$ " + ( DataCategoriasMensual[cab.Anio  + '-' + cab.NumMes + '-' + categoria.id]?.[0]?.Valor|
+
+                    <span *ngIf=" DataCategoriasMensual[cab.Anio  + '-' + cab.NumMes + '-' + categoria.id]?.[0]?.Tipo==1" >
+                      {{ "$ " + ( (DataCategoriasMensual[cab.Anio  + '-' + cab.NumMes + '-' + categoria.id]?.[0]?.Valor)|
                     number) }}
+                    </span>
+
+                    <span style="color: red;" *ngIf=" DataCategoriasMensual[cab.Anio  + '-' + cab.NumMes + '-' + categoria.id]?.[0]?.Tipo==2" >
+                      {{ "-$ " + ( (DataCategoriasMensual[cab.Anio  + '-' + cab.NumMes + '-' + categoria.id]?.[0]?.Valor)*-1|
+                    number) }}
+                    </span>
+
                   </td>
                 </ng-container>
        
@@ -158,7 +177,14 @@
                 <ng-container *ngIf="cab.Tipo==4">
                   <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
                     class="text-center">
+                  
+                  <span *ngIf="DataCategoriasAnual[cab.Anio + '-' + categoria.id]?.[0]?.Tipo==1">
                     {{ "$ " + ( DataCategoriasAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor| number) }}
+                  </span>
+                  <span style="color: red;" *ngIf="DataCategoriasAnual[cab.Anio + '-' + categoria.id]?.[0]?.Tipo==2">
+                    {{ "-$ " + ( (DataCategoriasAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor)*-1| number) }}
+                  </span>
+
                   </td>
 
                 </ng-container>
@@ -169,7 +195,7 @@
         <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
           <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
             <tr style="background-color: #FAFAFA">
-              <td style="background-color: white"><span style="margin-left: 20px; font-weight: bolder;">{{ item.Nombre
+              <td style="background-color: white"><span style="margin-left: 20px;">{{ item.Nombre
                   }}</span></td>
               <ng-container *ngFor="let cab of Cabecera">
                  <ng-container *ngIf="cab.Tipo!=1">
@@ -177,8 +203,21 @@
                      <ng-container *ngIf="cab.Tipo==2 && cab.Mostrar==true">
 
                        <td style="font-weight: bolder;" class="text-center">
-                         {{ "$ " + ( DataItems[cab.Anio + '-' + cab.NumMes + '-' + item.id + '-' +
+                       
+                       
+                       <span *ngIf="DataItems[cab.Anio + '-' + cab.NumMes + '-' + item.id + '-' +
+                        cab.NumSemana]?.[0]?.Tipo==1">
+                          {{ "$ " + ( DataItems[cab.Anio + '-' + cab.NumMes + '-' + item.id + '-' +
                         cab.NumSemana]?.[0]?.Valor| number) }}
+                        </span>
+
+                       <span style="color: red;" *ngIf="DataItems[cab.Anio + '-' + cab.NumMes + '-' + item.id + '-' +
+                        cab.NumSemana]?.[0]?.Tipo==2">
+                          {{ "-$ " + ( (DataItems[cab.Anio + '-' + cab.NumMes + '-' + item.id + '-' +
+                        cab.NumSemana]?.[0]?.Valor)*-1| number) }}
+                        </span>
+
+
                        </td>
       
                      </ng-container>

@@ -583,7 +583,7 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
       })
 
 
-   
+   this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
     
       this.Categorias.forEach(element => {
         this.categoriasExpandidas[element.id]=true
@@ -968,43 +968,49 @@ this.Categorias.forEach((categ:any) => {
         if(categ.Orden==0) {
           
           this.DataCategorias[key].push({
-            "Valor": this.obtenerValorSaldoInicial(sem.NumSemana,mes.NumMes,anio.Anio)
+            "Valor": this.obtenerValorSaldoInicial(sem.NumSemana,mes.NumMes,anio.Anio),
+             "Tipo":this.obtenerValorSaldoInicial(sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
         }
      else if(categ.Orden==3) {
           
           this.DataCategorias[key].push({
-            "Valor": this.getDataFlujoOperativo(sem.NumSemana,mes.NumMes,anio.Anio)
-  
+            "Valor": this.getDataFlujoOperativo(sem.NumSemana,mes.NumMes,anio.Anio),
+            "Tipo":this.getDataFlujoOperativo(sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
           });
         }
       else if(categ.Orden==6) {   
           this.DataCategorias[key].push({
-            "Valor": this.getDataFlujoInversion(sem.NumSemana,mes.NumMes,anio.Anio)
+            "Valor": this.getDataFlujoInversion(sem.NumSemana,mes.NumMes,anio.Anio),
+            "Tipo":this.getDataFlujoInversion(sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
         }
       else if(categ.Orden==9) {         
           this.DataCategorias[key].push({
-            "Valor": this.getDataFlujoFinanciero(sem.NumSemana,mes.NumMes,anio.Anio)
+            "Valor": this.getDataFlujoFinanciero(sem.NumSemana,mes.NumMes,anio.Anio),
+            "Tipo":this.getDataFlujoFinanciero(sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
           });
         }
       else if(categ.Orden==10) {     
           this.DataCategorias[key].push({
-            "Valor": this.getDataFlujoLibre(sem.NumSemana,mes.NumMes,anio.Anio)
+            "Valor": this.getDataFlujoLibre(sem.NumSemana,mes.NumMes,anio.Anio),
+            "Tipo":this.getDataFlujoLibre(sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
         }
       else if(categ.Orden==11) {     
           this.DataCategorias[key].push({
-            "Valor": this.obtenerValorSaldoFinal(sem.NumSemana,mes.NumMes,anio.Anio)
+            "Valor": this.obtenerValorSaldoFinal(sem.NumSemana,mes.NumMes,anio.Anio),
+            "Tipo":this.obtenerValorSaldoFinal(sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
         }
         else {
           this.DataCategorias[key].push({
-            "Valor": this.getValorCategoria(categ.id,sem.NumSemana,mes.NumMes,anio.Anio) 
+            "Valor": this.getValorCategoria(categ.id,sem.NumSemana,mes.NumMes,anio.Anio),
+            "Tipo":this.getValorCategoria(categ.id,sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
           });
           
         }
@@ -1014,7 +1020,7 @@ this.Categorias.forEach((categ:any) => {
     })
   
 });
-
+console.log('DataCategorias',this.DataCategorias)
 this.getDataItems()
 this.getDataItemMensual()
 this.getDataItemAnual()
@@ -1033,40 +1039,46 @@ this.Categorias.forEach((categ:any) => {
         
         if(categ.Orden==0) {
           this.DataCategoriasMensual[key].push({
-            "Valor": this.obtenerValorSaldoInicialMensual(mes.NumMes,anio.Anio)
+            "Valor": this.obtenerValorSaldoInicialMensual(mes.NumMes,anio.Anio),
+            "Tipo":this.obtenerValorSaldoInicialMensual(mes.NumMes,anio.Anio)<0 ? 2 : 1
           });
         }
 
       else if(categ.Orden==3) {
           
           this.DataCategoriasMensual[key].push({
-            "Valor": this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio)
+            "Valor": this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio),
+            "Tipo":this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
       }
       else if(categ.Orden==6) {
           
           this.DataCategoriasMensual[key].push({
-            "Valor": this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio)
+            "Valor": this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio),
+            "Tipo":this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
       }
       else if(categ.Orden==9) {
           
           this.DataCategoriasMensual[key].push({
-            "Valor": this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio)
+            "Valor": this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio),
+            "Tipo":this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
       }
 
       else  if(categ.Orden==11) {
           this.DataCategoriasMensual[key].push({
-            "Valor": this.obtenerValorSaldoFinalMensual(mes.NumMes,anio.Anio)
+            "Valor": this.obtenerValorSaldoFinalMensual(mes.NumMes,anio.Anio),
+            "Tipo":this.obtenerValorSaldoFinalMensual(mes.NumMes,anio.Anio)<0 ? 2 : 1
           });
         }
         else {
           this.DataCategoriasMensual[key].push({
-            "Valor": this.getValorCategoriaMensual(categ.id,mes.NumMes,anio.Anio)
+            "Valor": this.getValorCategoriaMensual(categ.id,mes.NumMes,anio.Anio),
+            "Tipo":this.getValorCategoriaMensual(categ.id,mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
 
@@ -1088,7 +1100,8 @@ this.Categorias.forEach((categ:any) => {
           this.DataCategoriasAnual[key] =[];
         }
         this.DataCategoriasAnual[key].push({
-          "Valor": this.getValorCategoriaAnual(categ.id,anio.Anio)
+          "Valor": this.getValorCategoriaAnual(categ.id,anio.Anio),
+          "Tipo":this.getValorCategoriaAnual(categ.id,anio.Anio)<0 ? 2 : 1
 
         });
 
@@ -1180,7 +1193,8 @@ this.Items.forEach((item:any) => {
           this.DataItemsMensual[key] =[];
         }
         this.DataItemsMensual[key].push({
-          "Valor": this.getValorItemMensual(item.id,mes.NumMes,anio.Anio)
+          "Valor": this.getValorItemMensual(item.id,mes.NumMes,anio.Anio),
+          "Tipo": this.getValorItemMensual(item.id,mes.NumMes,anio.Anio)<0 ? 2 : 1
 
         });
 
@@ -1200,7 +1214,8 @@ getDataItemAnual(){
             this.DataItemsAnual[key] =[];
           }
           this.DataItemsAnual[key].push({
-            "Valor": this.getValorItemAnual(item.id,anio.Anio)
+            "Valor": this.getValorItemAnual(item.id,anio.Anio),
+            "Tipo":this.getValorItemAnual(item.id,anio.Anio)<0 ? 2 : 1
           });
       }) 
   });
@@ -1219,7 +1234,8 @@ getDataItems(){
             this.DataItems[key] =[];
           }
           this.DataItems[key].push({
-            "Valor": this.getValorItem(item.id,sem.NumSemana,mes.NumMes,anio.Anio)
+            "Valor": this.getValorItem(item.id,sem.NumSemana,mes.NumMes,anio.Anio),
+            "Tipo":this.getValorItem(item.id,sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
   
