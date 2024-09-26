@@ -19,8 +19,6 @@ import { ButtonModule } from 'primeng/button';
 import {  MessageService, SelectItem } from 'primeng/api';
 import { Registro } from 'src/app/models/registro';
 import { ToastrService } from 'ngx-toastr';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 
@@ -34,7 +32,8 @@ import SocioNegocioComponent from '../../socios/socios.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { CurrencySymbolPipe } from 'src/app/pipe/currency.pipe';
 import { TabViewModule } from 'primeng/tabview';
-import { Subscription } from 'rxjs';
+import * as FileSaver from 'file-saver';
+import * as ExcelJS from 'exceljs';
 
 @Component({
   selector: 'app-crear',
@@ -141,6 +140,7 @@ activeIndex: number = 0;
 cargando:boolean
   Fecha:any= new Date();
   ImporteTotal:number=0
+  ImporteSubTotal:number=0
 ngOnInit(): void {
 
   this.MesesTodos= [
@@ -417,7 +417,9 @@ buscarBySucursal(){
   else {
     this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
   }
-  this.calcularImporteTotal(this.Registros)
+
+
+  this.calcularImporteSubTotal(this.Registros)
   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
     return Math.max(maxOrden, objeto.Orden);
 }, 0);
@@ -439,7 +441,7 @@ buscarByProyecto(){
 
   }
 
-  this.calcularImporteTotal(this.Registros)
+  this.calcularImporteSubTotal(this.Registros)
   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
     return Math.max(maxOrden, objeto.Orden);
 }, 0);
@@ -514,8 +516,9 @@ obtenerRegistros(){
               }
             } 
 
-        
+     
              this.calcularImporteTotal(this.Registros)
+             this.calcularImporteSubTotal(this.Registros)
              this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
                return Math.max(maxOrden, objeto.Orden);
            }, 0);
@@ -546,12 +549,20 @@ switchTipoRegistro(idTipo){
 
     
   }
+  this.calcularImporteSubTotal( this.Registros)
+  this.calcularImporteTotal( this.Registros)
 }
 
 calcularImporteTotal(registros:any){
   this.ImporteTotal=0
   registros.forEach((element:any) => {
     this.ImporteTotal+= element.Valor=='' ? 0 : element.Valor
+  });
+}
+calcularImporteSubTotal(registros:any){
+  this.ImporteSubTotal=0
+  registros.forEach((element:any) => {
+    this.ImporteSubTotal+= element.Valor=='' ? 0 : element.Valor
   });
 }
 getWeek(date: Date): number {
@@ -775,29 +786,7 @@ quitarSimbolo(valor: string): string {
 }
 
 
-onRowEditSave(registro: Registro){
-  if (registro.Elemento != '') {
-    delete this.clonedRegistros[registro.id as string];
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Registro creado | actualizado',
-    });
-  } else {
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'Registro no valido',
-    });
-  }
 
-}
-
-
-onRowEditCancel(registro: Registro, index: number) {
-  this._Registros[index] = this.clonedRegistros[registro.id as string];
-  delete this.clonedRegistros[registro.id as string];
-}
 
 getItemsByCategory(idCategoria:string){
   let _Items:any=[]
@@ -899,7 +888,96 @@ crearRegistro(tipo:any) {
 
 
 }
+descargarRegistros(){
+  let _RegistrosDescargar:any=[]
+if(this.idTipoRegistro=1){
+  this.Registros.forEach(element => {
+    _RegistrosDescargar.push(
+      {
+        "Orden":element.Orden,
+        "Fecha":element.FechaRegistro,
+        "Categoría":element.CategoriaNombre,
+        "Cuenta Contable":element.NombreElemento,
+        "Cuenta Bancaria":element.NumCuenta,
+        "Sucursal":element.Sucursal,
+        "Importe":element.Valor,
+        "Socio Negocio":element.SocioNegocio,
+        "Comentario":element.Comentarios
+      }
 
+
+    )
+  });
+
+}
+else {
+  this.Registros.forEach(element => {
+    _RegistrosDescargar.push(
+      {
+        "Orden":element.Orden,
+        "Fecha":element.FechaRegistro,
+        "Categoría":element.CategoriaNombre,
+        "Cuenta Contable":element.NombreElemento,
+        "Cuenta Bancaria":element.NumCuenta,
+        "Proyecto":element.Proyecto,
+        "Importe":element.Valor,
+        "Socio Negocio":element.SocioNegocio,
+        "Comentario":element.Comentarios
+      }
+
+
+    )
+  });
+
+  
+  
+}
+
+
+
+const workbook = new ExcelJS.Workbook();
+const worksheet = workbook.addWorksheet('Registros');
+worksheet.columns = [
+  { header: 'Orden', key: 'Orden', width: 10 },
+  { header: 'Fecha', key: 'Fecha', width: 15 },
+  { header: 'Categoría', key: 'Categoría', width: 30 },
+  { header: 'Cuenta Contable', key: 'Cuenta Contable', width: 40 },
+  { header: 'Cuenta Bancaria', key: 'Cuenta Bancaria', width: 20 },
+  { header: 'Sucursal', key: 'Sucursal', width: 25 },
+  { header: 'Importe', key: 'Importe', width: 15 },
+  { header: 'Socio Negocio', key: 'Socio Negocio', width: 25 },
+  { header: 'Comentario', key: 'Comentario', width: 25 },
+];
+
+worksheet.getRow(1).eachCell((cell) => {
+  cell.font = { bold: true, size: 12 };
+  cell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FFCCFFCC' }, 
+  };
+  cell.border = {
+    top: { style: 'thin' },
+    left: { style: 'thin' },
+    bottom: { style: 'thin' },
+    right: { style: 'thin' },
+  };
+  cell.alignment = { vertical: 'middle', horizontal: 'center' };
+});
+
+_RegistrosDescargar.forEach((registro) => {
+  worksheet.addRow(registro);
+});
+
+
+worksheet.getColumn('Importe').numFmt = '"$"#,##0.00;[Red]\-"$"#,##0.00';
+
+workbook.xlsx.writeBuffer().then((data) => {
+  const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  FileSaver.saveAs(blob, 'Registros.xlsx');
+});
+
+}
 getItemsCategGroup(tipo:any){
 
   let _Categorias:any=[]

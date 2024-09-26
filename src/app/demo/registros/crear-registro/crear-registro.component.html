@@ -138,8 +138,14 @@
         <div class="col-auto">
             <button type="button"
             [disabled]="this.registrosSeleccionados.length==0"
-            (click)="borrarRegistros()" class="btn btn-success shadow-4 mx-auto" ngbTooltip="Crear egreso">Borrar Registro
+            (click)="borrarRegistros()" class="btn btn-success shadow-4 mx-auto" ngbTooltip="Borrar">Borrar Registro
                <i class="fa-solid fa-trash"></i ></button>
+        </div>
+        <div class="col-auto">
+            <button type="button"
+            [disabled]="this.Registros.length==0"
+            (click)="descargarRegistros()" class="btn btn-primary shadow-4 mx-auto" ngbTooltip="Descargar Registros">Descargar
+            <i class="fa-solid fa-file-excel"></i></button>
         </div>
 
  
@@ -385,7 +391,24 @@
       </tr>
     </ng-template>
   </p-table>
-  <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;">Importe Total {{ " $ " + ImporteTotal}}</p>
+  <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
+  *ngIf="ImporteSubTotal<0">
+  Importe Sub-Total: <strong>{{ " -$ " + (ImporteSubTotal*-1 | number)}}</strong>
+  </p>
+  <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
+  *ngIf="ImporteSubTotal>=0">
+  Importe Sub-Total: <strong>{{ " $ " + (ImporteSubTotal| number)}}</strong> 
+  </p>
+
+  <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
+  *ngIf="ImporteTotal<0">
+  Importe Total: <strong>{{ " -$ " + (ImporteTotal*-1 | number)}}</strong> 
+  </p>
+  <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
+  *ngIf="ImporteTotal>=0">
+  Importe Total: <strong>{{ " $ " + (ImporteTotal| number)}}</strong> 
+  </p>
+
 
 
 <p-dialog
