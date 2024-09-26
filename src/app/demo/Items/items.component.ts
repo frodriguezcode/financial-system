@@ -136,6 +136,7 @@ export default class ItemsComponent  implements OnInit{
         "name":item.Nombre,
         "Orden":item.Orden,
         "Activo":item.Activo,
+        "animation":'',
         "Editando":item.Editando,
         "Empresa":this.getNombreEmpresa(item.idEmpresa),
         "idEmpresa":item.idEmpresa,
@@ -349,6 +350,7 @@ export default class ItemsComponent  implements OnInit{
         this.ItemsBack=resp.sort((a:any, b:any) => a.Orden - b.Orden)
         this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))+1
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+        this.Items.map((item:any)=>item.animation='')
      
     
 
@@ -360,6 +362,93 @@ export default class ItemsComponent  implements OnInit{
       this.getItemsGroup()
 
     })
+  }
+
+
+  sortItemsByOrder(_Items:any): void {
+    _Items.forEach((updatedItem: any) => {
+      const index = this.Items.findIndex((it: any) => it.id === updatedItem.id);
+      if (index !== -1) {
+        this.Items[index] = updatedItem; // Reemplazamos el item modificado
+      }
+    });
+    this.Items.sort((a, b) => a.Orden - b.Orden);
+   
+    this.getItemsGroup()
+  }
+getLengItem(idCategoria:string){
+  let _Items:any=[]
+  _Items=this.Items.filter((it:any)=>it.idCategoria==idCategoria)
+  return _Items.length
+}
+  moveDown(item: any): void {
+    let _Items:any=[]
+    _Items=this.Items.filter((it:any)=>it.idCategoria==item.idCategoria)
+    const index = _Items.findIndex(i => i.id === item.id);
+    if (index < _Items.length - 1) {
+      const currentOrder = _Items[index].Orden;
+      const nextOrder = _Items[index + 1].Orden;
+
+      this.animateItem(_Items[index], 'animate__fadeInDown');
+      this.animateItem(_Items[index + 1], 'animate__fadeInUp');
+      
+      // Intercambiamos los valores del campo Orden
+      _Items[index].Orden = nextOrder;
+      _Items[index].Nombre = this.getIdCategoria(_Items[index].idCategoria) + '.' + nextOrder + ' '+ _Items[index].Alias ;
+
+
+      _Items[index + 1].Orden = currentOrder;
+      _Items[index + 1].Nombre = this.getIdCategoria(_Items[index + 1].idCategoria) + '.' + currentOrder + ' '+ _Items[index + 1].Alias ;
+
+      // Reordenamos el arreglo basado en el campo Orden
+      this.sortItemsByOrder(_Items);
+
+      this.conS.ActualizarItem(_Items[index]).then(resp=>{
+
+      })
+      this.conS.ActualizarItem(_Items[index + 1]).then(resp=>{
+
+      })
+     
+    }
+  }
+
+  moveUp(item: any): void {
+    let _Items:any=[]
+    _Items=this.Items.filter((it:any)=>it.idCategoria==item.idCategoria)
+    const index = _Items.findIndex(i => i.id === item.id);
+    if (index > 0) {
+      const currentOrder = _Items[index].Orden;
+      const previousOrder = _Items[index - 1].Orden;
+
+      this.animateItem(_Items[index], 'animate__fadeInUp');
+      this.animateItem(_Items[index - 1], 'animate__fadeInDown');
+
+      // Intercambiamos los valores del campo Orden
+
+      _Items[index].Orden = previousOrder;
+      _Items[index].Nombre = this.getIdCategoria(_Items[index].idCategoria) + '.' + previousOrder + ' '+ _Items[index].Alias ;
+
+
+      _Items[index - 1].Orden = currentOrder;
+      _Items[index - 1].Nombre = this.getIdCategoria(_Items[index - 1].idCategoria) + '.' + currentOrder + ' '+ _Items[index - 1].Alias ;
+
+      // Reordenamos el arreglo basado en el campo Orden
+      this.sortItemsByOrder(_Items);
+      this.conS.ActualizarItem(_Items[index]).then(resp=>{
+
+      })
+      this.conS.ActualizarItem(_Items[index - 1]).then(resp=>{
+
+      })
+    }
+  }
+
+  animateItem(item: any, animation: string): void {
+    item.animation = animation;
+    setTimeout(() => {
+      item.animation = ''; // Quitamos la animación después de 1 segundo
+    }, 1000); // La duración de la animación es 1 segundo
   }
 
   calculateItemsTotal(name: string) {
@@ -441,7 +530,7 @@ export default class ItemsComponent  implements OnInit{
     }
 
       ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
-
+      ItemForm.Alias=ItemForm.Nombre 
       this.conS.crearItem(ItemForm).then(resp=>{
         let SucursalesSeleccionadas:any=ItemForm.Sucursales
         let ProyectosSeleccionados:any=ItemForm.Proyectos
