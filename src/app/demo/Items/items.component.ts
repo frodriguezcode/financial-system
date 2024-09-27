@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Renderer2  } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TabViewModule } from 'primeng/tabview';
 
@@ -44,7 +44,8 @@ import * as FileSaver from 'file-saver';
   styleUrls: ['./items.component.scss']
 })
 export default class ItemsComponent  implements OnInit{
-  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService,private formBuilder: FormBuilder) {}
+  constructor(private datePipe: DatePipe,private conS:ConfigurationService,
+    private toastr: ToastrService,private renderer: Renderer2) {}
   Items:any=[]
   ItemsGroup:any=[]
   ItemsBack:any=[]
@@ -138,7 +139,7 @@ export default class ItemsComponent  implements OnInit{
         "name":item.Nombre,
         "Orden":item.Orden,
         "Activo":item.Activo,
-        "animation":'animate__animated animate__fadeIn',
+        "animation":item.animation,
         "Editando":item.Editando,
         "Empresa":this.getNombreEmpresa(item.idEmpresa),
         "idEmpresa":item.idEmpresa,
@@ -439,6 +440,7 @@ export default class ItemsComponent  implements OnInit{
         this.ItemsBack=resp.sort((a:any, b:any) => a.Orden - b.Orden)
         this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))+1
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+
         this.Items.map((item:any)=>item.animation='')
      
     
@@ -462,7 +464,7 @@ export default class ItemsComponent  implements OnInit{
       }
     });
     this.Items.sort((a, b) => a.Orden - b.Orden);
-   
+
     this.getItemsGroup()
   }
 getLengItem(idCategoria:string){
@@ -470,75 +472,75 @@ getLengItem(idCategoria:string){
   _Items=this.Items.filter((it:any)=>it.idCategoria==idCategoria)
   return _Items.length
 }
-  moveDown(item: any): void {
-    let _Items:any=[]
-    _Items=this.Items.filter((it:any)=>it.idCategoria==item.idCategoria)
-    const index = _Items.findIndex(i => i.id === item.id);
-    if (index < _Items.length - 1) {
-      const currentOrder = _Items[index].Orden;
-      const nextOrder = _Items[index + 1].Orden;
+moveDown(item: any): void {
+  let _Items: any[] = this.Items.filter(it => it.idCategoria === item.idCategoria);
+  const index = _Items.findIndex(i => i.id === item.id);
+  if (index < _Items.length - 1) {
+    const currentOrder = _Items[index].Orden;
+    const nextOrder = _Items[index + 1].Orden;
 
-      this.animateItem(_Items[index], 'animate__animated animate__bounce');
-      this.animateItem(_Items[index + 1], 'animate__animated animate__bounce');
-      
-      // Intercambiamos los valores del campo Orden
-      _Items[index].Orden = nextOrder;
-      _Items[index].Nombre = this.getIdCategoria(_Items[index].idCategoria) + '.' + nextOrder + ' '+ _Items[index].Alias ;
+    // Aplica animación
 
 
-      _Items[index + 1].Orden = currentOrder;
-      _Items[index + 1].Nombre = this.getIdCategoria(_Items[index + 1].idCategoria) + '.' + currentOrder + ' '+ _Items[index + 1].Alias ;
+    _Items[index].Orden = nextOrder;
+    _Items[index].Nombre = this.getIdCategoria(_Items[index].idCategoria) + '.' + nextOrder + ' ' + _Items[index].Alias;
 
-      // Reordenamos el arreglo basado en el campo Orden
-      this.sortItemsByOrder(_Items);
+    _Items[index + 1].Orden = currentOrder;
+    _Items[index + 1].Nombre = this.getIdCategoria(_Items[index + 1].idCategoria) + '.' + currentOrder + ' ' + _Items[index + 1].Alias;
 
-      this.conS.ActualizarItem(_Items[index]).then(resp=>{
+    // _Items[index].animation = 'animate__animated animate__bounceInDown';
+    // _Items[index + 1].animation = 'animate__animated animate__bounceInUp';
+    this.sortItemsByOrder(_Items);
 
-      })
-      this.conS.ActualizarItem(_Items[index + 1]).then(resp=>{
 
-      })
-     
-    }
+
+    this.conS.ActualizarItem(_Items[index]).then(() => {
+
+    });
+    this.conS.ActualizarItem(_Items[index + 1]).then(() => {
+  
+    });
   }
+}
 
-  moveUp(item: any): void {
-    let _Items:any=[]
-    _Items=this.Items.filter((it:any)=>it.idCategoria==item.idCategoria)
-    const index = _Items.findIndex(i => i.id === item.id);
-    if (index > 0) {
-      const currentOrder = _Items[index].Orden;
-      const previousOrder = _Items[index - 1].Orden;
+moveUp(item: any): void {
+  let _Items: any[] = this.Items.filter(it => it.idCategoria === item.idCategoria);
+  const index = _Items.findIndex(i => i.id === item.id);
+  if (index > 0) {
+    const currentOrder = _Items[index].Orden;
+    const previousOrder = _Items[index - 1].Orden;
 
-      this.animateItem(_Items[index], 'animate__animated animate__bounce');
-      this.animateItem(_Items[index - 1], 'animate__animated animate__bounce');
+    // Aplica animación
+    _Items[index].animation = 'animate__animated animate__backInUp';
+    _Items[index - 1].animation = 'animate__animated animate__backInDown';
 
-      // Intercambiamos los valores del campo Orden
+    _Items[index].Orden = previousOrder;
+    _Items[index].Nombre = this.getIdCategoria(_Items[index].idCategoria) + '.' + previousOrder + ' ' + _Items[index].Alias;
 
-      _Items[index].Orden = previousOrder;
-      _Items[index].Nombre = this.getIdCategoria(_Items[index].idCategoria) + '.' + previousOrder + ' '+ _Items[index].Alias ;
+    _Items[index - 1].Orden = currentOrder;
+    _Items[index - 1].Nombre = this.getIdCategoria(_Items[index - 1].idCategoria) + '.' + currentOrder + ' ' + _Items[index - 1].Alias;
 
+    this.sortItemsByOrder(_Items);
 
-      _Items[index - 1].Orden = currentOrder;
-      _Items[index - 1].Nombre = this.getIdCategoria(_Items[index - 1].idCategoria) + '.' + currentOrder + ' '+ _Items[index - 1].Alias ;
-
-      // Reordenamos el arreglo basado en el campo Orden
-      this.sortItemsByOrder(_Items);
-      this.conS.ActualizarItem(_Items[index]).then(resp=>{
-
-      })
-      this.conS.ActualizarItem(_Items[index - 1]).then(resp=>{
-
-      })
-    }
+    this.conS.ActualizarItem(_Items[index]).then(() => {
+    
+    });
+    this.conS.ActualizarItem(_Items[index - 1]).then(() => {
+    
+    });
   }
-
-  animateItem(item: any, animation: string): void {
-    item.animation = animation;
-    setTimeout(() => {
-      item.animation = ''; // Quitamos la animación después de 1 segundo
-    }, 1000); // La duración de la animación es 1 segundo
+}
+applyAnimation(element: HTMLElement | null, animationClass: string) {
+  if (element) {
+    this.renderer.addClass(element, animationClass);
   }
+}
+
+removeAnimation(element: HTMLElement | null, animationClass: string) {
+  if (element) {
+    this.renderer.removeClass(element, animationClass);
+  }
+}
 
   calculateItemsTotal(name: string) {
     let total = 0;

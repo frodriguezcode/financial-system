@@ -41,8 +41,9 @@
 
             <ng-template pTemplate="header">
                 <tr>
-                 <th class="text-center">Orden</th>
-                 <th class="text-center">Nombre</th>
+                  <th class="text-center">Orden</th>
+                  <th class="text-center">Nombre</th>
+                  <th class="text-center">Estilo</th>
                  <!-- <th class="text-center">Categoría</th> -->
                  <th class="text-center">Empresa</th>
                  <th *ngIf="this.TipoRubro==1" class="text-center">Sucursales</th>
@@ -83,16 +84,18 @@
             </ng-template>
             <ng-template pTemplate="rowexpansion" let-item >
            
-                <tr >
+                <tr [ngClass]="item.animation" >
             
+               
                  <td  class="text-center">
                   
                    {{item.Orden}}
                 
               
                </td>
+
                     <td
-                    [ngClass]="[item.animation]"
+                   
                     class="text-start">
                      <ng-container *ngIf="!item.Editando; else editarItem">
                        {{item.name}}
@@ -104,6 +107,13 @@
                      </ng-template>
                        
                     </td>
+
+                    <td  class="text-center">
+                  
+                      {{item.animation}}
+                   
+                 
+                  </td>
                     <!-- <td class="text-center">
                      <ng-container *ngIf="!item.Editando; else editarCategoria">
                        {{getNombreCategoria(item.idCategoria)}}

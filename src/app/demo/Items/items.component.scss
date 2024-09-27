@@ -13,3 +13,22 @@
 .text-start{
   font-size: 15px;
 }
+
+
+/* Aplica una transición suave en el cambio de posición */
+.item-row {
+  transition: transform 0.3s ease;
+}
+
+/* Agrega una clase temporalmente para mostrar la animación */
+.move-up {
+  transform: translateY(-50px); /* Subir */
+}
+
+.move-down {
+  transform: translateY(50px); /* Bajar */
+}
+
+.colorRow{
+  background-color: #df0000;
+}
