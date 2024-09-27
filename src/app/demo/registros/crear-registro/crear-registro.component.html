@@ -159,7 +159,7 @@
       <tr class="text-center">
         <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
         <th style="text-transform: uppercase;font-size: 13px;">Copiar</th>
-        <th style="text-transform: uppercase;font-size: 13px;">Orden</th>
+        <th style="text-transform: uppercase;font-size: 13px;">Registro</th>
         <th style="text-transform: uppercase;font-size: 13px;">Fecha</th>
         <th style="text-transform: uppercase;font-size: 13px;">Categoría</th>
         <th style="text-transform: uppercase;font-size: 13px;">Cuenta Contable</th>
@@ -323,11 +323,11 @@
         </div>
               <input
               [ngClass]="registros.idTipo == 1 ? 'textoInputPositivo' : 'textoInputNegativo'"
-              (keyup.enter)="salvarRegistro(registros)"
+              (keyup.enter)="salvarRegistro(registros,Valor.value)"
+              #Valor
               [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
               (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden);onInput($event)"
               style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
-              [(ngModel)]="registros.Valor "
               [ngModel]="registros.Valor | currencySymbol"
               class="form-control text-center col-6"/>
        
@@ -375,7 +375,7 @@
         </td>
         <td class="text-center">
               <input
-              (keyup.enter)="salvarRegistro(registros)"
+              (keyup.enter)="salvarRegistro(registros,Valor.value)"
               [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
               style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
               [(ngModel)]="registros.Comentarios "
@@ -384,7 +384,7 @@
 
        
         <td class="text-center">
-          <button type="button" [disabled]="isNegativo==false || this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0" (click)="salvarRegistro(registros)" class="btn btn-success" ngbTooltip="Guardar registro"
+          <button type="button" [disabled]="isNegativo==false || this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0" (click)="salvarRegistro(registros,Valor.value)" class="btn btn-success" ngbTooltip="Guardar registro"
             ><i class="fa-solid fa-floppy-disk"></i
           ></button>
         </td>
@@ -451,119 +451,6 @@
 </p-dialog>
 
 <!-- *EDITAR REGISTRO -->
-<p-dialog
-  header="Editar Registro"
-  [(visible)]="visibleEditar"
-  [modal]="true"
-  [style]="{ width: '75vw', height: '50vh' }"
-  [modal]="true"
-  styleClass="p-fluid"
-  [draggable]="false"
-  [resizable]="false"
-  [maximizable]="true"
->
-  <div *ngIf="EditRegistroForm">
-    <form [formGroup]="EditRegistroForm" class="row g-3">
-      <div class="col-md-6 col-lg-6 col-12 dropdown">
-        <label for="inputPassword4" class="form-label">Elementos</label>
-        <p-dropdown
-          [options]="Items"
-          formControlName="Elemento"
-          name="ItemSeleccionados"
-          optionLabel="Nombre"
-          [filter]="true"
-          filterBy="Nombre"
-          [showClear]="true"
-          placeholder="Seleccione un elemento"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-selectedItem>
-            <div class="flex align-items-center gap-2">
-              <div>{{ selectedItem.Nombre }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Valor</label>
-        <input type="text" pInputText formControlName="Valor" />
-      </div>
-      <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Cuenta</label>
-        <input type="text" pInputText formControlName="Cuenta" />
-      </div>
-      <!-- ~DROPDOWN DE CATEGORIAS -->
-      <div class="col-md-6 col-lg-6 col-12 dropdown-cat">
-        <label for="inputPassword4" class="form-label">Categoría</label>
-        <p-dropdown
-          [options]="Categorias"
-          formControlName="idCategoria"
-          name="ItemSeleccionados"
-          optionLabel="Nombre"
-          [filter]="true"
-          filterBy="Nombre"
-          [showClear]="true"
-          placeholder="Seleccione una categoría"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-selectedItem>
-            <div class="flex align-items-lg-start gap-2">
-              <div>{{ selectedItem.Nombre }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <!-- ~DROPDOWN DE CATEGORIAS -->
-
-      <div class="departamento-socio">
-        <!-- ~RADIO BUTTON DEPARTAMENTO -->
-        <div class="radio-departamentos">
-          <div class="col-md-6 col-lg-6 col-12">
-            <label for="inputPassword4" class="form-label title">Flujo</label>
-
-            <div *ngFor="let flujo of Flujos">
-              <p-radioButton value="{{ flujo.name }}" formControlName="idFlujo"></p-radioButton>
-              <span class="space"></span>
-              <label class="ml-2">{{ flujo.name }}</label>
-            </div>
-          </div>
-        </div>
-        <!-- ~RADIO BUTTON DEPARTAMENTO -->
-
-        <!-- ~DROPDOWN SOCIO DE NEGOCIO -->
-        <div class="dropdown-socio">
-          <div class="col-md-6 col-lg-6 col-12 position-elemento">
-            <label for="inputPassword4" class="form-label">Socio de Negocio</label>
-            <p-dropdown
-              [options]="SociosNegocios"
-              formControlName="idSocioNegocio"
-              name="ItemSeleccionados"
-              optionLabel="Nombre"
-              [filter]="true"
-              filterBy="Nombre"
-              [showClear]="true"
-              placeholder="Seleccione un socio de negocio"
-              appendTo="body"
-            >
-              <ng-template pTemplate="selectedItem" let-selectedItem>
-                <div class="flex align-items-center gap-2">
-                  <div>{{ selectedItem.Nombre }}</div>
-                </div>
-              </ng-template>
-            </p-dropdown>
-          </div>
-        </div>
-
-        <!-- ~DROPDOWN SOCIO DE NEGOCIO -->
-      </div>
-    </form>
-    <div class="d-grid gap-2">
-      <button (click)="ActualizarRegistro()" type="button" class="btn btn-primary mt-5 col-4" ngbTooltip="Guardar Registro"
-        >Guardar cambios</button
-      >
-    </div>
-  </div>
-</p-dialog>
 
 <!-- Nuevo -->
 

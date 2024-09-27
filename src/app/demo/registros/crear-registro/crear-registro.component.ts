@@ -641,10 +641,22 @@ getTipo(idCategoria){
   }
 }
 
-
-salvarRegistro(Registro:any){
+validateInput(value: string): boolean {
+  const regex = /^(?=.*[a-zA-Z])(?=.*[0-9])/;
+  return regex.test(value);
+}
+salvarRegistro(Registro:any,Valor:any){
   Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
-
+if(this.validateInput(this.quitarSimbolo(Valor))==true){
+  Swal.fire({
+    position: "center",
+    icon: "warning",
+    title: "El valor no debe contener letras ni simbolos",
+    showConfirmButton: false,
+    timer: 1500
+  });
+}
+else {
   if(this.validarEgreso(Registro.idTipo,Number(Registro.Valor),Registro.Orden)==false){
     Swal.fire({
       position: "center",
@@ -714,10 +726,12 @@ salvarRegistro(Registro:any){
       Registro.idProyecto=this.getIdProyecto(Registro.Proyecto)
       Registro.idSucursal=this.getIdSucursal(Registro.Sucursal)
 
-      Registro.Valor=Number(this.quitarSimbolo(Registro.Valor))
+      Registro.Valor= Registro.Tipo==1 ? Number(  this.quitarSimbolo(Valor)) :  Number(  this.quitarSimbolo(Valor)) *-1
+      Registro.Valor2= Registro.Tipo==1 ? Number(  this.quitarSimbolo(Valor)) :  Number(  this.quitarSimbolo(Valor)) *-1
       Registro.Usuario=this.usuario.Usuario
-
-      
+      console.log(' Valor', Valor)
+      console.log('Registro',Registro)
+   
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
         })
@@ -725,6 +739,8 @@ salvarRegistro(Registro:any){
     
 
   }
+
+}
 }
 
 getIdProyecto(proyectoNombre){
@@ -776,8 +792,13 @@ addRow() {
 }
 
 quitarSimbolo(valor: string): string {
+console.log('ValorFormat',valor)
   if ( typeof valor=='string' && valor.startsWith('$')) {
-    return valor.replace('$', '');
+    return valor.replace(/[$,]/g, "");
+
+  }
+else  if ( typeof valor=='string' && valor.startsWith('-$')) {
+    return valor.replace(/[-$,]/g, "");
 
   }
   else {
