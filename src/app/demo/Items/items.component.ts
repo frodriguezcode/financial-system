@@ -530,6 +530,9 @@ moveUp(item: any): void {
     });
   }
 }
+
+
+
 applyAnimation(element: HTMLElement | null, animationClass: string) {
   if (element) {
     this.renderer.addClass(element, animationClass);
