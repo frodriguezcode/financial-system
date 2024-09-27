@@ -3,6 +3,9 @@
     <div class="col-md-12 col-lg-12 col-12">
       <button (click)=" SelectGeneral()" type="button" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
       <button  (click)=" SelectProyecto()" type="button" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i> </button>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button (click)="descargarExcel()" class="btn btn-primary me-md-2"  type="button">Descargar <i class="fa-solid fa-file-excel"></i></button>
+      </div>
       <div >
         <p-multiSelect 
         (onChange)="filtrarCuentasBySucursal()"
@@ -33,6 +36,9 @@
         rowGroupMode="subheader" 
         groupRowsBy="representative.name" 
         [tableStyle]="{'min-width': '70rem'}">
+
+     
+
             <ng-template pTemplate="header">
                 <tr>
                  <th class="text-center">Orden</th>

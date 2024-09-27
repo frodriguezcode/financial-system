@@ -19,6 +19,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { Subscriber, Subscription } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { Workbook } from 'exceljs';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-elemento',
@@ -153,6 +155,93 @@ export default class ItemsComponent  implements OnInit{
       }
       this.ItemsGroup.push(_Item)
     });
+
+  }
+  descargarExcel(){
+    const headerRow: any[] = [];
+    let Data: any[] = [];
+    if(this.TipoRubro==1){
+      headerRow.push('Categoría','Cuenta Contable','Empresa','Sucursales');
+      this.Categorias
+      .filter((cat: any) => cat.Orden != 3 && cat.Orden != 6 && cat.Orden != 9 && cat.Orden != 10)
+      .sort((a: any, b: any) => a.Orden - b.Orden)
+      .forEach((categ: any) => {
+        let _CuentaContable: any = this.ItemsGroup.filter((item: any) => item.idCategoria == categ.id);
+    
+        if (_CuentaContable.length > 0) {
+          _CuentaContable.forEach(element => {
+            let fila: any = []; // Crear una nueva fila para cada elemento de _CuentaContable
+            
+            fila.push(categ.Nombre); // Agregar la categoría a la fila
+            fila.push(element.name); // Agregar el nombre del elemento
+            fila.push(element.Empresa); // Agregar la empresa del elemento
+            fila.push(element.NombreSucursales.join(', ')); // Unir los proyectos con una coma
+            
+            Data.push(fila); // Añadir la fila a Data
+          });
+        }
+      });
+    }
+    else {
+      headerRow.push('Categoría','Cuenta Contable','Empresa','Proyectos');
+      this.Categorias
+      .filter((cat: any) => cat.Orden != 3 && cat.Orden != 6 && cat.Orden != 9 && cat.Orden != 10)
+      .sort((a: any, b: any) => a.Orden - b.Orden)
+      .forEach((categ: any) => {
+        let _CuentaContable: any = this.ItemsGroup.filter((item: any) => item.idCategoria == categ.id);
+    
+        if (_CuentaContable.length > 0) {
+          _CuentaContable.forEach(element => {
+            let fila: any = []; // Crear una nueva fila para cada elemento de _CuentaContable
+            
+            fila.push(categ.Nombre); // Agregar la categoría a la fila
+            fila.push(element.name); // Agregar el nombre del elemento
+            fila.push(element.Empresa); // Agregar la empresa del elemento
+            fila.push(element.NombreProyectos.join(', ')); // Unir los proyectos con una coma
+            
+            Data.push(fila); // Añadir la fila a Data
+          });
+        }
+      });
+    
+    }
+    console.log('header',headerRow)
+    console.log('Data',Data)
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Datos');
+
+  worksheet.addRow(headerRow);
+
+
+  worksheet.getRow(1).eachCell((cell, colNumber) => {
+    cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '4472C4' }
+    };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' }
+    };
+  });
+
+  Data.forEach(d => worksheet.addRow(d));
+
+
+  worksheet.columns.forEach(column => {
+    column.width = 30; 
+  });
+
+
+  workbook.xlsx.writeBuffer().then((buffer) => {
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    FileSaver.saveAs(blob, `cuentas-contables ${this.usuario.Empresa}.xlsx`);
+  });
+
 
   }
 
