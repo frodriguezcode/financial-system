@@ -249,6 +249,7 @@ borrarRegistros(){
       this.Registros=this.Registros.filter(reg=>reg.id!=element.id)
      })
    });
+   this.registrosSeleccionados=[]
    let OrdenNuevo:number=1
    const coleccionRef = this.firestore.collection('Registro');
 
