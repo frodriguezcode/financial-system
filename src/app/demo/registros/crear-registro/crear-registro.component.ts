@@ -117,6 +117,7 @@ activeIndex: number = 0;
   // Categorias: any=[];
   Categorias!: SelectItem[] | any;
   CategoriasSeleccionadas:any=[]
+  CategoriasTodas:any=[]
   CategoriaContable:any
   SociosNegocios: any=[];
   MesesTodos: any=[];
@@ -297,6 +298,7 @@ obtenerSucursales(){
       "idUsuario":"YpLYlsIffwelfqtCkSP9"
     });
 
+
     this.obtenerProyectos()
 
     
@@ -455,99 +457,59 @@ buscarByProyecto(){
 
 }
 filtrarByCategoria(){
+let Categorias:any=[]
+let ProyectoSeleccionado:any
+let SucursaleSeleccionada:any
 
+
+if(this.SucursaleSeleccionada && this.SucursaleSeleccionada.id!='0'){
+  SucursaleSeleccionada=this.SucursaleSeleccionada.id
+}
+else if(!this.SucursaleSeleccionada || this.SucursaleSeleccionada.id=='0') {
+  SucursaleSeleccionada=''
+}
+if(this.ProyectoSeleccionado && this.ProyectoSeleccionado.id!='0'){
+  ProyectoSeleccionado=this.ProyectoSeleccionado.id
+}
+else if(!this.ProyectoSeleccionado || this.ProyectoSeleccionado.id=='0') {
+  ProyectoSeleccionado=''
+}
 if(this.CategoriasSeleccionadas.length>0){
-    if((this.ProyectoSeleccionado!=undefined) && this.idTipoRegistro==2)
-    {
-
-      this.Registros=this.registrosBackUp.filter(registro =>
-        this.CategoriasSeleccionadas.some(categoria =>
-          registro.idCategoria.id === categoria.id 
-          && registro.TipoRegistro==this.idTipoRegistro
-          &&
-          (
-    
-            registro.idProyecto==this.ProyectoSeleccionado.id 
-       
-          )
-    
-        )
-      );
-      this.calcularImporteSubTotal(this.Registros)
-    }
-   else if((this.SucursaleSeleccionada!=undefined) && this.idTipoRegistro==1)
-    {
-  
-      this.Registros=this.registrosBackUp.filter(registro =>
-        this.CategoriasSeleccionadas.some(categoria =>
-          registro.idCategoria.id === categoria.id 
-          && registro.TipoRegistro==this.idTipoRegistro
-          &&
-     
-          (
-    
-            registro.idSucursal==this.SucursaleSeleccionada.id
-       
-          )
-    
-        )
-      );
-      this.calcularImporteSubTotal(this.Registros)
-    }
-   else 
-    {
-
-      this.Registros=this.registrosBackUp.filter(registro =>
-        this.CategoriasSeleccionadas.some(categoria =>
-          registro.idCategoria.id === categoria.id
-          && registro.TipoRegistro==this.idTipoRegistro
-    
-        )
-      );
-      this.calcularImporteSubTotal( this.Registros)
-    }
-
+  Categorias=this.CategoriasSeleccionadas
 }
 else {
-
-
-  if((this.ProyectoSeleccionado!=undefined) && this.idTipoRegistro==2)
-    {
-      this.Registros=this.registrosBackUp.filter(registro =>
-       registro.TipoRegistro==this.idTipoRegistro
-          &&
-          (
-    
-            registro.idProyecto==this.ProyectoSeleccionado.id 
-       
-          )
-    
-        
-      );
-      this.calcularImporteSubTotal(this.Registros)
-    }
-   else if((this.SucursaleSeleccionada!=undefined) && this.idTipoRegistro==1)
-    {
-      this.Registros=this.registrosBackUp.filter(registro =>
-        registro.TipoRegistro==this.idTipoRegistro
-          &&
-     
-          (
-    
-            registro.idSucursal==this.SucursaleSeleccionada.id
-       
-          )
-    
-        
-      );
-      this.calcularImporteSubTotal(this.Registros)
-    }
-    else{
-      this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
-      this.calcularImporteSubTotal(this.Registros)
-    }
-    
+  Categorias=[]
 }
+
+let _Criterios={
+  "idCategoria":Categorias,
+  "idSucursal":SucursaleSeleccionada,
+  "idProyecto":ProyectoSeleccionado
+}
+
+const registrosFiltrados = this.registrosBackUp.filter(registro => {
+  // Filtrar por idCategoria solo si está presente en los criterios
+  const categoriaMatch = _Criterios.idCategoria.length === 0 || 
+  _Criterios.idCategoria.some(cat => cat.id === registro.idCategoria.id);
+
+  // Filtrar por idSucursal solo si el criterio no está vacío
+  const sucursalMatch = !_Criterios.idSucursal || registro.idSucursal === _Criterios.idSucursal;
+
+  // Filtrar por idProyecto solo si el criterio no está vacío
+  const proyectoMatch = !_Criterios.idProyecto || registro.idProyecto === _Criterios.idProyecto;
+
+  if(this.idTipoRegistro==1){
+    return categoriaMatch && sucursalMatch;
+  }
+  else {
+    return categoriaMatch &&  proyectoMatch;
+  }
+
+  
+});
+
+this.Registros=registrosFiltrados.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+
   
 } 
 restablecer(){
@@ -641,6 +603,7 @@ switchTipoRegistro(idTipo){
       timer: 1500
     });
     this.idTipoRegistro=1
+    this.ProyectoSeleccionado={}
   }
   else {
 
@@ -648,7 +611,7 @@ switchTipoRegistro(idTipo){
     this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
 
-    
+ 
   }
   this.calcularImporteSubTotal( this.Registros)
   this.calcularImporteTotal( this.Registros)
@@ -661,7 +624,7 @@ calcularImporteTotal(registros:any){
   });
 }
 calcularImporteSubTotal(registros:any){
-  console.log('registros',registros)
+ 
   this.ImporteSubTotal=0
   registros.forEach((element:any) => {
     this.ImporteSubTotal+= element.Valor=='' ? 0 : element.Valor
@@ -949,9 +912,9 @@ getItemsByCategory(idCategoria:string){
 }
 
 obtenerCategorias(){
-  this.conS.obtenerCategorias().subscribe(resp=>{
-    this.Categorias=resp
-
+  this.conS.obtenerCategoriasFlujos().subscribe(resp=>{
+    this.Categorias=resp.filter((data:any)=>data.Tipo!=3)
+    this.CategoriasTodas=resp
     this.Categorias.forEach((element)=>{
       let _GroupItems= {
         label:element.Nombre,
@@ -993,7 +956,7 @@ obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
     this.ItemsBack=resp
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
-  
+    
   })
 }
 obtenerCuentas(){
@@ -1031,8 +994,27 @@ crearRegistro(tipo:any) {
 
 
 }
+
+getNameFlujo(idCategoria:string){
+
+let CategoriaFlujos:any=this.CategoriasTodas.filter((categ:any)=>categ.Tipo==3
+&& categ.idCateg!='4'
+&& categ.Categorias.some((categ: any) => categ.idCategoria == idCategoria)
+
+)
+
+if(CategoriaFlujos.length>0){
+  return CategoriaFlujos[0].Nombre
+}
+else {
+  return ''
+}
+
+}
 descargarRegistros(){
   let _RegistrosDescargar:any=[]
+  const workbook = new ExcelJS.Workbook();
+const worksheet = workbook.addWorksheet('Registros');
 if(this.idTipoRegistro=1){
   this.Registros.forEach(element => {
     _RegistrosDescargar.push(
@@ -1041,6 +1023,7 @@ if(this.idTipoRegistro=1){
         "Fecha":element.FechaRegistro,
         "Categoría":element.CategoriaNombre,
         "Cuenta Contable":element.NombreElemento,
+        "Flujo":this.getNameFlujo(element.idCategoria.id),
         "Cuenta Bancaria":element.NumCuenta,
         "Sucursal":element.Sucursal,
         "Importe":element.Valor,
@@ -1052,6 +1035,19 @@ if(this.idTipoRegistro=1){
     )
   });
 
+  worksheet.columns = [
+    { header: 'Orden', key: 'Orden', width: 10 },
+    { header: 'Fecha', key: 'Fecha', width: 15 },
+    { header: 'Categoría', key: 'Categoría', width: 60 },
+    { header: 'Cuenta Contable', key: 'Cuenta Contable', width: 60 },
+    { header: 'Flujo', key: 'Flujo', width: 60 },
+    { header: 'Cuenta Bancaria', key: 'Cuenta Bancaria', width: 20 },
+    { header: 'Sucursal', key: 'Sucursal', width: 25 },
+    { header: 'Importe', key: 'Importe', width: 15 },
+    { header: 'Socio Negocio', key: 'Socio Negocio', width: 25 },
+    { header: 'Comentario', key: 'Comentario', width: 25 },
+  ];
+
 }
 else {
   this.Registros.forEach(element => {
@@ -1061,6 +1057,7 @@ else {
         "Fecha":element.FechaRegistro,
         "Categoría":element.CategoriaNombre,
         "Cuenta Contable":element.NombreElemento,
+        "Flujo":this.getNameFlujo(element.idCategoria.id),
         "Cuenta Bancaria":element.NumCuenta,
         "Proyecto":element.Proyecto,
         "Importe":element.Valor,
@@ -1072,25 +1069,25 @@ else {
     )
   });
 
-  
+  worksheet.columns = [
+    { header: 'Orden', key: 'Orden', width: 10 },
+    { header: 'Fecha', key: 'Fecha', width: 15 },
+    { header: 'Categoría', key: 'Categoría', width: 60 },
+    { header: 'Cuenta Contable', key: 'Cuenta Contable', width: 60 },
+    { header: 'Flujo', key: 'Flujo', width: 60 },
+    { header: 'Cuenta Bancaria', key: 'Cuenta Bancaria', width: 20 },
+    { header: 'Proyecto', key: 'Proyecto', width: 25 },
+    { header: 'Importe', key: 'Importe', width: 15 },
+    { header: 'Socio Negocio', key: 'Socio Negocio', width: 25 },
+    { header: 'Comentario', key: 'Comentario', width: 25 },
+  ];
   
 }
 
 
 
-const workbook = new ExcelJS.Workbook();
-const worksheet = workbook.addWorksheet('Registros');
-worksheet.columns = [
-  { header: 'Orden', key: 'Orden', width: 10 },
-  { header: 'Fecha', key: 'Fecha', width: 15 },
-  { header: 'Categoría', key: 'Categoría', width: 30 },
-  { header: 'Cuenta Contable', key: 'Cuenta Contable', width: 40 },
-  { header: 'Cuenta Bancaria', key: 'Cuenta Bancaria', width: 20 },
-  { header: 'Sucursal', key: 'Sucursal', width: 25 },
-  { header: 'Importe', key: 'Importe', width: 15 },
-  { header: 'Socio Negocio', key: 'Socio Negocio', width: 25 },
-  { header: 'Comentario', key: 'Comentario', width: 25 },
-];
+
+
 
 worksheet.getRow(1).eachCell((cell) => {
   cell.font = { bold: true, size: 12 };

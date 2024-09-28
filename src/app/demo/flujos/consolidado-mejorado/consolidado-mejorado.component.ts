@@ -185,7 +185,7 @@ Data.forEach((row: any, index: any) => {
 
   // Aplicar estilo intercalado (gris suave en filas pares)
 
-  if(row[0].startsWith('1-') || row[0].startsWith('11-') 
+  if(row[0].startsWith('1-') || row[0].startsWith('12-') 
   ){
     dataRow.eachCell((cell, colNumber) => {
       cell.fill = {
@@ -195,12 +195,13 @@ Data.forEach((row: any, index: any) => {
       };
     });
   }
- else  if( row[0].startsWith('2-')
-    || row[0].startsWith('3-') 
-    || row[0].startsWith('5-')  
+ else  if( 
+     row[0].startsWith('3-') 
+    || row[0].startsWith('4-')  
     || row[0].startsWith('6-') 
-    || row[0].startsWith('8-')  
+    || row[0].startsWith('7-')  
     || row[0].startsWith('9-')  
+    || row[0].startsWith('10-')  
   ){
     dataRow.eachCell((cell, colNumber) => {
       cell.fill = {
@@ -210,10 +211,11 @@ Data.forEach((row: any, index: any) => {
       };
     });
   }
-else  if(row[0].startsWith('4-') 
-    || row[0].startsWith('7-')
-    || row[0].startsWith('12-') 
+else  if(row[0].startsWith('2-') 
+    || row[0].startsWith('5-')
+    || row[0].startsWith('8-') 
     || row[0].startsWith('10-')  
+    || row[0].startsWith('11-')  
   )
   {
     dataRow.eachCell((cell, colNumber) => {
@@ -581,7 +583,7 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
           })
         }
       })
-
+console.log('Categorias',this.Categorias)
 
    this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
     
@@ -973,21 +975,21 @@ this.Categorias.forEach((categ:any) => {
   
           });
         }
-     else if(categ.Orden==3) {
+     else if(categ.Orden==1) {
           
           this.DataCategorias[key].push({
             "Valor": this.getDataFlujoOperativo(sem.NumSemana,mes.NumMes,anio.Anio),
             "Tipo":this.getDataFlujoOperativo(sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
           });
         }
-      else if(categ.Orden==6) {   
+      else if(categ.Orden==4) {   
           this.DataCategorias[key].push({
             "Valor": this.getDataFlujoInversion(sem.NumSemana,mes.NumMes,anio.Anio),
             "Tipo":this.getDataFlujoInversion(sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
   
           });
         }
-      else if(categ.Orden==9) {         
+      else if(categ.Orden==7) {         
           this.DataCategorias[key].push({
             "Valor": this.getDataFlujoFinanciero(sem.NumSemana,mes.NumMes,anio.Anio),
             "Tipo":this.getDataFlujoFinanciero(sem.NumSemana,mes.NumMes,anio.Anio)<0 ? 2 : 1
@@ -1044,7 +1046,7 @@ this.Categorias.forEach((categ:any) => {
           });
         }
 
-      else if(categ.Orden==3) {
+      else if(categ.Orden==1) {
           
           this.DataCategoriasMensual[key].push({
             "Valor": this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio),
@@ -1052,7 +1054,7 @@ this.Categorias.forEach((categ:any) => {
   
           });
       }
-      else if(categ.Orden==6) {
+      else if(categ.Orden==4) {
           
           this.DataCategoriasMensual[key].push({
             "Valor": this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio),
@@ -1060,7 +1062,7 @@ this.Categorias.forEach((categ:any) => {
   
           });
       }
-      else if(categ.Orden==9) {
+      else if(categ.Orden==7) {
           
           this.DataCategoriasMensual[key].push({
             "Valor": this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio),
@@ -1115,7 +1117,7 @@ this.Categorias.forEach((categ:any) => {
           });
         }
 
-      else if(categ.Orden==3) {
+      else if(categ.Orden==1) {
           
           this.DataCategoriasAnual[key].push({
             "Valor": this.getDataFlujoOperativoAnual(anio.Anio),
@@ -1123,7 +1125,7 @@ this.Categorias.forEach((categ:any) => {
   
           });
       }
-      else if(categ.Orden==6) {
+      else if(categ.Orden==4) {
           
           this.DataCategoriasAnual[key].push({
             "Valor": this.getDataFlujoInversionAnual(anio.Anio),
@@ -1131,7 +1133,7 @@ this.Categorias.forEach((categ:any) => {
   
           });
       }
-      else if(categ.Orden==9) {
+      else if(categ.Orden==7) {
           
           this.DataCategoriasAnual[key].push({
             "Valor": this.getDataFlujoFinancieroAnual(anio.Anio),

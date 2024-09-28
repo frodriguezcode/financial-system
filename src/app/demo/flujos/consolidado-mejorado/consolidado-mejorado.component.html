@@ -58,19 +58,19 @@
     <!-- <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header categoria-toggle"> -->
     <thead style="color:white" class="sticky-header categoria-toggle">
       <ng-container *ngFor="let cab of Cabecera">
-        <ng-container *ngIf="cab.Tipo == 3 && cab.MostrarSemanas==true">
-          <td > 
+        <ng-container  *ngIf="cab.Tipo == 3 && cab.MostrarSemanas==true">
+          <td class="text-center"> 
 
             <button *ngIf="cab.MostrarBotonSemanal==true"
             style="background-color: rgb(255, 80, 80); color: white;"
             type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
-            class="btn btn-danger" ><i class="fa-solid fa-minus"></i> 
+            class="btn btn-danger text-center" ><i class="fa-solid fa-minus"></i> 
          
           </button>
             <button *ngIf="cab.MostrarBotonSemanal==false" 
             style="background-color: rgb(255, 190, 48); color: white;"
             type="button" (click)="ocultarMostrar(cab.NumMes,cab.Anio)"
-            class="btn btn-warning" ><i class="fa-solid fa-plus"></i> 
+            class="btn btn-warning text-center" ><i class="fa-solid fa-plus"></i> 
            
           </button>
 
@@ -82,18 +82,18 @@
         </th>
 
         <ng-container *ngIf="cab.Tipo == 3">
-          <td > 
+          <td class="text-center" > 
  
             <button *ngIf="cab.MostrarSemanas==true"
             style="background-color: rgb(109, 211, 131); color: white;"
             type="button" (click)="ocultarMostrarMeses(cab.NumMes,cab.Anio)"
-            class="btn btn-danger" ><i class="fa-solid fa-minus"></i> 
+            class="btn btn-danger text-center" ><i class="fa-solid fa-minus"></i> 
       
           </button>
             <button *ngIf="cab.MostrarSemanas==false" 
             style="background-color: rgb(125, 202, 253); color: white;"
             type="button" (click)="ocultarMostrarMeses(cab.NumMes,cab.Anio)"
-            class="btn btn-warning" ><i class="fa-solid fa-plus"></i> 
+            class="btn btn-warning text-center" ><i class="fa-solid fa-plus"></i> 
         
           </button>
 

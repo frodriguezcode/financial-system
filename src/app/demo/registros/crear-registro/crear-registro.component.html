@@ -65,7 +65,7 @@
           <label for="formGroupExampleInput" class="form-label">Buscar por sucursal</label>
           <br>
           <p-dropdown 
-          (onChange)="buscarBySucursal()"
+          (onChange)="filtrarByCategoria()"
           [options]="Sucursales" 
           [(ngModel)]="SucursaleSeleccionada" 
           optionLabel="Nombre" 
@@ -75,7 +75,7 @@
           <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
           <br>
           <p-dropdown 
-          (onChange)="buscarByProyecto()"
+          (onChange)="filtrarByCategoria()"
           [options]="Proyectos" 
           [(ngModel)]="ProyectoSeleccionado" 
           optionLabel="NombreSucursal" 
