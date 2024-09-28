@@ -1247,7 +1247,9 @@ this.cargarFormulario()
 
 }
 copiarRegistro(registro:any){
-
+  this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+    return Math.max(maxOrden, objeto.Orden);
+}, 0);
   if (this.Registros.some(r => r.Orden === registro.Orden + 1 && r.idFlujo === registro.idFlujo)) {
 
     return; // Salir si el registro ya ha sido duplicado
@@ -1269,7 +1271,7 @@ copiarRegistro(registro:any){
     "Activo": registro.Activo,
     "Nuevo": registro.Nuevo,
     "Editando": registro.Editando,
-    "Orden": registro.Orden+1,
+    "Orden": this.OrdenMax+1,
     "Proyecto":registro.Proyecto,
     "idSocioNegocio": registro.idSocioNegocio,
     "idEmpresa": registro.idEmpresa,
@@ -1292,20 +1294,20 @@ copiarRegistro(registro:any){
 
  
 
-    const indiceRegistro = this.Registros.findIndex(r => r.Orden === registro.Orden);
-    this.Registros.splice(indiceRegistro + 1, 0, _RegistroCopy);
+    // const indiceRegistro = this.Registros.findIndex(r => r.Orden === registro.Orden);
+    // this.Registros.splice(indiceRegistro + 1, 0, _RegistroCopy);
     const batch = this.firestore.firestore.batch();
     batch.set(nuevoDocRef, _RegistroCopy);
   
-    let OrdenNuevo:number=1
-    this.Registros.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
+    // let OrdenNuevo:number=1
+    // this.Registros.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
       
-      const registroRef = coleccionRef.doc(element.id).ref; 
-      batch.update(registroRef, { Orden: OrdenNuevo });
-      element.Orden =OrdenNuevo;
-      OrdenNuevo+=1
+    //   const registroRef = coleccionRef.doc(element.id).ref; 
+    //   batch.update(registroRef, { Orden: OrdenNuevo });
+    //   element.Orden =OrdenNuevo;
+    //   OrdenNuevo+=1
 
-    })
+    // })
  
       // for (let i = indiceRegistro + 2; i < this.Registros.length; i++) {
       //   const registroRef = coleccionRef.doc(this.Registros[i].id).ref; 
