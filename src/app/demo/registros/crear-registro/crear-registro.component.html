@@ -216,6 +216,7 @@
    
           <p-dropdown
           [options]="this.getCategoriasByTipo(registros.idTipo)"
+          (onChange)="salvarRegistro(registros,Valor.value)"
           [(ngModel)]="registros.idCategoria"
           name="ItemSeleccionados"
           optionLabel="Nombre"
@@ -245,6 +246,7 @@
           </p>
           <p-dropdown
           [options]="getCuentabyCategoria(registros.idCategoria)"
+
           [(ngModel)]="registros.NombreElemento"
           name="registros.Elemento"
           optionLabel="label"
@@ -327,10 +329,10 @@
 
 
         <td class="text-center">
-          <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
+          <!-- <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
           style="color: red; font-size: 11px;" 
-          *ngIf="validarEgreso(registros.idTipo,registros.Valor,registros.Orden)==false">El valor debe ser negativo
-        </div>
+          *ngIf="validarEgreso(registros.idTipo,Valor.value,registros.Orden)==false">El valor debe ser negativo
+        </div> -->
               <input
               [ngClass]="registros.idTipo == 1 ? 'textoInputPositivo' : 'textoInputNegativo'"
               (keyup.enter)="salvarRegistro(registros,Valor.value)"

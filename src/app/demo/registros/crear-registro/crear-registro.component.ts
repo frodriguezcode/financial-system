@@ -460,15 +460,20 @@ filtrarByCategoria(){
 let Categorias:any=[]
 let ProyectoSeleccionado:any
 let SucursaleSeleccionada:any
-
+let RegistrosTotales:any=[]
 
 if(this.SucursaleSeleccionada && this.SucursaleSeleccionada.id!='0'){
+  RegistrosTotales=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idSucursal== this.SucursaleSeleccionada.id)
+  this.calcularImporteTotal(RegistrosTotales)
+
   SucursaleSeleccionada=this.SucursaleSeleccionada.id
 }
 else if(!this.SucursaleSeleccionada || this.SucursaleSeleccionada.id=='0') {
   SucursaleSeleccionada=''
 }
 if(this.ProyectoSeleccionado && this.ProyectoSeleccionado.id!='0'){
+  RegistrosTotales=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idProyecto== this.ProyectoSeleccionado.id)
+  this.calcularImporteTotal(RegistrosTotales)
   ProyectoSeleccionado=this.ProyectoSeleccionado.id
 }
 else if(!this.ProyectoSeleccionado || this.ProyectoSeleccionado.id=='0') {
@@ -509,6 +514,7 @@ const registrosFiltrados = this.registrosBackUp.filter(registro => {
 });
 
 this.Registros=registrosFiltrados.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+this.calcularImporteSubTotal( this.Registros)
 
   
 } 
@@ -642,7 +648,7 @@ validarEgreso(tipo:any,monto:any,index:any){
   let ValorRegistro:any
 
   _RegistroEncontrado=this.Registros.find((reg:any)=>reg.Orden==index)
-if(typeof _RegistroEncontrado.Valor=='string'){
+if(typeof monto=='string'){
   ValorRegistro=Number(_RegistroEncontrado.Valor.replace('$','')) 
 }
 else {
@@ -711,6 +717,7 @@ validateInput(value: string): boolean {
   return regex.test(value);
 }
 salvarRegistro(Registro:any,Valor:any){
+
   Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
 if(this.validateInput(this.quitarSimbolo(Valor))==true){
   Swal.fire({
@@ -721,26 +728,30 @@ if(this.validateInput(this.quitarSimbolo(Valor))==true){
     timer: 1500
   });
 }
-else if (Number(this.quitarSimbolo(Valor))>=0 && Registro.Tipo==2  ){
-  Swal.fire({
-    position: "center",
-    icon: "warning",
-    title: "El valor debe ser negativo",
-    showConfirmButton: false,
-    timer: 1500
-  })
-}
+// else if (Number(this.quitarSimbolo(Valor))>=0 && Registro.Tipo==2  ){
+//   console.log('valor',Number(this.quitarSimbolo(Valor)))
+//   Swal.fire({
+//     position: "center",
+//     icon: "warning",
+//     title: "El valor debe ser negativo",
+//     showConfirmButton: false,
+//     timer: 1500
+//   })
+// }
 else {
-  if(this.validarEgreso(Registro.idTipo,Number(this.quitarSimbolo(Valor)),Registro.Orden)==false){
-    Swal.fire({
-      position: "center",
-      icon: "warning",
-      title: "El valor debe ser negativo",
-      showConfirmButton: false,
-      timer: 1500
-    });
-  }
-  else if(Registro.Elemento==""){
+  // if(this.validarEgreso(Registro.idTipo,Number(this.quitarSimbolo(Valor)),Registro.Orden)==false){
+  //   console.log('Registro',Number(this.quitarSimbolo(Valor)))
+  //   Swal.fire({
+  //     position: "center",
+  //     icon: "warning",
+  //     title: "El valor debe ser negativo",
+  //     showConfirmButton: false,
+  //     timer: 1500
+  //   });
+  // }
+  console.log('Valor',Number(this.quitarSimbolo(Valor)))
+  console.log('Registro',Registro)
+   if(Registro.Elemento==""){
       Swal.fire({
         position: "center",
         icon: "warning",
@@ -914,6 +925,7 @@ getItemsByCategory(idCategoria:string){
 obtenerCategorias(){
   this.conS.obtenerCategoriasFlujos().subscribe(resp=>{
     this.Categorias=resp.filter((data:any)=>data.Tipo!=3)
+  
     this.CategoriasTodas=resp
     this.Categorias.forEach((element)=>{
       let _GroupItems= {
@@ -969,6 +981,7 @@ obtenerCuentas(){
 getCategoriasByTipo(tipo:any){
   let categorias:any=[]
   categorias=this.Categorias.filter((cat:any)=>cat.Tipo==tipo)
+
   return categorias
 }
 crearRegistro(tipo:any) {

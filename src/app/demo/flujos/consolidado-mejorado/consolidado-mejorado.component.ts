@@ -583,7 +583,7 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
           })
         }
       })
-console.log('Categorias',this.Categorias)
+
 
    this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
     
@@ -1316,7 +1316,7 @@ getDataFlujoOperativo(NumSemana:any,Mes:any,Anio:any){
     let _Data: any=[];
     _Data=this.Registros.filter((registro:any)=>
     (registro.idCategoria.Orden==2
-    || registro.idCategoria.Orden==1)
+    || registro.idCategoria.Orden==3)
     && registro.NumSemana==NumSemana
     && registro.NumMes==Mes
     && registro.AnioRegistro==Anio
@@ -1338,7 +1338,7 @@ getDataFlujoOperativoMensual(Mes:any,Anio:any){
     let _Data: any=[];
     _Data=this.Registros.filter((registro:any)=>
     (registro.idCategoria.Orden==2
-    || registro.idCategoria.Orden==1)
+    || registro.idCategoria.Orden==3)
     && registro.NumMes==Mes
     && registro.AnioRegistro==Anio
     )
@@ -1360,7 +1360,7 @@ getDataFlujoOperativoAnual(Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
   (registro.idCategoria.Orden==2
-  || registro.idCategoria.Orden==1)
+  || registro.idCategoria.Orden==3)
   && registro.AnioRegistro==Anio
   )
 
@@ -1379,8 +1379,8 @@ getDataFlujoOperativoAnual(Anio:any){
 getDataFlujoInversion(NumSemana:any,Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==4
-  || registro.idCategoria.Orden==5)
+  (registro.idCategoria.Orden==5
+  || registro.idCategoria.Orden==6)
   && registro.NumSemana==NumSemana
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
@@ -1401,8 +1401,8 @@ getDataFlujoInversion(NumSemana:any,Mes:any,Anio:any){
 getDataFlujoInversionMensual(Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==4
-  || registro.idCategoria.Orden==5)
+  (registro.idCategoria.Orden==5
+  || registro.idCategoria.Orden==6)
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
@@ -1423,8 +1423,8 @@ getDataFlujoInversionMensual(Mes:any,Anio:any){
 getDataFlujoInversionAnual(Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==4
-  || registro.idCategoria.Orden==5)
+  (registro.idCategoria.Orden==5
+  || registro.idCategoria.Orden==6)
   && registro.AnioRegistro==Anio
   )
 
@@ -1443,7 +1443,7 @@ getDataFlujoInversionAnual(Anio:any){
 getDataFlujoFinanciero(NumSemana:any,Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==7
+  (registro.idCategoria.Orden==9
   || registro.idCategoria.Orden==8)
   && registro.NumSemana==NumSemana
   && registro.NumMes==Mes
@@ -1465,7 +1465,7 @@ getDataFlujoFinanciero(NumSemana:any,Mes:any,Anio:any){
 getDataFlujoFinancieroMensual(Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==7
+  (registro.idCategoria.Orden==9
   || registro.idCategoria.Orden==8)
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
@@ -1487,7 +1487,7 @@ getDataFlujoFinancieroMensual(Mes:any,Anio:any){
 getDataFlujoFinancieroAnual(Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==7
+  (registro.idCategoria.Orden==9
   || registro.idCategoria.Orden==8)
   && registro.AnioRegistro==Anio
   )
