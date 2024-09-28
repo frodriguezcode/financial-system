@@ -229,7 +229,15 @@
                  <ng-container *ngIf="cab.Tipo==3 && cab.Mostrar==true">
               
                    <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);" class="text-center">
-                     {{ "$ " + ( DataItemsMensual[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
+
+
+                     <span *ngIf="DataItemsMensual[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Tipo==1">
+                       {{ "$ " + ( DataItemsMensual[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor| number) }}
+                     </span>
+
+                    <span style="color: red;" *ngIf="DataItemsMensual[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Tipo==2">
+                       {{ "-$ " + ( (DataItemsMensual[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor)*-1| number) }}
+                     </span>
                      
                    </td>
 
@@ -244,7 +252,14 @@
                     
                     <td class="text-center" style="font-weight: bolder; background-color: rgb(87, 87, 86, 0.2);"
                     class="text-center">
-                    {{ "$ " + ( DataItemsAnual[cab.Anio  + '-' + item.id]?.[0]?.Valor| number) }}
+
+                    <span *ngIf="DataItemsAnual[cab.Anio  + '-' + item.id]?.[0]?.Tipo==1">
+                      {{ "$ " + ( DataItemsAnual[cab.Anio  + '-' + item.id]?.[0]?.Valor| number) }}
+                    </span>
+
+                   <span style="color: red;" *ngIf="DataItemsAnual[cab.Anio  + '-' + item.id]?.[0]?.Tipo==2">
+                      {{ "-$ " + ( (DataItemsAnual[cab.Anio  + '-' + item.id]?.[0]?.Valor)*-1| number) }}
+                    </span>
                   </td>
                 </ng-container>
               </ng-container>

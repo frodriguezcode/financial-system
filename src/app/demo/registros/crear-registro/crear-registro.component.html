@@ -81,6 +81,16 @@
           optionLabel="NombreSucursal" 
           placeholder="Seleccione un proyecto" />
         </div>
+        <div   class="col-4">
+          <label for="formGroupExampleInput" class="form-label">Buscar por categoría</label>
+          <br>
+          <p-multiSelect 
+          (onChange)="filtrarByCategoria()"
+          [options]="Categorias" 
+          [(ngModel)]="CategoriasSeleccionadas" 
+          optionLabel="Nombre" 
+          placeholder="Seleccione una categoria" />
+        </div>
 
 
 
@@ -101,17 +111,7 @@
           </div>
 
         </div>
-        <div class=" d-flex justify-content-end">
-
-          <div class="mb-3">
-            <button type="button" class="btn btn-success  m-1"
-             (click)="buscarByFecha()"
-             [disabled]="(this.FechaDesde.value=='' || this.FechaHasta.value=='' )"
-             >Buscar <i class="fa-solid fa-magnifying-glass"></i></button>
-            <button type="button" class="btn btn-primary m-1 " (click)="restablecer()">Reset <i class="fa-solid fa-rotate-right"></i></button>
-          </div>
-
-        </div>
+ 
 
         <br>
         <!-- <div class="col-2">
@@ -130,6 +130,16 @@
       </div>
       <div class="row justify-content-start">
         <div class="col-auto">
+        <button type="button" class="btn btn-success  shadow-4 mx-auto"
+        (click)="buscarByFecha()"
+        [disabled]="(this.FechaDesde.value=='' || this.FechaHasta.value=='' )"
+        >Buscar <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+        </div>
+        <div class="col-auto">
+       <button type="button" class="btn btn-primary shadow-4 mx-auto" (click)="restablecer()">Limpiar filtros <i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+        <div class="col-auto">
             <button type="button" (click)="crearRegistro(1)" class="btn btn-info shadow-4 mx-auto" ngbTooltip="Crear ingreso">Ingreso <i class="fa-solid fa-plus"></i></button>
         </div>
         <div class="col-auto">
@@ -144,7 +154,7 @@
         <div class="col-auto">
             <button type="button"
             [disabled]="this.Registros.length==0"
-            (click)="descargarRegistros()" class="btn btn-primary shadow-4 mx-auto" ngbTooltip="Descargar Registros">Descargar
+            (click)="descargarRegistros()" class="btn btn-primary shadow-4 mx-auto" ngbTooltip="Descargar Registros">Exportar
             <i class="fa-solid fa-file-excel"></i></button>
         </div>
 
@@ -298,13 +308,13 @@
           <p-dropdown
           [options]="Proyectos"
           [(ngModel)]="registros.Proyecto"
-          name="SucursalesSeleccionadas"
+          name="ProyectosSeleccionados"
           optionLabel="NombreSucursal"
           optionValue="NombreSucursal"
           [filter]="true"
           filterBy="NombreSucursal"
           [showClear]="false"
-          placeholder="Seleccione una sucursal"
+          placeholder="Seleccione un proyecto"
           appendTo="body">
           <ng-template pTemplate="selectedItem" let-selectedItem>
             <div class="flex align-items-lg-start gap-2">

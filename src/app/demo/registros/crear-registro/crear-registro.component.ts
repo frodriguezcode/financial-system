@@ -23,6 +23,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 
 import { CalendarModule } from 'primeng/calendar';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -67,7 +68,8 @@ import * as ExcelJS from 'exceljs';
     SocioNegocioComponent,
     CurrencySymbolPipe,
     TabViewModule,
-    ButtonModule
+    ButtonModule,
+    MultiSelectModule
     
    ],
   templateUrl: './crear-registro.component.html',
@@ -114,6 +116,7 @@ activeIndex: number = 0;
   itemsFiltrados: any;
   // Categorias: any=[];
   Categorias!: SelectItem[] | any;
+  CategoriasSeleccionadas:any=[]
   CategoriaContable:any
   SociosNegocios: any=[];
   MesesTodos: any=[];
@@ -396,6 +399,7 @@ buscarByFecha(){
   &&    reg.TipoRegistro == this.idTipoRegistro
 )
   
+this.calcularImporteSubTotal(this.Registros)
  }
  else {
    this.toastr.warning('', '¡Acceso Denegado!',{
@@ -450,6 +454,102 @@ buscarByProyecto(){
 
 
 }
+filtrarByCategoria(){
+
+if(this.CategoriasSeleccionadas.length>0){
+    if((this.ProyectoSeleccionado!=undefined) && this.idTipoRegistro==2)
+    {
+
+      this.Registros=this.registrosBackUp.filter(registro =>
+        this.CategoriasSeleccionadas.some(categoria =>
+          registro.idCategoria.id === categoria.id 
+          && registro.TipoRegistro==this.idTipoRegistro
+          &&
+          (
+    
+            registro.idProyecto==this.ProyectoSeleccionado.id 
+       
+          )
+    
+        )
+      );
+      this.calcularImporteSubTotal(this.Registros)
+    }
+   else if((this.SucursaleSeleccionada!=undefined) && this.idTipoRegistro==1)
+    {
+  
+      this.Registros=this.registrosBackUp.filter(registro =>
+        this.CategoriasSeleccionadas.some(categoria =>
+          registro.idCategoria.id === categoria.id 
+          && registro.TipoRegistro==this.idTipoRegistro
+          &&
+     
+          (
+    
+            registro.idSucursal==this.SucursaleSeleccionada.id
+       
+          )
+    
+        )
+      );
+      this.calcularImporteSubTotal(this.Registros)
+    }
+   else 
+    {
+
+      this.Registros=this.registrosBackUp.filter(registro =>
+        this.CategoriasSeleccionadas.some(categoria =>
+          registro.idCategoria.id === categoria.id
+          && registro.TipoRegistro==this.idTipoRegistro
+    
+        )
+      );
+      this.calcularImporteSubTotal( this.Registros)
+    }
+
+}
+else {
+
+
+  if((this.ProyectoSeleccionado!=undefined) && this.idTipoRegistro==2)
+    {
+      this.Registros=this.registrosBackUp.filter(registro =>
+       registro.TipoRegistro==this.idTipoRegistro
+          &&
+          (
+    
+            registro.idProyecto==this.ProyectoSeleccionado.id 
+       
+          )
+    
+        
+      );
+      this.calcularImporteSubTotal(this.Registros)
+    }
+   else if((this.SucursaleSeleccionada!=undefined) && this.idTipoRegistro==1)
+    {
+      this.Registros=this.registrosBackUp.filter(registro =>
+        registro.TipoRegistro==this.idTipoRegistro
+          &&
+     
+          (
+    
+            registro.idSucursal==this.SucursaleSeleccionada.id
+       
+          )
+    
+        
+      );
+      this.calcularImporteSubTotal(this.Registros)
+    }
+    else{
+      this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+      this.calcularImporteSubTotal(this.Registros)
+    }
+    
+}
+  
+} 
 restablecer(){
   this.Registros=this.registrosBackUp.
   filter((reg:any)=>  reg.TipoRegistro == this.idTipoRegistro)
@@ -561,6 +661,7 @@ calcularImporteTotal(registros:any){
   });
 }
 calcularImporteSubTotal(registros:any){
+  console.log('registros',registros)
   this.ImporteSubTotal=0
   registros.forEach((element:any) => {
     this.ImporteSubTotal+= element.Valor=='' ? 0 : element.Valor
@@ -657,8 +758,17 @@ if(this.validateInput(this.quitarSimbolo(Valor))==true){
     timer: 1500
   });
 }
+else if (Number(this.quitarSimbolo(Valor))>=0 && Registro.Tipo==2  ){
+  Swal.fire({
+    position: "center",
+    icon: "warning",
+    title: "El valor debe ser negativo",
+    showConfirmButton: false,
+    timer: 1500
+  })
+}
 else {
-  if(this.validarEgreso(Registro.idTipo,Number(Registro.Valor),Registro.Orden)==false){
+  if(this.validarEgreso(Registro.idTipo,Number(this.quitarSimbolo(Valor)),Registro.Orden)==false){
     Swal.fire({
       position: "center",
       icon: "warning",
@@ -677,7 +787,8 @@ else {
       });
   
     }
-  else  if(Registro.Valor==""  || Number(Registro.Valor)==0 )
+  else  if(this.quitarSimbolo(Valor)==""  || Number(this.quitarSimbolo(Valor))==0 )
+    
     { 
       Swal.fire({
         position: "center",
@@ -727,11 +838,21 @@ else {
       Registro.idProyecto=this.getIdProyecto(Registro.Proyecto)
       Registro.idSucursal=this.getIdSucursal(Registro.Sucursal)
 
-      Registro.Valor= Registro.Tipo==1 ? Number(  this.quitarSimbolo(Valor)) :  Number(  this.quitarSimbolo(Valor)) *-1
-      Registro.Valor2= Registro.Tipo==1 ? Number(  this.quitarSimbolo(Valor)) :  Number(  this.quitarSimbolo(Valor)) *-1
+      if(Registro.Tipo==1 && Number(  this.quitarSimbolo(Valor))<0){
+        Registro.Valor=Number(  this.quitarSimbolo(Valor))*-1
+        Registro.Valor2=Number(  this.quitarSimbolo(Valor))*-1
+      }
+      else if (Registro.Tipo==2 && Number(  this.quitarSimbolo(Valor))>=0)
+      {
+        Registro.Valor=Number(  this.quitarSimbolo(Valor))*-1
+        Registro.Valor2=Number(  this.quitarSimbolo(Valor))*-1
+      }
+      else {
+        Registro.Valor=Number(  this.quitarSimbolo(Valor))
+        Registro.Valor2=Number(  this.quitarSimbolo(Valor))
+      }
       Registro.Usuario=this.usuario.Usuario
-      console.log(' Valor', Valor)
-      console.log('Registro',Registro)
+      
    
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
@@ -793,7 +914,7 @@ addRow() {
 }
 
 quitarSimbolo(valor: string): string {
-console.log('ValorFormat',valor)
+
   if ( typeof valor=='string' && valor.startsWith('$')) {
     return valor.replace(/[$,]/g, "");
 
@@ -1118,7 +1239,7 @@ this.cargarFormulario()
 copiarRegistro(registro:any){
 
   if (this.Registros.some(r => r.Orden === registro.Orden + 1 && r.idFlujo === registro.idFlujo)) {
-    console.error('El registro ya ha sido duplicado.');
+
     return; // Salir si el registro ya ha sido duplicado
   }
   const coleccionRef = this.firestore.collection('Registro');
@@ -1139,6 +1260,7 @@ copiarRegistro(registro:any){
     "Nuevo": registro.Nuevo,
     "Editando": registro.Editando,
     "Orden": registro.Orden+1,
+    "Proyecto":registro.Proyecto,
     "idSocioNegocio": registro.idSocioNegocio,
     "idEmpresa": registro.idEmpresa,
     "idMatriz": registro.idMatriz,
