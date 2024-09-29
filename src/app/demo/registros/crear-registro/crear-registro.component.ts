@@ -1319,7 +1319,10 @@ copiarRegistro(registro:any){
 
     batch.commit()
     .then(() => {
-
+      this.toastr.success('Exitoso', `¡Registro copiado al final de la lista! Registro # ${_RegistroCopy.Orden}`,{
+        timeOut: 3000,
+        positionClass: 'toast-bottom-right' 
+      });
     })
     .catch(error => {
    
@@ -1328,6 +1331,11 @@ copiarRegistro(registro:any){
 
 
 
+}
+getSelectedItemsLabel(): string {
+  const count = this.CategoriasSeleccionadas ? this.CategoriasSeleccionadas.length : 0;
+  
+  return count >= 2 ? `${count} categorías seleccionadas` : null;
 }
 ActualizarRegistro(){
   this.conS.ActualizarRegistro(this.EditRegistroForm.value).then(resp=>{

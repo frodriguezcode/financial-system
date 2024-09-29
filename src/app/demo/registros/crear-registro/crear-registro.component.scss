@@ -99,3 +99,11 @@
   // font-weight: bold;
 }
 
+
+/* Fija el ancho del multiSelect */
+.fixed-multiselect .ui-multiselect-label-container {
+  width: 200px; /* Ajusta el tamaño deseado */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
