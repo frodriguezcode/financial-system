@@ -14,9 +14,19 @@
     placeholder="Seleccione semanas" /> -->
 <!-- <p-multiSelect class="m-1" [options]="Meses" [(ngModel)]="MesesSeleccionados" optionLabel="Mes" placeholder="Meses" /> -->
 <p-multiSelect [disabled]="ProyectoSeleccionado.length>0" class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" [options]="Sucursales"
-  [(ngModel)]="SucursalSeleccionada" optionLabel="Nombre" placeholder="Seleccione una sucursal" />
+  [(ngModel)]="SucursalSeleccionada" 
+  optionLabel="Nombre"
+  placeholder="Seleccione una sucursal" 
+  emptyMessage="No hay sucursales disponibles"
+  emptyFilterMessage="No se encontraron coincidencias"
+  />
 <p-multiSelect [disabled]="SucursalSeleccionada.length>0" class="m-1" (onChange)=" filtrarData();filtrarCuentas(2)" [options]="Proyectos"
-  [(ngModel)]="ProyectoSeleccionado" optionLabel="NombreSucursal" placeholder="Seleccione un proyecto" />
+  [(ngModel)]="ProyectoSeleccionado"
+  optionLabel="NombreSucursal" 
+  placeholder="Seleccione un proyecto"
+  emptyMessage="No hay proyectos disponibles"
+  emptyFilterMessage="No se encontraron coincidencias"
+  />
 <p-multiSelect (onChange)=" filtrarData()" class="m-1" [options]="CuentasBancarias"
   [(ngModel)]="CuentaBancariaSeleccionada" optionLabel="CuentaNombre" placeholder="Seleccione una cuenta" />
 <br>
@@ -50,8 +60,14 @@
 (click)="mostrarSemanas()" type="button" class="btn btn-warning m-1 mt-2">Semanal 
 </button>
 
-<div *ngIf="this.Cabecera.length<=1"  class="alert alert-warning mt-2" role="alert">
+<div *ngIf="this.Cabecera.length<=1 && this.cargar==true"  class="alert alert-warning mt-2" role="alert">
   No tiene registros en esta empresa
+</div>
+
+<div *ngIf="this.cargar==false" class="d-flex justify-content-center">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
 </div>
 <div *ngIf="this.Cabecera.length>1" class="table-responsive mt-1">
   <table class="table">

@@ -423,7 +423,7 @@ export default class ItemsComponent  implements OnInit{
 
   obtenerSucursales(){
     this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
-      this.Sucursales=resp
+      this.Sucursales=resp.filter((suc:any)=>suc.Activo==true)
 
     })
   }
