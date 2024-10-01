@@ -230,7 +230,8 @@
                               <span *ngIf="categoria.Tipo==1" class="input-group-text">$</span>
                               <span *ngIf="categoria.Tipo==2" class="input-group-text">-$</span>
                               <input #Valor
-                                [value]="DataItems[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor | number"
+                                style="width: 50px"
+                                [value]="(DataItems[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor) | number"
                                 (keyup.enter)="guardarValorPlan(cab.Anio, cab.Mes,categoria.id,item.id,Valor.value,categoria.Tipo,categoria.Orden)"
                                 type="text" class="form-control text-center" aria-label="Amount (to the nearest dollar)">
                             </div>

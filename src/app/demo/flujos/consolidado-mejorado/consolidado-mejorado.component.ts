@@ -616,8 +616,8 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
 obtenerItems(){
       this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
         this.Items=[]
-          this.Items=resp;
-          this.ItemsBack=resp;
+          this.Items=resp.filter((item:any)=>item.Activo==true);
+          this.ItemsBack=resp.filter((item:any)=>item.Activo==true);;
       
          this.obtenerRegistros()
       })

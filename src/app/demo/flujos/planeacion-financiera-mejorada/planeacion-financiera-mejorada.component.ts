@@ -695,8 +695,8 @@ getItems(idCategoria:any){
 obtenerItems(){
   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
     this.Items=[]
-      this.Items=resp;
-      this.ItemsBack=resp
+      this.Items=resp.filter((item:any)=>item.Activo==true);;
+      this.ItemsBack=resp.filter((item:any)=>item.Activo==true);
      this.obtenerRegistros()
   })
 }
@@ -979,6 +979,7 @@ verifyValue(categoriaTipo:any,Monto:any){
 }
 
 guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor:any,TipoCategoria:any,Orden:any){
+
   if(this.verifyValue(TipoCategoria,Number(Valor))[0].Estado==false){
     Swal.fire({
       position: "center",
@@ -1009,8 +1010,8 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       "TipoRegistro":this.idTipoRegistro,
       "Valor": Number(Valor.replace(',', '')),
       "idEmpresa":this.usuario.idEmpresa,
-      "idSucursal":  Object.keys(this.SucursalSeleccionada).length === 0? '' : this.SucursalSeleccionada.id  ,
-      "idProyecto": Object.keys(this.ProyectoSeleccionado).length === 0 ? '' : this.ProyectoSeleccionado.id
+      "idSucursal":  ( this.SucursalSeleccionada==undefined  || Object.keys(this.SucursalSeleccionada).length === 0 )? '' : this.SucursalSeleccionada.id  ,
+      "idProyecto":( this.ProyectoSeleccionado==undefined  || Object.keys(this.ProyectoSeleccionado).length === 0) ? '' : this.ProyectoSeleccionado.id
     }
    
     let _ValorPlanEncontrado:any=[]
@@ -1018,11 +1019,12 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       data.idCategoria==idCategoria &&
       data.MesRegistro==MesRegistro &&
       data.AnioRegistro==Anio &&
+      data.idItem==idItem &&
       data.idEmpresa==this.usuario.idEmpresa)
     if(_ValorPlanEncontrado.length>0){
 
       _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
-
+      console.log('_ValorPlanEncontrado',_ValorPlanEncontrado[0])
     this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
       this.getDataItemsMensualPlanes()
@@ -1040,7 +1042,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       })
 
 }
-console.log('_Valor',_Valor)
+
 console.log('ProyectoSeleccionado',this.ProyectoSeleccionado)
 
   }

@@ -282,7 +282,7 @@ actualizarUsuario(Usuario:any){
     usuarioEncontrado[0].Editando = !Usuario.Editando;
     usuarioEncontrado[0].idRol=Usuario.idRol
     this.authS.ActualizarUsuario(usuarioEncontrado[0]).then(resp=>{
-      this.toastr.success('Banco editado', '¡Exito!');
+      this.toastr.success('Usuario editado', '¡Exito!');
     })
 
 
