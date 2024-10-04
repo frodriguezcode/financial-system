@@ -1,0 +1,10 @@
+filtro de fechas, no respeta el filtro de categoria
+selector de proyectos y sucursales en creaciond de usuarios
+verificar contraseña y correo en creacion de usuarios
+
+flujo de creacion de empresa
+
+flujo de efectivo acumulado en vez de importe total 
+flujo de efectivo con filtros aplicados en vez de importe subtotal
+
+poner intervalo de tiempo en Proyectos
