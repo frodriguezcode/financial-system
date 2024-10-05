@@ -8,11 +8,13 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
+import { CalendarModule } from 'primeng/calendar';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-proyectos',
   standalone: true,
-  imports: [CommonModule, SharedModule,FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, SharedModule,FormsModule,ReactiveFormsModule,CalendarModule],
   templateUrl: './proyectos.component.html',
   styleUrls: ['./proyectos.component.scss']
 })
@@ -24,10 +26,28 @@ export default class ProyectosComponent implements OnInit {
   ProyectoForm!:FormGroup
   Fecha:any= new Date();
   usuario:any
-  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService) {}
+  es: any;
+  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService,private primengConfig: PrimeNGConfig) {}
 
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.primengConfig.setTranslation({
+    firstDayOfWeek: 1,
+    dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+    dayNamesShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+    dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
+    monthNames: [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ],
+    monthNamesShort: [
+      "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+      "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+    ],
+    today: 'Hoy',
+    clear: 'Limpiar'
+  });
+
   this.conS.usuario$.subscribe(usuario => {
     if (usuario) {
     this.usuario=usuario
@@ -52,6 +72,7 @@ cargarFormulario(){
     idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
     Activo: new FormControl(true), 
     Editando: new FormControl(false), 
+    RangoFechas: new FormControl(null),
     idSucursal: new FormControl('0'), 
     FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
@@ -96,16 +117,22 @@ verificarProyecto(){
 }
 
 crearProyecto(){
-  this.conS.crearProyecto(this.ProyectoForm.value).then((resp: any)=>{
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "Proyecto creado",
-      showConfirmButton: false,
-      timer: 1500
-    });
-    this.cargarFormulario()
-  })
+
+  let FechaInicio:any=this.datePipe.transform(new Date(this.ProyectoForm.value.RangoFechas[0]).setDate(new Date(this.ProyectoForm.value.RangoFechas[0]).getDate()), 'yyyy-MM-dd')
+  let FechaFinal:any=this.datePipe.transform(new Date(this.ProyectoForm.value.RangoFechas[1]).setDate(new Date(this.ProyectoForm.value.RangoFechas[1]).getDate()), 'yyyy-MM-dd')
+  const mesesAgrupados = this.conS.generarMesesAgrupadosPorAnio(FechaInicio, FechaFinal);
+  console.log('mesesAgrupados',mesesAgrupados)
+
+  // this.conS.crearProyecto(this.ProyectoForm.value).then((resp: any)=>{
+  //   Swal.fire({
+  //     position: "center",
+  //     icon: "success",
+  //     title: "Proyecto creado",
+  //     showConfirmButton: false,
+  //     timer: 1500
+  //   });
+  //   this.cargarFormulario()
+  // })
 }
 obtenerProyectos(){
   this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{

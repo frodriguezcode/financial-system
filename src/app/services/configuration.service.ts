@@ -180,7 +180,38 @@ ordenarAnios(anios){
   return anios
 }
 
+generarMesesAgrupadosPorAnio(fechaInicio: string, fechaFinal: string): any {
+  const inicio = new Date(fechaInicio); // Convertimos el string a objeto Date
+  const final = new Date(fechaFinal);
+  
+  const resultado: { [anio: number]: { numero: number, nombre: string }[] } = {}; // Objeto para almacenar los meses agrupados por año
+  
+  while (inicio <= final) {
+    const anio = inicio.getFullYear(); // Obtenemos el año de la fecha actual
+    const mesNumero = inicio.getMonth() + 1; // Obtenemos el número del mes (sin ceros a la izquierda)
+    const mesNombre = this.capitalizarMes(inicio.toLocaleDateString('es-ES', { month: 'long' })); // Nombre del mes capitalizado
+    
+    // Si el año no está en el objeto, lo inicializamos con un arreglo vacío
+    if (!resultado[anio]) {
+      resultado[anio] = [];
+    }
+    
+    // Agregamos el mes al año correspondiente como objeto { numero, nombre }
+    resultado[anio].push({
+      numero: mesNumero,
+      nombre: mesNombre
+    });
+    
+    // Incrementamos el mes
+    inicio.setMonth(inicio.getMonth() + 1);
+  }
+  
+  return resultado;
+}
 
+capitalizarMes(mes: string): string {
+  return mes.charAt(0).toUpperCase() + mes.slice(1);
+}
 
 
 obtenerUsuarios(idEmpresa:any) {

@@ -20,8 +20,8 @@ export interface NavigationItem {
 
 export const NavigationItems: NavigationItem[] = [
     {
-      id: 'configuracion',
-      title: 'Configuración',
+      id: 'administracion',
+      title: 'Administracion',
       type: 'group',
       icon: 'icon-group',
       children: [
@@ -90,32 +90,32 @@ export const NavigationItems: NavigationItem[] = [
         }
       ]
     },
-  // {
-  //   id: 'Authentication',
-  //   title: 'Authentication',
-  //   type: 'group',
-  //   icon: 'icon-group',
-  //   children: [
-  //     {
-  //       id: 'signup',
-  //       title: 'Sign up',
-  //       type: 'item',
-  //       url: '/auth/signup',
-  //       icon: 'feather icon-at-sign',
-  //       target: true,
-  //       breadcrumbs: false
-  //     },
-  //     {
-  //       id: 'signin',
-  //       title: 'Sign in',
-  //       type: 'item',
-  //       url: '/auth/signin',
-  //       icon: 'feather icon-log-in',
-  //       target: true,
-  //       breadcrumbs: false
-  //     }
-  //   ]
-  // },
+  {
+    id: 'configuracion',
+    title: 'Configuración',
+    type: 'group',
+    icon: 'fa-solid fa-building',
+    children: [
+      {
+        id: 'sucursales',
+        title: 'Sucursales',
+        type: 'item',
+        url: 'sucursales',
+        icon: 'fa-solid fa-building',
+        target: false,
+        breadcrumbs: false
+      },
+      {
+        id: 'proyectos',
+        title: 'Proyectos',
+        type: 'item',
+        url: 'Proyectos',
+        icon: 'fa-solid fa-diagram-project',
+        target: false,
+        breadcrumbs: false
+      }
+    ]
+  },
   // {
   //   id: 'chart',
   //   title: 'Chart',
