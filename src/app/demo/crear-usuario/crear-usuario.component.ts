@@ -367,7 +367,7 @@ cargarFormulario() {
   },
   this.fieldsMatchValidator()
 
-);
+);  
 this.usuarioForm.get('idRol')!.disable();
 this.usuarioForm.get('Sucursales')!.disable();
 this.usuarioForm.get('Proyectos')!.disable();
