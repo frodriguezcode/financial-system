@@ -1,5 +1,5 @@
 
-<app-card cardTitle="Módulo Proyectos" [options]="false">
+<app-card style="height: 1200px;" cardTitle="Módulo Proyectos" [options]="false">
   <div class="row">
     <div class="col-md-4">
       <h5>Crear Proyecto</h5>
@@ -16,7 +16,27 @@
 
   </div>
 
-  <div class="form-group">
+  <div *ngIf="this.usuario.Rol=='Super Usuario'" class="form-group">
+    <label for="exampleInputPassword1">Empresa</label>
+    <select (change)="selectSucursalByEmpresa($any($event.target).value)" formControlName="idEmpresa" class="form-control" id="exampleFormControlSelect1">
+      <option value="0">Seleccione una empresa</option>
+      <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
+
+    </select>
+  </div>
+  <div *ngIf="this.usuario.Rol=='Super Usuario'"  class="form-group">
+    <label for="exampleInputPassword1">Sucursal (opcional)
+       <span 
+       *ngIf="this.Sucursales.length==0"
+       style="color: red;"
+       >No tiene sucursales creadas o activas</span></label>
+    <select formControlName="idSucursal" class="form-control" id="exampleFormControlSelect1">
+      <option value="0">Seleccione una sucursal</option>
+      <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+
+    </select>
+  </div>
+  <div *ngIf="this.usuario.Rol!='Super Usuario'" class="form-group">
     <label for="exampleInputPassword1">Sucursal (opcional)
        <span 
        *ngIf="this.Sucursales.length==0"
@@ -36,7 +56,7 @@
         formControlName="RangoFechas"
         dateFormat="dd/mm/yy"
         selectionMode="range" 
-        [readonlyInput]="true" />
+        [readonlyInput]="false" />
 
   </div>
 
@@ -64,6 +84,7 @@
             <tr>
               <th class="text-center">#</th>
               <th class="text-center">Proyecto</th>
+              <th class="text-center">Duración</th>
               <th class="text-center">Editar</th>
               <th class="text-center">Inactivar</th>
             </tr>
@@ -77,6 +98,22 @@
                 </ng-container>
                 <ng-template #editarProyecto>
                   <input [(ngModel)]="proyecto.Nombre" class="form-control text-center col-4">
+                </ng-template>
+              </td>
+              <td class="text-center">
+                <ng-container *ngIf="!proyecto.Editando; else editarRango">
+                  {{(proyecto.FechaInicio==''?'Sin fecha de inicio':proyecto.FechaInicio) + ' al '
+                   + (proyecto.FechaFinal==''?'Sin fecha de final':proyecto.FechaFinal)}}
+                </ng-container>
+                <ng-template style="z-index: 999999;" #editarRango>
+                  <div class="form-group">       
+                    <p-calendar 
+                         [(ngModel)]="proyecto.RangoFechas"
+                        dateFormat="dd/mm/yy"
+                        selectionMode="range" 
+                        [readonlyInput]="false" />
+                
+                  </div>
                 </ng-template>
               </td>
 

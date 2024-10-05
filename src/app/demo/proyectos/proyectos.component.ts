@@ -22,6 +22,7 @@ export default class ProyectosComponent implements OnInit {
   Proyectos:any=[]
   Empresas:any=[]
   Sucursales:any=[]
+  SucursalesTodasBack:any=[]
   proyectoFound:boolean=false
   ProyectoForm!:FormGroup
   Fecha:any= new Date();
@@ -57,13 +58,32 @@ ngOnInit(): void {
     }
     this.obtenerProyectos()
     this.obtenerEmpresas()
-    this.obtenerSucursales()
+    if(this.usuario.Rol=='Super Usuario'){
+
+      this.obtenerSucursalesByMatriz()
+    }
+    else {
+      this.obtenerSucursales()
+
+    }
   
  
   });
 
   
 }
+
+selectSucursalByEmpresa(idEmpresa:any){
+  if(idEmpresa=='0') {
+   this.Sucursales=this.SucursalesTodasBack
+   this.ProyectoForm.get('idSucursal')!.disable();
+  }
+  else {
+    this.Sucursales=this.SucursalesTodasBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
+    this.ProyectoForm.get('idSucursal')!.enable();
+  }
+  
+ }
 
 cargarFormulario(){
   this.ProyectoForm = new FormGroup({
@@ -73,6 +93,8 @@ cargarFormulario(){
     Activo: new FormControl(true), 
     Editando: new FormControl(false), 
     RangoFechas: new FormControl(null),
+    FechaInicio: new FormControl(''),
+    FechaFinal: new FormControl(''),
     idSucursal: new FormControl('0'), 
     FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
@@ -83,15 +105,38 @@ toggleEdicion(Proyecto: any) {
 }
 
 
+
 actualizarProyecto(proyecto:any){
   let _Proyecto= this.Proyectos;
   const proyectoEncontrado = _Proyecto.filter((suc:any) => suc.id == proyecto.id);
   proyectoEncontrado[0].Nombre=proyecto.Nombre
   proyectoEncontrado[0].Editando = !proyecto.Editando;
+  proyectoEncontrado[0].FechaInicio = proyecto.RangoFechas[0]=='' ? '' : this.datePipe.transform(new Date(proyecto.RangoFechas[0]).setDate(new Date(proyecto.RangoFechas[0]).getDate()), 'yyyy-MM-dd');
+  proyectoEncontrado[0].FechaFinal = proyecto.RangoFechas[1]== '' ? '' :  this.datePipe.transform(new Date(proyecto.RangoFechas[1]).setDate(new Date(proyecto.RangoFechas[1]).getDate()), 'yyyy-MM-dd');
+  proyectoEncontrado[0].RangoFechas =proyecto.RangoFechas
 
-  this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
-    this.toastr.success('Proyecto editado', '¡Exito!');
-  })
+  if(proyectoEncontrado[0].FechaInicio!='' && proyectoEncontrado[0].FechaFinal!=''){
+    const mesesAgrupados = this.conS.generarMesesAgrupadosPorAnio( proyectoEncontrado[0].FechaInicio, proyectoEncontrado[0].FechaFinal);
+    const añosAgrupados = Object.keys(mesesAgrupados).map(year => {
+      return {
+          year: year,
+          meses: mesesAgrupados[year].map(mes => ({
+              numero: mes.numero,
+              nombre: mes.nombre,
+              anio: Number(year),
+          }))
+      };
+  });
+  proyectoEncontrado[0].MesesRango=añosAgrupados
+
+  }
+  console.log('proyectoEncontrado[0]',proyectoEncontrado[0])
+
+
+
+  // this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
+  //   this.toastr.success('Proyecto editado', '¡Exito!');
+  // })
 }
 
 ActualizaEstadoProyecto(Proyecto:any,Estado:boolean){
@@ -117,30 +162,89 @@ verificarProyecto(){
 }
 
 crearProyecto(){
+console.log('FechaInicio',this.ProyectoForm.value.RangoFechas[0])
+console.log('FechaFinal',this.ProyectoForm.value.RangoFechas[1])
 
+if(this.ProyectoForm.value.RangoFechas[0]==null){
+      Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Debe colocar una fecha de inicio",
+      showConfirmButton: false,
+      timer: 1500
+    });
+}
+else if(this.ProyectoForm.value.RangoFechas[1]==null){
+      Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Debe colocar una fecha final",
+      showConfirmButton: false,
+      timer: 1500
+    });
+}
+else {
   let FechaInicio:any=this.datePipe.transform(new Date(this.ProyectoForm.value.RangoFechas[0]).setDate(new Date(this.ProyectoForm.value.RangoFechas[0]).getDate()), 'yyyy-MM-dd')
   let FechaFinal:any=this.datePipe.transform(new Date(this.ProyectoForm.value.RangoFechas[1]).setDate(new Date(this.ProyectoForm.value.RangoFechas[1]).getDate()), 'yyyy-MM-dd')
   const mesesAgrupados = this.conS.generarMesesAgrupadosPorAnio(FechaInicio, FechaFinal);
-  console.log('mesesAgrupados',mesesAgrupados)
+  const añosAgrupados = Object.keys(mesesAgrupados).map(year => {
+    return {
+        year: year,
+        meses: mesesAgrupados[year].map(mes => ({
+            numero: mes.numero,
+            nombre: mes.nombre,
+            anio: Number(year),
+        }))
+    };
+});
 
-  // this.conS.crearProyecto(this.ProyectoForm.value).then((resp: any)=>{
-  //   Swal.fire({
-  //     position: "center",
-  //     icon: "success",
-  //     title: "Proyecto creado",
-  //     showConfirmButton: false,
-  //     timer: 1500
-  //   });
-  //   this.cargarFormulario()
-  // })
+
+
+this.ProyectoForm.value.MesesRango=añosAgrupados
+this.ProyectoForm.value.FechaInicio=FechaInicio
+this.ProyectoForm.value.FechaFinal=FechaFinal
+console.log('Form',this.ProyectoForm.value);
+  this.conS.crearProyecto(this.ProyectoForm.value).then((resp: any)=>{
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Proyecto creado",
+      showConfirmButton: false,
+      timer: 1500
+    });
+    this.cargarFormulario()
+  })
+
+}
 }
 obtenerProyectos(){
   this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
   this.Proyectos=resp
+
+  console.log('Proyectos',this.Proyectos)
+
+  this.Proyectos.map((proyect:any)=>
+ {
+   proyect.RangoFechas[0]= proyect.RangoFechas[0]==undefined ?'': new Date(proyect.RangoFechas[0].seconds *1000),
+    proyect.RangoFechas[1]= proyect.RangoFechas[1]==undefined ?'': new Date(proyect.RangoFechas[1].seconds *1000)
+
+ } 
+)
+
+
+
   })
+  
 }
 obtenerSucursales(){
   this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe((resp: any)=>{
+  this.Sucursales=resp.filter(data=>data.Activo==true)
+
+  })
+}
+obtenerSucursalesByMatriz(){
+  this.conS.obtenerSucursalesByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
+  this.SucursalesTodasBack=resp.filter(data=>data.Activo==true)
   this.Sucursales=resp.filter(data=>data.Activo==true)
 
   })
