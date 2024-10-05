@@ -1,0 +1,11 @@
+.fixed-multiselect .ui-multiselect-label-container {
+    width: 200px; /* Ajusta el tamaño deseado */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .custom-width-multiselect {
+    width: 600px !important;
+    z-index: 999999;
+  }

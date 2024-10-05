@@ -302,6 +302,11 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     .collection('Proyectos',(ref)=>ref.where('idEmpresa','==',idEmpresa))
     .valueChanges();
   }
+  obtenerProyectosByMatriz(idMatriz:any) {
+    return this.afs
+    .collection('Proyectos',(ref)=>ref.where('idMatriz','==',idMatriz))
+    .valueChanges();
+  }
   crearProyecto(proyecto:any) {
     const id = this.afs.createId();
     return this.afs

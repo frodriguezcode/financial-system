@@ -227,6 +227,7 @@ ngOnInit(): void {
     }
 
     this.obtenerSucursales()
+ 
     this.obtenerItems()
     this.obtenerCuentas()
     this.obtenerSocios()
@@ -238,6 +239,7 @@ ngOnInit(): void {
       
 
 }
+
 
 borrarRegistros(){
 
@@ -396,12 +398,9 @@ buscarByFecha(){
 
  if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
 
-  this.Registros=this.registrosBackUp.
-  filter((reg:any)=>reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value
-  &&    reg.TipoRegistro == this.idTipoRegistro
-)
+  this.filtrarByCategoria()
   
-this.calcularImporteSubTotal(this.Registros)
+
  }
  else {
    this.toastr.warning('', '¡Acceso Denegado!',{
@@ -411,51 +410,7 @@ this.calcularImporteSubTotal(this.Registros)
 
 
 }
-buscarBySucursal(){
-  this.Registros=this.registrosBackUp
 
-  if(this.SucursaleSeleccionada.id!=0){
-   this.Registros=this.registrosBackUp.filter((reg:any)=>reg.idSucursal==this.SucursaleSeleccionada.id)
-   this.Items = this.ItemsBack.filter((item: any) => 
-    item.TipoRubro == this.idTipoRegistro &&
-    item.Sucursales.some((sucursal: any) => sucursal.id === this.SucursaleSeleccionada.id)
-  );
-  }
-  else {
-    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
-  }
-
-
-  this.calcularImporteSubTotal(this.Registros)
-  this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
-    return Math.max(maxOrden, objeto.Orden);
-}, 0);
-}
-buscarByProyecto(){
-  this.Registros=this.registrosBackUp
-  if(this.ProyectoSeleccionado.id!=0){
-
-   this.Registros=this.registrosBackUp.filter((reg:any)=>reg.idProyecto==this.ProyectoSeleccionado.id)
-   this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro 
-    &&
-   item.Proyectos.some((proyecto: any) => proyecto.id == this.ProyectoSeleccionado.id )
-  )
-
-  }
-  else {
-    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
-    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
-
-  }
-
-  this.calcularImporteSubTotal(this.Registros)
-  this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
-    return Math.max(maxOrden, objeto.Orden);
-}, 0);
-
-
-
-}
 filtrarByCategoria(){
 let Categorias:any=[]
 let ProyectoSeleccionado:any
@@ -512,8 +467,20 @@ const registrosFiltrados = this.registrosBackUp.filter(registro => {
 
   
 });
+console.log('FechaInicio',this.FechaDesde.value)
+console.log('FechaHasta',this.FechaHasta.value)
 
-this.Registros=registrosFiltrados.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+if(this.FechaDesde.value==''|| this.FechaHasta.value==''){
+  this.Registros=registrosFiltrados.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+  
+}
+else {
+  this.Registros=registrosFiltrados.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro
+  && reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value
+)
+
+}
+
 this.calcularImporteSubTotal( this.Registros)
 
   
@@ -523,6 +490,11 @@ restablecer(){
   filter((reg:any)=>  reg.TipoRegistro == this.idTipoRegistro)
   this.FechaDesde.setValue('')
   this.FechaHasta.setValue('')
+  this.CategoriasSeleccionadas=[]
+  this.SucursaleSeleccionada= {};
+  this.ProyectoSeleccionado= {};
+  this.calcularImporteSubTotal(this.Registros)
+  this.calcularImporteTotal(this.Registros)
 }
 obtenerRegistros(){
 

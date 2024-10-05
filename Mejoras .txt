@@ -1,5 +1,7 @@
-filtro de fechas, no respeta el filtro de categoria
+--filtro de fechas, no respeta el filtro de categoria
+
 selector de proyectos y sucursales en creaciond de usuarios
+
 verificar contraseña y correo en creacion de usuarios
 
 flujo de creacion de empresa
