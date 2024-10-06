@@ -27,6 +27,7 @@ SemanasTodas:any=[]
 Meses: any = [];
 MesesSeleccionados: any = [];
 Anios: any = [];
+AniosBack: any = [];
 AniosSeleccionados: any = [];
 AniosPlaneacion: any = [];
 Cabecera: any = [];
@@ -186,6 +187,7 @@ obtenerAniosPlaneacion(){
     if(resp.length>0){
       this.AniosPlaneacion=resp
       this.Anios=resp[0].Anios
+      this.AniosBack=resp[0].Anios
 
 
     }
@@ -200,12 +202,29 @@ obtenerAniosPlaneacion(){
           Mostrar: true
       
           },
+          {Anio:2025,
+          Mostrar: true
+      
+          },
         ]
       }
       this.conS.crearAniosPlaneacion(_AniosPlanes).then(resp=>{
 
  
       })
+      this.AniosBack=[
+        {Anio:2023,
+        Mostrar: true
+        },
+        {Anio:2024,
+        Mostrar: true
+    
+        },
+        {Anio:2025,
+        Mostrar: true
+    
+        },
+      ]
     }
     this.obtenerCategorias()  
     this.obtenerRegistros()
@@ -244,12 +263,102 @@ filtrarDataProyecto(){
   localStorage.setItem('ProyectoSelectBC', JSON.stringify(this.ProyectoSeleccionado));
   let CriteriosRegistros:any=[]
   this.SucursalSeleccionada={}
+  
+  if(this.ProyectoSeleccionado.MesesRango.length>0){
+    let _AniosProyecto:any=[]
+    let _MesesProyecto:any=[]
+
+    this.ProyectoSeleccionado.MesesRango.forEach(element => {
+      _AniosProyecto.push({
+       "Anio": Number(element.year),
+       "Mostrar": true,
+      
+      })
+      element.meses.forEach(elementMes => {
+        
+        _MesesProyecto.push({
+          "Mes":elementMes.nombre,
+          "Mostrar":true,
+          "NumMes":elementMes.numero,
+          "Anio":elementMes.anio,
+        })
+      });
+      
+      
+    });
+
+
+    this.Cabecera=[]
+    this.Cabecera.push({
+      "Nombre":"Catálogo de Cuentas",
+      "Mes":"",
+      "NumMes":"",
+      "Anio":"",
+      "Tipo":1,
+      "Mostrar":true,
+      "MostrarBoton":true
+    })
+
+    _AniosProyecto.forEach((anio:any) => {
+      _MesesProyecto.filter((m:any)=>m.Anio==anio.Anio).forEach((mes:any) => {
+        this.Cabecera.push({
+          "Nombre":"Plan " + mes.Mes + " " + anio.Anio,
+          "Mes":mes.Mes,
+          "NumMes":mes.NumMes,
+          "Anio":anio.Anio,
+          "Tipo":2,
+          "Mostrar":true,
+          "MostrarBoton":true
+        })
+        this.Cabecera.push({
+          "Nombre":"Real "+ mes.Mes + " " + anio.Anio,
+          "Mes":mes.Mes,
+          "NumMes":mes.NumMes,
+          "Anio":anio.Anio,
+          "Tipo":3,
+          "Mostrar":true,
+          "MostrarBoton":true
+        })
+        this.Cabecera.push({
+          "Nombre":"Diferencia",
+          "Mes":mes.Mes,
+          "NumMes":mes.NumMes,
+          "Anio":anio.Anio,
+          "Tipo":4,
+          "Mostrar":true,
+          "MostrarBoton":true
+        })
+  
+        this.Cabecera.push({
+          "Nombre":"% Variación",
+          "Mes":mes.Mes,
+          "NumMes":mes.NumMes,
+          "Anio":anio.Anio,
+          "Tipo":5,
+          "Mostrar":true,
+          "MostrarBoton":true
+        })
+  
+  
+  
+      })
+})
+
+this.Anios=_AniosProyecto
+
+  }
+
+  else {
+    this.Anios=this.AniosBack
+    this.Cabecera=this.CabeceraBack
+  }
 
   CriteriosRegistros={
 
     idProyecto:[this.ProyectoSeleccionado.id]
 
-  }
+  } 
+
 
   this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)

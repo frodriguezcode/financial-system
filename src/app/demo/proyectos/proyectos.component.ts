@@ -221,15 +221,19 @@ obtenerProyectos(){
   this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
   this.Proyectos=resp
 
-  console.log('Proyectos',this.Proyectos)
 
-  this.Proyectos.map((proyect:any)=>
- {
-   proyect.RangoFechas[0]= proyect.RangoFechas[0]==undefined ?'': new Date(proyect.RangoFechas[0].seconds *1000),
-    proyect.RangoFechas[1]= proyect.RangoFechas[1]==undefined ?'': new Date(proyect.RangoFechas[1].seconds *1000)
 
- } 
-)
+  this.Proyectos.map((proyect: any) => {
+    proyect.RangoFechas[0] = proyect.RangoFechas[0] && proyect.RangoFechas[0].seconds 
+      ? new Date(proyect.RangoFechas[0].seconds * 1000) 
+      : new Date();  // Fecha actual si está indefinida
+    
+    proyect.RangoFechas[1] = proyect.RangoFechas[1] && proyect.RangoFechas[1].seconds 
+      ? new Date(proyect.RangoFechas[1].seconds * 1000) 
+      : new Date();  // Fecha actual si está indefinida
+  });
+  
+
 
 
 
