@@ -181,22 +181,31 @@ ordenarAnios(anios){
 }
 
 generarMesesAgrupadosPorAnio(fechaInicio: string, fechaFinal: string): any {
-  const inicio = new Date(fechaInicio); // Convertimos el string a objeto Date
-  const final = new Date(fechaFinal);
+  let inicio :any = new Date(fechaInicio); // Fecha de inicio
+  const final = new Date(fechaFinal); // Fecha de finalización
   
-  const resultado: { [anio: number]: { numero: number, nombre: string }[] } = {}; // Objeto para almacenar los meses agrupados por año
+  // Ajustamos la fecha inicial al primer día del mes
+  inicio = new Date(inicio.getFullYear(), inicio.getMonth()+1, 1);
+
+  // Ajustamos la fecha final al último día del mes si no es el día 1
+  final.setMonth(final.getMonth(), 1); // Nos aseguramos que está en el primer día del mes
+  final.setMonth(final.getMonth() + 1); // Incluir el mes final
   
+  const resultado: { [anio: number]: { numero: number, nombre: string }[] } = {};
+  console.log('inicio',inicio)
+  console.log('final',final)
+  // Recorremos los meses del rango
   while (inicio <= final) {
-    const anio = inicio.getFullYear(); // Obtenemos el año de la fecha actual
-    const mesNumero = inicio.getMonth() + 1; // Obtenemos el número del mes (sin ceros a la izquierda)
+    const anio = inicio.getFullYear(); // Año de la fecha actual
+    const mesNumero = inicio.getMonth() + 1; // Mes de la fecha actual (de 1 a 12)
     const mesNombre = this.capitalizarMes(inicio.toLocaleDateString('es-ES', { month: 'long' })); // Nombre del mes capitalizado
     
-    // Si el año no está en el objeto, lo inicializamos con un arreglo vacío
+    // Si el año no está en el objeto, lo inicializamos
     if (!resultado[anio]) {
       resultado[anio] = [];
     }
-    
-    // Agregamos el mes al año correspondiente como objeto { numero, nombre }
+
+    // Agregamos el mes al arreglo
     resultado[anio].push({
       numero: mesNumero,
       nombre: mesNombre
@@ -205,7 +214,7 @@ generarMesesAgrupadosPorAnio(fechaInicio: string, fechaFinal: string): any {
     // Incrementamos el mes
     inicio.setMonth(inicio.getMonth() + 1);
   }
-  
+
   return resultado;
 }
 

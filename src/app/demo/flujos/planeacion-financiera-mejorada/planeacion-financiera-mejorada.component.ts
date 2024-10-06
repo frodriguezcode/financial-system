@@ -263,7 +263,7 @@ filtrarDataProyecto(){
   localStorage.setItem('ProyectoSelectBC', JSON.stringify(this.ProyectoSeleccionado));
   let CriteriosRegistros:any=[]
   this.SucursalSeleccionada={}
-  
+  console.log('this.ProyectoSeleccionado',this.ProyectoSeleccionado)
   if(this.ProyectoSeleccionado.MesesRango.length>0){
     let _AniosProyecto:any=[]
     let _MesesProyecto:any=[]
