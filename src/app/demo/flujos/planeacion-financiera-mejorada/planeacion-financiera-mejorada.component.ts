@@ -14,10 +14,22 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
+import { TableModule } from 'primeng/table';
+import { SidebarModule } from 'primeng/sidebar';
+
 @Component({
   selector: 'app-planeacion-financiera-mejorada',
   standalone: true,
-  imports: [CommonModule, SharedModule,MultiSelectModule,DropdownModule,ButtonModule,InputTextModule,DialogModule],
+  imports: [
+    CommonModule, 
+    SharedModule,
+    MultiSelectModule,
+    DropdownModule,
+    ButtonModule,
+    InputTextModule,
+    DialogModule,
+    TableModule,
+    SidebarModule],
   templateUrl: './planeacion-financiera-mejorada.component.html',
   styleUrls: ['./planeacion-financiera-mejorada.component.scss']
 })
@@ -47,7 +59,7 @@ DataCategoriasMensual:any=[]
 DataItemsMensual:any=[]
 DataItems:any=[]
 RegistrosBackUp:any=[]
-
+sidebarVisible2: boolean = false;
 DataPlanesMensual:any=[]
 idTipoRegistro:any=0
 cargando:boolean=true
@@ -344,6 +356,10 @@ filtrarDataProyecto(){
       })
 })
 
+const nuevosElementos = this.Cabecera.filter(itemA => 
+  !this.CabeceraBack.some(itemB => itemB.Anio === itemA.Anio)
+);
+this.CabeceraBack.push(...nuevosElementos);
 this.Anios=_AniosProyecto
 
   }
@@ -371,7 +387,7 @@ this.Anios=_AniosProyecto
   this.getDataItemsMensualPlanes()
   this.getDataCategoriasMensualPlanes()
 
-
+  this.sidebarVisible2=false
 }
 
 filtrarDataSucursal(){
@@ -410,6 +426,7 @@ MostrarMes(anio:any,mes:any){
   });
 }
 getMesesActivos(){
+
   if(this.MesesSeleccionados.length>0){
     this.Meses.forEach(mes => {
       mes.Mostrar = this.MesesSeleccionados.includes(mes);
@@ -426,7 +443,8 @@ getMesesActivos(){
     else {
 
       this.Cabecera=this.CabeceraBack.filter((cab:any)=>
-      this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
+      (this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes) &&
+      this.Anios.some((anio: any) => anio.Anio == cab.Anio))
       || cab.Tipo==1
       )
     }
@@ -439,7 +457,11 @@ getMesesActivos(){
       )
     }
     else {
-      this.Cabecera=this.CabeceraBack
+      this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+       
+        this.Anios.some((anio: any) => anio.Anio == cab.Anio)
+        || cab.Tipo==1
+        )
     }
     this.Meses.map((mes:any)=>mes.Mostrar=true)
   
@@ -479,14 +501,20 @@ getAniosActivos(){
     this.Meses.forEach(mes => {
       mes.Mostrar = this.MesesSeleccionados.includes(mes);
     });
-    this.Cabecera=this.CabeceraBack.filter((cab:any)=>
-      this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes)
-      || cab.Tipo==1
-      )
+   
+      this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+        (this.MesesSeleccionados.some((mes: any) => mes.NumMes == cab.NumMes) &&
+        this.Anios.some((anio: any) => anio.Anio == cab.Anio))
+        || cab.Tipo==1
+        )
   }
   else {
     this.Anios.map((mes:any)=>mes.Mostrar=true)
-    this.Cabecera=this.CabeceraBack
+    this.Cabecera=this.CabeceraBack.filter((cab:any)=>
+       
+      this.Anios.some((anio: any) => anio.Anio == cab.Anio)
+      || cab.Tipo==1
+      )
   }
 
 
