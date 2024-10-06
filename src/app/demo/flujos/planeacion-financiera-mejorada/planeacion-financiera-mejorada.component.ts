@@ -263,7 +263,7 @@ filtrarDataProyecto(){
   localStorage.setItem('ProyectoSelectBC', JSON.stringify(this.ProyectoSeleccionado));
   let CriteriosRegistros:any=[]
   this.SucursalSeleccionada={}
-  console.log('this.ProyectoSeleccionado',this.ProyectoSeleccionado)
+
   if(this.ProyectoSeleccionado.MesesRango.length>0){
     let _AniosProyecto:any=[]
     let _MesesProyecto:any=[]
@@ -684,7 +684,7 @@ switchTipoRegistro(idTipo){
   }
   
   if(this.categoriasExpandidasHistory.length>0){
-    console.log('categoriasExpandidasHistory',this.categoriasExpandidasHistory)
+
     this.categoriasExpandidas=this.categoriasExpandidasHistory
   }
   this.getDataCategoriasMensual()
@@ -1133,7 +1133,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
     if(_ValorPlanEncontrado.length>0){
 
       _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
-      console.log('_ValorPlanEncontrado',_ValorPlanEncontrado[0])
+
     this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
       this.getDataItemsMensualPlanes()
@@ -1152,7 +1152,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
 
 }
 
-console.log('ProyectoSeleccionado',this.ProyectoSeleccionado)
+
 
   }
 
@@ -1332,6 +1332,7 @@ this.DataItemsMensual=[]
         })
       
     });
+//console.log('this.DataItemsMensual',this.DataItemsMensual[2025 + '-' + 10 + '-' + 'uzbtKeksyZGolh1AvfuT']?.[0]?.Valor)
 
 }
 

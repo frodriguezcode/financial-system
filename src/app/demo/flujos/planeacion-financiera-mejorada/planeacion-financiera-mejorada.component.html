@@ -244,8 +244,9 @@
                             class="text-center">
                             <span 
                             *ngIf="DataItemsMensual[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor>=0">
-                              {{ "$ " + ( DataItemsMensual[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor| number)}}
+                              {{ cab.NumMes}}
                             </span>
+                            
                             <span
                             style="color: red;"
                             *ngIf="DataItemsMensual[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor<0">

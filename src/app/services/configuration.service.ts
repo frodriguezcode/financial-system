@@ -180,24 +180,18 @@ ordenarAnios(anios){
   return anios
 }
 
-generarMesesAgrupadosPorAnio(fechaInicio: string, fechaFinal: string): any {
-  let inicio :any = new Date(fechaInicio); // Fecha de inicio
-  const final = new Date(fechaFinal); // Fecha de finalización
-  
-  // Ajustamos la fecha inicial al primer día del mes
-  inicio = new Date(inicio.getFullYear(), inicio.getMonth()+1, 1);
+getNumMes(Fecha:any){
+return  Number((Fecha.substring(5)).substring(0,2))
+}
 
-  // Ajustamos la fecha final al último día del mes si no es el día 1
-  final.setMonth(final.getMonth(), 1); // Nos aseguramos que está en el primer día del mes
-  final.setMonth(final.getMonth() + 1); // Incluir el mes final
-  
+generarMesesAgrupadosPorAnio(fechaInicio: string, fechaFinal: string): any {
+  let inicio :any = new Date( `${fechaInicio}T00:00:00`); // Fecha de inicio
+console.log('inicio',inicio)
+  const final = new Date(`${fechaFinal}T00:00:00`); // Fecha de finalización
   const resultado: { [anio: number]: { numero: number, nombre: string }[] } = {};
-  console.log('inicio',inicio)
-  console.log('final',final)
-  // Recorremos los meses del rango
   while (inicio <= final) {
     const anio = inicio.getFullYear(); // Año de la fecha actual
-    const mesNumero = inicio.getMonth() + 1; // Mes de la fecha actual (de 1 a 12)
+    const mesNumero = inicio.getMonth()+1; // Mes de la fecha actual (de 1 a 12)
     const mesNombre = this.capitalizarMes(inicio.toLocaleDateString('es-ES', { month: 'long' })); // Nombre del mes capitalizado
     
     // Si el año no está en el objeto, lo inicializamos
