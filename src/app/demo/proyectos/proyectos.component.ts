@@ -134,9 +134,9 @@ actualizarProyecto(proyecto:any){
 
 
 
-  // this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
-  //   this.toastr.success('Proyecto editado', '¡Exito!');
-  // })
+  this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
+    this.toastr.success('Proyecto editado', '¡Exito!');
+  })
 }
 
 ActualizaEstadoProyecto(Proyecto:any,Estado:boolean){
