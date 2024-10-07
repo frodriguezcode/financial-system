@@ -8,11 +8,21 @@
   </button>
   </div>
   <div class="col-12">
-    <p-multiSelect class="m-1" [options]="Anios" [(ngModel)]="AniosSeleccionados" (onChange)="getAniosActivos()"
+    <p-multiSelect class="m-1" 
+    [options]="Anios"
+    [(ngModel)]="AniosSeleccionados"
+    [style]="{'width':'250px'}"
+    [panelStyle]="{'width':'250px'}"
+    (onChange)="getAniosActivos()"
     optionLabel="Anio" placeholder="Años" />
   </div>
   <div class="col-12">
-    <p-multiSelect class="m-1" (onChange)="getMesesActivos()" [options]="Meses" [(ngModel)]="MesesSeleccionados"
+    <p-multiSelect class="m-1"
+     (onChange)="getMesesActivos()"
+      [options]="Meses" 
+      [style]="{'width':'250px'}"
+      [panelStyle]="{'width':'100%'}"
+      [(ngModel)]="MesesSeleccionados"
     optionLabel="Mes" placeholder="Meses" />
   </div>
   <div class="col-12">
@@ -21,7 +31,10 @@
     optionLabel="Nombre"
     emptyMessage="No hay sucursales disponibles"
     emptyFilterMessage="No se encontraron coincidencias"
-    placeholder="Seleccione una sucursal" />
+    placeholder="Seleccione una sucursal" 
+    [style]="{'width':'250px'}"
+    [panelStyle]="{'width':'100%'}"
+    />
   </div>
   <div class="col-12">
 
@@ -54,7 +67,7 @@
         <button type="button" (click)="descargarExcel()" class="btn btn-success m-1 float-end">Descargar
           <i class="fa-solid fa-file-arrow-down"></i></button>
        <button type="button"  (click)="sidebarVisible2 = true"  class="btn btn-primary m-1 float-end">Filtros
-          <i class="fa-solid fa-file-arrow-down"></i></button>
+          <i class="fa-solid fa-filter"></i></button>
   
       
    
