@@ -382,10 +382,10 @@ this.Anios=_AniosProyecto
   && item.Proyectos.some((proyecto: any) => proyecto.id === this.ProyectoSeleccionado.id))
 
 
+  this.getDataCategoriasMensualPlanes()
   this.getDataCategoriasMensual()
   this.getDataItemMensual()
   this.getDataItemsMensualPlanes()
-  this.getDataCategoriasMensualPlanes()
 
   this.sidebarVisible2=false
 }
@@ -715,10 +715,10 @@ switchTipoRegistro(idTipo){
 
     this.categoriasExpandidas=this.categoriasExpandidasHistory
   }
+  this.getDataCategoriasMensualPlanes()
   this.getDataCategoriasMensual()
   this.getDataItemMensual()
   this.getDataItemsMensualPlanes()
-  this.getDataCategoriasMensualPlanes()
 
   //this.construirCabecera()
 }
@@ -782,10 +782,10 @@ construirCabecera(){
 
  this.CabeceraBack=this.Cabecera
 
+ this.getDataCategoriasMensualPlanes()
 this.getDataCategoriasMensual()
 this.getDataItemMensual()
 this.getDataItemsMensualPlanes()
-this.getDataCategoriasMensualPlanes()
   })
 //console.log('Cabecera',this.Cabecera)
 }
@@ -805,9 +805,21 @@ obtenerCategorias(){
         "Tipo":categoria.Tipo,
         "id":categoria.id,
       }
-      this.Categorias.push(_Categ)
 
+      this.Categorias.push(_Categ)
+      
     })
+    this.Categorias.push({
+      "Calculado":true,
+      "Mostrar":true,
+      "Nombre":"Diferencia Teórico vs Real",
+      "Orden":20,
+      "Suma":true,
+      "Tipo":20,
+      "id":'Diferencia-0',
+    })
+
+    console.log('Categorias',this.Categorias)
     this.Categorias.forEach(element => {
       this.categoriasExpandidas[element.id]=true
       
@@ -1165,8 +1177,8 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
     this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
       this.getDataItemsMensualPlanes()
-      this.getDataCategoriasMensual()
       this.getDataCategoriasMensualPlanes()
+      this.getDataCategoriasMensual()
     })
     }  
     
@@ -1174,8 +1186,8 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       this.conS.crearValorPlan(_Valor).then(resp=>{
         this.toastr.success('Guardado', '¡Exito!');
         this.getDataItemsMensualPlanes()
-        this.getDataCategoriasMensual()
         this.getDataCategoriasMensualPlanes()
+        this.getDataCategoriasMensual()
       })
 
 }
@@ -1192,6 +1204,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
 
 getDataCategoriasMensual(){
   this.DataCategoriasMensual=[]
+  let idCategoria:string=''
   this.Categorias.forEach((categ:any) => {
       this.Anios.forEach((anio:any) => {
         this.Meses.forEach((mes:any) => {
@@ -1226,6 +1239,17 @@ getDataCategoriasMensual(){
               
               this.DataCategoriasMensual[key].push({
                 "Valor": this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio)
+      
+              });
+          }
+          else if(categ.Orden==20) {
+              
+              this.DataCategoriasMensual[key].push({
+                "Valor":
+                this.DataPlanesMensual[anio.Anio +
+                  '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor +
+                this.DataCategoriasMensual[anio.Anio +
+                  '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor
       
               });
           }
