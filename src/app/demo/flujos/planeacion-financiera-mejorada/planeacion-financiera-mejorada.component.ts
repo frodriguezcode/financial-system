@@ -532,24 +532,24 @@ getAniosActivos(){
 
 }
 descargarExcel(){
- let _Cabecera:any=[]
- _Cabecera=this.Cabecera.filter((cab:any)=>cab.Mostrar==true)
+ let _CabeceraPlan:any=[]
+ let _CabeceraReal:any=[]
+
+ //Data planeada
+ _CabeceraPlan=this.Cabecera.filter((cab:any)=>cab.Mostrar==true && (cab.Tipo==2 || cab.Tipo==1))
   const headerRow: any[] = [];
-  _Cabecera.forEach((element: any) => {
+  _CabeceraPlan.forEach((element: any) => {
     headerRow.push(element.Nombre);
   });
   let Data: any[] = [];
-
   let Contador:number=1
-  this.Categorias.forEach((categ: any) => {
+  this.Categorias.filter((categ:any)=>categ.Tipo!=20).forEach((categ: any) => {
     let fila: any[] = [`${Contador}- ${categ.Nombre}`];
     Contador+=1
-    _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+    _CabeceraPlan.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
 
         const index = `${cab.Anio}-${cab.NumMes}-${categ.id}`;
         let valor = 0;
-        
-        // Evaluamos según el tipo de cabecera
         if (cab.Tipo == 2) {
             valor = this.DataPlanesMensual[index]?.[0]?.Valor || 0;
         } else if (cab.Tipo == 3) {
@@ -562,14 +562,10 @@ descargarExcel(){
         
         fila.push(valor);
     });
-
-    // Añadimos la fila de la categoría al Data una vez
     Data.push(fila);
-
-    // Ahora iteramos sobre los elementos de la categoría
     this.getItems(categ.id).forEach((item: any) => {
         let filaItem: any[] = [item.Nombre];
-        _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+        _CabeceraPlan.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
 
             const indexItem = `${cab.Anio}-${cab.NumMes}-${item.id}`;
             let valorItem = 0;
@@ -591,117 +587,225 @@ descargarExcel(){
 
     
   });
-  const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet('Datos');
-  const headerRowData = worksheet.addRow(headerRow);
-  
-  headerRowData.eachCell((cell) => {
-    cell.fill = {
-      type: 'pattern',
-      pattern: 'solid',
-      fgColor: { argb: '71bd9e' } // Fondo amarillo
-    };
-    cell.font = {
-      bold: true,
-      color: { argb: 'ffffff' } // Texto azul
-    };
-    cell.alignment = {
-      horizontal: 'left',
-      vertical: 'middle'
-    };
-    cell.border = {
-      top: { style: 'thin' },
-      bottom: { style: 'thin' },
-      left: { style: 'thin' },
-      right: { style: 'thin' }
-    };
+
+  //Data real
+  _CabeceraReal=this.Cabecera.filter((cab:any)=>cab.Mostrar==true && (cab.Tipo==3 || cab.Tipo==1))
+  const headerRowReal: any[] = [];
+  _CabeceraReal.forEach((element: any) => {
+    headerRowReal.push(element.Nombre);
   });
+  let DataReal: any[] = [];
 
-  Data.forEach((row: any, index: any) => {
-    const dataRow = worksheet.addRow(row);
+  let ContadorReal:number=1
+  this.Categorias.filter((categ:any)=>categ.Tipo!=20).forEach((categ: any) => {
+    let fila: any[] = [`${ContadorReal}- ${categ.Nombre}`];
+    Contador+=1
+    _CabeceraReal.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
 
-    // Aplicar estilo intercalado (gris suave en filas pares)
-
-    if(row[0].startsWith('1-') 
-      || row[0].startsWith('2-')
-      || row[0].startsWith('4-') 
-      || row[0].startsWith('5-')  
-      || row[0].startsWith('7-') 
-      || row[0].startsWith('8-')  
-    ){
-      dataRow.eachCell((cell, colNumber) => {
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'F2F2F2' }, // Gris suave
-        };
-      });
-    }
-  else  if(row[0].startsWith('3-') 
-      || row[0].startsWith('6-')
-      || row[0].startsWith('9-') 
-      || row[0].startsWith('10-')  
-    )
-    {
-      dataRow.eachCell((cell, colNumber) => {
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'afeffb' }, // Gris suave
-        };
-      });
-    }
-  else 
-    {
-      dataRow.eachCell((cell, colNumber) => {
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'ffffff' }, // Gris suave
-        };
-      });
-    }
-
-    // if (index % 2 === 0) {
-    //   dataRow.eachCell((cell, colNumber) => {
-    //     cell.fill = {
-    //       type: 'pattern',
-    //       pattern: 'solid',
-    //       fgColor: { argb: 'F2F2F2' }
-    //     };
-    //   });
-    // }
-
-  
-    // Alinear las celdas, la primera a la izquierda y las demás centradas
-    dataRow.eachCell((cell: any, colNumber: number) => {
-      if (colNumber === 1) {
-        // Si es la primera columna, alinear a la izquierda
-        cell.alignment = {
-          horizontal: 'left',
-          vertical: 'middle'
-        };
-      } else {
-        // Para las demás columnas, alinear al centro
-        cell.alignment = {
-          horizontal: 'center',
-          vertical: 'middle'
-        };
-      }
+        const index = `${cab.Anio}-${cab.NumMes}-${categ.id}`;
+        let valor = 0;
+        if (cab.Tipo == 2) {
+            valor = this.DataPlanesMensual[index]?.[0]?.Valor || 0;
+        } else if (cab.Tipo == 3) {
+            valor = this.DataCategoriasMensual[index]?.[0]?.Valor || 0;
+        } else if (cab.Tipo == 4) {
+            valor = this.DataPlanesMensual[index]?.[0]?.Diferencia || 0;
+        } else if (cab.Tipo == 5) {
+            valor = this.DataPlanesMensual[index]?.[0]?.Variacion || 0;
+        }
+        
+        fila.push(valor);
     });
-  });
-  worksheet.columns.forEach((column:any) => {
-    const maxLength = column.values.reduce((acc: number, curr: any) => {
-      return curr && curr.toString().length > acc ? curr.toString().length : acc;
-    }, 10);
-    column.width = maxLength + 2; // Ajustar el ancho de la columna
+
+    DataReal.push(fila);
+
+    this.getItems(categ.id).forEach((item: any) => {
+        let filaItem: any[] = [item.Nombre];
+        _CabeceraReal.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+
+            const indexItem = `${cab.Anio}-${cab.NumMes}-${item.id}`;
+            let valorItem = 0;
+
+            if (cab.Tipo == 2) {
+                valorItem = this.DataItems[indexItem]?.[0]?.Valor || 0;
+            } else if (cab.Tipo == 3) {
+                valorItem = this.DataItemsMensual[indexItem]?.[0]?.Valor || 0;
+            } else if (cab.Tipo == 4) {
+                valorItem = this.DataItems[indexItem]?.[0]?.Diferencia || 0;
+            } else if (cab.Tipo == 5) {
+                valorItem = this.DataItems[indexItem]?.[0]?.Variacion || 0;
+            }
+            filaItem.push(valorItem);
+        });
+        DataReal.push(filaItem);
+    });
+
+
+    
   });
 
-    // 6. Guardar el archivo en formato Excel
-    workbook.xlsx.writeBuffer().then((buffer: any) => {
-      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      FileSaver.saveAs(blob, 'datos.xlsx');
+const workbook = new ExcelJS.Workbook();
+const worksheet = workbook.addWorksheet('Data');
+
+// 1. Añadir la tabla de DataPlan
+worksheet.addRow([]); // Fila en blanco antes de DataPlan
+
+const headerRowPlan = worksheet.addRow(headerRow); // Usar el headerRow de DataPlan
+
+// Aplicar estilos a la cabecera de DataPlan
+headerRowPlan.eachCell((cell) => {
+  cell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: '71bd9e' }, // Fondo verde
+  };
+  cell.font = {
+    bold: true,
+    color: { argb: 'ffffff' }, // Texto blanco
+  };
+  cell.alignment = {
+    horizontal: 'left',
+    vertical: 'middle',
+  };
+  cell.border = {
+    top: { style: 'thin' },
+    bottom: { style: 'thin' },
+    left: { style: 'thin' },
+    right: { style: 'thin' },
+  };
+});
+
+// Añadir las filas de DataPlan y aplicar estilos
+Data.forEach((row: any, index: any) => {
+  const dataRow = worksheet.addRow(row);
+
+  // Condicional para aplicar diferentes colores de fondo
+  if (row[0].startsWith('1-') || row[0].startsWith('2-') || row[0].startsWith('4-') || row[0].startsWith('5-') || row[0].startsWith('7-') || row[0].startsWith('8-')) {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'F2F2F2' }, // Gris claro
+      };
     });
+  } else if (row[0].startsWith('3-') || row[0].startsWith('6-') || row[0].startsWith('9-') || row[0].startsWith('10-')) {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'afeffb' }, // Verde claro
+      };
+    });
+  } else {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'ffffff' }, // Blanco
+      };
+    });
+  }
+
+  // Alineación de las celdas
+  dataRow.eachCell((cell: any, colNumber: number) => {
+    if (colNumber === 1) {
+      cell.alignment = {
+        horizontal: 'left',
+        vertical: 'middle',
+      };
+    } else {
+      cell.alignment = {
+        horizontal: 'center',
+        vertical: 'middle',
+      };
+    }
+  });
+});
+
+// 2. Añadir la tabla de DataReal justo debajo de DataPlan
+worksheet.addRow([]); // Fila en blanco antes de DataReal
+
+const headerRowRealData = worksheet.addRow(headerRowReal); // Usar el headerRowReal de DataReal
+
+// Aplicar estilos a la cabecera de DataReal
+headerRowRealData.eachCell((cell) => {
+  cell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: '71bd9e' }, // Fondo verde
+  };
+  cell.font = {
+    bold: true,
+    color: { argb: 'ffffff' }, // Texto blanco
+  };
+  cell.alignment = {
+    horizontal: 'left',
+    vertical: 'middle',
+  };
+  cell.border = {
+    top: { style: 'thin' },
+    bottom: { style: 'thin' },
+    left: { style: 'thin' },
+    right: { style: 'thin' },
+  };
+});
+
+// Añadir las filas de DataReal y aplicar estilos
+DataReal.forEach((row: any, index: any) => {
+  const dataRow = worksheet.addRow(row);
+
+  // Condicional para aplicar diferentes colores de fondo
+  if (row[0].startsWith('1-') || row[0].startsWith('2-') || row[0].startsWith('4-') || row[0].startsWith('5-') || row[0].startsWith('7-') || row[0].startsWith('8-')) {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'F2F2F2' }, // Gris claro
+      };
+    });
+  } else if (row[0].startsWith('3-') || row[0].startsWith('6-') || row[0].startsWith('9-') || row[0].startsWith('10-')) {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'afeffb' }, // Verde claro
+      };
+    });
+  } else {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'ffffff' }, // Blanco
+      };
+    });
+  }
+
+  // Alineación de las celdas
+
+  worksheet.getColumn(1).width = 30;  // Ajustar ancho de la columna 1 (por ejemplo 20 caracteres)
+  // Ajustar ancho de la columna 1 (por ejemplo 20 caracteres)
+
+  dataRow.eachCell((cell: any, colNumber: number) => {
+    if (colNumber === 1) {
+      cell.alignment = {
+        horizontal: 'left',
+        vertical: 'middle',
+      };
+    } else {
+      cell.alignment = {
+        horizontal: 'center',
+        vertical: 'middle',
+      };
+    }
+  });
+});
+
+// Exportar el archivo Excel con ambas tablas en una hoja
+workbook.xlsx.writeBuffer().then((buffer: any) => {
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  FileSaver.saveAs(blob, `Planeacion Financiera ${this.usuario.Empresa}.xlsx`);
+});
 
 
 
