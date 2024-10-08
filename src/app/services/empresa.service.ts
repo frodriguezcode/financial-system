@@ -10,16 +10,27 @@ export class EmpresasService {
 
 
     //*Creamos una empresa
-    crearEmpresa(empresa: any,Matriz:any){
+    crearEmpresa(empresa: any,Matriz:any,Rol:any){
         const id = this.afs.createId();
         this.actualizarCorporacion(Matriz).then(resp=>{
             
         })
+
+        Rol.idEmpresa=id
+        this.guardarRol(Rol)
         return this.afs
         .collection('Empresa')
         .doc(id)
         .ref.set(Object.assign(empresa, {id: id}))
     }
+
+    guardarRol(Rol:any){
+        var id = this.afs.createId();
+        this.afs
+       .collection('Roles')
+       .doc(id)
+       .ref.set(Object.assign(Rol, { id: id }));
+      }
 
     //*Obtenemos las empresas
     obtenerEmpresa(idMatriz:string){

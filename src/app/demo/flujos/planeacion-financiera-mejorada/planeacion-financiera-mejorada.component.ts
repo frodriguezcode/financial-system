@@ -245,11 +245,23 @@ obtenerAniosPlaneacion(){
   })
 }
 obtenerProyectos(){
+
+  if(this.usuario.Rol=='Super Usuario'){
+    this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
+    this.Proyectos=resp
+    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+
+  })
+    
+}
+else {
   this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
     this.Proyectos=resp
     this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
 
   })
+
+}  
 }
 obtenerSucursales(){
   this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe((resp:any)=>{

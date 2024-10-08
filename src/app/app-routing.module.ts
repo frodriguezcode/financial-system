@@ -59,6 +59,10 @@ const routes: Routes = [
         loadComponent: () => import('./demo/empresas/empresas.component')
       },
       {
+        path: 'Usuarios',
+        loadComponent: () => import('./demo/crear-usuario/crear-usuario.component')
+      },
+      {
         path: 'departamentos',
         loadComponent: () => import('./demo/departamentos/departamentos.component')
       },

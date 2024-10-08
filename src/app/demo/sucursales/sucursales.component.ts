@@ -8,6 +8,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sucursal',
@@ -23,7 +24,7 @@ export default class SucursalesComponent implements OnInit {
   SucursalForm!:FormGroup
   Fecha:any= new Date();
   usuario:any
-  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService) {}
+  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService, private readonly router: Router) {}
 
 ngOnInit(): void {
   this.conS.usuario$.subscribe(usuario => {
@@ -94,14 +95,16 @@ verificarSucursal(){
 }
 
 crearSucursal(){
+  Swal.fire({
+    title: 'Ahora crearemos los usuarios para la nueva empresa'
+   });
+   Swal.showLoading();
   this.conS.crearSucursal(this.SucursalForm.value).then((resp: any)=>{
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "Sucursal creada",
-      showConfirmButton: false,
-      timer: 1500
-    });
+    Swal.hideLoading();
+    setTimeout(()=>{                           // <<<---using ()=> syntax
+      this.router.navigate(['/Usuarios'])
+  }, 3000);
+
     this.cargarFormulario()
   })
 }

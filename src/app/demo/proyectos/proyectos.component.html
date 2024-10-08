@@ -109,6 +109,7 @@
                   <div class="form-group">       
                     <p-calendar 
                          [(ngModel)]="proyecto.RangoFechas"
+                         [appendTo]="'body'"
                         dateFormat="dd/mm/yy"
                         selectionMode="range" 
                         [readonlyInput]="false" />

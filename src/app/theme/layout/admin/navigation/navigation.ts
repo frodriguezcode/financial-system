@@ -97,11 +97,20 @@ export const NavigationItems: NavigationItem[] = [
     icon: 'fa-solid fa-building',
     children: [
       {
+        id: 'empresas',
+        title: 'Empresas',
+        type: 'item',
+        url: 'empresas',
+        icon: 'fa-solid fa-building',
+        target: false,
+        breadcrumbs: false
+      },
+      {
         id: 'sucursales',
         title: 'Sucursales',
         type: 'item',
         url: 'sucursales',
-        icon: 'fa-solid fa-building',
+        icon: 'fa-solid fa-building-flag',
         target: false,
         breadcrumbs: false
       },
@@ -111,6 +120,16 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: 'Proyectos',
         icon: 'fa-solid fa-diagram-project',
+        target: false,
+        breadcrumbs: false
+      }
+      ,
+      {
+        id: 'usuarios',
+        title: 'Usuarios',
+        type: 'item',
+        url: 'Usuarios',
+        icon: 'fa-solid fa-users',
         target: false,
         breadcrumbs: false
       }

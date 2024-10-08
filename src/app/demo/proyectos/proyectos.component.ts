@@ -10,6 +10,7 @@ import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
 import { CalendarModule } from 'primeng/calendar';
 import { PrimeNGConfig } from 'primeng/api';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-proyectos',
@@ -28,7 +29,10 @@ export default class ProyectosComponent implements OnInit {
   Fecha:any= new Date();
   usuario:any
   es: any;
-  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService,private primengConfig: PrimeNGConfig) {}
+  constructor(private datePipe: DatePipe,private conS:ConfigurationService,
+    private toastr: ToastrService,private primengConfig: PrimeNGConfig,
+    private readonly router: Router
+  ) {}
 
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
@@ -206,40 +210,70 @@ this.ProyectoForm.value.MesesRango=añosAgrupados
 this.ProyectoForm.value.FechaInicio=FechaInicio
 this.ProyectoForm.value.FechaFinal=FechaFinal
 console.log('Form',this.ProyectoForm.value);
+
+Swal.fire({
+  title: 'Ahora crearemos los usuarios para la nueva empresa'
+ });
+ Swal.showLoading();
   this.conS.crearProyecto(this.ProyectoForm.value).then((resp: any)=>{
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "Proyecto creado",
-      showConfirmButton: false,
-      timer: 1500
-    });
+    Swal.hideLoading();
+    setTimeout(()=>{                           // <<<---using ()=> syntax
+      this.router.navigate(['/Usuarios'])
+  }, 3000);
+
     this.cargarFormulario()
   })
 
 }
 }
 obtenerProyectos(){
-  this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
-  this.Proyectos=resp
-
-
-
-  this.Proyectos.map((proyect: any) => {
-    proyect.RangoFechas[0] = proyect.RangoFechas[0] && proyect.RangoFechas[0].seconds 
-      ? new Date(proyect.RangoFechas[0].seconds * 1000) 
-      : new Date();  // Fecha actual si está indefinida
-    
-    proyect.RangoFechas[1] = proyect.RangoFechas[1] && proyect.RangoFechas[1].seconds 
-      ? new Date(proyect.RangoFechas[1].seconds * 1000) 
-      : new Date();  // Fecha actual si está indefinida
-  });
+  if(this.usuario.Rol=='Super Usuario'){
+    this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
+    this.Proyectos=resp
   
+  
+  
+    this.Proyectos.map((proyect: any) => {
+      proyect.RangoFechas[0] = proyect.RangoFechas[0] && proyect.RangoFechas[0].seconds 
+        ? new Date(proyect.RangoFechas[0].seconds * 1000) 
+        : new Date();  // Fecha actual si está indefinida
+      
+      proyect.RangoFechas[1] = proyect.RangoFechas[1] && proyect.RangoFechas[1].seconds 
+        ? new Date(proyect.RangoFechas[1].seconds * 1000) 
+        : new Date();  // Fecha actual si está indefinida
+    });
+    
+  
+  
+  
+  
+    })
+    
+  }
 
+  else {
+    this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
+    this.Proyectos=resp
+  
+  
+  
+    this.Proyectos.map((proyect: any) => {
+      proyect.RangoFechas[0] = proyect.RangoFechas[0] && proyect.RangoFechas[0].seconds 
+        ? new Date(proyect.RangoFechas[0].seconds * 1000) 
+        : new Date();  // Fecha actual si está indefinida
+      
+      proyect.RangoFechas[1] = proyect.RangoFechas[1] && proyect.RangoFechas[1].seconds 
+        ? new Date(proyect.RangoFechas[1].seconds * 1000) 
+        : new Date();  // Fecha actual si está indefinida
+    });
+    
+  
+  
+  
+  
+    })
 
-
-
-  })
+  }
   
 }
 obtenerSucursales(){

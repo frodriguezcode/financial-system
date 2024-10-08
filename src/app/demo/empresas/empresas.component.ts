@@ -8,6 +8,8 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { EmpresasService } from 'src/app/services/empresa.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-empresas',
@@ -20,12 +22,15 @@ export default class EmpresasComponent implements OnInit {
   empresaFound: boolean = false;
   Empresas: any = [];
   Matrices: any = [];
+  Atributos: any = [];
   EmpresaForm!: FormGroup;
   Fecha: any = new Date();
   usuario:any
   constructor(
+    private readonly router: Router,
     private datePipe: DatePipe,
     private empS: EmpresasService,
+    private authS: AuthService,
     private toastr: ToastrService
   ) {}
 
@@ -33,8 +38,18 @@ export default class EmpresasComponent implements OnInit {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerEmpresas();
     this.obtenerCorporaciones();
+    this.obtenerAtributos();
     
   }
+
+  obtenerAtributos(){
+    this.authS.obtenerAtributos().subscribe((data:any)=>{
+      this.Atributos=data.map((atributo: any) => {
+        return { ...atributo, Seleccionado: true };
+      });
+      console.log('Atributos',this.Atributos)
+  })
+}
 
   // ~Creo Formulario de Empresa
   cargarFormulario() {
@@ -58,16 +73,36 @@ export default class EmpresasComponent implements OnInit {
       ConfigInicial:true
     }
 
-    this.Matrices[0].Empresas.push(_Empresa)
-    this.empS.crearEmpresa(_Empresa,this.Matrices[0]).then((resp) => {
-      Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: 'Empresa creada',
-        showConfirmButton: false,
-        timer: 1500
+      this.Matrices[0].Empresas.push(_Empresa)
+      let _Rol={
+        "Rol":'Super Usuario',
+        "Atributos":this.Atributos,
+        "idEmpresa":this.usuario.idEmpresa,
+        "idMatriz":this.usuario.idMatriz,
+        "idUsuario":this.usuario.id,
+        "Usuario":this.usuario.Usuario,
+        "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
+      }
+    
+
+      this.empS.crearEmpresa(_Empresa,this.Matrices[0],_Rol).then((resp) => {
+       
+        Swal.fire({
+          title: "¿Desea crear una sucursal o un proyecto?",
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Sucursal",
+          denyButtonText: `Proyecto`
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.router.navigate(['/sucursales'])
+          } else if (result.isDenied) {
+            this.router.navigate(['/Proyectos'])
+          }
+        });
       });
-    });
+
+
   }
   // ~Crear empresa
 

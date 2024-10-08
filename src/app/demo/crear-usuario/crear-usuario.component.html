@@ -68,6 +68,7 @@
                   </ng-container>
                   <ng-template #editarSucursal>
                     <p-multiSelect 
+                    [appendTo]="'body'"
                     [options]="getSucursalesByEmpresa(usuario.idEmpresa)" 
                     emptyMessage="No hay sucursales activas o creadas"
                     [(ngModel)]="usuario.Sucursales" 
@@ -84,12 +85,14 @@
                   </ng-container>
                   <ng-template #editarProyecto>
                     <p-multiSelect 
+                    [appendTo]="'body'"
                     [options]="getProyectosByEmpresa(usuario.idEmpresa)" 
                     emptyMessage="No hay proyectos activos o creados"
                     [(ngModel)]="usuario.Proyectos" 
                     [maxSelectedLabels]="1" 
                     optionLabel="Nombre" 
                     placeholder="Seleccione proyectos" />
+                
                   </ng-template>
                 </td>
           
