@@ -240,6 +240,7 @@
                   <p-multiSelect 
                   [options]="getProyectosByEmpresa(this.usuarioForm.value.idEmpresa)" 
                   [maxSelectedLabels]="1" 
+                  [appendTo]="'body'"
                   formControlName="Proyectos"
                   emptyMessage="No hay proyectos activos o creados"
                   optionLabel="Nombre" 

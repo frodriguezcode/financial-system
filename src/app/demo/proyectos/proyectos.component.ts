@@ -28,6 +28,7 @@ export default class ProyectosComponent implements OnInit {
   ProyectoForm!:FormGroup
   Fecha:any= new Date();
   usuario:any
+  MostrarRangoFechas:boolean=true
   es: any;
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,
     private toastr: ToastrService,private primengConfig: PrimeNGConfig,
@@ -106,6 +107,7 @@ cargarFormulario(){
 toggleEdicion(Proyecto: any) {
 
   Proyecto.Editando = !Proyecto.Editando;
+  this.MostrarRangoFechas=!this.MostrarRangoFechas
 }
 
 
@@ -115,6 +117,7 @@ actualizarProyecto(proyecto:any){
   const proyectoEncontrado = _Proyecto.filter((suc:any) => suc.id == proyecto.id);
   proyectoEncontrado[0].Nombre=proyecto.Nombre
   proyectoEncontrado[0].Editando = !proyecto.Editando;
+  this.MostrarRangoFechas=!this.MostrarRangoFechas
   proyectoEncontrado[0].FechaInicio = proyecto.RangoFechas[0]=='' ? '' : this.datePipe.transform(new Date(proyecto.RangoFechas[0]).setDate(new Date(proyecto.RangoFechas[0]).getDate()), 'yyyy-MM-dd');
   proyectoEncontrado[0].FechaFinal = proyecto.RangoFechas[1]== '' ? '' :  this.datePipe.transform(new Date(proyecto.RangoFechas[1]).setDate(new Date(proyecto.RangoFechas[1]).getDate()), 'yyyy-MM-dd');
   proyectoEncontrado[0].RangoFechas =proyecto.RangoFechas
@@ -226,6 +229,30 @@ Swal.fire({
 
 }
 }
+
+calcularDuracion(fechaInicio: Date, fechaFinal: Date): string {
+  const fechaInicioObj = new Date(fechaInicio);
+  const fechaFinalObj = new Date(fechaFinal);
+
+  let diffAnios = fechaFinalObj.getFullYear() - fechaInicioObj.getFullYear();
+  let diffMeses = fechaFinalObj.getMonth() - fechaInicioObj.getMonth();
+  let diffDias = fechaFinalObj.getDate() - fechaInicioObj.getDate();
+
+  // Ajustar si los días son negativos
+  if (diffDias < 0) {
+    diffMeses--;
+    diffDias += new Date(fechaFinalObj.getFullYear(), fechaFinalObj.getMonth(), 0).getDate();
+  }
+
+  // Ajustar si los meses son negativos
+  if (diffMeses < 0) {
+    diffAnios--;
+    diffMeses += 12;
+  }
+
+  const resultado = diffDias==0 ?  `${diffAnios * 12 + diffMeses} meses` : `${diffAnios * 12 + diffMeses} meses y ${diffDias} días`
+  return ` ${resultado}`;
+}
 obtenerProyectos(){
   if(this.usuario.Rol=='Super Usuario'){
     this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
@@ -236,15 +263,24 @@ obtenerProyectos(){
     this.Proyectos.map((proyect: any) => {
       proyect.RangoFechas[0] = proyect.RangoFechas[0] && proyect.RangoFechas[0].seconds 
         ? new Date(proyect.RangoFechas[0].seconds * 1000) 
-        : new Date();  // Fecha actual si está indefinida
+        : new Date()
       
       proyect.RangoFechas[1] = proyect.RangoFechas[1] && proyect.RangoFechas[1].seconds 
         ? new Date(proyect.RangoFechas[1].seconds * 1000) 
-        : new Date();  // Fecha actual si está indefinida
-    });
+        : new Date(),
+
+        proyect.Duracion =    proyect.FechaInicio=="" || proyect.FechaFinal==" " ? 'Sin fechas de proyecto definidas' :  this.calcularDuracion(proyect.FechaInicio,proyect.FechaFinal)
+
+
+    }
+  
+  
+  
+  );
     
   
-  
+  console.log('Proyectos',this.Proyectos)
+
   
   
     })
@@ -274,7 +310,6 @@ obtenerProyectos(){
     })
 
   }
-  
 }
 obtenerSucursales(){
   this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe((resp: any)=>{

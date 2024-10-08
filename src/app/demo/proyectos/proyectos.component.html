@@ -54,6 +54,8 @@
     <br>
     <p-calendar 
         formControlName="RangoFechas"
+        [numberOfMonths]="2" 
+        [appendTo]="'body'"
         dateFormat="dd/mm/yy"
         selectionMode="range" 
         [readonlyInput]="false" />
@@ -84,6 +86,7 @@
             <tr>
               <th class="text-center">#</th>
               <th class="text-center">Proyecto</th>
+              <th class="text-center">Rango de Tiempo</th>
               <th class="text-center">Duración</th>
               <th class="text-center">Editar</th>
               <th class="text-center">Inactivar</th>
@@ -100,16 +103,20 @@
                   <input [(ngModel)]="proyecto.Nombre" class="form-control text-center col-4">
                 </ng-template>
               </td>
+     
+
+
               <td class="text-center">
                 <ng-container *ngIf="!proyecto.Editando; else editarRango">
-                  {{(proyecto.FechaInicio==''?'Sin fecha de inicio':proyecto.FechaInicio) + ' al '
-                   + (proyecto.FechaFinal==''?'Sin fecha de final':proyecto.FechaFinal)}}
+                  {{(proyecto.FechaInicio==''?'-':proyecto.FechaInicio) + ' al '
+                   + (proyecto.FechaFinal==''?'-':proyecto.FechaFinal)}}
                 </ng-container>
                 <ng-template style="z-index: 999999;" #editarRango>
                   <div class="form-group">       
                     <p-calendar 
                          [(ngModel)]="proyecto.RangoFechas"
                          [appendTo]="'body'"
+                         [numberOfMonths]="2" 
                         dateFormat="dd/mm/yy"
                         selectionMode="range" 
                         [readonlyInput]="false" />
@@ -118,6 +125,7 @@
                 </ng-template>
               </td>
 
+          <td class="text-center"> {{proyecto.Duracion}}</td>
      
               <td *ngIf="!proyecto.Editando" class="text-center">
                 <!-- Botón de editar -->
