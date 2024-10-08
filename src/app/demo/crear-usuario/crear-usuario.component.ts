@@ -13,10 +13,12 @@ import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Subscription } from 'rxjs';
+import SucursalesComponent from '../sucursales/sucursales.component';
 @Component({
   selector: 'app-crear-usuario',
   standalone: true,
-  imports: [CommonModule, SharedModule, RouterModule, FormsModule, ReactiveFormsModule,TableModule,DialogModule,MultiSelectModule],
+  imports: [CommonModule, SharedModule, RouterModule,
+     FormsModule, ReactiveFormsModule,TableModule,DialogModule,MultiSelectModule,SucursalesComponent],
   templateUrl: './crear-usuario.component.html',
   styleUrls: ['./crear-usuario.component.scss']
 })
@@ -29,6 +31,9 @@ export default class CrearUsuarioComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 usuarioForm!: FormGroup;
+nombreEmpresa:any
+idEmpresa:string=''
+Sucursal:FormControl=new FormControl ('')
 Fecha: any = new Date();
 MesesTodos: any = [];
 Roles:any=[]
@@ -46,6 +51,7 @@ UsuariosTodos: any = [];
 UsuariosBack: any = [];
 usuario:any
 visible: boolean = false;
+visibleSucursal: boolean = false;
 ngOnInit(): void {
   this.conS.usuario$.subscribe(usuario => {
     if (usuario) {
@@ -142,6 +148,28 @@ obtenerProyectosByMatriz(){
 
 showDialog() {
   this.visible = true;
+}
+showCrearSucursal() {
+  this.visibleSucursal = true;
+}
+
+crearSucursal(){
+  let FormGroupUser=this.usuarioForm.value
+
+
+  let _Sucursal={
+    Nombre:this.Sucursal.value, 
+    idMatriz: this.usuario.idMatriz, 
+    idEmpresa: this.idEmpresa, 
+    Activo: true, 
+    Editando: false, 
+    FechaCreacion: this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'), 
+  }
+  this.conS.crearSucursal(_Sucursal).then((resp: any)=>{
+ 
+
+    this.toastr.success('Sucursal Creada', '¡Exito!');
+  })
 }
 
 getNameProyectos(proyectos:any){
@@ -314,6 +342,9 @@ disablePaste(event: ClipboardEvent) {
   event.preventDefault();
 }
 selectSucursalByEmpresa(idEmpresa:any){
+  this.nombreEmpresa=this.getNombreEmpresa(idEmpresa)
+  this.idEmpresa=idEmpresa
+  console.log('idEmpresa',this.idEmpresa)
  if(idEmpresa=='0') {
   this.SucursalesTodas=this.SucursalesTodasBack
   this.usuarioForm.get('idRol')!.disable();

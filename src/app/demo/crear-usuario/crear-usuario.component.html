@@ -225,12 +225,14 @@
                   [options]="getSucursalesByEmpresa(this.usuarioForm.value.idEmpresa)" 
                   formControlName="Sucursales"
                   optionLabel="Nombre" 
+                  [appendTo]="'body'"
                   [maxSelectedLabels]="1" 
                   emptyMessage="No hay sucursales activas o creadas"
                   placeholder="Seleccione 1 o varias sucursales  "
                   class="custom-width-multiselect"
                   />
                 </div>
+                <button type="button" [disabled]="this.idEmpresa=='' || this.idEmpresa== '0' " (click)="showCrearSucursal()" class="btn btn-success">Crear Sucursal</button>
               </div>
 
               <div  class="col-12 col-lg-6 col-md-6">
@@ -269,7 +271,21 @@
       </div>
   </p-dialog>
 
+  <p-dialog 
+  header="" 
+  [modal]="true"
+  [(visible)]="visibleSucursal" 
+  [style]="{ width: '50rem' }" 
+  [breakpoints]="{ '1199px': '75vw', '575px': '50vw' }" 
+  [maximizable]="true">
+  <h6>Crear sucursal para la empresa: <strong>{{this.nombreEmpresa}}</strong> </h6>
+  <div class="input-group mb-3">
+    <input type="text" [formControl]="Sucursal" class="form-control" placeholder="Nombre de la sucursal" aria-label="Username" aria-describedby="basic-addon1">
+  </div>
 
+
+  <button type="button" (click)="crearSucursal()" class="btn btn-success">Crear Sucursal</button>
+</p-dialog>
 
 
   </div>
