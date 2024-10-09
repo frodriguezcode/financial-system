@@ -14,11 +14,15 @@ import { DialogModule } from 'primeng/dialog';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Subscription } from 'rxjs';
 import SucursalesComponent from '../sucursales/sucursales.component';
+import ProyectosComponent from '../proyectos/proyectos.component';
+import { CalendarModule } from 'primeng/calendar';
+import { PrimeNGConfig } from 'primeng/api';
+import Swal from 'sweetalert2'
 @Component({
   selector: 'app-crear-usuario',
   standalone: true,
   imports: [CommonModule, SharedModule, RouterModule,
-     FormsModule, ReactiveFormsModule,TableModule,DialogModule,MultiSelectModule,SucursalesComponent],
+     FormsModule, ReactiveFormsModule,TableModule,DialogModule,MultiSelectModule,SucursalesComponent,ProyectosComponent,CalendarModule],
   templateUrl: './crear-usuario.component.html',
   styleUrls: ['./crear-usuario.component.scss']
 })
@@ -26,11 +30,12 @@ export default class CrearUsuarioComponent implements OnInit {
   constructor(
     private authS: AuthService,
     private datePipe: DatePipe,
-    private readonly router: Router,
+    private primengConfig: PrimeNGConfig,
     private conS:ConfigurationService,
     private toastr: ToastrService
   ) {}
 usuarioForm!: FormGroup;
+ProyectoForm!: FormGroup;
 nombreEmpresa:any
 idEmpresa:string=''
 Sucursal:FormControl=new FormControl ('')
@@ -52,6 +57,8 @@ UsuariosBack: any = [];
 usuario:any
 visible: boolean = false;
 visibleSucursal: boolean = false;
+visibleProyecto: boolean = false;
+claseTabla:string='p-datatable-sm'
 ngOnInit(): void {
   this.conS.usuario$.subscribe(usuario => {
     if (usuario) {
@@ -152,11 +159,28 @@ showDialog() {
 showCrearSucursal() {
   this.visibleSucursal = true;
 }
+showCrearProyecto() {
+  this.primengConfig.setTranslation({
+    firstDayOfWeek: 1,
+    dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+    dayNamesShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+    dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
+    monthNames: [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ],
+    monthNamesShort: [
+      "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+      "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+    ],
+    today: 'Hoy',
+    clear: 'Limpiar'
+  });
+  this.cargarFormularioProyecto()
+  this.visibleProyecto = true;
+}
 
 crearSucursal(){
-  let FormGroupUser=this.usuarioForm.value
-
-
   let _Sucursal={
     Nombre:this.Sucursal.value, 
     idMatriz: this.usuario.idMatriz, 
@@ -166,8 +190,7 @@ crearSucursal(){
     FechaCreacion: this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'), 
   }
   this.conS.crearSucursal(_Sucursal).then((resp: any)=>{
- 
-
+  
     this.toastr.success('Sucursal Creada', '¡Exito!');
   })
 }
@@ -176,7 +199,7 @@ getNameProyectos(proyectos:any){
   let Proyectos=[]
   if (proyectos.length>0){
     proyectos.forEach((suc:any) => {
-      Proyectos.push(suc.Nombre)
+      Proyectos.push(' '+suc.Nombre)
     })
   }
   else {
@@ -243,6 +266,7 @@ obtenerUsuarios(){
     this.usuario.Rol=this.getNombreRol(this.usuario.idRol)
     localStorage.setItem('usuarioFinancialSystems', JSON.stringify( this.usuario)); 
     this.UsuariosBack=resp
+    this.cargarFormulario()
   })
 }
 
@@ -325,7 +349,7 @@ obtenerSucursales(){
     this.Sucursales=resp.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa && resp.Activo==true)
     this.SucursalesTodas=resp.filter((resp:any)=> resp.Activo==true)
     this.SucursalesTodasBack=resp.filter((resp:any)=> resp.Activo==true)
-    this.cargarFormulario()
+
   })
 }
 getNombreEmpresa(idEmpresa){
@@ -371,6 +395,70 @@ getNombreSucursal(idSucursal:string){
     return 'Admin'
   }
 }
+
+cargarFormularioProyecto(){
+  this.ProyectoForm = new FormGroup({
+    Nombre: new FormControl('',[Validators.required]), 
+    idMatriz: new FormControl(this.usuario.idMatriz,[Validators.required]), 
+    idEmpresa: new FormControl(this.idEmpresa,[Validators.required]), 
+    Activo: new FormControl(true), 
+    Editando: new FormControl(false), 
+    RangoFechas: new FormControl(null),
+    FechaInicio: new FormControl(''),
+    FechaFinal: new FormControl(''),
+    idSucursal: new FormControl('0'), 
+    FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
+   })
+}
+
+crearProyecto(){
+  if(this.ProyectoForm.value.RangoFechas[0]==null){
+        Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Debe colocar una fecha de inicio",
+        showConfirmButton: false,
+        timer: 1500
+      });
+  }
+  else if(this.ProyectoForm.value.RangoFechas[1]==null){
+        Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "Debe colocar una fecha final",
+        showConfirmButton: false,
+        timer: 1500
+      });
+  }
+  else {
+    let FechaInicio:any=this.datePipe.transform(new Date(this.ProyectoForm.value.RangoFechas[0]).setDate(new Date(this.ProyectoForm.value.RangoFechas[0]).getDate()), 'yyyy-MM-dd')
+    let FechaFinal:any=this.datePipe.transform(new Date(this.ProyectoForm.value.RangoFechas[1]).setDate(new Date(this.ProyectoForm.value.RangoFechas[1]).getDate()), 'yyyy-MM-dd')
+    const mesesAgrupados = this.conS.generarMesesAgrupadosPorAnio(FechaInicio, FechaFinal);
+    const añosAgrupados = Object.keys(mesesAgrupados).map(year => {
+      return {
+          year: year,
+          meses: mesesAgrupados[year].map(mes => ({
+              numero: mes.numero,
+              nombre: mes.nombre,
+              anio: Number(year),
+          }))
+      };
+  });
+  
+  
+  
+  this.ProyectoForm.value.MesesRango=añosAgrupados
+  this.ProyectoForm.value.FechaInicio=FechaInicio
+  this.ProyectoForm.value.FechaFinal=FechaFinal
+  console.log('Form',this.ProyectoForm.value);
+
+    
+  
+  }
+  }
+
+
+
 cargarFormulario() {
   // *Formulario de usuario
   let Fecha:any

@@ -171,9 +171,6 @@ verificarProyecto(){
 }
 
 crearProyecto(){
-console.log('FechaInicio',this.ProyectoForm.value.RangoFechas[0])
-console.log('FechaFinal',this.ProyectoForm.value.RangoFechas[1])
-
 if(this.ProyectoForm.value.RangoFechas[0]==null){
       Swal.fire({
       position: "center",

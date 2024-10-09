@@ -10,12 +10,12 @@
         <hr />
   
         <div class="table-responsive">
-          <p-table [value]="Usuarios" [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '50rem' }"
+          <p-table [value]="Usuarios" class="table-100" [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '50rem' }"
             [rowsPerPageOptions]="[5, 10, 20]">
             <ng-template pTemplate="header">
               <tr>
                 <!-- <th class="text-center">#</th> -->
-                <th class="text-center">Nombre</th>
+                <th class="text-center" >Nombre</th>
                 <th class="text-center">Correo</th>
                 <th class="text-center">Empresa</th>
                 <th class="text-center">Rol</th>
@@ -29,8 +29,8 @@
               <tr>
                 <!-- <th class="text-center" scope="row">{{i+1}}</th> -->
                 <td class="text-center">
-                  <ng-container *ngIf="!usuario.Editando; else editarBanco">
-                    {{usuario.Nombres}}
+                  <ng-container  *ngIf="!usuario.Editando; else editarBanco">
+                   <span style="width: 500px;" >{{usuario.Nombres}}</span> 
                   </ng-container>
                   <ng-template #editarBanco>
                     <input style="width: 200px;" [(ngModel)]="usuario.Nombres" class="form-control text-center col-4">
@@ -213,6 +213,20 @@
                   </select>
                 </div>
               </div>
+              
+              <div class="col-12 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Rol</label>
+                  <select formControlName="idRol" id="inputState" class="form-select">
+                    <option selected>Escoja un rol</option>
+                    <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>
+                  </select>
+                  <p style="color: red;"
+                    *ngIf="(usuarioForm.get('idRol')?.touched || usuarioForm.get('idRol')?.dirty) && usuarioForm.get('idRol')?.hasError('required')">
+                    Este campo es obligatorio
+                  </p>
+                </div>
+              </div>
      
               
           
@@ -248,21 +262,10 @@
                   optionLabel="Nombre" 
                   placeholder="Seleccione 1 o varios proyectos  "/>
                 </div>
+                <button type="button" [disabled]="this.idEmpresa=='' || this.idEmpresa== '0' " (click)="showCrearProyecto()" class="btn btn-success">Crear Proyecto</button>
+
               </div>
   
-              <div class="col-12 col-lg-6 col-md-6">
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Rol</label>
-                  <select formControlName="idRol" id="inputState" class="form-select">
-                    <option selected>Escoja un rol</option>
-                    <option value="{{rol.id}}" *ngFor="let rol of Roles">{{rol.Rol}}</option>
-                  </select>
-                  <p style="color: red;"
-                    *ngIf="(usuarioForm.get('idRol')?.touched || usuarioForm.get('idRol')?.dirty) && usuarioForm.get('idRol')?.hasError('required')">
-                    Este campo es obligatorio
-                  </p>
-                </div>
-              </div>
           </div>
     
           <button [disabled]="this.usuarioForm.invalid || verifyUser()==true || verifyPassw()==true" (click)="crearUsuario()" type="button"
@@ -285,6 +288,55 @@
 
 
   <button type="button" (click)="crearSucursal()" class="btn btn-success">Crear Sucursal</button>
+
+</p-dialog>
+  <p-dialog 
+  header="" 
+  [modal]="true"
+  [(visible)]="visibleProyecto" 
+  [style]="{ width: '50rem' }" 
+  [breakpoints]="{ '1199px': '75vw', '575px': '50vw' }" 
+  [maximizable]="true">
+
+  <form *ngIf="ProyectoForm" [formGroup]="ProyectoForm">
+    <div class="form-group">
+      <label for="exampleInputPassword1">Proyecto</label>
+      <input  type="text" formControlName="Nombre" class="form-control"
+        id="exampleInputPassword1" placeholder="Escriba el nombre del proyecto" />
+    </div>
+
+    <div  class="form-group">
+      <label for="exampleInputPassword1">Sucursal (opcional)
+         <span 
+         *ngIf="this.Sucursales.length==0"
+         style="color: red;"
+         >No tiene sucursales creadas o activas</span></label>
+      <select formControlName="idSucursal" class="form-control" id="exampleFormControlSelect1">
+        <option value="0">Seleccione una sucursal</option>
+        <option value="{{sucursal.id}}" *ngFor="let sucursal of getSucursalesByEmpresa(this.idEmpresa)">{{sucursal.Nombre}}</option>
+  
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="exampleInputPassword1">Duración del proyecto</label>
+      <br>
+      <p-calendar 
+          formControlName="RangoFechas"
+          [numberOfMonths]="2" 
+          [appendTo]="'body'"
+          dateFormat="dd/mm/yy"
+          selectionMode="range" 
+          [readonlyInput]="false" />
+  
+    </div>
+
+
+
+  </form>
+
+
+  <button type="button" (click)="crearProyecto()" class="btn btn-success">Crear Proyecto</button>
 </p-dialog>
 
 
