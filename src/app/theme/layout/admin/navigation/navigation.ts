@@ -133,6 +133,36 @@ export const NavigationItems: NavigationItem[] = [
         target: false,
         breadcrumbs: false
       }
+      ,
+      {
+        id: 'cuenta_contable',
+        title: 'Cuentas Contables',
+        type: 'item',
+        url: 'item',
+        icon: 'fa-solid fa-list',
+        target: false,
+        breadcrumbs: false
+      }
+      ,
+      {
+        id: 'cuenta_banco',
+        title: 'Cuentas Bancarias',
+        type: 'item',
+        url: 'bancos',
+        icon: 'fa-solid fa-table-list',
+        target: false,
+        breadcrumbs: false
+      }
+      ,
+      {
+        id: 'socios_negocio',
+        title: 'Socios de Negocio',
+        type: 'item',
+        url: 'socios',
+        icon: 'fa-solid fa-users-rectangle',
+        target: false,
+        breadcrumbs: false
+      }
     ]
   },
   // {

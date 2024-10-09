@@ -128,7 +128,7 @@ cargarFormulario(){
   this.ProyectoForm = new FormGroup({
     Nombre: new FormControl('',[Validators.required]), 
     idMatriz: new FormControl(this.usuario.idMatriz,[Validators.required]), 
-    idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
+    idEmpresa: new FormControl('',[Validators.required]), 
     Activo: new FormControl(true), 
     Editando: new FormControl(false), 
     RangoFechas: new FormControl(null),
