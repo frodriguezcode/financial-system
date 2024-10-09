@@ -34,6 +34,10 @@ export default class ProyectosComponent implements OnInit {
   es: any;
   visible: boolean = false;
   cargando: boolean = false;
+  idEmpresa:string=''
+  nombreEmpresa:any
+  Sucursal:FormControl=new FormControl ('')
+  visibleSucursal: boolean = false;
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,
     private toastr: ToastrService,private primengConfig: PrimeNGConfig,
     private readonly router: Router
@@ -85,17 +89,40 @@ ngOnInit(): void {
 showDialog() {
   this.visible = true;
 }
+
+showCrearSucursal() {
+  this.visibleSucursal = true;
+}
 selectSucursalByEmpresa(idEmpresa:any){
   if(idEmpresa=='0') {
    this.Sucursales=this.SucursalesTodasBack
    this.ProyectoForm.get('idSucursal')!.disable();
   }
   else {
+    this.nombreEmpresa=this.getNombreEmpresa(idEmpresa)
+    this.idEmpresa=idEmpresa
     this.Sucursales=this.SucursalesTodasBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
     this.ProyectoForm.get('idSucursal')!.enable();
   }
   
  }
+
+ crearSucursal(){
+  let _Sucursal={
+    Nombre:this.Sucursal.value, 
+    idMatriz: this.usuario.idMatriz, 
+    idEmpresa: this.idEmpresa, 
+    Activo: true, 
+    Editando: false, 
+    FechaCreacion: this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'), 
+  }
+  this.conS.crearSucursal(_Sucursal).then((resp: any)=>{
+    this.visibleSucursal=false
+    this.Sucursal.setValue('')
+    this.toastr.success('Sucursal Creada', '¡Exito!');
+  })
+}
+
 
 cargarFormulario(){
   this.ProyectoForm = new FormGroup({

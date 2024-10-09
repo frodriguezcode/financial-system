@@ -128,7 +128,7 @@ header="Crear Proyecto"
 
     </select>
   </div>
-
+  <button type="button" [disabled]="this.idEmpresa=='' || this.idEmpresa== '0' " (click)="showCrearSucursal()" class="btn btn-success">Crear Sucursal</button>
   <div class="form-group">
     <label for="exampleInputPassword1">Duración del proyecto</label>
     <br>
@@ -157,5 +157,21 @@ header="Crear Proyecto"
 </form>
 </p-dialog>
 
+<p-dialog 
+header="" 
+[modal]="true"
+[(visible)]="visibleSucursal" 
+[style]="{ width: '50rem' }" 
+[breakpoints]="{ '1199px': '75vw', '575px': '50vw' }" 
+[maximizable]="true">
+<h6>Crear sucursal para la empresa: <strong>{{this.nombreEmpresa}}</strong> </h6>
+<div class="input-group mb-3">
+  <input type="text" [formControl]="Sucursal" class="form-control" placeholder="Nombre de la sucursal" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+
+
+<button type="button" (click)="crearSucursal()" class="btn btn-success">Crear Sucursal</button>
+
+</p-dialog>
 
 </app-card>
