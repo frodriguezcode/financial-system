@@ -11,11 +11,13 @@ import { ToastrService } from 'ngx-toastr';
 import { CalendarModule } from 'primeng/calendar';
 import { PrimeNGConfig } from 'primeng/api';
 import { Router } from '@angular/router';
+import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-proyectos',
   standalone: true,
-  imports: [CommonModule, SharedModule,FormsModule,ReactiveFormsModule,CalendarModule],
+  imports: [CommonModule, SharedModule,FormsModule,ReactiveFormsModule,CalendarModule,TableModule,DialogModule],
   templateUrl: './proyectos.component.html',
   styleUrls: ['./proyectos.component.scss']
 })
@@ -30,6 +32,8 @@ export default class ProyectosComponent implements OnInit {
   usuario:any
   MostrarRangoFechas:boolean=true
   es: any;
+  visible: boolean = false;
+  cargando: boolean = false;
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,
     private toastr: ToastrService,private primengConfig: PrimeNGConfig,
     private readonly router: Router
@@ -61,7 +65,7 @@ ngOnInit(): void {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
-    this.obtenerProyectos()
+
     this.obtenerEmpresas()
     if(this.usuario.Rol=='Super Usuario'){
 
@@ -78,6 +82,9 @@ ngOnInit(): void {
   
 }
 
+showDialog() {
+  this.visible = true;
+}
 selectSucursalByEmpresa(idEmpresa:any){
   if(idEmpresa=='0') {
    this.Sucursales=this.SucursalesTodasBack
@@ -139,8 +146,6 @@ actualizarProyecto(proyecto:any){
   proyectoEncontrado[0].MesesRango=añosAgrupados
 
   }
-  console.log('proyectoEncontrado[0]',proyectoEncontrado[0])
-
 
 
   this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
@@ -250,6 +255,16 @@ calcularDuracion(fechaInicio: Date, fechaFinal: Date): string {
   const resultado = diffDias==0 ?  `${diffAnios * 12 + diffMeses} meses` : `${diffAnios * 12 + diffMeses} meses y ${diffDias} días`
   return ` ${resultado}`;
 }
+
+getNombreEmpresa(idEmpresa){
+  let _Empresa:any=this.Empresas.filter((emp:any)=>emp.id==idEmpresa)
+  if(_Empresa.length>0){
+    return _Empresa[0].Nombre
+  }
+  else{
+    return ''
+  }
+}
 obtenerProyectos(){
   if(this.usuario.Rol=='Super Usuario'){
     this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
@@ -266,7 +281,8 @@ obtenerProyectos(){
         ? new Date(proyect.RangoFechas[1].seconds * 1000) 
         : new Date(),
 
-        proyect.Duracion =    proyect.FechaInicio=="" || proyect.FechaFinal==" " ? 'Sin fechas de proyecto definidas' :  this.calcularDuracion(proyect.FechaInicio,proyect.FechaFinal)
+        proyect.Duracion =    proyect.FechaInicio=="" || proyect.FechaFinal==" " ? 'Sin fechas de proyecto definidas' :  this.calcularDuracion(proyect.FechaInicio,proyect.FechaFinal),
+        proyect.Empresa =    this.getNombreEmpresa(proyect.idEmpresa)
 
 
     }
@@ -275,11 +291,7 @@ obtenerProyectos(){
   
   );
     
-  
-  console.log('Proyectos',this.Proyectos)
-
-  
-  
+  this.cargando=true
     })
     
   }
@@ -297,7 +309,10 @@ obtenerProyectos(){
       
       proyect.RangoFechas[1] = proyect.RangoFechas[1] && proyect.RangoFechas[1].seconds 
         ? new Date(proyect.RangoFechas[1].seconds * 1000) 
-        : new Date();  // Fecha actual si está indefinida
+        : new Date(),
+        proyect.Duracion =    proyect.FechaInicio=="" || proyect.FechaFinal==" " ? 'Sin fechas de proyecto definidas' :  this.calcularDuracion(proyect.FechaInicio,proyect.FechaFinal),
+        proyect.Empresa =    this.getNombreEmpresa(proyect.idEmpresa)
+
     });
     
   
@@ -325,8 +340,8 @@ obtenerSucursalesByMatriz(){
 
 obtenerEmpresas(){
   this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp: any)=>{
-
-  this.Empresas=resp
+    this.Empresas=resp
+    this.obtenerProyectos()
   this.cargarFormulario()
   })
 }

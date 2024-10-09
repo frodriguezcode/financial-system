@@ -1,9 +1,89 @@
 
 <app-card style="height: 1200px;" cardTitle="Módulo Proyectos" [options]="false">
-  <div class="row">
-    <div class="col-md-4">
-      <h5>Crear Proyecto</h5>
-      <hr />
+  <button type="button" (click)="showDialog()" class="btn btn-success">+ Proyecto</button>
+<br>
+<div class="mt-2">
+  <div *ngIf="!cargando"  class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <p-table  *ngIf="cargando"  [value]="Proyectos" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+        <tr>
+          <th class="text-center">#</th>
+          <th class="text-center">Proyecto</th>
+          <th class="text-center">Rango de Tiempo</th>
+          <th class="text-center">Duración</th>
+          <th class="text-center">Empresa</th>
+          <th class="text-center">Editar</th>
+          <th class="text-center">Inactivar</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-proyecto let-i="rowIndex">
+        <tr>
+          <th class="text-center" scope="row">{{i+1}}</th>
+          <td class="text-center">
+            <ng-container *ngIf="!proyecto.Editando; else editarProyecto">
+              {{proyecto.Nombre}}
+            </ng-container>
+            <ng-template #editarProyecto>
+              <input [(ngModel)]="proyecto.Nombre" class="form-control text-center col-4">
+            </ng-template>
+          </td>
+ 
+
+
+          <td class="text-center">
+            <ng-container *ngIf="!proyecto.Editando; else editarRango">
+              {{(proyecto.FechaInicio==''?'-':proyecto.FechaInicio) + ' al '
+               + (proyecto.FechaFinal==''?'-':proyecto.FechaFinal)}}
+            </ng-container>
+            <ng-template  #editarRango>
+               
+                <p-calendar 
+                     [(ngModel)]="proyecto.RangoFechas"
+                     [appendTo]="'body'"
+                     [numberOfMonths]="2" 
+                    dateFormat="dd/mm/yy"
+                    selectionMode="range" 
+                    [readonlyInput]="false" />
+            
+      
+            </ng-template>
+          </td>
+          <td class="text-center"> {{proyecto.Duracion}}</td>
+          <td class="text-center">{{proyecto.Empresa}}</td>
+ 
+          <td *ngIf="!proyecto.Editando" class="text-center">
+            <!-- Botón de editar -->
+            <button (click)="toggleEdicion(proyecto)" type="button" class="btn btn-success text-center">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+          </td>
+          <td class="text-center" *ngIf="proyecto.Editando">
+            <!-- Botón de editar -->
+            <button (click)="actualizarProyecto(proyecto)" type="button" class="btn btn-info text-center">
+              <i class="fa solid fa-check"></i>
+            </button>
+          </td>
+          <td class="text-center" *ngIf="proyecto.Activo"><button (click)="ActualizaEstadoProyecto(proyecto,false)"
+              type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
+          <td class="text-center" *ngIf="!proyecto.Activo"><button (click)="ActualizaEstadoProyecto(proyecto,true)"
+              type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+        </tr>
+    </ng-template>
+</p-table>
+
+</div>
+
+<p-dialog 
+header="Crear Proyecto" 
+[modal]="true" 
+[(visible)]="visible" 
+[style]="{ width: '50rem' }" 
+[breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+[maximizable]="true">
 <form *ngIf="ProyectoForm" [formGroup]="ProyectoForm">
 
   <div class="form-group">
@@ -75,80 +155,7 @@
   <button [disabled]="this.ProyectoForm.invalid || proyectoFound==true" (click)="crearProyecto()" type="button"
     class="btn btn-primary">Guardar</button>
 </form>
-
-    </div>
-    <div class="col-md-8">
-      <h5>Lista de Proyectos</h5>
-      <hr />
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th class="text-center">#</th>
-              <th class="text-center">Proyecto</th>
-              <th class="text-center">Rango de Tiempo</th>
-              <th class="text-center">Duración</th>
-              <th class="text-center">Editar</th>
-              <th class="text-center">Inactivar</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let proyecto of Proyectos;index as i">
-              <th class="text-center" scope="row">{{i+1}}</th>
-              <td class="text-center">
-                <ng-container *ngIf="!proyecto.Editando; else editarProyecto">
-                  {{proyecto.Nombre}}
-                </ng-container>
-                <ng-template #editarProyecto>
-                  <input [(ngModel)]="proyecto.Nombre" class="form-control text-center col-4">
-                </ng-template>
-              </td>
-     
+</p-dialog>
 
 
-              <td class="text-center">
-                <ng-container *ngIf="!proyecto.Editando; else editarRango">
-                  {{(proyecto.FechaInicio==''?'-':proyecto.FechaInicio) + ' al '
-                   + (proyecto.FechaFinal==''?'-':proyecto.FechaFinal)}}
-                </ng-container>
-                <ng-template style="z-index: 999999;" #editarRango>
-                  <div class="form-group">       
-                    <p-calendar 
-                         [(ngModel)]="proyecto.RangoFechas"
-                         [appendTo]="'body'"
-                         [numberOfMonths]="2" 
-                        dateFormat="dd/mm/yy"
-                        selectionMode="range" 
-                        [readonlyInput]="false" />
-                
-                  </div>
-                </ng-template>
-              </td>
-
-          <td class="text-center"> {{proyecto.Duracion}}</td>
-     
-              <td *ngIf="!proyecto.Editando" class="text-center">
-                <!-- Botón de editar -->
-                <button (click)="toggleEdicion(proyecto)" type="button" class="btn btn-success text-center">
-                  <i class="fa-regular fa-pen-to-square"></i>
-                </button>
-              </td>
-              <td class="text-center" *ngIf="proyecto.Editando">
-                <!-- Botón de editar -->
-                <button (click)="actualizarProyecto(proyecto)" type="button" class="btn btn-info text-center">
-                  <i class="fa solid fa-check"></i>
-                </button>
-              </td>
-              <td class="text-center" *ngIf="proyecto.Activo"><button (click)="ActualizaEstadoProyecto(proyecto,false)"
-                  type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
-              <td class="text-center" *ngIf="!proyecto.Activo"><button (click)="ActualizaEstadoProyecto(proyecto,true)"
-                  type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
-            </tr>
-
-
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 </app-card>
