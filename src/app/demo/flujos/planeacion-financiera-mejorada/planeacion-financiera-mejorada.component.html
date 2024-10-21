@@ -92,20 +92,6 @@
            </th>
          </ng-container>
          
-      
-
-              <th class="text-center" style="background-color: grey; " *ngIf="cab.Tipo==5" >
-                <button  *ngIf="cab.Mostrar==true" (click)="ocultarMes(cab.Anio,cab.NumMes)"
-                  style="background-color: rgb(109, 211, 131); color: white;" type="button" class="btn btn-success"><i
-                    class="fa-solid fa-minus"></i>
-     
-                </button>
-                <button *ngIf="cab.Mostrar==false" (click)="MostrarMes(cab.Anio,cab.NumMes)"
-                  style="background-color: rgb(246, 45, 19); color: white;" type="button" class="btn btn-danger"><i
-                    class="fa-solid fa-plus"></i>
-     
-                </button>
-              </th>
             </ng-container>
        
         </thead>
@@ -170,18 +156,7 @@
            
                   </ng-container>
   
-                  
-                
-                
-
-                    <td *ngIf="cab.Tipo==5" style="width: 2px;" class="td-ancho-fijo">
-                   
-                    </td>
-
-              
-           
-  
-  
+          
                 </ng-container>
   
               </ng-container>
@@ -205,20 +180,19 @@
                             <div class="input-group mb-3">
                               <span *ngIf="categoria.Tipo==1" class="input-group-text">$</span>
                               <span *ngIf="categoria.Tipo==2" class="input-group-text">-$</span>
-                              <input #Valor
-                                style="width: 50px"
-                                [value]="(DataItems[cab.Anio + '-' + cab.NumMes + '-' + item.id]?.[0]?.Valor) | number"
-                                (keyup.enter)="guardarValorPlan(cab.Anio, cab.Mes,categoria.id,item.id,Valor.value,categoria.Tipo,categoria.Orden)"
-                                type="text" class="form-control text-center" aria-label="Amount (to the nearest dollar)">
+                              <input 
+                              #Valor
+                              style="width: 50px"
+                              [(ngModel)]="inputValues[cab.Anio + '-' + cab.NumMes + '-' + item.id]" 
+                              (ngModelChange)="onInputChange(cab.Anio, cab.Mes,cab.NumMes, categoria.id, item.id, $event, categoria.Tipo, categoria.Orden)"
+                              type="text" 
+                              class="form-control text-center" 
+                              aria-label="Amount (to the nearest dollar)">
                             </div>
                           </td>
                         </ng-container>
                       </ng-container>
-                      <ng-container style="width: 10px;">
-                        <td *ngIf="cab.Tipo==5" class="td-ancho-fijo" style="background-color: white;">
-                         
-                        </td>
-                      </ng-container>
+            
                     </ng-container>
   
   
@@ -254,25 +228,6 @@
      
        </ng-container>
        
-          
-           <th class="text-center" style="background-color: grey;" *ngIf="cab.Tipo==5" >
-             <button  *ngIf="cab.Mostrar==true" (click)="ocultarMes(cab.Anio,cab.NumMes)"
-               style="background-color: rgb(109, 211, 131); color: white;" type="button" class="btn btn-success"><i
-                 class="fa-solid fa-minus"></i>
-  
-             </button>
-             <button *ngIf="cab.Mostrar==false" (click)="MostrarMes(cab.Anio,cab.NumMes)"
-               style="background-color: rgb(246, 45, 19); color: white;" type="button" class="btn btn-danger"><i
-                 class="fa-solid fa-plus"></i>
-  
-             </button>
-           </th>
-     
-
-
-
-
-
         </ng-container>
       </thead>
       <tbody >
@@ -335,16 +290,6 @@
          
    
                 </ng-container>
-
-                
-              
-
-                <td *ngIf="cab.Tipo==5" class="td-ancho-fijo">
-            
-                </td>
-         
-
-
               </ng-container>
 
             </ng-container>
@@ -379,11 +324,7 @@
 
 
                     </ng-container>
-                    <ng-container style="width: 10px;">
-                      <td *ngIf="cab.Tipo==5" class="td-ancho-fijo" style="background-color: white;">
-                   
-                      </td>
-                    </ng-container>
+         
                   </ng-container>
 
 

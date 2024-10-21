@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // project import
@@ -16,6 +16,8 @@ import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 import { TableModule } from 'primeng/table';
 import { SidebarModule } from 'primeng/sidebar';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-planeacion-financiera-mejorada',
@@ -33,7 +35,7 @@ import { SidebarModule } from 'primeng/sidebar';
   templateUrl: './planeacion-financiera-mejorada.component.html',
   styleUrls: ['./planeacion-financiera-mejorada.component.scss']
 })
-export default class PlaneacionFinancieraMejoradaComponent implements OnInit {
+export default class PlaneacionFinancieraMejoradaComponent implements OnInit,OnDestroy  {
 catalogoFechas:any=[]
 SemanasTodas:any=[]
 Meses: any = [];
@@ -72,7 +74,26 @@ ProyectoSeleccionado:any
 CuentasBancarias:any=[]
 CuentaBancariaSeleccionada:any=[]
 visible: boolean = false;
-constructor(private conS:ConfigurationService,private toastr: ToastrService){}
+constructor(private conS:ConfigurationService,private toastr: ToastrService){
+
+  this.debouncer.pipe(
+    debounceTime(500), // Espera 1 segundo después de que el usuario deja de escribir
+    distinctUntilChanged() // Solo llama a la función si el valor ha cambiado
+  ).subscribe((params:any) => {
+    this.guardarValorPlan(
+      params.Anio,
+      params.MesRegistro,
+      params.NumMes,
+      params.idCategoria,
+      params.idItem,
+      params.Valor,
+      params.TipoCategoria,
+      params.Orden
+    );
+  });
+}
+inputValues: any = {}; 
+private debouncer: Subject<any> = new Subject<any>();
 ngOnInit(): void {
   this.conS.usuario$.subscribe(usuario => {
     if (usuario) {
@@ -154,7 +175,10 @@ ngOnInit(): void {
   ]
 
 }
-
+ngOnDestroy() {
+  // Desuscribir cuando el componente se destruye
+  this.debouncer.unsubscribe();
+}
 showDialog() {
   this.visible = true;
 }
@@ -1042,9 +1066,20 @@ getDataItemsMensualPlanes(){
         })
       
     });
-  
+  this.initializeInputValues()
 
 } 
+initializeInputValues() {
+  // Asume que DataItems tiene los datos correctos para inicializar
+  for (let key in this.DataItems) {
+    const dataItem = this.DataItems[key];
+    if (dataItem && dataItem.length > 0) {
+      // Usa el formato clave que estás utilizando para ngModel
+      this.inputValues[key] = (dataItem[0].Valor).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+    }
+  }
+  console.log('DataItems', this.inputValues)
+}
 
 
 getValorItemsMensualPlanes(idItem:any,Mes:any,Anio:any){
@@ -1243,9 +1278,37 @@ verifyValue(categoriaTipo:any,Monto:any){
 
 }
 
-guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor:any,TipoCategoria:any,Orden:any){
+onInputChange(Anio: any, MesRegistro: any,NumMes:any, idCategoria: any, idItem: any, Valor: any, TipoCategoria: any, Orden: any) {
+  // Emitir los valores al debouncer
 
-  if(this.verifyValue(TipoCategoria,Number(Valor))[0].Estado==false){
+  this.debouncer.next({ Anio, MesRegistro,NumMes, idCategoria, idItem, Valor, TipoCategoria, Orden });
+}
+
+guardarValorPlan(Anio:any,MesRegistro:any,NumMes:any,idCategoria:any,idItem:any,Valor:any,TipoCategoria:any,Orden:any){
+
+  let ValorPlan:any=this.inputValues[Anio+'-'+ NumMes +'-'+idItem]
+  console.log('ValorPlan',ValorPlan)
+
+  if (ValorPlan === ""){
+    Swal.fire({
+      position: "center",
+      icon: "error",
+      title: "El valor no debe estar en blanco",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  else  if (isNaN(Number(ValorPlan.replace(/[$,\s]/g, ''))))  {
+    Swal.fire({
+      position: "center",
+      icon: "error",
+      title: "El valor debe ser numérico",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+
+  if(this.verifyValue(TipoCategoria,Number(Valor.replace(/[$,\s]/g, '')))[0].Estado==false){
     Swal.fire({
       position: "center",
       icon: "warning",
@@ -1273,7 +1336,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       "idItem":idItem,
       "TipoCategoria":TipoCategoria,
       "TipoRegistro":this.idTipoRegistro,
-      "Valor": Number(Valor.replace(',', '')),
+      "Valor": Number(ValorPlan.replace(/[$,\s]/g, '')),
       "idEmpresa":this.usuario.idEmpresa,
       "idSucursal":  ( this.SucursalSeleccionada==undefined  || Object.keys(this.SucursalSeleccionada).length === 0 )? '' : this.SucursalSeleccionada.id  ,
       "idProyecto":( this.ProyectoSeleccionado==undefined  || Object.keys(this.ProyectoSeleccionado).length === 0) ? '' : this.ProyectoSeleccionado.id
@@ -1288,13 +1351,14 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
       data.idEmpresa==this.usuario.idEmpresa)
     if(_ValorPlanEncontrado.length>0){
 
-      _ValorPlanEncontrado[0].Valor=Number(Valor.replace(',', ''))
-
+      _ValorPlanEncontrado[0].Valor= Number(ValorPlan.replace(/[$,\s]/g, ''))
+  
     this.conS.ActualizarValorPlan(_ValorPlanEncontrado[0]).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
       this.getDataItemsMensualPlanes()
       this.getDataCategoriasMensualPlanes()
       this.getDataCategoriasMensual()
+      this.initializeInputValues()
     })
     }  
     
@@ -1304,6 +1368,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,idCategoria:string,idItem:string,Valor
         this.getDataItemsMensualPlanes()
         this.getDataCategoriasMensualPlanes()
         this.getDataCategoriasMensual()
+        this.initializeInputValues()
       })
 
 }
