@@ -952,6 +952,17 @@ obtenerCategorias(){
     this.Categorias.push({
       "Calculado":true,
       "Mostrar":true,
+      "Nombre":"Flujo de Efectivo Acumulado",
+      "Orden":19,
+      "Suma":true,
+      "Tipo":19,
+      "id":'Acumulado-0'
+    })
+
+
+    this.Categorias.push({
+      "Calculado":true,
+      "Mostrar":true,
       "Nombre":"Diferencia Teórico vs Real",
       "Orden":20,
       "Suma":true,
@@ -1102,6 +1113,14 @@ getValorItemsMensualPlanes(idItem:any,Mes:any,Anio:any){
   }
 }
 
+getNombreMes(NumMes:any){
+let MesEncontrado:any=[]
+MesEncontrado=this.Meses.filter((m:any)=>m.NumMes==NumMes)
+if(MesEncontrado.length>0){
+  return MesEncontrado[0].Mes
+}
+}
+
 getDataCategoriasMensualPlanes(){
   this.DataPlanesMensual=[]
   this.Categorias.forEach((categ:any) => {
@@ -1145,6 +1164,28 @@ getDataCategoriasMensualPlanes(){
                 "Variacion": this.calcularVariacion(this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio),this.getDataFlujoLibreMensualPlanes(mes.Mes,anio.Anio))
               });   
           }
+          else if(categ.Orden==19) { 
+
+            if(mes.NumMes==1){
+                   let ValorAcumulado:number=0
+                   ValorAcumulado=this.DataPlanesMensual[`${anio.Anio-1}-${12}-${categ.id}`] ==undefined ? 0
+                   : this.DataPlanesMensual[`${anio.Anio-1}-${12}-${categ.id}`]?.[0]?.Valor 
+                  this.DataPlanesMensual[key].push({
+                    "Valor": this.getDataFlujoLibreMensualPlanes(mes.Mes,anio.Anio) + ValorAcumulado ,
+                  });   
+
+            }
+            else {
+              let ValorAcumulado:number=0
+              ValorAcumulado=this.DataPlanesMensual[`${anio.Anio}-${mes.NumMes-1}-${categ.id}`] ==undefined ? 0
+              : this.DataPlanesMensual[`${anio.Anio}-${mes.NumMes-1}-${categ.id}`]?.[0]?.Valor 
+
+                  this.DataPlanesMensual[key].push({
+                    "Valor": this.getDataFlujoLibreMensualPlanes(mes.Mes,anio.Anio)+ValorAcumulado,
+                  });   
+
+            }
+          }
 
             else {
               this.DataPlanesMensual[key].push({
@@ -1161,7 +1202,7 @@ getDataCategoriasMensualPlanes(){
         })
       
     });
-
+console.log('DataPlanesMensual',this.DataPlanesMensual)
 
     this.cargando=false  
 } 
@@ -1287,7 +1328,6 @@ onInputChange(Anio: any, MesRegistro: any,NumMes:any, idCategoria: any, idItem: 
 guardarValorPlan(Anio:any,MesRegistro:any,NumMes:any,idCategoria:any,idItem:any,Valor:any,TipoCategoria:any,Orden:any){
 
   let ValorPlan:any=this.inputValues[Anio+'-'+ NumMes +'-'+idItem]
-  console.log('ValorPlan',ValorPlan)
 
   if (ValorPlan === ""){
     Swal.fire({
@@ -1423,6 +1463,30 @@ getDataCategoriasMensual(){
       
               });
           }
+
+          else if(categ.Orden==19) { 
+            if(mes.NumMes==1){
+                   let ValorAcumulado:number=0
+                   ValorAcumulado=this.DataCategoriasMensual[`${anio.Anio-1}-${12}-${categ.id}`] ==undefined ? 0
+                   : this.DataCategoriasMensual[`${anio.Anio-1}-${12}-${categ.id}`]?.[0]?.Valor 
+               
+                  this.DataCategoriasMensual[key].push({
+                    "Valor": this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) + ValorAcumulado ,
+                  });   
+
+            }
+            else {
+             
+              let ValorAcumulado:number=0
+              ValorAcumulado=this.DataCategoriasMensual[`${anio.Anio}-${mes.NumMes-1}-${categ.id}`] ==undefined ? 0
+              : this.DataCategoriasMensual[`${anio.Anio}-${mes.NumMes-1}-${categ.id}`]?.[0]?.Valor 
+
+                  this.DataCategoriasMensual[key].push({
+                    "Valor": this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio)+ValorAcumulado,
+                  });   
+          
+            }
+          }
           else if(categ.Orden==20) {
               
               this.DataCategoriasMensual[key].push({
@@ -1542,6 +1606,7 @@ getDataFlujoInversionMensual(Mes:any,Anio:any){
   }
 }
 getDataFlujoLibreMensual(Mes:any,Anio:any){
+
   return this.getDataFlujoOperativoMensual(Mes,Anio) 
   + this.getDataFlujoInversionMensual(Mes,Anio)
   + this.getDataFlujoFinancieroMensual(Mes,Anio)
