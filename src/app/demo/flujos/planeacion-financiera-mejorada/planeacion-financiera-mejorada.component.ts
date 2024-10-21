@@ -969,8 +969,6 @@ obtenerCategorias(){
       "Tipo":20,
       "id":'Diferencia-0',
     })
-
-    console.log('Categorias',this.Categorias)
     this.Categorias.forEach(element => {
       this.categoriasExpandidas[element.id]=true
       
@@ -1089,7 +1087,7 @@ initializeInputValues() {
       this.inputValues[key] = (dataItem[0].Valor).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
     }
   }
-  console.log('DataItems', this.inputValues)
+
 }
 
 
@@ -1202,7 +1200,7 @@ getDataCategoriasMensualPlanes(){
         })
       
     });
-console.log('DataPlanesMensual',this.DataPlanesMensual)
+
 
     this.cargando=false  
 } 
