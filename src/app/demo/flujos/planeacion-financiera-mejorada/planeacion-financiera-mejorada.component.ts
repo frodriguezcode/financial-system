@@ -15,10 +15,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 import { TableModule } from 'primeng/table';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SidebarModule } from 'primeng/sidebar';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-
 @Component({
   selector: 'app-planeacion-financiera-mejorada',
   standalone: true,
@@ -31,6 +32,8 @@ import { Subject } from 'rxjs';
     InputTextModule,
     DialogModule,
     TableModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     SidebarModule],
   templateUrl: './planeacion-financiera-mejorada.component.html',
   styleUrls: ['./planeacion-financiera-mejorada.component.scss']
@@ -61,6 +64,7 @@ DataCategoriasMensual:any=[]
 DataItemsMensual:any=[]
 DataItems:any=[]
 RegistrosBackUp:any=[]
+DataPlanesGeneral:any=[]
 sidebarVisible2: boolean = false;
 DataPlanesMensual:any=[]
 idTipoRegistro:any=0
@@ -423,7 +427,7 @@ this.Anios=_AniosProyecto
   this.getDataItemMensual()
   this.getDataItemsMensualPlanes()
 
-  this.sidebarVisible2=false
+
 }
 
 filtrarDataSucursal(){
@@ -921,7 +925,7 @@ construirCabecera(){
     })
 
  this.CabeceraBack=this.Cabecera
-
+console.log('Cabecera',this.Cabecera)
  this.getDataCategoriasMensualPlanes()
 this.getDataCategoriasMensual()
 this.getDataItemMensual()
@@ -1078,6 +1082,12 @@ getDataItemsMensualPlanes(){
   this.initializeInputValues()
 
 } 
+
+buidDataPlanesGeneral(){
+
+}
+
+
 initializeInputValues() {
   // Asume que DataItems tiene los datos correctos para inicializar
   for (let key in this.DataItems) {
@@ -1089,6 +1099,8 @@ initializeInputValues() {
   }
 
 }
+
+
 
 
 getValorItemsMensualPlanes(idItem:any,Mes:any,Anio:any){

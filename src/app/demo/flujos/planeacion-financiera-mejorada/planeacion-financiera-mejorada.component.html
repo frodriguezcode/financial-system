@@ -72,22 +72,26 @@
       
    
   </div>
+
+
+
+
   <!-- Planeacion        -->
   <div *ngIf="!cargando" class="container-table">
      
       <div class="table-custom-container"  style="margin-top: 1rem;">
-      <table class="table table-100">
+      <table style="table-layout: fixed; width: 100%;" class="table table-100">
         <thead class="cabecera">
   
           <ng-container *ngFor="let cab of Cabecera">
         
-          <th *ngIf="cab.Tipo==1" class="text-left"
-             style="padding: 0.5rem; background-color: #0c8c86; text-transform: uppercase; position: sticky; top: 0; z-index: 3;">
+          <th  *ngIf="cab.Tipo==1" class="text-left"
+             style="width: 400px; padding: 0.5rem; background-color: #0c8c86; text-transform: uppercase; position: sticky; top: 0; z-index: 3;">
            Catálogo de Cuentas
          </th>
          <ng-container *ngIf="cab.Mostrar==true">
-           <th *ngIf="cab.Tipo!=1 && cab.Tipo!=3 &&  cab.Tipo!=4 && cab.Tipo!=5 " class="text-center"
-               style="padding: 0.7rem; font-weight: 500; text-transform: uppercase; position: sticky; top: 0; z-index: 1;">
+           <th  *ngIf="cab.Tipo!=1 && cab.Tipo!=3 &&  cab.Tipo!=4 && cab.Tipo!=5 " class="text-center"
+               style=" width: 200px; padding: 0.5rem; font-weight: 500; text-transform: uppercase; position: sticky; top: 0; z-index: 1;">
              {{ cab.Nombre }}
            </th>
      
@@ -180,30 +184,41 @@
             <ng-container *ngIf="!categoriasExpandidas[categoria.id]">
               <ng-container class="animate__animated animate__bounceIn" *ngFor="let item of getItems(categoria.id)">
                 <tr style="background-color: #FAFAFA">
-                  <td style="background-color: white"><span style="margin-left: 40px; ;">{{
+                  <td style="background-color: white ;padding-bottom: 10px;padding-top: 10px;"><span style="margin-left: 40px;">{{
                       item.Nombre}}</span></td>
                   <ng-container *ngFor="let cab of Cabecera">
                     <ng-container *ngIf="cab.Tipo!=1">
                       <ng-container *ngIf="cab.Mostrar">
                         <ng-container *ngIf="cab.Tipo==2 && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5">
-                          <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);"
+                          <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2); padding-bottom: 10px;padding-top: 10px;"
                             class="text-center">
                             <div class="animate__animated animate__bounceIn custom-alert shadow-1"
-                              style="color: red; font-size: 11px;"
+                              style="color: red; font-size: 11px; padding-bottom: 10px;padding-top: 10px;"
                               *ngIf="verifyValue(categoria.Tipo,Valor.value)[0].Estado==false">
                               {{verifyValue(categoria.Tipo,Valor.value)[0].Mensaje}}</div>
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 custom-input-group" style="padding-bottom: 10px;padding-top: 10px;">
                               <span *ngIf="categoria.Tipo==1" class="input-group-text">$</span>
                               <span *ngIf="categoria.Tipo==2" class="input-group-text">-$</span>
                               <input 
                               #Valor
-                              style="width: 50px"
                               [(ngModel)]="inputValues[cab.Anio + '-' + cab.NumMes + '-' + item.id]" 
                               (ngModelChange)="onInputChange(cab.Anio, cab.Mes,cab.NumMes, categoria.id, item.id, $event, categoria.Tipo, categoria.Orden)"
                               type="text" 
                               class="form-control text-center" 
                               aria-label="Amount (to the nearest dollar)">
                             </div>
+
+                            <!-- <p-inputGroup >
+                              <p-inputGroupAddon>$</p-inputGroupAddon>
+                              <input 
+                              #Valor
+                              [(ngModel)]="inputValues[cab.Anio + '-' + cab.NumMes + '-' + item.id]" 
+                              (ngModelChange)="onInputChange(cab.Anio, cab.Mes,cab.NumMes, categoria.id, item.id, $event, categoria.Tipo, categoria.Orden)"
+                              type="text" 
+                              class="form-control text-center" 
+                              aria-label="Amount (to the nearest dollar)">
+                             
+                          </p-inputGroup>  -->
                           </td>
                         </ng-container>
                       </ng-container>
@@ -223,21 +238,21 @@
   </div>
 
   <!-- Real -->
-  <div *ngIf="!cargando" class="container-table">
+<div *ngIf="!cargando" class="container-table">
      
     <div class="table-custom-container"  style="margin-top: 1rem;">
-    <table class="table table-100">
+    <table style="table-layout: fixed; width: 100%;" class="table table-100">
       <thead class="cabecera">
 
         <ng-container *ngFor="let cab of Cabecera">
       
            <th *ngIf="cab.Tipo==1" class="text-left"
-           style="padding: 0.5rem; background-color: #0c8c86; text-transform: uppercase; position: sticky; top: 0; z-index: 3;">
+           style="width: 400px; padding: 0.5rem; background-color: #0c8c86; text-transform: uppercase; position: sticky; top: 0; z-index: 3;">
          Catálogo de Cuentas
        </th>
        <ng-container *ngIf="cab.Mostrar==true">
          <th *ngIf="cab.Tipo!=1 && cab.Tipo!=2 && cab.Tipo!=4 && cab.Tipo!=5" class="text-center"
-             style="padding: 0.7rem; font-weight: 500; text-transform: uppercase; position: sticky; top: 0; z-index: 1;">
+             style="padding: 0.7rem;width: 200px; font-weight: 500; text-transform: uppercase; position: sticky; top: 0; z-index: 1;">
            {{ cab.Nombre }}
          </th>
      
@@ -366,7 +381,7 @@
       </tbody>
     </table>
   </div>
-</div>
+</div> 
 
 
   

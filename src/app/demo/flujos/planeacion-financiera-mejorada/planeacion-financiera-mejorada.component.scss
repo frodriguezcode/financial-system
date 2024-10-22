@@ -7,6 +7,7 @@
   max-height: 2000px;
   overflow-y: auto;
   position: relative;
+  font-size: 12px;
 }
 
 
@@ -15,8 +16,21 @@
   align-self: start;
 }
 
+::ng-deep .p-inputgroup .form-control {
+  padding-top: 2px; /* Ajusta según sea necesario */
+  padding-bottom: 2px;
+}
+
+::ng-deep .p-inputgroup .p-inputgroup-addon {
+  padding-top: 2px; /* Ajusta también los addons si es necesario */
+  padding-bottom: 2px;
+}
 
 
+.custom-input-group{
+  padding-bottom: -10px;
+  padding-top: -10px;
+}
 .table-reduced {
   width: 50%;
 
