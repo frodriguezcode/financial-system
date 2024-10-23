@@ -127,7 +127,7 @@
               <ng-container *ngFor="let cab of Cabecera">
                 <ng-container *ngIf="cab.Tipo!=1">
                   <ng-container *ngIf="cab.Mostrar">
-                    <ng-container *ngIf="(cab.Tipo==2)  && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5">
+                    <ng-container *ngIf="(cab.Tipo==2)  && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5  && cab.Tipo!=6">
                       <td *ngIf="categoria.Tipo!=3 && categoria.Tipo!=19" class="text-center"
                         style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
                         <span *ngIf="categoria.Tipo!=2" style="color: black;">
@@ -170,6 +170,18 @@
                       </span>
                     </td>
                     </ng-container>
+                    <ng-container *ngIf="(cab.Tipo==6)  && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5 && cab.Tipo!=2">
+                      <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                        <span  *ngIf="(DataPlanesAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor)>=0" style="color: black;">
+                        {{"$ " + ( (DataPlanesAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor) |
+                          number) }}
+                        </span>
+                        <span  *ngIf="(DataPlanesAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor)<0" style="color: red;">
+                        {{"-$ " + (( (DataPlanesAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor)*-1)  |
+                          number) }}
+                        </span>
+                      </td>
+                    </ng-container>
   
 
            
@@ -191,7 +203,7 @@
                   <ng-container *ngFor="let cab of Cabecera">
                     <ng-container *ngIf="cab.Tipo!=1">
                       <ng-container *ngIf="cab.Mostrar">
-                        <ng-container *ngIf="cab.Tipo==2 && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5">
+                        <ng-container *ngIf="cab.Tipo==2 && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5 && cab.Tipo!=6">
                           <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2); padding: 4px;"
                             class="text-center">
                             <div class="animate__animated animate__bounceIn custom-alert shadow-1"
@@ -221,6 +233,23 @@
                               aria-label="Amount (to the nearest dollar)">
                              
                           </p-inputGroup>  -->
+                          </td>
+                        </ng-container>
+                        <ng-container *ngIf="(cab.Tipo==6)  && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5 && cab.Tipo!=2">
+                            <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                              <span  *ngIf="(DataItemsAnualPlanes[cab.Anio + '-' + item.id]?.[0]?.Valor)>=0" style="color: black;">
+                              {{"$ " + ( (DataItemsAnualPlanes[cab.Anio + '-' + item.id]?.[0]?.Valor) |
+                                number) }}
+                              </span>
+                              <span  *ngIf="(DataItemsAnualPlanes[cab.Anio + '-' + item.id]?.[0]?.Valor)<0" style="color: red;">
+                              {{"-$ " + (( (DataItemsAnualPlanes[cab.Anio + '-' + item.id]?.[0]?.Valor)*-1)  |
+                                number) }}
+                              </span>
+                           
+
+                            
+
+
                           </td>
                         </ng-container>
                       </ng-container>

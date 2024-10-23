@@ -62,14 +62,16 @@ RegistrosValoresPlanes:any=[]
 RegistrosValoresPlanesBackUpItems:any=[]
 DataCategoriasMensual:any=[]
 DataItemsMensual:any=[]
+DataItemsAnual:any=[]
 DataItems:any=[]
 RegistrosBackUp:any=[]
 DataPlanesGeneral:any=[]
 sidebarVisible2: boolean = false;
 DataPlanesMensual:any=[]
+DataPlanesAnual:any=[]
 idTipoRegistro:any=0
 cargando:boolean=true
-
+DataItemsAnualPlanes:any=[]
 Sucursales:any=[]
 SucursalSeleccionada:any
 Proyectos:any=[]
@@ -387,6 +389,14 @@ filtrarDataProyecto(){
           "NumMes":mes.NumMes,
           "Anio":anio.Anio,
           "Tipo":5,
+          "Mostrar":true,
+          "MostrarBoton":true
+        })
+
+        this.Cabecera.push({
+          "Nombre":"Total" + anio.Anio,
+          "Anio":anio.Anio,
+          "Tipo":6,
           "Mostrar":true,
           "MostrarBoton":true
         })
@@ -924,6 +934,14 @@ construirCabecera(){
 
     })
 
+    this.Cabecera.push({
+      "Nombre":"Total" + anio.Anio,
+      "Anio":anio.Anio,
+      "Tipo":6,
+      "Mostrar":true,
+      "MostrarBoton":true
+    })
+
  this.CabeceraBack=this.Cabecera
 console.log('Cabecera',this.Cabecera)
  this.getDataCategoriasMensualPlanes()
@@ -1123,6 +1141,25 @@ getValorItemsMensualPlanes(idItem:any,Mes:any,Anio:any){
   }
 }
 
+getValorItemsAnualPlanes(idItem:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosValoresPlanes.filter((registro:any)=>registro
+  .idItem==idItem
+  && registro.AnioRegistro==Anio
+  )
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+ 
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+
 getNombreMes(NumMes:any){
 let MesEncontrado:any=[]
 MesEncontrado=this.Meses.filter((m:any)=>m.NumMes==NumMes)
@@ -1133,6 +1170,7 @@ if(MesEncontrado.length>0){
 
 getDataCategoriasMensualPlanes(){
   this.DataPlanesMensual=[]
+  this.DataPlanesAnual=[]
   this.Categorias.forEach((categ:any) => {
       this.Anios.forEach((anio:any) => {
         this.Meses.forEach((mes:any) => {
@@ -1209,11 +1247,74 @@ getDataCategoriasMensualPlanes(){
     
   
           })
-        })
+
+
+
+          const keyAnual = `${anio.Anio}-${categ.id}`;  
+
+          if (!this.DataPlanesAnual[keyAnual]) {
+            this.DataPlanesAnual[keyAnual] =[];
+          }
+
+          if(categ.Orden==1) {
+            this.DataPlanesAnual[keyAnual].push({
+              "Valor": this.getDataFlujoOperativoAnualPlanes(anio.Anio),
+            }); 
+        }
+
+        else if(categ.Orden==4) {
+          this.DataPlanesAnual[keyAnual].push({
+            "Valor": this.getDataFlujoInversionAnualPlanes(anio.Anio),
+
+          });    
+      }
+
+      else if(categ.Orden==7) {            
+        this.DataPlanesAnual[keyAnual].push({
+          "Valor": this.getDataFlujoFinancieroAnualPlanes(anio.Anio)
+        });   
+      }
+
+      else if(categ.Orden==10) { 
+          
+        this.DataPlanesAnual[keyAnual].push({
+          "Valor": this.getDataFlujoLibreAnualPlanes(anio.Anio)
+        });   
+    }
+
+    else if(categ.Orden==19) { 
+      let ValorAcumulado:number=0
+      this.Meses.forEach(mes => {
+        ValorAcumulado+=this.DataPlanesMensual[`${anio.Anio}-${mes.NumMes}-${categ.id}`] ==undefined ? 0
+        : this.DataPlanesMensual[`${anio.Anio}-${mes.NumMes}-${categ.id}`]?.[0]?.Valor 
+        
+      });
+        this.DataPlanesAnual[keyAnual].push({
+              "Valor": ValorAcumulado
+        });   
+
+      
+    }
+
+    else {
+      this.DataPlanesAnual[keyAnual].push({
+        "Valor": this.getValorCategoriaAnualPlanes(categ.id,anio.Anio),
+
+
+      });
+
+    }
+
+
+
+
+  
+  })
+
       
     });
 
-
+console.log('DataPlanesAnual',this.DataPlanesAnual)
     this.cargando=false  
 } 
 calcularVariacion(ValorA:any,ValorB:any){
@@ -1242,6 +1343,26 @@ getDataFlujoFinancieroMensualPlanes(Mes:any,Anio:any){
   }
 }
 
+getDataFlujoFinancieroAnualPlanes(Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosValoresPlanes.filter((registro:any)=>
+  (registro.Orden==8
+  || registro.Orden==9)
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
 getDataFlujoOperativoMensualPlanes(Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.RegistrosValoresPlanes.filter((registro:any)=>
@@ -1286,6 +1407,27 @@ getDataFlujoInversionMensualPlanes(Mes:any,Anio:any){
   }
 }
 
+getDataFlujoInversionAnualPlanes(Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosValoresPlanes.filter((registro:any)=>
+  (registro.Orden==6
+  || registro.Orden==5)
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+
 getDataFlujoLibreMensualPlanes(Mes:any,Anio:any){
   return this.getDataFlujoOperativoMensualPlanes(Mes,Anio) 
   + this.getDataFlujoInversionMensualPlanes(Mes,Anio)
@@ -1293,11 +1435,59 @@ getDataFlujoLibreMensualPlanes(Mes:any,Anio:any){
 }
 
 
+getDataFlujoLibreAnualPlanes(Anio:any){
+  return this.getDataFlujoOperativoAnualPlanes(Anio) 
+  + this.getDataFlujoInversionAnualPlanes(Anio)
+  + this.getDataFlujoFinancieroAnualPlanes(Anio)
+}
+
+
+
+getDataFlujoOperativoAnualPlanes(Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosValoresPlanes.filter((registro:any)=>
+  (registro.Orden==2
+  || registro.Orden==3)
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+} 
+
 getValorCategoriaMensualPlanes(idCategoria:any,Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.RegistrosValoresPlanes.filter((registro:any)=>registro
   .idCategoria==idCategoria
   && registro.MesRegistro==Mes
+  && registro.AnioRegistro==Anio
+  )
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+ 
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+
+getValorCategoriaAnualPlanes(idCategoria:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosValoresPlanes.filter((registro:any)=>registro
+  .idCategoria==idCategoria
   && registro.AnioRegistro==Anio
   )
   if(_Data.length>0){
@@ -1594,6 +1784,27 @@ getDataFlujoOperativoMensual(Mes:any,Anio:any){
   }
 } 
 
+getDataFlujoOperativoAnual(Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>
+  (registro.idCategoria.Orden==2
+  || registro.idCategoria.Orden==3)
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+} 
+
 getDataFlujoInversionMensual(Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
@@ -1623,6 +1834,7 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
 }
 getDataItemMensual(){
 this.DataItemsMensual=[]
+this.DataItemsAnualPlanes=[]
     this.Items.forEach((item:any) => {
       this.Anios.forEach((anio:any) => {
         this.Meses.forEach((mes:any) => {
@@ -1637,10 +1849,23 @@ this.DataItemsMensual=[]
     
            
           })
+
+          const keyAnual = `${anio.Anio}-${item.id}`;  
+          if (!this.DataItemsAnual[keyAnual]) {
+            this.DataItemsAnualPlanes[keyAnual] =[];
+          }
+
+          this.DataItemsAnualPlanes[keyAnual].push({
+            "Valor": this.getValorItemsAnualPlanes(item.id,anio.Anio)
+  
+          });
+  
+
+
         })
       
     });
-//console.log('this.DataItemsMensual',this.DataItemsMensual[2025 + '-' + 10 + '-' + 'uzbtKeksyZGolh1AvfuT']?.[0]?.Valor)
+console.log('this.DataItemsAnual',this.DataItemsAnual)
 
 }
 
@@ -1669,5 +1894,31 @@ getValorItemMensual(idElemento:any,Mes:any,Anio:any){
       }
 
       
+}
+
+getValorItemAnual(idElemento:any,Anio:any){
+  let _Data: any=[];
+  let Valor: number =0
+  _Data=this.Registros.filter((registro:any)=>
+    registro.idElemento==idElemento 
+    && registro.AnioRegistro==Anio
+    )
+   
+  if(_Data.length>0){
+    _Data.forEach((element:any) => {
+      Valor+=Number(element.Valor);
+    });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+    return Number(Valor)
+  }
+  
+  else {
+    return 0
+  }
+
+  
 }
 }
