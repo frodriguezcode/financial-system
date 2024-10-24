@@ -1008,15 +1008,15 @@ obtenerCategorias(){
       "Tipo":20,
       "id":'Diferencia-0',
     })
-    this.Categorias.push({
-      "Calculado":true,
-      "Mostrar":true,
-      "Nombre":"Diferencia Real vs Teórico",
-      "Orden":21,
-      "Suma":true,
-      "Tipo":21,
-      "id":'Diferencia-1',
-    })
+    // this.Categorias.push({
+    //   "Calculado":true,
+    //   "Mostrar":true,
+    //   "Nombre":"Diferencia Real vs Teórico",
+    //   "Orden":21,
+    //   "Suma":true,
+    //   "Tipo":21,
+    //   "id":'Diferencia-1',
+    // })
     this.Categorias.forEach(element => {
       this.categoriasExpandidas[element.id]=true
       
