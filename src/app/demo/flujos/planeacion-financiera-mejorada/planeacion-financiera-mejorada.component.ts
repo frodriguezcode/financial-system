@@ -393,18 +393,18 @@ filtrarDataProyecto(){
           "Mostrar":true,
           "MostrarBoton":true
         })
-
-        this.Cabecera.push({
-          "Nombre":"Total" + anio.Anio,
-          "Anio":anio.Anio,
-          "Tipo":6,
-          "Mostrar":true,
-          "MostrarBoton":true
-        })
-  
-  
-  
+        
+        
       })
+      
+              this.Cabecera.push({
+                "Nombre":"Total" + anio.Anio,
+                "Anio":anio.Anio,
+                "Tipo":6,
+                "Mostrar":true,
+                "MostrarBoton":true
+              })
+        
 })
 
 const nuevosElementos = this.Cabecera.filter(itemA => 
@@ -1278,10 +1278,10 @@ getDataCategoriasMensualPlanes(){
             
             this.DataPlanesMensual[key].push({
               "Valor":
-              (this.DataCategoriasMensual[anio.Anio +
-                '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor -
+             
+              ( this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio)-
               this.DataPlanesMensual[anio.Anio +
-                '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor)*-1 
+                '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor)
     
             });
         }
@@ -1347,8 +1347,10 @@ getDataCategoriasMensualPlanes(){
       
     }
 
+
+
     else if(categ.Orden==21) {
-      let ValorAcumulado:number=  this.DataCategoriasAnual[anio.Anio + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor +
+      let ValorAcumulado:number= this.getValorCategoriaAnual('VmmQpdpunMTqkoSjhzzj',anio.Anio) +
       this.DataPlanesAnual[anio.Anio + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor
       this.DataPlanesAnual[keyAnual].push({
         "Valor":
@@ -1374,7 +1376,7 @@ getDataCategoriasMensualPlanes(){
 
       
     });
-console.log('DataPlanesAnual',this.DataPlanesAnual)
+
     this.cargando=false  
 } 
 calcularVariacion(ValorA:any,ValorB:any){
@@ -1753,7 +1755,7 @@ getDataCategoriasMensual(){
               this.DataCategoriasMensual[key].push({
                 "Valor":
                 this.DataPlanesMensual[anio.Anio +
-                  '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor +
+                  '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor -
                 this.DataCategoriasMensual[anio.Anio +
                   '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor
       

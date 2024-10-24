@@ -81,9 +81,21 @@
 
 
   <!-- Planeacion        -->
+
+
+
+
+
   <div *ngIf="!cargando" class="container-table">
      
       <div class="table-custom-container"  style="margin-top: 1rem;">
+        <h6>Proyección de los flujos futuros del: 
+          <span *ngIf=" this.idTipoRegistro==0">todos los proyectos y sucursales</span> 
+          <span *ngIf=" this.idTipoRegistro==1 && !SucursalSeleccionada">Todas las sucursales</span> 
+          <span *ngIf=" this.idTipoRegistro==1 && SucursalSeleccionada">{{SucursalSeleccionada.Nombre}}</span> 
+          <span *ngIf=" this.idTipoRegistro==2 && !ProyectoSeleccionado">Todas los proyectos</span> 
+          <span *ngIf=" this.idTipoRegistro==2 && ProyectoSeleccionado">{{ProyectoSeleccionado.Nombre}}</span> 
+        </h6>
       <table style="table-layout: fixed; width: 100%;" class="table table-100">
         <thead class="cabecera">
   
@@ -287,9 +299,17 @@
   </div>
 
   <!-- Real -->
-<div *ngIf="!cargando" class="container-table">
-     
+
+  <div *ngIf="!cargando" class="container-table">
+    
     <div class="table-custom-container"  style="margin-top: 1rem;">
+      <h6>Registro real del flujo de efectivo del: 
+        <span *ngIf=" this.idTipoRegistro==0">todos los proyectos y sucursales</span> 
+        <span *ngIf=" this.idTipoRegistro==1 && !SucursalSeleccionada">Todas las sucursales</span> 
+        <span *ngIf=" this.idTipoRegistro==1 && SucursalSeleccionada">{{SucursalSeleccionada.Nombre}}</span> 
+        <span *ngIf=" this.idTipoRegistro==2 && !ProyectoSeleccionado">Todas los proyectos</span> 
+        <span *ngIf=" this.idTipoRegistro==2 && ProyectoSeleccionado">{{ProyectoSeleccionado.Nombre}}</span> 
+      </h6>
     <table style="table-layout: fixed; width: 100%;" class="table table-100">
       <thead class="cabecera">
 
