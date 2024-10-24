@@ -61,6 +61,7 @@ RegistrosValoresPlanesBackUp:any=[]
 RegistrosValoresPlanes:any=[]
 RegistrosValoresPlanesBackUpItems:any=[]
 DataCategoriasMensual:any=[]
+DataCategoriasAnual:any=[]
 DataItemsMensual:any=[]
 DataItemsAnual:any=[]
 DataItems:any=[]
@@ -356,7 +357,7 @@ filtrarDataProyecto(){
     _AniosProyecto.forEach((anio:any) => {
       _MesesProyecto.filter((m:any)=>m.Anio==anio.Anio).forEach((mes:any) => {
         this.Cabecera.push({
-          "Nombre":"Plan " + mes.Mes + " " + anio.Anio,
+          "Nombre": mes.Mes + " " + anio.Anio,
           "Mes":mes.Mes,
           "NumMes":mes.NumMes,
           "Anio":anio.Anio,
@@ -365,7 +366,7 @@ filtrarDataProyecto(){
           "MostrarBoton":true
         })
         this.Cabecera.push({
-          "Nombre":"Real "+ mes.Mes + " " + anio.Anio,
+          "Nombre": mes.Mes + " " + anio.Anio,
           "Mes":mes.Mes,
           "NumMes":mes.NumMes,
           "Anio":anio.Anio,
@@ -574,7 +575,7 @@ descargarExcel(){
  let _CabeceraReal:any=[]
 
  //Data planeada
- _CabeceraPlan=this.Cabecera.filter((cab:any)=>cab.Mostrar==true && (cab.Tipo==2 || cab.Tipo==1))
+ _CabeceraPlan=this.Cabecera.filter((cab:any)=>cab.Mostrar==true && (cab.Tipo==2 || cab.Tipo==1  || cab.Tipo == 6))
   const headerRow: any[] = [];
   _CabeceraPlan.forEach((element: any) => {
     headerRow.push(element.Nombre);
@@ -587,6 +588,7 @@ descargarExcel(){
     _CabeceraPlan.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
 
         const index = `${cab.Anio}-${cab.NumMes}-${categ.id}`;
+        const indexAnual = `${cab.Anio}-${categ.id}`;
         let valor = 0;
         if (cab.Tipo == 2) {
             valor = this.DataPlanesMensual[index]?.[0]?.Valor || 0;
@@ -596,6 +598,9 @@ descargarExcel(){
             valor = this.DataPlanesMensual[index]?.[0]?.Diferencia || 0;
         } else if (cab.Tipo == 5) {
             valor = this.DataPlanesMensual[index]?.[0]?.Variacion || 0;
+        }  
+        else if (cab.Tipo == 6) {
+            valor = this.DataPlanesAnual[indexAnual]?.[0]?.Valor || 0;
         }
         
         fila.push(valor);
@@ -606,6 +611,7 @@ descargarExcel(){
         _CabeceraPlan.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
 
             const indexItem = `${cab.Anio}-${cab.NumMes}-${item.id}`;
+            const indexItemAnual = `${cab.Anio}-${item.id}`;
             let valorItem = 0;
 
             if (cab.Tipo == 2) {
@@ -616,6 +622,9 @@ descargarExcel(){
                 valorItem = this.DataItems[indexItem]?.[0]?.Diferencia || 0;
             } else if (cab.Tipo == 5) {
                 valorItem = this.DataItems[indexItem]?.[0]?.Variacion || 0;
+            }
+             else if (cab.Tipo == 6) {
+                valorItem = this.DataItemsAnual[indexItemAnual]?.[0]?.Valor || 0;
             }
             filaItem.push(valorItem);
         });
@@ -627,7 +636,7 @@ descargarExcel(){
   });
 
   //Data real
-  _CabeceraReal=this.Cabecera.filter((cab:any)=>cab.Mostrar==true && (cab.Tipo==3 || cab.Tipo==1))
+  _CabeceraReal=this.Cabecera.filter((cab:any)=>cab.Mostrar==true && (cab.Tipo==3 || cab.Tipo==1 || cab.Tipo == 6))
   const headerRowReal: any[] = [];
   _CabeceraReal.forEach((element: any) => {
     headerRowReal.push(element.Nombre);
@@ -635,12 +644,13 @@ descargarExcel(){
   let DataReal: any[] = [];
 
   let ContadorReal:number=1
-  this.Categorias.filter((categ:any)=>categ.Tipo!=20).forEach((categ: any) => {
+  this.Categorias.filter((categ:any)=>categ.Tipo!=21).forEach((categ: any) => {
     let fila: any[] = [`${ContadorReal}- ${categ.Nombre}`];
     Contador+=1
     _CabeceraReal.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
 
         const index = `${cab.Anio}-${cab.NumMes}-${categ.id}`;
+        const indexAnual = `${cab.Anio}-${categ.id}`;
         let valor = 0;
         if (cab.Tipo == 2) {
             valor = this.DataPlanesMensual[index]?.[0]?.Valor || 0;
@@ -651,6 +661,9 @@ descargarExcel(){
         } else if (cab.Tipo == 5) {
             valor = this.DataPlanesMensual[index]?.[0]?.Variacion || 0;
         }
+        else if (cab.Tipo == 6) {
+          valor = this.DataCategoriasAnual[indexAnual]?.[0]?.Valor || 0;
+      }
         
         fila.push(valor);
     });
@@ -662,6 +675,7 @@ descargarExcel(){
         _CabeceraReal.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
 
             const indexItem = `${cab.Anio}-${cab.NumMes}-${item.id}`;
+            const indexItemAnual = `${cab.Anio}-${item.id}`;
             let valorItem = 0;
 
             if (cab.Tipo == 2) {
@@ -673,6 +687,9 @@ descargarExcel(){
             } else if (cab.Tipo == 5) {
                 valorItem = this.DataItems[indexItem]?.[0]?.Variacion || 0;
             }
+            else if (cab.Tipo == 6) {
+              valorItem = this.DataItemsAnual[indexItemAnual]?.[0]?.Valor || 0;
+          }
             filaItem.push(valorItem);
         });
         DataReal.push(filaItem);
@@ -893,7 +910,7 @@ construirCabecera(){
   this.Anios.forEach((anio:any) => {
     this.Meses.forEach((mes:any) => {
       this.Cabecera.push({
-        "Nombre":"Plan " + mes.Mes + " " + anio.Anio,
+        "Nombre":mes.Mes + " " + anio.Anio,
         "Mes":mes.Mes,
         "NumMes":mes.NumMes,
         "Anio":anio.Anio,
@@ -902,7 +919,7 @@ construirCabecera(){
         "MostrarBoton":true
       })
       this.Cabecera.push({
-        "Nombre":"Real "+ mes.Mes + " " + anio.Anio,
+        "Nombre": mes.Mes + " " + anio.Anio,
         "Mes":mes.Mes,
         "NumMes":mes.NumMes,
         "Anio":anio.Anio,
@@ -943,7 +960,7 @@ construirCabecera(){
     })
 
  this.CabeceraBack=this.Cabecera
-console.log('Cabecera',this.Cabecera)
+
  this.getDataCategoriasMensualPlanes()
 this.getDataCategoriasMensual()
 this.getDataItemMensual()
@@ -990,6 +1007,15 @@ obtenerCategorias(){
       "Suma":true,
       "Tipo":20,
       "id":'Diferencia-0',
+    })
+    this.Categorias.push({
+      "Calculado":true,
+      "Mostrar":true,
+      "Nombre":"Diferencia Real vs Teórico",
+      "Orden":21,
+      "Suma":true,
+      "Tipo":21,
+      "id":'Diferencia-1',
     })
     this.Categorias.forEach(element => {
       this.categoriasExpandidas[element.id]=true
@@ -1076,6 +1102,7 @@ obtenerValoresPlanes(){
 
 getDataItemsMensualPlanes(){
   this.DataItems=[]
+  this.DataItemsAnualPlanes=[]
   this.Items.forEach((item:any) => {
       this.Anios.forEach((anio:any) => {
         this.Meses.forEach((mes:any) => {
@@ -1094,6 +1121,16 @@ getDataItemsMensualPlanes(){
     
   
           })
+          
+          const keyAnual = `${anio.Anio}-${item.id}`;  
+          if (!this.DataItemsAnualPlanes[keyAnual]) {
+            this.DataItemsAnualPlanes[keyAnual] =[];
+          }
+
+          this.DataItemsAnualPlanes[keyAnual].push({
+            "Valor": this.getValorItemsAnualPlanes(item.id,anio.Anio)
+  
+          });
         })
       
     });
@@ -1223,6 +1260,8 @@ getDataCategoriasMensualPlanes(){
                   });   
 
             }
+
+           
             else {
               let ValorAcumulado:number=0
               ValorAcumulado=this.DataPlanesMensual[`${anio.Anio}-${mes.NumMes-1}-${categ.id}`] ==undefined ? 0
@@ -1234,6 +1273,18 @@ getDataCategoriasMensualPlanes(){
 
             }
           }
+
+          else if(categ.Orden==21) {
+            
+            this.DataPlanesMensual[key].push({
+              "Valor":
+              (this.DataCategoriasMensual[anio.Anio +
+                '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor -
+              this.DataPlanesMensual[anio.Anio +
+                '-' + mes.NumMes + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor)*-1 
+    
+            });
+        }
 
             else {
               this.DataPlanesMensual[key].push({
@@ -1296,6 +1347,16 @@ getDataCategoriasMensualPlanes(){
       
     }
 
+    else if(categ.Orden==21) {
+      let ValorAcumulado:number=  this.DataCategoriasAnual[anio.Anio + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor +
+      this.DataPlanesAnual[anio.Anio + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor
+      this.DataPlanesAnual[keyAnual].push({
+        "Valor":
+        ValorAcumulado
+      });
+
+  }
+
     else {
       this.DataPlanesAnual[keyAnual].push({
         "Valor": this.getValorCategoriaAnualPlanes(categ.id,anio.Anio),
@@ -1313,7 +1374,6 @@ getDataCategoriasMensualPlanes(){
 
       
     });
-
 console.log('DataPlanesAnual',this.DataPlanesAnual)
     this.cargando=false  
 } 
@@ -1625,6 +1685,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,NumMes:any,idCategoria:any,idItem:any,
 
 getDataCategoriasMensual(){
   this.DataCategoriasMensual=[]
+  this.DataCategoriasAnual=[]
   let idCategoria:string=''
   this.Categorias.forEach((categ:any) => {
       this.Anios.forEach((anio:any) => {
@@ -1709,9 +1770,81 @@ getDataCategoriasMensual(){
     
            
           })
+
+          const keyAnual = `${anio.Anio}-${categ.id}`;  
+          if (!this.DataCategoriasAnual[keyAnual]) {
+            this.DataCategoriasAnual[keyAnual] =[];
+          }
+          if(categ.Orden==1) {
+              
+            this.DataCategoriasAnual[keyAnual].push({
+              "Valor": this.getDataFlujoOperativoAnual(anio.Anio)
+            });
+          }
+          else if(categ.Orden==4) {
+              
+            this.DataCategoriasAnual[keyAnual].push({
+              "Valor": this.getDataFlujoInversionAnual(anio.Anio)
+    
+            });
+        }
+
+        else if(categ.Orden==7) {
+              
+          this.DataCategoriasAnual[keyAnual].push({
+            "Valor": this.getDataFlujoFinancieroAnual(anio.Anio)
+  
+          });
+      }
+
+      else if(categ.Orden==10) {
+              
+        this.DataCategoriasAnual[keyAnual].push({
+          "Valor": this.getDataFlujoLibreAnual(anio.Anio)
+
+        });
+    }
+    
+    else if(categ.Orden==19) { 
+      let ValorAcumulado:number=0
+      this.Meses.forEach(mes => {
+        ValorAcumulado+=this.DataCategoriasMensual[`${anio.Anio}-${mes.NumMes}-${categ.id}`] ==undefined ? 0
+        : this.DataCategoriasMensual[`${anio.Anio}-${mes.NumMes}-${categ.id}`]?.[0]?.Valor 
+        
+      });
+        this.DataCategoriasAnual[keyAnual].push({
+              "Valor": ValorAcumulado
+        });   
+
+      
+    }
+
+    else if(categ.Orden==20) {
+      let ValorAcumulado:number=  this.DataPlanesAnual[anio.Anio + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor +
+      this.DataCategoriasAnual[anio.Anio + '-' + 'VmmQpdpunMTqkoSjhzzj']?.[0]?.Valor
+      this.DataCategoriasAnual[keyAnual].push({
+        "Valor":
+        ValorAcumulado
+      });
+
+  }
+
+  else {
+    this.DataCategoriasAnual[keyAnual].push({
+      "Valor": this.getValorCategoriaAnual(categ.id,anio.Anio)
+    });
+
+  }
+
+
+  
+          
+
+
         })
       
     });
+
  this.getDataItemMensual()
 } 
 
@@ -1739,6 +1872,27 @@ getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
       }
 }    
 
+getValorCategoriaAnual(idCategoria:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>registro
+  .idCategoria.id==idCategoria
+  && registro.AnioRegistro==Anio
+  )
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+    return Valor
+  }
+  else {
+    return 0
+  }
+} 
 
 getDataFlujoFinancieroMensual(Mes:any,Anio:any){
       let _Data: any=[];
@@ -1760,6 +1914,27 @@ getDataFlujoFinancieroMensual(Mes:any,Anio:any){
       else {
         return 0
       }
+}
+
+getDataFlujoFinancieroAnual(Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>
+  (registro.idCategoria.Orden==9
+  || registro.idCategoria.Orden==8)
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
 }
 
 getDataFlujoOperativoMensual(Mes:any,Anio:any){
@@ -1805,6 +1980,8 @@ getDataFlujoOperativoAnual(Anio:any){
   }
 } 
 
+
+
 getDataFlujoInversionMensual(Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
@@ -1826,15 +2003,42 @@ getDataFlujoInversionMensual(Mes:any,Anio:any){
     return 0
   }
 }
+getDataFlujoInversionAnual(Anio:any){
+  let _Data: any=[];
+  _Data=this.Registros.filter((registro:any)=>
+  (registro.idCategoria.Orden==6
+  || registro.idCategoria.Orden==5)
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
 getDataFlujoLibreMensual(Mes:any,Anio:any){
 
   return this.getDataFlujoOperativoMensual(Mes,Anio) 
   + this.getDataFlujoInversionMensual(Mes,Anio)
   + this.getDataFlujoFinancieroMensual(Mes,Anio)
 }
+
+getDataFlujoLibreAnual(Anio:any){
+
+  return this.getDataFlujoOperativoAnual(Anio) 
+  + this.getDataFlujoInversionAnual(Anio)
+  + this.getDataFlujoFinancieroAnual(Anio)
+}
 getDataItemMensual(){
 this.DataItemsMensual=[]
-this.DataItemsAnualPlanes=[]
+this.DataItemsAnual=[]
     this.Items.forEach((item:any) => {
       this.Anios.forEach((anio:any) => {
         this.Meses.forEach((mes:any) => {
@@ -1852,11 +2056,11 @@ this.DataItemsAnualPlanes=[]
 
           const keyAnual = `${anio.Anio}-${item.id}`;  
           if (!this.DataItemsAnual[keyAnual]) {
-            this.DataItemsAnualPlanes[keyAnual] =[];
+            this.DataItemsAnual[keyAnual] =[];
           }
 
-          this.DataItemsAnualPlanes[keyAnual].push({
-            "Valor": this.getValorItemsAnualPlanes(item.id,anio.Anio)
+          this.DataItemsAnual[keyAnual].push({
+            "Valor": this.getValorItemAnual(item.id,anio.Anio)
   
           });
   
@@ -1865,7 +2069,6 @@ this.DataItemsAnualPlanes=[]
         })
       
     });
-console.log('this.DataItemsAnual',this.DataItemsAnual)
 
 }
 

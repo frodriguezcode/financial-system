@@ -73,7 +73,11 @@
    
   </div>
 
-
+  <div *ngIf="cargando" class="d-flex justify-content-center">
+    <div class="spinner-grow text-success" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 
 
   <!-- Planeacion        -->
@@ -109,7 +113,7 @@
              'cabecera-categoria-saldos': categoria.Calculado == true && (categoria.Tipo==0 || categoria.Tipo==11 )
              
              }">
-                <span *ngIf="categoria.Orden==0 || categoria.Orden==19 || categoria.Orden==11 ||categoria.Orden==1 || categoria.Orden==4 || categoria.Orden==7 || categoria.Orden==10" class="categoria-toggle" style="font-weight: bold;">{{ categoria.Nombre }}</span>
+                <span *ngIf="categoria.Orden==0 || categoria.Orden==19 || categoria.Orden==11 ||categoria.Orden==1 || categoria.Orden==4 || categoria.Orden==7 || categoria.Orden==10 || categoria.Orden==21" class="categoria-toggle" style="font-weight: bold;">{{ categoria.Nombre }}</span>
                 <span *ngIf="categoria.Orden==2 || categoria.Orden==3 || categoria.Orden==5 || categoria.Orden==6 || categoria.Orden==8 || categoria.Orden==9" class="categoria-toggle" style="font-weight: bold; margin-left: 20px;">{{ categoria.Nombre }}</span>
                 <span *ngIf="!categoriasExpandidas[categoria.id]" class="categoria-toggle-icon">
                   <span *ngIf="categoria.Calculado == false">
@@ -128,7 +132,7 @@
                 <ng-container *ngIf="cab.Tipo!=1">
                   <ng-container *ngIf="cab.Mostrar">
                     <ng-container *ngIf="(cab.Tipo==2)  && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5  && cab.Tipo!=6">
-                      <td *ngIf="categoria.Tipo!=3 && categoria.Tipo!=19" class="text-center"
+                      <td *ngIf="categoria.Tipo!=3 && categoria.Tipo!=19 && categoria.Tipo!=21" class="text-center"
                         style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
                         <span *ngIf="categoria.Tipo!=2" style="color: black;">
                           {{"$ " + (DataPlanesMensual[cab.Anio + '-' + cab.NumMes + '-' + categoria.id]?.[0]?.Valor |
@@ -140,7 +144,7 @@
                         </span>
                       </td>
   
-                      <td *ngIf="categoria.Tipo==3" class="text-center"
+                      <td *ngIf="categoria.Tipo==3 && categoria.Tipo!=21" class="text-center"
                         style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
                         <span *ngIf="DataPlanesMensual[cab.Anio + '-' + cab.NumMes + '-' +
                         categoria.id]?.[0]?.Valor>=0">
@@ -156,6 +160,20 @@
                       </span>
                       </td>
                       <td *ngIf="categoria.Tipo==19" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                        <span *ngIf="DataPlanesMensual[cab.Anio + '-' + cab.NumMes + '-' +
+                        categoria.id]?.[0]?.Valor>=0">
+                        {{"$ " + (DataPlanesMensual[cab.Anio + '-' + cab.NumMes + '-' +
+                        categoria.id]?.[0]?.Valor|number)}}    
+                      </span>
+                        <span *ngIf="DataPlanesMensual[cab.Anio + '-' + cab.NumMes + '-' +
+                        categoria.id]?.[0]?.Valor<0"
+                        style="color: red;"
+                        >
+                        {{"-$ " + ((DataPlanesMensual[cab.Anio + '-' + cab.NumMes + '-' +
+                        categoria.id]?.[0]?.Valor*-1)|number)}}    
+                      </span>
+                    </td>
+                      <td *ngIf="categoria.Tipo==21" class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
                         <span *ngIf="DataPlanesMensual[cab.Anio + '-' + cab.NumMes + '-' +
                         categoria.id]?.[0]?.Valor>=0">
                         {{"$ " + (DataPlanesMensual[cab.Anio + '-' + cab.NumMes + '-' +
@@ -293,7 +311,7 @@
       </thead>
       <tbody >
         <ng-container *ngFor="let categoria of Categorias; let j = index">
-          <tr [ngClass]="{'cabecera-categoria': categoria.Calculado == true}" >
+          <tr *ngIf="categoria.Tipo!=21" [ngClass]="{'cabecera-categoria': categoria.Calculado == true}" >
             <td [ngClass]="{
            'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
            'cabecera-categoria-no-calc': categoria.Calculado == false ,
@@ -362,7 +380,19 @@
                     </td>
 
                   </ng-container>
-         
+                  <ng-container *ngIf="(cab.Tipo==6)  && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5 && cab.Tipo!=2">
+                    <td class="text-center" style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);">
+                      <span *ngIf="DataCategoriasAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor>=0" style="color: black;">
+                        {{ "$ " + ( DataCategoriasAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor|number) 
+                        }}
+                      </span>
+                      <span *ngIf="DataCategoriasAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor<0" style="color: red;">
+                        {{ "-$ " + ( (DataCategoriasAnual[cab.Anio + '-' + categoria.id]?.[0]?.Valor*-1)|number) }}
+                      </span>
+                    
+                    </td>
+                    </ng-container>
+
    
                 </ng-container>
               </ng-container>
@@ -396,7 +426,22 @@
 
                         </td>
                       </ng-container>
-
+                      <ng-container *ngIf="(cab.Tipo==6)  && cab.Tipo!=1 && cab.Tipo!=3 && cab.Tipo!=4 && cab.Tipo!=5 && cab.Tipo!=2">
+                        <td style="font-weight: bolder; background-color: rgba(177, 177, 177, 0.2);"
+                        class="text-center">
+                        <span 
+                        *ngIf="DataItemsAnual[cab.Anio  + '-' + item.id]?.[0]?.Valor>=0">
+                          {{ "$ " + ( DataItemsAnual[cab.Anio + '-' + item.id]?.[0]?.Valor| number)}}
+                        </span>
+                        
+                        <span
+                        style="color: red;"
+                        *ngIf="DataItemsAnual[cab.Anio  + '-' + item.id]?.[0]?.Valor<0">
+                          {{ "-$ " + ( (DataItemsAnual[cab.Anio  + '-' + item.id]?.[0]?.Valor*-1)| number)}}
+                        </span>
+                      
+                      </td>
+                      </ng-container>
 
                     </ng-container>
          
