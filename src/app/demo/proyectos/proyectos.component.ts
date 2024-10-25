@@ -172,11 +172,11 @@ actualizarProyecto(proyecto:any){
   proyectoEncontrado[0].MesesRango=añosAgrupados
 
   }
+console.log('proyectoEncontrado[0]',  proyectoEncontrado[0])
 
-
-  this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
-    this.toastr.success('Proyecto editado', '¡Exito!');
-  })
+  // this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
+  //   this.toastr.success('Proyecto editado', '¡Exito!');
+  // })
 }
 
 ActualizaEstadoProyecto(Proyecto:any,Estado:boolean){
