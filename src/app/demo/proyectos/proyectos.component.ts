@@ -158,8 +158,6 @@ actualizarProyecto(proyecto:any){
   proyectoEncontrado[0].RangoFechas =proyecto.RangoFechas
 
   if(proyectoEncontrado[0].FechaInicio!='' && proyectoEncontrado[0].FechaFinal!=''){
-    console.log('FechaInicio',proyectoEncontrado[0].FechaInicio)
-    console.log('FechaFinal',proyectoEncontrado[0].FechaFinal)
     const mesesAgrupados = this.conS.generarMesesAgrupadosPorAnio( proyectoEncontrado[0].FechaInicio, proyectoEncontrado[0].FechaFinal);
     const añosAgrupados = Object.keys(mesesAgrupados).map(year => {
       return {
