@@ -13,6 +13,7 @@ import { PrimeNGConfig } from 'primeng/api';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-proyectos',
@@ -34,6 +35,7 @@ export default class ProyectosComponent implements OnInit {
   es: any;
   visible: boolean = false;
   cargando: boolean = false;
+  CambiarRegistros: boolean = false;
   idEmpresa:string=''
   nombreEmpresa:any
   Sucursal:FormControl=new FormControl ('')
@@ -144,11 +146,17 @@ toggleEdicion(Proyecto: any) {
   this.MostrarRangoFechas=!this.MostrarRangoFechas
 }
 
+cambiarEmpresa(){
+  this.CambiarRegistros=true
+}
 
 
 actualizarProyecto(proyecto:any){
   let _Proyecto= this.Proyectos;
+
+  
   const proyectoEncontrado = _Proyecto.filter((suc:any) => suc.id == proyecto.id);
+
   proyectoEncontrado[0].Nombre=proyecto.Nombre
   proyectoEncontrado[0].Editando = !proyecto.Editando;
   proyectoEncontrado[0].idEmpresa = proyecto.idEmpresa;
@@ -172,11 +180,33 @@ actualizarProyecto(proyecto:any){
   proyectoEncontrado[0].MesesRango=añosAgrupados
 
   }
-console.log('proyectoEncontrado[0]',  proyectoEncontrado[0])
 
+if(this.CambiarRegistros==true){
+  Swal.fire({
+    title: "¿Estas seguro de cambiar de empresa este proyecto?",
+    text: "Esto podría modificar registros contables, registros de planes y usuarios",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Si",
+    cancelButtonText: "No"
+  }).then((result) => {
+    if (result.isConfirmed) {
   // this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
   //   this.toastr.success('Proyecto editado', '¡Exito!');
   // })
+      this.actualizarRegistrosContables(proyecto.id,proyecto.idEmpresa)
+    }
+  });
+}
+
+else {
+  // this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
+  //   this.toastr.success('Proyecto editado', '¡Exito!');
+  // })
+
+}
 }
 
 ActualizaEstadoProyecto(Proyecto:any,Estado:boolean){
@@ -187,6 +217,24 @@ ActualizaEstadoProyecto(Proyecto:any,Estado:boolean){
     else{
       this.toastr.success('Proyecto desactivada', '¡Exito!');
     }
+  })
+}
+
+actualizarRegistrosContables(idProyecto:string,idEmpresa:string){
+  let Subscribe:Subscription
+  Subscribe=  this.conS.obtenerRegistrosByProyecto(idProyecto).subscribe(resp=>{
+    Subscribe.unsubscribe()
+    if(resp.length>0){
+
+      
+      resp.map((reg:any)=>reg.idEmpresa=idEmpresa)
+      console.log('resp',resp)
+    }
+
+
+ 
+
+
   })
 }
 

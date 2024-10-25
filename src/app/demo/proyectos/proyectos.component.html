@@ -59,7 +59,7 @@
               {{proyecto.Empresa}}
             </ng-container>
             <ng-template #editarEmpresa>
-              <select class="form-control" [(ngModel)]="proyecto.idEmpresa" id="exampleFormControlSelect1">
+              <select (change)="cambiarEmpresa()" class="form-control" [(ngModel)]="proyecto.idEmpresa" id="exampleFormControlSelect1">
                 <option value="0">Seleccione una empresa</option>
                 <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>  
               </select>
