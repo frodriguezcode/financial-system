@@ -151,6 +151,7 @@ actualizarProyecto(proyecto:any){
   const proyectoEncontrado = _Proyecto.filter((suc:any) => suc.id == proyecto.id);
   proyectoEncontrado[0].Nombre=proyecto.Nombre
   proyectoEncontrado[0].Editando = !proyecto.Editando;
+  proyectoEncontrado[0].idEmpresa = proyecto.idEmpresa;
   this.MostrarRangoFechas=!this.MostrarRangoFechas
   proyectoEncontrado[0].FechaInicio = proyecto.RangoFechas[0]=='' ? '' : this.datePipe.transform(new Date(proyecto.RangoFechas[0]).setDate(new Date(proyecto.RangoFechas[0]).getDate()), 'yyyy-MM-dd');
   proyectoEncontrado[0].FechaFinal = proyecto.RangoFechas[1]== '' ? '' :  this.datePipe.transform(new Date(proyecto.RangoFechas[1]).setDate(new Date(proyecto.RangoFechas[1]).getDate()), 'yyyy-MM-dd');

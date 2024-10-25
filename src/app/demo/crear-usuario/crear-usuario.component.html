@@ -81,7 +81,10 @@
         
                 <td class="text-center">
                   <ng-container *ngIf="!usuario.Editando; else editarProyecto">
-                    {{usuario.ProyectosAsignados}}
+                   <span style="background-color: white ; max-width: 130px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; text-indent: -65px;">
+                     {{usuario.ProyectosAsignados}}
+
+                   </span> 
                   </ng-container>
                   <ng-template #editarProyecto>
                     <p-multiSelect 

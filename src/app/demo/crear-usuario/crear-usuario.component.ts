@@ -321,7 +321,9 @@ return _Sucursales
 }
 getProyectosByEmpresa(idEmpresa:any){
 let _Proyectos:any=[]
-_Proyectos=this.Proyectos.filter((resp:any)=>resp.idEmpresa==idEmpresa)
+
+_Proyectos=this.ProyectosBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
+
 return _Proyectos
 }
 getEmpresaByMatriz(idEmpresa:any){

@@ -31,30 +31,40 @@
               <input [(ngModel)]="proyecto.Nombre" class="form-control text-center col-4">
             </ng-template>
           </td>
- 
-
-
+          
+          
+          
           <td class="text-center">
             <ng-container *ngIf="!proyecto.Editando; else editarRango">
               {{(proyecto.FechaInicio==''?'-':proyecto.FechaInicio) + ' al '
                + (proyecto.FechaFinal==''?'-':proyecto.FechaFinal)}}
             </ng-container>
             <ng-template  #editarRango>
-               
-                <p-calendar 
-                     [(ngModel)]="proyecto.RangoFechas"
-                     [appendTo]="'body'"
-                     [numberOfMonths]="2" 
-                    dateFormat="dd/mm/yy"
-                    selectionMode="range" 
-                    [readonlyInput]="false" />
-            
-      
+              
+              <p-calendar 
+              [(ngModel)]="proyecto.RangoFechas"
+              [appendTo]="'body'"
+              [numberOfMonths]="2" 
+              dateFormat="dd/mm/yy"
+              selectionMode="range" 
+              [readonlyInput]="false" />
+              
+              
             </ng-template>
           </td>
           <td class="text-center"> {{proyecto.Duracion}}</td>
-          <td class="text-center">{{proyecto.Empresa}}</td>
- 
+          
+          <td class="text-center">
+            <ng-container *ngIf="!proyecto.Editando; else editarEmpresa">
+              {{proyecto.Empresa}}
+            </ng-container>
+            <ng-template #editarEmpresa>
+              <select class="form-control" [(ngModel)]="proyecto.idEmpresa" id="exampleFormControlSelect1">
+                <option value="0">Seleccione una empresa</option>
+                <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>  
+              </select>
+            </ng-template>
+          </td>
           <td *ngIf="!proyecto.Editando" class="text-center">
             <!-- Botón de editar -->
             <button (click)="toggleEdicion(proyecto)" type="button" class="btn btn-success text-center">
