@@ -10,8 +10,11 @@ import * as moment from 'moment';
 })
 export class ConfigurationService {
   private apiUrl = 'http://worldtimeapi.org/api/timezone';
-  private usuarioSource = new BehaviorSubject<any>(null);  // BehaviorSubject almacena el último valor emitido
+  private usuarioSource = new BehaviorSubject<any>(null)
   usuario$ = this.usuarioSource.asObservable();
+
+  private idEmpresaSource = new BehaviorSubject<any>(null)
+  idEmpresa$ = this.idEmpresaSource.asObservable();
   constructor( private afs: AngularFirestore,private http: HttpClient) { 
     moment.updateLocale('es', {
       week: {
@@ -22,6 +25,9 @@ export class ConfigurationService {
   }
   setUsuario(usuario: any) {
     this.usuarioSource.next(usuario);
+  }
+  setIdEmpresa(idEmpresa: any) {
+    this.idEmpresaSource.next(idEmpresa);
   }
 
 
