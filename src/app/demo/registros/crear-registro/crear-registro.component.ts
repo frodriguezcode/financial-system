@@ -127,6 +127,7 @@ activeIndex: number = 0;
   ItemSeleccionados: any=[];
   usuario:any
   idItem:any=''
+  Roles: any=[];
   Departamentos: string[] = [];
   ItemsCategGroup:any= [];
   ItemsCategGroupBack:any= [];
@@ -225,19 +226,32 @@ ngOnInit(): void {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
-
-    this.obtenerSucursales()
- 
-    this.obtenerItems()
-    this.obtenerCuentas()
-    this.obtenerSocios()
-    this.obtenerCategorias()
+    this.obtenerRoles()
 
   });
 
 
       
 
+}
+
+setIsAdmin(){
+  let _RolUsuario=[]
+  _RolUsuario=this.Roles.filter((rol:any)=>rol.id===this.usuario.idRol)
+  this.usuario.isAdmin=_RolUsuario[0].isAdmin ==undefined ? false :_RolUsuario[0].isAdmin
+  localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario)); 
+}
+obtenerRoles(){
+  this.authS.obtenerRolesByMatriz(this.usuario.idMatriz).subscribe(resp=>{
+    this.Roles=resp
+    this.setIsAdmin()
+    this.obtenerSucursales()
+    this.obtenerItems()
+    this.obtenerCuentas()
+    this.obtenerSocios()
+    this.obtenerCategorias()
+
+  })
 }
 
 
@@ -307,24 +321,47 @@ obtenerSucursales(){
   })
 }
 obtenerProyectos(){
-  this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
-  this.Proyectos=resp
-  this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
-
-  this.Proyectos.push({
-    "Activo":true,
-    "Editando":false,
-    "FechaCreacion":"",
-    "Nombre":"Todas",
-    "NombreSucursal":"Todas",
-    "id":"0",
-    "idEmpresa":"GRfgJohSdEvq6yqVUBFo",
-    "idMatriz":"DeCofZ7At1eUwsRo9hPs",
-    "idUsuario":"YpLYlsIffwelfqtCkSP9"
-  });
-  this.obtenerRegistros()
-
-  })
+  if(this.usuario.isAdmin==true){
+    this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
+    this.Proyectos=resp
+    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+  
+    this.Proyectos.push({
+      "Activo":true,
+      "Editando":false,
+      "FechaCreacion":"",
+      "Nombre":"Todas",
+      "NombreSucursal":"Todas",
+      "id":"0",
+      "idEmpresa":"GRfgJohSdEvq6yqVUBFo",
+      "idMatriz":"DeCofZ7At1eUwsRo9hPs",
+      "idUsuario":"YpLYlsIffwelfqtCkSP9"
+    });
+    this.obtenerRegistros()
+  
+    })
+    
+  }
+  else {
+    this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
+      this.Proyectos=resp
+      this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+    
+      this.Proyectos.push({
+        "Activo":true,
+        "Editando":false,
+        "FechaCreacion":"",
+        "Nombre":"Todas",
+        "NombreSucursal":"Todas",
+        "id":"0",
+        "idEmpresa":"GRfgJohSdEvq6yqVUBFo",
+        "idMatriz":"DeCofZ7At1eUwsRo9hPs",
+        "idUsuario":"YpLYlsIffwelfqtCkSP9"
+      });
+      this.obtenerRegistros()
+    
+      })
+  }
 }
 
 getNameSucursal(idSucursal:any){
@@ -419,23 +456,27 @@ let RegistrosTotales:any=[]
 
 if(this.SucursaleSeleccionada && this.SucursaleSeleccionada.id!='0'){
   RegistrosTotales=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idSucursal== this.SucursaleSeleccionada.id)
-  this.calcularImporteTotal(RegistrosTotales)
+  this.calcularImporteSubTotal(RegistrosTotales)
 
   SucursaleSeleccionada=this.SucursaleSeleccionada.id
 }
 else if(!this.SucursaleSeleccionada || this.SucursaleSeleccionada.id=='0') {
   SucursaleSeleccionada=''
+  this.calcularImporteSubTotal(this.registrosBackUp)
+
 }
 if(this.ProyectoSeleccionado && this.ProyectoSeleccionado.id!='0'){
   RegistrosTotales=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idProyecto== this.ProyectoSeleccionado.id)
-  this.calcularImporteTotal(RegistrosTotales)
+  this.calcularImporteSubTotal(RegistrosTotales)
   ProyectoSeleccionado=this.ProyectoSeleccionado.id
 }
 else if(!this.ProyectoSeleccionado || this.ProyectoSeleccionado.id=='0') {
   ProyectoSeleccionado=''
+  this.calcularImporteSubTotal(this.registrosBackUp)
 }
 if(this.CategoriasSeleccionadas.length>0){
   Categorias=this.CategoriasSeleccionadas
+  
 }
 else {
   Categorias=[]
@@ -467,21 +508,20 @@ const registrosFiltrados = this.registrosBackUp.filter(registro => {
 
   
 });
-console.log('FechaInicio',this.FechaDesde.value)
-console.log('FechaHasta',this.FechaHasta.value)
+
 
 if(this.FechaDesde.value==''|| this.FechaHasta.value==''){
   this.Registros=registrosFiltrados.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
-  
+  this.calcularImporteSubTotal(this.Registros)
 }
 else {
   this.Registros=registrosFiltrados.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro
   && reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value
 )
-
+this.calcularImporteSubTotal(this.Registros)
 }
 
-this.calcularImporteSubTotal( this.Registros)
+
 
   
 } 
@@ -497,80 +537,155 @@ restablecer(){
   this.calcularImporteTotal(this.Registros)
 }
 obtenerRegistros(){
+  if(this.usuario.isAdmin==true){
+    this.conS.obtenerRegistrosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
+   
+               this.registrosBackUp=[]
+               resp.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
+                 let _Registro={
+                   "Activo":element.Activo,
+                   "AnioRegistro":element.AnioRegistro,
+                   "Cuenta":element.Cuenta,
+                   "Editando":element.Editando,
+                   "Elemento":element.Elemento,
+                   "FechaRegistro":element.FechaRegistro,
+                   "MesRegistro":element.MesRegistro,
+                   "Nuevo":element.Nuevo,
+                   "NumMes":element.NumMes,
+                   "NumSemana":element.NumSemana,
+                   "Orden":element.Orden,
+                   "Semana":element.Semana,
+                   "Valor":element.Valor,
+                   "Valor2":element.Valor,
+                   "Tipo":element.Tipo || '',
+                   "TipoRegistro":element.TipoRegistro,
+                   "id":element.id,
+                   "idCategoria":element.idCategoria,
+                   "idEmpresa":element.idEmpresa,
+                   "idFlujo":element.idFlujo,
+                   "idTipo":element.idTipo,
+                   "idMatriz":element.idMatriz,
+                   "idSocioNegocio":element.idSocioNegocio,
+                   "idSucursal":element.idSucursal,
+                   "idProyecto":element.idProyecto || '',
+                   "Sucursal":element.Sucursal || '',
+                   "Proyecto":element.Proyecto || '',
+                   "NombreElemento":element.Elemento.label || '',
+                   "NumCuenta":element.Cuenta.Cuenta || '',
+                   "CategoriaNombre":element.idCategoria.Nombre || '',
+                   "SocioNegocio":element.idSocioNegocio.Nombre || '',
+                   "Comentarios":element.Comentarios || '',
+           
+                 }
+                 this.registrosBackUp.push(_Registro)
+               })
+      
+              if(this.idTipoRegistro==1){
+                if(this.SucursaleSeleccionada!=undefined){
+                 this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idSucursal==this.SucursaleSeleccionada.id)
+                }
+                else {
+               this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+                }
+              } 
+             else {
+                if(this.ProyectoSeleccionado!=undefined){
+                 this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idProyecto==this.ProyectoSeleccionado.id)
+                }
+                else {
+               this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+                }
+              } 
+  
+       
+               this.calcularImporteTotal(this.Registros)
+               this.calcularImporteSubTotal(this.Registros)
+               this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+                 return Math.max(maxOrden, objeto.Orden);
+             }, 0);
+               this.cargarFormulario()
+               this.cargando=false
+      })
 
-  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
- 
-             this.registrosBackUp=[]
-             resp.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
-               let _Registro={
-                 "Activo":element.Activo,
-                 "AnioRegistro":element.AnioRegistro,
-                 "Cuenta":element.Cuenta,
-                 "Editando":element.Editando,
-                 "Elemento":element.Elemento,
-                 "FechaRegistro":element.FechaRegistro,
-                 "MesRegistro":element.MesRegistro,
-                 "Nuevo":element.Nuevo,
-                 "NumMes":element.NumMes,
-                 "NumSemana":element.NumSemana,
-                 "Orden":element.Orden,
-                 "Semana":element.Semana,
-                 "Valor":element.Valor,
-                 "Valor2":element.Valor,
-                 "Tipo":element.Tipo || '',
-                 "TipoRegistro":element.TipoRegistro,
-                 "id":element.id,
-                 "idCategoria":element.idCategoria,
-                 "idEmpresa":element.idEmpresa,
-                 "idFlujo":element.idFlujo,
-                 "idTipo":element.idTipo,
-                 "idMatriz":element.idMatriz,
-                 "idSocioNegocio":element.idSocioNegocio,
-                 "idSucursal":element.idSucursal,
-                 "idProyecto":element.idProyecto || '',
-                 "Sucursal":element.Sucursal || '',
-                 "Proyecto":element.Proyecto || '',
-                 "NombreElemento":element.Elemento.label || '',
-                 "NumCuenta":element.Cuenta.Cuenta || '',
-                 "CategoriaNombre":element.idCategoria.Nombre || '',
-                 "SocioNegocio":element.idSocioNegocio.Nombre || '',
-                 "Comentarios":element.Comentarios || '',
-         
-               }
-               this.registrosBackUp.push(_Registro)
-             })
+  }
+  else {
     
-            if(this.idTipoRegistro==1){
-              if(this.SucursaleSeleccionada!=undefined){
-               this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idSucursal==this.SucursaleSeleccionada.id)
-              }
-              else {
-             this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
-              }
-            } 
-           else {
-              if(this.ProyectoSeleccionado!=undefined){
-               this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idProyecto==this.ProyectoSeleccionado.id)
-              }
-              else {
-             this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
-              }
-            } 
-
-     
-             this.calcularImporteTotal(this.Registros)
-             this.calcularImporteSubTotal(this.Registros)
-             this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
-               return Math.max(maxOrden, objeto.Orden);
-           }, 0);
-             this.cargarFormulario()
-             this.cargando=false
+  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
+  
+    this.registrosBackUp=[]
+    resp.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
+      let _Registro={
+        "Activo":element.Activo,
+        "AnioRegistro":element.AnioRegistro,
+        "Cuenta":element.Cuenta,
+        "Editando":element.Editando,
+        "Elemento":element.Elemento,
+        "FechaRegistro":element.FechaRegistro,
+        "MesRegistro":element.MesRegistro,
+        "Nuevo":element.Nuevo,
+        "NumMes":element.NumMes,
+        "NumSemana":element.NumSemana,
+        "Orden":element.Orden,
+        "Semana":element.Semana,
+        "Valor":element.Valor,
+        "Valor2":element.Valor,
+        "Tipo":element.Tipo || '',
+        "TipoRegistro":element.TipoRegistro,
+        "id":element.id,
+        "idCategoria":element.idCategoria,
+        "idEmpresa":element.idEmpresa,
+        "idFlujo":element.idFlujo,
+        "idTipo":element.idTipo,
+        "idMatriz":element.idMatriz,
+        "idSocioNegocio":element.idSocioNegocio,
+        "idSucursal":element.idSucursal,
+        "idProyecto":element.idProyecto || '',
+        "Sucursal":element.Sucursal || '',
+        "Proyecto":element.Proyecto || '',
+        "NombreElemento":element.Elemento.label || '',
+        "NumCuenta":element.Cuenta.Cuenta || '',
+        "CategoriaNombre":element.idCategoria.Nombre || '',
+        "SocioNegocio":element.idSocioNegocio.Nombre || '',
+        "Comentarios":element.Comentarios || '',
+  
+      }
+      this.registrosBackUp.push(_Registro)
     })
+  
+   if(this.idTipoRegistro==1){
+     if(this.SucursaleSeleccionada!=undefined){
+      this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idSucursal==this.SucursaleSeleccionada.id)
+     }
+     else {
+    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+     }
+   } 
+  else {
+     if(this.ProyectoSeleccionado!=undefined){
+      this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro && reg.idProyecto==this.ProyectoSeleccionado.id)
+     }
+     else {
+    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
+     }
+   } 
+  
+  
+    this.calcularImporteTotal(this.Registros)
+    this.calcularImporteSubTotal(this.Registros)
+    this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+      return Math.max(maxOrden, objeto.Orden);
+  }, 0);
+    this.cargarFormulario()
+    this.cargando=false
+  })
+
+  }
+
 
  
 }
 switchTipoRegistro(idTipo){
-
+  this.cargando=true
   if(idTipo==2  && this.Proyectos.length==0){
     this.registroForm.value.idSucursal=''
     Swal.fire({
@@ -593,6 +708,7 @@ switchTipoRegistro(idTipo){
   }
   this.calcularImporteSubTotal( this.Registros)
   this.calcularImporteTotal( this.Registros)
+  this.cargando=false
 }
 
 calcularImporteTotal(registros:any){
