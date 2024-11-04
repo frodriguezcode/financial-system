@@ -55,15 +55,10 @@
           <td class="text-center"> {{proyecto.Duracion}}</td>
           
           <td class="text-center">
-            <ng-container *ngIf="!proyecto.Editando; else editarEmpresa">
+            <ng-container>
               {{proyecto.Empresa}}
             </ng-container>
-            <ng-template #editarEmpresa>
-              <select (change)="cambiarEmpresa()" class="form-control" [(ngModel)]="proyecto.idEmpresa" id="exampleFormControlSelect1">
-                <option value="0">Seleccione una empresa</option>
-                <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>  
-              </select>
-            </ng-template>
+
           </td>
           <td *ngIf="!proyecto.Editando" class="text-center">
             <!-- Botón de editar -->

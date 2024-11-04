@@ -84,7 +84,7 @@ visible: boolean = false;
 constructor(private conS:ConfigurationService,private toastr: ToastrService){
 
   this.debouncer.pipe(
-    debounceTime(500), // Espera 1 segundo después de que el usuario deja de escribir
+    debounceTime(1000), // Espera 1 segundo después de que el usuario deja de escribir
     distinctUntilChanged() // Solo llama a la función si el valor ha cambiado
   ).subscribe((params:any) => {
     this.guardarValorPlan(

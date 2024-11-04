@@ -180,33 +180,11 @@ actualizarProyecto(proyecto:any){
   proyectoEncontrado[0].MesesRango=añosAgrupados
 
   }
+  this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
+    this.toastr.success('Proyecto editado', '¡Exito!');
+  })
+ 
 
-if(this.CambiarRegistros==true){
-  Swal.fire({
-    title: "¿Estas seguro de cambiar de empresa este proyecto?",
-    text: "Esto podría modificar registros contables, registros de planes y usuarios",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Si",
-    cancelButtonText: "No"
-  }).then((result) => {
-    if (result.isConfirmed) {
-  // this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
-  //   this.toastr.success('Proyecto editado', '¡Exito!');
-  // })
-      this.actualizarRegistrosContables(proyecto.id,proyecto.idEmpresa)
-    }
-  });
-}
-
-else {
-  // this.conS.ActualizarProyecto(proyectoEncontrado[0]).then(resp=>{
-  //   this.toastr.success('Proyecto editado', '¡Exito!');
-  // })
-
-}
 }
 
 ActualizaEstadoProyecto(Proyecto:any,Estado:boolean){
