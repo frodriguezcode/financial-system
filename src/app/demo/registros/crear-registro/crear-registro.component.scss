@@ -108,5 +108,7 @@
   text-overflow: ellipsis;
 }
 
+:host ::ng-deep .p-multiSelect  {  transform: scale(0.9);}
 :host ::ng-deep .p-dropdown {  transform: scale(0.9);}
+
 
