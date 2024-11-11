@@ -107,3 +107,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+:host ::ng-deep .p-dropdown {  transform: scale(0.9);}
+

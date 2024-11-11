@@ -166,15 +166,16 @@
         <th style="text-transform: uppercase;font-size: 13px;">Copiar</th>
         <th style="text-transform: uppercase;font-size: 13px;">Registro</th>
         <th style="text-transform: uppercase;font-size: 13px;">Fecha</th>
-        <th style="text-transform: uppercase;font-size: 13px;">Categoría</th>
-        <th style="text-transform: uppercase;font-size: 13px;">Cuenta Contable</th>
-        <th style="text-transform: uppercase;font-size: 13px;">Cuenta Bancaria <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th *ngIf="this.idTipoRegistro==1" style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th *ngIf="this.idTipoRegistro==2" style="text-transform: uppercase;font-size: 13px;">Proyecto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+        <th style="text-transform: uppercase;font-size: 13px;">Concepto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+        <th style="text-transform: uppercase;font-size: 13px;">Tipo de Flujo</th>
+        <th style="text-transform: uppercase;font-size: 13px;">Cuenta Contable</th>
         <th style="text-transform: uppercase;font-size: 13px;">Importe</th>
-        <th style="text-transform: uppercase;font-size: 13px;">Flujo</th>
+        <th style="text-transform: uppercase;font-size: 13px;">Tipo de Operación</th>
+        <th style="text-transform: uppercase;font-size: 13px;">Cuenta Bancaria <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+        <!-- <th style="text-transform: uppercase;font-size: 13px;">Flujo</th> -->
         <th style="text-transform: uppercase;font-size: 13px;">Socio Negocios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th style="text-transform: uppercase;font-size: 13px;">Comentarios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th style="text-transform: uppercase;font-size: 13px;">Guardar</th>
       </tr>
     </ng-template>
@@ -204,80 +205,7 @@
           </ng-container>
         </td>
         <td class="text-center">
-          <input style="min-height: 3rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
-        </td>
-   
-        <td class="text-center" >
-   
-          <p-dropdown
-          [options]="this.getCategoriasByTipo(registros.idTipo)"
-          [(ngModel)]="registros.idCategoria"
-          name="ItemSeleccionados"
-          optionLabel="Nombre"
-          [filter]="true"
-          filterBy="Nombre"
-          [showClear]="false"
-          placeholder="Seleccione una Categoría"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-selectedItem>
-            <div class="flex align-items-lg-start gap-2">
-              <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-        </td>
-        <td class="text-center" >
-          <p *ngIf="this.Items.length==0" 
-          class="animate__animated animate__bounceIn"
-          style="color: red; font-size: 10px;">
-          No tienes cuentas asociadas a este proyecto
-          </p>
-          <p *ngIf="getCuentabyCategoria(registros.idCategoria).length==0 && registros.idCategoria!=''" 
-          class="animate__animated animate__bounceIn"
-          style="color: red; font-size: 10px;">
-          No tienes cuentas asociadas a esta categoría
-          </p>
-          <p-dropdown
-          [options]="getCuentabyCategoria(registros.idCategoria)"
-
-          [(ngModel)]="registros.NombreElemento"
-          name="registros.Elemento"
-          optionLabel="label"
-          optionValue="label"
-          [filter]="true"
-          filterBy="label"
-          [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
-          [showClear]="false"
-          placeholder="Seleccione una cuenta"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-selectedItem>
-            <div class="flex align-items-lg-start gap-2">
-              <div class="seleccion-item">{{ selectedItem.label }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-        </td>
-
-        <td class="text-center">
-          <p-dropdown
-            [options]="cuentas"
-            [(ngModel)]="registros.Cuenta"
-            name="ItemSeleccionados"
-            optionLabel="Cuenta"
-            [filter]="true"
-            filterBy="Cuenta"
-            [showClear]="false"
-            placeholder="Seleccione una cuenta"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-selectedItem>
-              <div class="flex align-items-lg-start gap-2">
-                <div class="seleccion-item">{{ selectedItem.Cuenta  }}</div>
-              </div>
-            </ng-template>
-          </p-dropdown>
+          <input style="min-height: 1rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
         </td>
 
         <td *ngIf="registros.TipoRegistro==1" class="text-center">
@@ -321,6 +249,70 @@
         
         </td>
 
+        <td class="text-center">
+          <input
+          (keyup.enter)="salvarRegistro(registros,Valor.value)"
+          [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
+          style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
+          [(ngModel)]="registros.Comentarios "
+          class="form-control text-center col-6"/>
+    </td>
+   
+        <td class="text-center" >
+   
+          <p-dropdown
+          [options]="this.getCategoriasByTipo(registros.idTipo)"
+          [(ngModel)]="registros.idCategoria"
+          name="ItemSeleccionados"
+          optionLabel="Nombre"
+          [filter]="true"
+          filterBy="Nombre"
+          [showClear]="false"
+          placeholder="Seleccione una Categoría"
+          appendTo="body"
+        >
+          <ng-template pTemplate="selectedItem" let-selectedItem>
+            <div class="flex align-items-lg-start gap-2">
+              <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        </td>
+
+        <td class="text-center" >
+          <p *ngIf="this.Items.length==0" 
+          class="animate__animated animate__bounceIn"
+          style="color: red; font-size: 10px;">
+          No tienes cuentas asociadas a este proyecto
+          </p>
+          <p *ngIf="getCuentabyCategoria(registros.idCategoria).length==0 && registros.idCategoria!=''" 
+          class="animate__animated animate__bounceIn"
+          style="color: red; font-size: 10px;">
+          No tienes cuentas asociadas a esta categoría
+          </p>
+          <p-dropdown
+          [options]="getCuentabyCategoria(registros.idCategoria)"
+
+          [(ngModel)]="registros.NombreElemento"
+          name="registros.Elemento"
+          optionLabel="label"
+          optionValue="label"
+          [filter]="true"
+          filterBy="label"
+          [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
+          [showClear]="false"
+          placeholder="Seleccione una cuenta"
+          appendTo="body"
+        >
+          <ng-template pTemplate="selectedItem" let-selectedItem>
+            <div class="flex align-items-lg-start gap-2">
+              <div class="seleccion-item">{{ selectedItem.label }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        </td>
+
+        
 
         <td class="text-center">
           <!-- <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
@@ -336,12 +328,34 @@
               style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
               [ngModel]="registros.Valor | currencySymbol"
               class="form-control text-center col-6"/>
-       
-        
-       
         </td>
 
+        <td class="text-center">Tipo</td>
+
         <td class="text-center">
+          <p-dropdown
+            [options]="cuentas"
+            [(ngModel)]="registros.Cuenta"
+            name="ItemSeleccionados"
+            optionLabel="Cuenta"
+            [filter]="true"
+            filterBy="Cuenta"
+            [showClear]="false"
+            placeholder="Seleccione una cuenta"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-selectedItem>
+              <div class="flex align-items-lg-start gap-2">
+                <div class="seleccion-item">{{ selectedItem.Cuenta  }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </td>
+
+ 
+
+
+        <!-- <td class="text-center">
           <p-dropdown
             [options]="Flujos"
             [(ngModel)]="registros.idFlujo"
@@ -359,7 +373,7 @@
               </div>
             </ng-template>
           </p-dropdown>
-        </td>
+        </td> -->
         <td class="text-center">
           <p-dropdown
             [options]="SociosNegocios"
@@ -379,14 +393,7 @@
             </ng-template>
           </p-dropdown>
         </td>
-        <td class="text-center">
-              <input
-              (keyup.enter)="salvarRegistro(registros,Valor.value)"
-              [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
-              style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
-              [(ngModel)]="registros.Comentarios "
-              class="form-control text-center col-6"/>
-        </td>
+
 
        
         <td class="text-center">
