@@ -89,8 +89,6 @@ export class NavRightComponent implements DoCheck,OnInit {
 
   ngOnInit(): void {
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-
-    console.log('usuario',this.usuario)
     this.obtenerRoles()
     this.obtenerUsuariosByMatriz()
     this.obtenerEmpresas()
@@ -111,7 +109,7 @@ obtenerUsuariosByMatriz(){
 obtenerEmpresas(){
     this.authS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp:any)=>{
       this.Empresas=resp;
-      console.log('Empresas',this.Empresas)
+ 
       this.usuario.Empresa=this.getNombreEmpresa(this.usuario.idEmpresa)
 
     })
@@ -183,7 +181,6 @@ let UsuarioEncontrado:any=[]
 
 UsuarioEncontrado=this.Usuarios.filter((user:any)=>user.Password==this.Passw.value 
 && user.Usuario==this.UsuarioLogin.value && user.idEmpresa==this.idEmpresa )
-console.log('Usuarios',this.Usuarios)
 if(UsuarioEncontrado.length>0){
   this.usuario.Correo=UsuarioEncontrado[0].Correo
   this.usuario.Usuario=UsuarioEncontrado[0].Usuario
@@ -220,7 +217,7 @@ else{
 async  obtenerAtributos(idEmpresa: any, idRol: string) {
   try {
     const atributos = await this.obtenerRolesByEmpresa(idEmpresa, idRol);
-    console.log('atributos',atributos)
+
     localStorage.setItem('AtributosUsuarioFinancial_System', JSON.stringify(atributos));
   } catch (error) {
     console.error(error);
@@ -300,7 +297,7 @@ recuperarContrasenia(){
             "idUser":this.usuario.id,
             "nombre":this.usuario.Nombres,
           }
-      console.log('_User',_User) 
+
       this.authS.sendMailRecoverPassw(_User)
       .pipe(
         catchError(error => {

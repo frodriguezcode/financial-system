@@ -237,6 +237,32 @@ crearTipoOperacion(tipo: any) {
     .ref.set(Object.assign(tipo, { id: id }));
 }
 
+obtenerTiposOperacionByEmpresa(idEmpresa) {
+  return this.afs
+  .collection('TiposOperacion',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+  .valueChanges();
+}
+obtenerTiposOperacionByMatriz(idMatriz) {
+  return this.afs
+  .collection('TiposOperacion',(ref)=>ref.where('idMatriz','==',idMatriz))
+  .valueChanges();
+}
+
+ActualizarTipo(tipo: any) {
+  return this.afs
+    .collection('TiposOperacion')
+    .doc(tipo.id)
+    .ref.update(tipo);
+}
+
+ActualizarTipoEstado(Tipo: any,Activo:boolean) {
+  return this.afs
+    .collection('TiposOperacion')
+    .doc(Tipo.id)
+    .ref.update({Activo:Activo});
+}
+
+
   //*------------BANCOS------------
   //   !Creando un banco
   crearBanco(banco: any) {

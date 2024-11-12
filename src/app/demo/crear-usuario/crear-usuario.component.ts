@@ -254,8 +254,7 @@ obtenerUsuarios(){
       this.Usuarios.map((user:any)=>user.ProyectosAsignados=this.getNameProyectos(user.Proyectos))
       this.Usuarios.map((user:any)=>user.SucursalesAsignadas=this.getNameSucursales(user.Sucursales))
       this.Usuarios.map((user:any)=>user.Empresa=this.getNombreEmpresa(user.idEmpresa))
- 
-      console.log('Usuarios',this.Usuarios)
+
     if(this.getNombreRol(this.usuario.idRol)=='Super Usuario'){
       this.Roles=this.RolesBack
     }
@@ -370,7 +369,6 @@ disablePaste(event: ClipboardEvent) {
 selectSucursalByEmpresa(idEmpresa:any){
   this.nombreEmpresa=this.getNombreEmpresa(idEmpresa)
   this.idEmpresa=idEmpresa
-  console.log('idEmpresa',this.idEmpresa)
  if(idEmpresa=='0') {
   this.SucursalesTodas=this.SucursalesTodasBack
   this.usuarioForm.get('idRol')!.disable();
@@ -452,7 +450,7 @@ crearProyecto(){
   this.ProyectoForm.value.MesesRango=añosAgrupados
   this.ProyectoForm.value.FechaInicio=FechaInicio
   this.ProyectoForm.value.FechaFinal=FechaFinal
-  console.log('Form',this.ProyectoForm.value);
+
 
     
   
@@ -566,7 +564,6 @@ getMonthName(Fecha: string) {
 }
 crearUsuario(){
   this.usuarioForm.value.Empresa=this.getNombreEmpresa(this.usuarioForm.value.idEmpresa)
-  console.log('UsuarioForm', this.usuarioForm.value)
   this.authS.crearUsuario(this.usuarioForm.value).then((resp:any)=>{
     this.toastr.success('Guardado', '¡Exito!');
     this.usuarioForm.get('Nombres').setValue('');

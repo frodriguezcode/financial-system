@@ -47,7 +47,7 @@ export default class EmpresasComponent implements OnInit {
       this.Atributos=data.map((atributo: any) => {
         return { ...atributo, Seleccionado: true };
       });
-      console.log('Atributos',this.Atributos)
+
   })
 }
 

@@ -134,6 +134,7 @@ activeIndex: number = 0;
   Departamentos: string[] = [];
   ItemsCategGroup:any= [];
   ItemsCategGroupBack:any= [];
+  TiposOperacion:any= [];
   OrdenMax: number = 0;
   Sucursales: any=[];
   Proyectos: any=[];
@@ -230,11 +231,18 @@ ngOnInit(): void {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
     this.obtenerRoles()
+    this.obtenerTiposOperacionByEmpresa()
 
   });
 
 
       
+}
+
+obtenerTiposOperacionByEmpresa(){
+  this.conS.obtenerTiposOperacionByMatriz(this.usuario.idMatriz).subscribe(resp=>{
+    this.TiposOperacion=resp
+  })
 
 }
 
@@ -574,6 +582,7 @@ obtenerRegistros(){
                    "Semana":element.Semana,
                    "Valor":element.Valor,
                    "Valor2":element.Valor,
+                   "TipoOperacion":element.TipoOperacion || '',
                    "Tipo":element.Tipo || '',
                    "TipoRegistro":element.TipoRegistro,
                    "id":element.id,
@@ -647,6 +656,7 @@ obtenerRegistros(){
         "Valor":element.Valor,
         "Valor2":element.Valor,
         "Tipo":element.Tipo || '',
+        "TipoOperacion":element.TipoOperacion || '',
         "TipoRegistro":element.TipoRegistro,
         "id":element.id,
         "idCategoria":element.idCategoria,
@@ -854,8 +864,6 @@ else {
   //     timer: 1500
   //   });
   // }
-  console.log('Valor',Number(this.quitarSimbolo(Valor)))
-  console.log('Registro',Registro)
    if(Registro.Elemento==""){
       Swal.fire({
         position: "center",
@@ -1293,6 +1301,7 @@ cargarFormulario(){
     idEmpresa: new FormControl(this.usuario.idEmpresa), 
     idMatriz: new FormControl(this.usuario.idMatriz), 
     idCategoria: new FormControl(''), 
+    TipoOperacion: new FormControl(''), 
     NombreElemento:new FormControl('NombreElemento'),
     NumCuenta:new FormControl('NumCuenta'),
     Comentarios:new FormControl(''),
