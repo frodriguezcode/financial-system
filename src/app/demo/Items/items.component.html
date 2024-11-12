@@ -31,7 +31,7 @@
         [appendTo]
         />
 
-        <div style="background-color: white;">
+        <div class="mt-2" style="background-color: white;">
           <p-table 
           [value]="ItemsGroup" 
           sortField="representative.name" 
@@ -55,6 +55,7 @@
                    <th class="text-center">Bajar</th>
                    <th class="text-center">Editar</th>
                    <th class="text-center">Inactivar</th>
+                   <th class="text-center">Borrar</th>
                   </tr>
               </ng-template>
               <ng-template pTemplate="groupheader" let-categ let-rowIndex="rowIndex" let-expanded="expanded">
@@ -106,7 +107,7 @@
                        <ng-template #editarItem>
                          <textarea 
                          (keyup.enter)="actualizarItem(item)"
-                         [(ngModel)]="item.name" style="min-width: 300px;" class="form-control text-center col-12"></textarea>
+                         [(ngModel)]="item.alias" style="min-width: 300px;" class="form-control text-center col-12"></textarea>
                        </ng-template>
                          
                       </td>
@@ -190,7 +191,10 @@
                    </td>
                    <td class="text-center" *ngIf="!item.Activo"><button (click)="ActualizarItemEstado(item,true)"
                        type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button>
-                     </td>
+                   </td>
+                   <td class="text-center" ><button (click)="borrarCuenta(item.id)"
+                       type="button" class="btn btn-warning"><i class="fa-solid fa-trash"></i></button>
+                   </td>
                      
                     
                   </tr>

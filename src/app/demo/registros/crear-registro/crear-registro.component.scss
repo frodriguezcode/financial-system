@@ -108,14 +108,16 @@
   text-overflow: ellipsis;
 }
 
-:host ::ng-deep .p-multiSelect  {  
-  background-color: white;
+:host ::ng-deep .p-multiSelect .p-elemento-interno {
   transform: scale(0.9);
-
 }
 :host ::ng-deep .p-dropdown { 
   background-color: white; 
   transform: scale(0.9);
 }
 
+.p-multiSelect {
+  background-color: white;
+  transform: scale(0.9);
+}
 

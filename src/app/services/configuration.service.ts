@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Registro } from '../models/registro';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 
@@ -556,6 +556,26 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
       return this.afs
       .collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa).orderBy('FechaRegistro','desc'))
       .valueChanges();
+    }
+    obtenerRegistrosbyCuenta(idElemento:any) {
+      return this.afs
+      .collection('Registro',(ref)=>ref.where('Elemento.id','==',idElemento))
+      .valueChanges();
+    }
+
+    getElementsFromMultipleCollections(idElemento:any): Observable<any[]> {
+      const collection1$ = this.afs.collection('Registro', ref =>
+        ref.where('Elemento.id', '==', idElemento)
+      ).valueChanges();
+  
+      const collection2$ = this.afs.collection('PlanificacionValores', ref =>
+        ref.where('idItem', '==', idElemento)
+      ).valueChanges();
+  
+      // Combina los resultados de ambas colecciones
+      return combineLatest([collection1$, collection2$]).pipe(
+        map(([result1, result2]) => [...result1, ...result2])
+      );
     }
     obtenerRegistrosByMatriz(idMatriz:any): Observable<Registro[]> {
       return this.afs

@@ -87,7 +87,7 @@ export default class ItemsComponent  implements OnInit{
       this.obtenerEmpresas()
       this.obtenerSucursales()
     
-      this.obtenerProyectos()
+     
    
     });
   
@@ -97,6 +97,35 @@ export default class ItemsComponent  implements OnInit{
 
   showDialog() {
     this.visible = true;
+}
+
+borrarCuenta(idCuenta:string){
+  let Subscription:Subscription
+  Subscription= this.conS.getElementsFromMultipleCollections(idCuenta).subscribe(resp=>{
+    Subscription.unsubscribe()
+
+    if(resp.length>0){
+      Swal.fire({
+        position: "center",
+        icon: "warning",
+        text: "La puede suspender si no desea usarla",
+        title: "Esta cuenta está asociada a varios registros",
+        showConfirmButton: false,
+        timer: 2000
+      });
+    }
+    else{
+      this.conS.borrarItem(idCuenta).then(resp=>{
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Cuenta borrada exitosamente",
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })
+    }
+  })
 }
 
   obtenerProyectos(){
@@ -114,9 +143,10 @@ export default class ItemsComponent  implements OnInit{
       return 'General'
     }
     else {
+
       let sucursal = this.Sucursales.filter((suc: any) => suc.id==idSucursal)
       if(sucursal.length){
-        return sucursal[0].Sucursal
+        return sucursal[0].Nombre
       }
       else{
         return 'General'
@@ -137,6 +167,7 @@ export default class ItemsComponent  implements OnInit{
       let _Item ={
         "id":item.id,
         "name":item.Nombre,
+        "alias":item.Alias,
         "Orden":item.Orden,
         "Activo":item.Activo,
         "animation":item.animation,
@@ -206,8 +237,7 @@ export default class ItemsComponent  implements OnInit{
       });
     
     }
-    console.log('header',headerRow)
-    console.log('Data',Data)
+
     const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Datos');
 
@@ -246,11 +276,13 @@ export default class ItemsComponent  implements OnInit{
 
   }
 
+
+
   getNameSucursales(sucursales:any){
     let Sucursales=[]
     if (sucursales.length>0){
       sucursales.forEach((suc:any) => {
-        Sucursales.push(suc.Nombre)
+        Sucursales.push(this.getNameSucursal(suc.id))
       })
     }
     else {
@@ -258,11 +290,26 @@ export default class ItemsComponent  implements OnInit{
     }
     return Sucursales
   }
+
+  getNameProyecto(idProyecto:any){
+    if(idProyecto=='0'){
+      return 'General'
+    }
+    else {
+      let Proyecto = this.Proyectos.filter((proy: any) => proy.id==idProyecto)
+      if(Proyecto.length){
+        return '' + Proyecto[0].Nombre
+      }
+      else{
+        return 'General'
+      }
+    }
+  }
   getNameProyectos(proyectos:any){
     let Proyectos=[]
     if (proyectos.length>0){
-      proyectos.forEach((suc:any) => {
-        Proyectos.push(suc.Nombre)
+      proyectos.forEach((proy:any) => {
+        Proyectos.push(this.getNameProyecto(proy.id))
       })
     }
     else {
@@ -424,7 +471,7 @@ export default class ItemsComponent  implements OnInit{
   obtenerSucursales(){
     this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
       this.Sucursales=resp.filter((suc:any)=>suc.Activo==true)
-
+      this.obtenerProyectos()
     })
   }
   obtenerItems(){
@@ -440,6 +487,7 @@ export default class ItemsComponent  implements OnInit{
         this.ItemsBack=resp.sort((a:any, b:any) => a.Orden - b.Orden)
         this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))+1
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
+    
 
         this.Items.map((item:any)=>item.animation='')
      
