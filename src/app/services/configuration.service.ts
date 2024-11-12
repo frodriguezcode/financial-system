@@ -228,6 +228,15 @@ obtenerUsuarios(idEmpresa:any) {
   .collection('Usuarios',(ref)=>ref.where('idEmpresa','==',idEmpresa))
   .valueChanges();
 }
+
+crearTipoOperacion(tipo: any) {
+  const id = this.afs.createId();
+  return this.afs
+    .collection('TiposOperacion')
+    .doc(id)
+    .ref.set(Object.assign(tipo, { id: id }));
+}
+
   //*------------BANCOS------------
   //   !Creando un banco
   crearBanco(banco: any) {

@@ -35,6 +35,7 @@ import { CurrencySymbolPipe } from 'src/app/pipe/currency.pipe';
 import { TabViewModule } from 'primeng/tabview';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
+import TiposOperacionComponent from '../../tipos-operacion/tipos-operacion.component';
 
 @Component({
   selector: 'app-crear',
@@ -64,6 +65,7 @@ import * as ExcelJS from 'exceljs';
     InputIconModule,
     IconFieldModule,
     BancosComponent,
+    TiposOperacionComponent,
     ItemsComponent,
     SocioNegocioComponent,
     CurrencySymbolPipe,
@@ -94,6 +96,7 @@ activeIndex: number = 0;
   visibleCuenta: boolean = false;
   visibleElemento: boolean = false;
   visibleSocioNegocio: boolean = false;
+  visibleTipoOperacion: boolean = false;
   submitted: boolean = false;
   isNegativo: boolean = true;
   registros: any=[];
@@ -421,6 +424,20 @@ crearSocioNegocio(){
  if(this.authS.validarAtributo('qVDT9etHoRfSLoAnfSuK',[])==true){
 
   this.visibleSocioNegocio=true
+  
+ }
+ else {
+   this.toastr.warning('', '¡Acceso Denegado!',{
+     timeOut: 1000,
+   });
+}
+  
+}
+crearTipoOperacion(){
+      
+ if(this.authS.validarAtributo('qVDT9etHoRfSLoAnfSuK',[])==true){
+
+  this.visibleTipoOperacion=true
   
  }
  else {

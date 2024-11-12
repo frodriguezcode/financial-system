@@ -9,6 +9,9 @@
   <button type="button" (click)="crearSocioNegocio()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
     >Socio de Negocio <i class="fa-solid fa-plus"></i
   ></button>
+  <button type="button" (click)="crearTipoOperacion()" class="btn btn-success mb-4 shadow-4 m-1" ngbTooltip="Click para crear registro"
+    >Tipo Operación <i class="fa-solid fa-plus"></i
+  ></button>
 
 </div>
 
@@ -26,6 +29,7 @@
     [options]="Sucursales" 
     [(ngModel)]="SucursaleSeleccionada" 
     optionLabel="Nombre" 
+    appendTo="body"
     placeholder="Seleccione una sucursal" />
 </div>
 
@@ -461,6 +465,19 @@
   [maximizable]="true"
 >
 <app-socios *ngIf="visibleSocioNegocio==true"></app-socios>
+</p-dialog>
+<p-dialog
+  header="Agregar Tipo de Operación"
+  [(visible)]="visibleTipoOperacion"
+  [modal]="true"
+  [style]="{ width: '75vw', height: '70vh' }"
+  [modal]="true"
+  styleClass="p-fluid"
+  [draggable]="false"
+  [resizable]="false"
+  [maximizable]="true"
+>
+<app-tipos-operacion *ngIf="visibleTipoOperacion==true"></app-tipos-operacion>
 </p-dialog>
 
 <!-- *EDITAR REGISTRO -->
