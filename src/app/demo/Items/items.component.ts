@@ -673,6 +673,7 @@ removeAnimation(element: HTMLElement | null, animationClass: string) {
 
       ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
       ItemForm.Alias=ItemForm.Nombre 
+      ItemForm.idMatriz=this.usuario.idMatriz
       this.conS.crearItem(ItemForm).then(resp=>{
         let SucursalesSeleccionadas:any=ItemForm.Sucursales
         let ProyectosSeleccionados:any=ItemForm.Proyectos

@@ -13,93 +13,94 @@
     >Tipo Operación <i class="fa-solid fa-plus"></i
   ></button>
 
+  
+  <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info mb-4 shadow-4 m-1">General <i class="fa-solid fa-building"></i></button>
+  <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning mb-4 shadow-4 m-1">Proyectos <i class="fa-solid fa-diagram-project"></i></button>
+  <button type="button" (click)="FiltrosSideBar = true" class="btn btn-primary mb-4 shadow-4 m-1 float-end ">Filtros <i class="fa-solid fa-filter"></i></button>
+
 </div>
 
-<div class="d-flex justify-content-center">
+<!-- <div class="d-flex justify-content-center">
 
   <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info m-1">General <i class="fa-solid fa-building"></i></button>
   <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i></button>
-</div>
-<div class="row align-items-center g-2">
-<div *ngIf="idTipoRegistro==1" class="col-auto">
-  <label for="formGroupExampleInput" class="form-label">Buscar por sucursal</label>
-  <br>
-  <p-dropdown 
-    (onChange)="filtrarByCategoria()"
-    [options]="Sucursales" 
-    [(ngModel)]="SucursaleSeleccionada" 
-    optionLabel="Nombre" 
-    appendTo="body"
-    placeholder="Seleccione una sucursal" />
-</div>
+</div> -->
 
-  <div *ngIf="idTipoRegistro==2" class="col-auto">
-    <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
+<p-sidebar [(visible)]="FiltrosSideBar" position="right">
+  <h3>Filtros</h3>
+  <div class="row align-items-center g-2">
+  <div *ngIf="idTipoRegistro==1" class="col-12">
+    <label for="formGroupExampleInput" class="form-label">Buscar por sucursal</label>
     <br>
     <p-dropdown 
+      [style]="{'width':'280px'}"
+      [panelStyle]="{'width':'280px'}"
       (onChange)="filtrarByCategoria()"
-      [options]="Proyectos" 
-      [(ngModel)]="ProyectoSeleccionado" 
-      optionLabel="NombreSucursal" 
-      placeholder="Seleccione un proyecto" />
+      [options]="Sucursales" 
+      [(ngModel)]="SucursaleSeleccionada" 
+      optionLabel="Nombre" 
+      appendTo="body"
+      placeholder="Seleccione una sucursal" />
   </div>
   
-  <div class="col-auto">
-    <label for="formGroupExampleInput" class="form-label">Buscar por categoría</label>
-    <br>
-    <p-multiSelect 
-  
-    (onChange)="filtrarByCategoria()"
-    [options]="Categorias" 
-    [(ngModel)]="CategoriasSeleccionadas" 
-    optionLabel="Nombre" 
-    placeholder="Seleccione una categoria"
-    [selectedItemsLabel]="getSelectedItemsLabel()"
-    [maxSelectedLabels]="1" 
-    [displaySelectedLabel]="true">
-</p-multiSelect>
-  </div>
-
-  <div class="col-auto">
-    <div class="mb-3 mt-3">  
-      
-      <label for="formGroupExampleInput" class="form-label">Fecha Inicio</label>
-   
-      <input type="date" 
-      [formControl]="FechaDesde" 
-      style="height: 50px;"
-      class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder">
+    <div *ngIf="idTipoRegistro==2" class="col-12">
+      <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
+      <br>
+      <p-dropdown 
+      [style]="{'width':'280px'}"
+      [panelStyle]="{'width':'280px'}"
+        (onChange)="filtrarByCategoria()"
+        [options]="Proyectos" 
+        [(ngModel)]="ProyectoSeleccionado" 
+        optionLabel="NombreSucursal" 
+        placeholder="Seleccione un proyecto" />
     </div>
-  </div>
-
-  <div class="col-auto">
-    <div class="mb-3 mt-3">
-  
-      <label for="formGroupExampleInput" class="form-label">Fecha Final</label>
     
-      <input type="date" [formControl]="FechaHasta" 
-      style="height: 50px;"
-      class="form-control" id="formGroupExampleInput"
-       placeholder="Example input placeholder">
+    <div class="col-12">
+      <label for="formGroupExampleInput" class="form-label">Buscar por categoría</label>
+      <br>
+      <p-multiSelect 
+      [style]="{'width':'280px'}"
+      [panelStyle]="{'width':'295px'}"
+      (onChange)="filtrarByCategoria()"
+      [options]="Categorias" 
+      [(ngModel)]="CategoriasSeleccionadas" 
+      optionLabel="Nombre" 
+      placeholder="Seleccione una categoria"
+      [selectedItemsLabel]="getSelectedItemsLabel()"
+      [maxSelectedLabels]="1" 
+      [displaySelectedLabel]="true">
+  </p-multiSelect>
+    </div>
+  
+    <div class="col-12">
+        <label for="formGroupExampleInput" class="form-label">Fecha Inicio</label>
+        <input type="date" 
+        [formControl]="FechaDesde" 
+        style="height: 50px;"
+        class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder">
+    </div>
+  
+    <div class="col-12"> 
+        <label for="formGroupExampleInput" class="form-label">Fecha Final</label>
+        <input type="date" [formControl]="FechaHasta" 
+        style="height: 50px;"
+        class="form-control" id="formGroupExampleInput"
+         placeholder="Example input placeholder">
+    </div>
+    <div class="col-12">
+        <button type="button" class="btn btn-success  shadow-4 mx-auto"
+        (click)="buscarByFecha()"
+        [disabled]="(this.FechaDesde.value=='' || this.FechaHasta.value=='' )"
+        >Buscar <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </div>
+    <div class="col-12">
+        <button type="button" class="btn btn-primary shadow-4 mx-auto" 
+        (click)="restablecer()">Limpiar filtros <i class="fa-solid fa-rotate-right"></i></button>
     </div>
   </div>
-  <div class="col-auto">
-    <div class="mb-3 mt-5">
-      <button type="button" class="btn btn-success  shadow-4 mx-auto"
-      (click)="buscarByFecha()"
-      [disabled]="(this.FechaDesde.value=='' || this.FechaHasta.value=='' )"
-      >Buscar <i class="fa-solid fa-magnifying-glass"></i>
-    </button>
-    </div>
-  </div>
-  <div class="col-auto">
-    <div class="mb-3 mt-5">
-      <button type="button" class="btn btn-primary shadow-4 mx-auto" 
-      (click)="restablecer()">Limpiar filtros <i class="fa-solid fa-rotate-right"></i></button>
-
-    </div>
-  </div>
-</div>
+</p-sidebar>
 <div class="row align-items-center g-2">
 
   <div class="col-auto">
@@ -137,6 +138,7 @@
 
 </div>
 
+
 <div *ngIf="cargando==true" class="text-center">
   <div class="spinner-border" role="status">
     <span class="visually-hidden">Loading...</span>
@@ -166,9 +168,12 @@
 
     <ng-template pTemplate="header">
       <tr class="text-center">
-        <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
-        <th style="text-transform: uppercase;font-size: 13px;">Copiar</th>
-        <th style="text-transform: uppercase;font-size: 13px;">Registro</th>
+        <th style="width: 4rem;background-color: #F8FAFB;" pFrozenColumn><p-tableHeaderCheckbox /></th>
+        <th 
+        style="text-transform: uppercase;font-size: 13px; background-color: #F8FAFB;" pFrozenColumn
+        >
+        Copiar</th>
+        <!-- <th style="text-transform: uppercase;font-size: 13px;">Registro</th> -->
         <th style="text-transform: uppercase;font-size: 13px;">Fecha</th>
         <th *ngIf="this.idTipoRegistro==1" style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th *ngIf="this.idTipoRegistro==2" style="text-transform: uppercase;font-size: 13px;">Proyecto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
@@ -190,11 +195,13 @@
       <tr  *ngIf="cargando==false"   [ngClass]="{'Egreso': registros.idTipo === 2, 'Ingreso' : registros.idTipo === 1 }">
         
         <!-- Elementos -->
-        <td>
+        <td  style="background-color: #F8FAFB;" pFrozenColumn>
           <p-tableCheckbox [value]="registros" />
       </td>
-        <td class="text-center">
-          <ng-container>
+        <td class="text-center"
+       style="background-color: #F8FAFB;"
+         pFrozenColumn>
+          <ng-container >
             <button type="button" (click)="copiarRegistro(registros)" 
            
             [ngClass]="registros.idTipo==1 ? 'btn btn-info':'btn btn-danger'" 
@@ -203,11 +210,11 @@
             <i class="fa-solid fa-copy"></i></button>
           </ng-container>
         </td>
-        <td class="text-center">
+        <!-- <td class="text-center">
           <ng-container>
             {{ registros.Orden }}
           </ng-container>
-        </td>
+        </td> -->
         <td class="text-center">
           <input style="min-height: 1rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
         </td>

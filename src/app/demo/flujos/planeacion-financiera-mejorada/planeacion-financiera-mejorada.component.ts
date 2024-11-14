@@ -70,7 +70,7 @@ DataPlanesGeneral:any=[]
 sidebarVisible2: boolean = false;
 DataPlanesMensual:any=[]
 DataPlanesAnual:any=[]
-idTipoRegistro:any=0
+idTipoRegistro:any=1
 cargando:boolean=true
 DataItemsAnualPlanes:any=[]
 Sucursales:any=[]
@@ -281,7 +281,21 @@ obtenerProyectos(){
     this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
     this.Proyectos=resp
     this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
-
+    this.Proyectos.push({
+      "Editando": false,
+      "MesesRango": [],
+      "FechaInicio": "2024-10-01",
+      "FechaFinal": "2025-02-28",
+      "idMatriz": "QOLPWuHRF8AdgTQ6NsJM",
+      "idEmpresa": "8OAqwv6s4TVJdTpSLUjB",
+      "RangoFechas": [],
+      "FechaCreacion": "2024-10-07",
+      "id": "todos124578784854",
+      "idSucursal": "0",
+      "Nombre": "Todos",
+      "Activo": true,
+      "NombreSucursal": "Todos"
+    }) 
   })
     
 }
@@ -289,14 +303,39 @@ else {
   this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
     this.Proyectos=resp
     this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
-
+    this.Proyectos.push({
+      "Editando": false,
+      "MesesRango": [],
+      "FechaInicio": "2024-10-01",
+      "FechaFinal": "2025-02-28",
+      "idMatriz": "QOLPWuHRF8AdgTQ6NsJM",
+      "idEmpresa": "8OAqwv6s4TVJdTpSLUjB",
+      "RangoFechas": [],
+      "FechaCreacion": "2024-10-07",
+      "id": "todos124578784854",
+      "idSucursal": "0",
+      "Nombre": "Todos",
+      "Activo": true,
+      "NombreSucursal": "Todas"
+    }) 
   })
 
-}  
+} 
+
 }
 obtenerSucursales(){
   this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe((resp:any)=>{
     this.Sucursales=resp.filter((suc:any)=>suc.Activo==true)
+    console.log('Sucursales',this.Sucursales)
+    this.Sucursales.push({
+      "id": "0221515151",
+      "Nombre": "Todas las sucursales",
+      "FechaCreacion": "2024-10-08",
+      "Editando": false,
+      "idEmpresa": "KmK88Mip27fIpMtUo7iV",
+      "idMatriz": "QOLPWuHRF8AdgTQ6NsJM",
+      "Activo": true
+  })
   })
 }
 getNameSucursal(idSucursal:any){
@@ -315,122 +354,134 @@ getNameSucursal(idSucursal:any){
 }
 
 filtrarDataProyecto(){
-  localStorage.setItem('ProyectoSelectBC', JSON.stringify(this.ProyectoSeleccionado));
-  let CriteriosRegistros:any=[]
-  this.SucursalSeleccionada={}
-
-  if(this.ProyectoSeleccionado.MesesRango.length>0){
-    let _AniosProyecto:any=[]
-    let _MesesProyecto:any=[]
-
-    this.ProyectoSeleccionado.MesesRango.forEach(element => {
-      _AniosProyecto.push({
-       "Anio": Number(element.year),
-       "Mostrar": true,
-      
-      })
-      element.meses.forEach(elementMes => {
-        
-        _MesesProyecto.push({
-          "Mes":elementMes.nombre,
-          "Mostrar":true,
-          "NumMes":elementMes.numero,
-          "Anio":elementMes.anio,
-        })
-      });
-      
-      
-    });
-
-
-    this.Cabecera=[]
-    this.Cabecera.push({
-      "Nombre":"Catálogo de Cuentas",
-      "Mes":"",
-      "NumMes":"",
-      "Anio":"",
-      "Tipo":1,
-      "Mostrar":true,
-      "MostrarBoton":true
-    })
-
-    _AniosProyecto.forEach((anio:any) => {
-      _MesesProyecto.filter((m:any)=>m.Anio==anio.Anio).forEach((mes:any) => {
-        this.Cabecera.push({
-          "Nombre": mes.Mes + " " + anio.Anio,
-          "Mes":mes.Mes,
-          "NumMes":mes.NumMes,
-          "Anio":anio.Anio,
-          "Tipo":2,
-          "Mostrar":true,
-          "MostrarBoton":true
-        })
-        this.Cabecera.push({
-          "Nombre": mes.Mes + " " + anio.Anio,
-          "Mes":mes.Mes,
-          "NumMes":mes.NumMes,
-          "Anio":anio.Anio,
-          "Tipo":3,
-          "Mostrar":true,
-          "MostrarBoton":true
-        })
-        this.Cabecera.push({
-          "Nombre":"Diferencia",
-          "Mes":mes.Mes,
-          "NumMes":mes.NumMes,
-          "Anio":anio.Anio,
-          "Tipo":4,
-          "Mostrar":true,
-          "MostrarBoton":true
-        })
-  
-        this.Cabecera.push({
-          "Nombre":"% Variación",
-          "Mes":mes.Mes,
-          "NumMes":mes.NumMes,
-          "Anio":anio.Anio,
-          "Tipo":5,
-          "Mostrar":true,
-          "MostrarBoton":true
-        })
-        
-        
-      })
-      
-              this.Cabecera.push({
-                "Nombre":"Total" + anio.Anio,
-                "Anio":anio.Anio,
-                "Tipo":6,
-                "Mostrar":true,
-                "MostrarBoton":true
-              })
-        
-})
-
-const nuevosElementos = this.Cabecera.filter(itemA => 
-  !this.CabeceraBack.some(itemB => itemB.Anio === itemA.Anio)
-);
-this.CabeceraBack.push(...nuevosElementos);
-this.Anios=_AniosProyecto
-
-  }
-
-  else {
+  if(this.ProyectoSeleccionado.NombreSucursal=='Todos'){
+    this.Registros=this.RegistrosBackUp.filter((reg:any)=>reg.TipoRegistro==2)
+    this.RegistrosValoresPlanes=this.RegistrosValoresPlanesBackUp.filter((reg:any)=>reg.TipoRegistro==2)
+    this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==2)
     this.Anios=this.AniosBack
-    this.Cabecera=this.CabeceraBack
+    console.log('Anios',this.Anios)
+    this.construirCabecera()
+    this.sidebarVisible2=false
   }
+  else {
+    localStorage.setItem('ProyectoSelectBC', JSON.stringify(this.ProyectoSeleccionado));
+    let CriteriosRegistros:any=[]
+    this.SucursalSeleccionada={}
+  
+    if(this.ProyectoSeleccionado.MesesRango.length>0){
+      let _AniosProyecto:any=[]
+      let _MesesProyecto:any=[]
+  
+      this.ProyectoSeleccionado.MesesRango.forEach(element => {
+        _AniosProyecto.push({
+         "Anio": Number(element.year),
+         "Mostrar": true,
+        
+        })
+        element.meses.forEach(elementMes => {
+          
+          _MesesProyecto.push({
+            "Mes":elementMes.nombre,
+            "Mostrar":true,
+            "NumMes":elementMes.numero,
+            "Anio":elementMes.anio,
+          })
+        });
+        
+        
+      });
+  
+  
+      this.Cabecera=[]
+      this.Cabecera.push({
+        "Nombre":"Catálogo de Cuentas",
+        "Mes":"",
+        "NumMes":"",
+        "Anio":"",
+        "Tipo":1,
+        "Mostrar":true,
+        "MostrarBoton":true
+      })
+  
+      _AniosProyecto.forEach((anio:any) => {
+        _MesesProyecto.filter((m:any)=>m.Anio==anio.Anio).forEach((mes:any) => {
+          this.Cabecera.push({
+            "Nombre": mes.Mes + " " + anio.Anio,
+            "Mes":mes.Mes,
+            "NumMes":mes.NumMes,
+            "Anio":anio.Anio,
+            "Tipo":2,
+            "Mostrar":true,
+            "MostrarBoton":true
+          })
+          this.Cabecera.push({
+            "Nombre": mes.Mes + " " + anio.Anio,
+            "Mes":mes.Mes,
+            "NumMes":mes.NumMes,
+            "Anio":anio.Anio,
+            "Tipo":3,
+            "Mostrar":true,
+            "MostrarBoton":true
+          })
+          this.Cabecera.push({
+            "Nombre":"Diferencia",
+            "Mes":mes.Mes,
+            "NumMes":mes.NumMes,
+            "Anio":anio.Anio,
+            "Tipo":4,
+            "Mostrar":true,
+            "MostrarBoton":true
+          })
+    
+          this.Cabecera.push({
+            "Nombre":"% Variación",
+            "Mes":mes.Mes,
+            "NumMes":mes.NumMes,
+            "Anio":anio.Anio,
+            "Tipo":5,
+            "Mostrar":true,
+            "MostrarBoton":true
+          })
+          
+          
+        })
+        
+                this.Cabecera.push({
+                  "Nombre":"Total" + anio.Anio,
+                  "Anio":anio.Anio,
+                  "Tipo":6,
+                  "Mostrar":true,
+                  "MostrarBoton":true
+                })
+          
+  })
+  
+  const nuevosElementos = this.Cabecera.filter(itemA => 
+    !this.CabeceraBack.some(itemB => itemB.Anio === itemA.Anio)
+  );
+  this.CabeceraBack.push(...nuevosElementos);
+  this.Anios=_AniosProyecto
+  
+    }
+  
+    else {
+      this.Anios=this.AniosBack
+      this.Cabecera=this.CabeceraBack
+    }
+  
+    CriteriosRegistros={
+  
+      idProyecto:[this.ProyectoSeleccionado.id]
+  
+    } 
+  
+  
+    this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
+    this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
+    this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==2 
+    && item.Proyectos.some((proyecto: any) => proyecto.id === this.ProyectoSeleccionado.id))
 
-  CriteriosRegistros={
-
-    idProyecto:[this.ProyectoSeleccionado.id]
-
-  } 
-
-
-  this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
-  this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
-  this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==2 
-  && item.Proyectos.some((proyecto: any) => proyecto.id === this.ProyectoSeleccionado.id))
+  }
 
 
   this.getDataCategoriasMensualPlanes()
@@ -442,7 +493,15 @@ this.Anios=_AniosProyecto
 }
 
 filtrarDataSucursal(){
-
+if(this.SucursalSeleccionada.Nombre=='Todas las sucursales'){
+  this.Registros=this.RegistrosBackUp.filter((reg:any)=>reg.TipoRegistro==1)
+  this.RegistrosValoresPlanes=this.RegistrosValoresPlanesBackUp.filter((reg:any)=>reg.TipoRegistro==1)
+  this.Items=this.ItemsBack.filter((item:any)=> item.TipoRubro==1)
+  this.Anios=this.AniosBack
+  this.construirCabecera()
+  this.sidebarVisible2=false
+}
+else {
   let CriteriosRegistros:any=[]
   this.ProyectoSeleccionado={}
 
@@ -455,6 +514,8 @@ filtrarDataSucursal(){
   this.RegistrosValoresPlanes= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosValoresPlanesBackUp)
   this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==1 
   && item.Sucursales.some((sucursal: any) => sucursal.id === this.SucursalSeleccionada.id))
+
+}
   this.getDataCategoriasMensual()
   this.getDataItemMensual()
   this.getDataItemsMensualPlanes()
@@ -1640,6 +1701,7 @@ guardarValorPlan(Anio:any,MesRegistro:any,NumMes:any,idCategoria:any,idItem:any,
       "TipoRegistro":this.idTipoRegistro,
       "Valor": Number(ValorPlan.replace(/[$,\s]/g, '')),
       "idEmpresa":this.usuario.idEmpresa,
+      "idMatriz":this.usuario.idMatriz,
       "idSucursal":  ( this.SucursalSeleccionada==undefined  || Object.keys(this.SucursalSeleccionada).length === 0 )? '' : this.SucursalSeleccionada.id  ,
       "idProyecto":( this.ProyectoSeleccionado==undefined  || Object.keys(this.ProyectoSeleccionado).length === 0) ? '' : this.ProyectoSeleccionado.id
     }

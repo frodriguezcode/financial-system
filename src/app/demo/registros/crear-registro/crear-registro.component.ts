@@ -21,6 +21,7 @@ import { Registro } from 'src/app/models/registro';
 import { ToastrService } from 'ngx-toastr';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
+import { SidebarModule } from 'primeng/sidebar';
 
 import { CalendarModule } from 'primeng/calendar';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -71,7 +72,8 @@ import TiposOperacionComponent from '../../tipos-operacion/tipos-operacion.compo
     CurrencySymbolPipe,
     TabViewModule,
     ButtonModule,
-    MultiSelectModule
+    MultiSelectModule,
+    SidebarModule
     
    ],
   templateUrl: './crear-registro.component.html',
@@ -102,6 +104,7 @@ activeIndex: number = 0;
   registros: any=[];
   registrosSeleccionados: any=[];
   registrosBackUp: any=[];
+  FiltrosSideBar: boolean = false;
   // *Registros desde la promesa
   _Registros: Registro[];
   clonedRegistros: { [s: string]: Registro } = {};

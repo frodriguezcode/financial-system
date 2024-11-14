@@ -108,12 +108,20 @@
   text-overflow: ellipsis;
 }
 
-:host ::ng-deep .p-multiSelect .p-elemento-interno {
+
+// :host ::ng-deep .p-dropdown { 
+//   background-color: white; 
+//   transform: scale(0.9);
+// }
+
+::ng-deep .p-multiselect-panel .p-multiselect-items {
+  width: 100%;
   transform: scale(0.9);
 }
-:host ::ng-deep .p-dropdown { 
-  background-color: white; 
-  transform: scale(0.9);
+
+::ng-deep .p-multiselect-panel .p-multiselect-item {
+  width: 100%;
+  text-align: center; /* opcional: para que el texto esté alineado a la izquierda */
 }
 
 .p-multiSelect {
