@@ -744,7 +744,9 @@ getIdCategoria(idCategoria:string){
   actualizarItem(item:any){
     let _Item= this.Items;
     const itemEncontrado = _Item.filter((it:any) => it.id == item.id);
-    itemEncontrado[0].Nombre=item.name
+    const numeros = item.name.match(/^\d+(\.\d+)*/)
+    itemEncontrado[0].Nombre=numeros[0] + ' '+ item.alias,
+    itemEncontrado[0].Alias= item.alias,
     itemEncontrado[0].idCategoria=item.idCategoria
     //itemEncontrado[0].idSucursal=item.idSucursal
     itemEncontrado[0].idEmpresa=item.idEmpresa
