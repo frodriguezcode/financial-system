@@ -105,11 +105,12 @@ activeIndex: number = 0;
   registrosSeleccionados: any=[];
   registrosBackUp: any=[];
   FiltrosSideBar: boolean = false;
+  OpcionesSideBar: boolean = false;
   // *Registros desde la promesa
   _Registros: Registro[];
   clonedRegistros: { [s: string]: Registro } = {};
   idTipoRegistro:number=1
-
+  claseTabla:string='p-datatable-sm'
   // *Registros desde la promesa
   inputVal = ''; // Initialize inputVal to be empty
   FechaDesde:FormControl=new FormControl('')
