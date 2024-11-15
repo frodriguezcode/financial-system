@@ -178,7 +178,7 @@
   [rows]="10"
   [scrollable]="true"
   [styleClass]="claseTabla"
-  scrollHeight="500px"
+  scrollHeight="550px"
   [(selection)]="registrosSeleccionados"
   dataKey="id"
   [showCurrentPageReport]="true"
@@ -200,7 +200,9 @@
         <th [frozen]="true"
         style="text-transform: uppercase;font-size: 13px; background-color: #F8FAFB;" pFrozenColumn
         >
-        Copiar</th>
+       <span>Copiar</span> 
+      
+        </th>
         <!-- <th style="text-transform: uppercase;font-size: 13px;">Registro</th> -->
         <th  style="text-transform: uppercase;font-size: 13px;" >Fecha</th>
         <th  *ngIf="this.idTipoRegistro==1" style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
@@ -227,7 +229,7 @@
           <p-tableCheckbox [value]="registros" />
       </td>
         <td class="text-center"
-       style="background-color: #F8FAFB;"
+       style="background-color: #F8FAFB"
          pFrozenColumn>
           <ng-container >
             <button type="button" (click)="copiarRegistro(registros)" 
