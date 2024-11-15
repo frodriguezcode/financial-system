@@ -4,6 +4,43 @@
   <button type="button" (click)="FiltrosSideBar = true" class="btn btn-primary mb-4 shadow-4 m-1 float-end ">Filtros <i class="fa-solid fa-filter"></i></button>
   <button type="button" (click)="OpcionesSideBar = true" class="btn btn-warning mb-4 shadow-4 m-1 float-end ">Opciones <i class="fa-solid fa-table-list"></i></button>
 
+  <div class="row align-items-center g-2">
+
+    <div class="col-auto">
+      <div class="mb-3">
+        <br>
+        <button type="button"
+        [disabled]="this.registrosSeleccionados.length==0"
+        (click)="borrarRegistros()" class="btn btn-success shadow-4 mx-auto" ngbTooltip="Borrar">Borrar Registro
+           <i class="fa-solid fa-trash"></i ></button>
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="mb-3">
+        <br>
+        <button type="button" (click)="crearRegistro(1)" class="btn btn-info shadow-4 mx-auto" ngbTooltip="Crear ingreso">Ingreso <i class="fa-solid fa-plus"></i></button>
+      </div>
+  </div>
+  <div class="col-auto">
+    <div class="mb-3">
+      <br>
+      <button type="button" (click)="crearRegistro(2)" class="btn btn-danger shadow-4 mx-auto" ngbTooltip="Crear egreso">Egreso <i class="fa-solid fa-minus"></i ></button>
+    </div>
+  </div>
+  
+    <div class="col-auto">
+      <div class="mb-3">
+        <br>
+        <button type="button"
+        [disabled]="this.Registros.length==0"
+        (click)="descargarRegistros()" class="btn btn-primary shadow-4 mx-auto" ngbTooltip="Descargar Registros">Exportar
+        <i class="fa-solid fa-file-excel"></i></button>
+  
+      </div>
+    </div>
+  
+  </div>
+
 </div>
 
 <p-sidebar [(visible)]="OpcionesSideBar" position="right">
@@ -29,6 +66,7 @@
           >Tipo Operación <i class="fa-solid fa-plus"></i
         ></button>
       </div>
+      <h5>Tipos de registro</h5>
       <div class="col-12">
         <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info  shadow-4 m-1">General
            <i class="fa-solid fa-building"></i></button>
@@ -123,42 +161,8 @@
     </div>
   </div>
 </p-sidebar>
-<div style="margin-top: -10px;" class="row align-items-center g-2">
 
-  <div class="col-auto">
-    <div class="mb-3">
-      <br>
-      <button type="button"
-      [disabled]="this.registrosSeleccionados.length==0"
-      (click)="borrarRegistros()" class="btn btn-success shadow-4 mx-auto" ngbTooltip="Borrar">Borrar Registro
-         <i class="fa-solid fa-trash"></i ></button>
-    </div>
-  </div>
-  <div class="col-auto">
-    <div class="mb-3">
-      <br>
-      <button type="button" (click)="crearRegistro(1)" class="btn btn-info shadow-4 mx-auto" ngbTooltip="Crear ingreso">Ingreso <i class="fa-solid fa-plus"></i></button>
-    </div>
-</div>
-<div class="col-auto">
-  <div class="mb-3">
-    <br>
-    <button type="button" (click)="crearRegistro(2)" class="btn btn-danger shadow-4 mx-auto" ngbTooltip="Crear egreso">Egreso <i class="fa-solid fa-minus"></i ></button>
-  </div>
-</div>
 
-  <div class="col-auto">
-    <div class="mb-3">
-      <br>
-      <button type="button"
-      [disabled]="this.Registros.length==0"
-      (click)="descargarRegistros()" class="btn btn-primary shadow-4 mx-auto" ngbTooltip="Descargar Registros">Exportar
-      <i class="fa-solid fa-file-excel"></i></button>
-
-    </div>
-  </div>
-
-</div>
 
 
 <div *ngIf="cargando==true" class="text-center">

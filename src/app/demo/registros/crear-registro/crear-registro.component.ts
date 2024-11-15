@@ -740,6 +740,7 @@ switchTipoRegistro(idTipo){
   this.calcularImporteSubTotal( this.Registros)
   this.calcularImporteTotal( this.Registros)
   this.cargando=false
+  this.OpcionesSideBar=false
 }
 
 calcularImporteTotal(registros:any){
