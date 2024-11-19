@@ -2,7 +2,16 @@
 <div style="margin-top: -10px;">
 
   <button type="button" (click)="FiltrosSideBar = true" class="btn btn-primary mb-4 shadow-4 m-1 float-end ">Filtros <i class="fa-solid fa-filter"></i></button>
-  <button type="button" (click)="OpcionesSideBar = true" class="btn btn-warning mb-4 shadow-4 m-1 float-end ">Opciones <i class="fa-solid fa-table-list"></i></button>
+  <button type="button" (click)="OpcionesSideBar = true" class="btn btn-danger mb-4 shadow-4 m-1 float-end ">Opciones <i class="fa-solid fa-table-list"></i></button>
+
+  <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning mb-4 shadow-4 m-1 float-end">Proyectos
+     <i class="fa-solid fa-diagram-project"></i>
+  </button>
+    <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info  mb-4 shadow-4 m-1 float-end">General
+       <i class="fa-solid fa-building"></i>
+    </button>
+
+
 
   <div class="row align-items-center g-2">
 

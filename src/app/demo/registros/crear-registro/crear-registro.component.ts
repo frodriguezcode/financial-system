@@ -145,6 +145,7 @@ activeIndex: number = 0;
   ProyectoSeleccionado: any;
   SucursaleSeleccionada: any;
   CuentasContables:any=[]
+  Empresas:any
   Flujos: any = [
     {id: "1", name: "Banco"},
     {id: "2", name: "Efectivo"},
@@ -234,6 +235,7 @@ ngOnInit(): void {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
+    this.obtenerEmpresas()
     this.obtenerRoles()
     this.obtenerTiposOperacionByEmpresa()
 
@@ -269,7 +271,23 @@ obtenerRoles(){
   })
 }
 
+obtenerEmpresas(){
+  this.authS.obtenerEmpresas(this.usuario.idMatriz).subscribe(resp=>{
+    this.Empresas=resp
+  })
+}
 
+getNombreEmpresa(idEmpresa:string){
+  let _empresa:any=[]
+  _empresa=this.Empresas.filter((s:any)=> s.id == idEmpresa)
+  if (_empresa.length>0){
+    return _empresa[0].Nombre
+
+  }
+  else {
+    return 'Sin empresa'
+  }
+}
 borrarRegistros(){
 
   if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
@@ -353,7 +371,7 @@ obtenerProyectos(){
   if(this.usuario.isAdmin==true){
     this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
     this.Proyectos=resp
-    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal,proyect.idEmpresa) )
   
     this.Proyectos.push({
       "Activo":true,
@@ -374,7 +392,7 @@ obtenerProyectos(){
   else {
     this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
       this.Proyectos=resp
-      this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+      this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal,proyect.idEmpresa) )
     
       this.Proyectos.push({
         "Activo":true,
@@ -393,9 +411,10 @@ obtenerProyectos(){
   }
 }
 
-getNameSucursal(idSucursal:any){
+getNameSucursal(idSucursal:any,idEmpresa:string){
   if(idSucursal=='0'){
-    return 'General'
+    return this.getNombreEmpresa(idEmpresa)
+
   }
   else {
     let sucursal = this.Sucursales.filter((suc: any) => suc.id==idSucursal)
