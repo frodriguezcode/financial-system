@@ -273,16 +273,30 @@ obtenerRoles(){
 borrarRegistros(){
 
   if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
-
+    let Contador:number=0
    this.registrosSeleccionados.forEach(element => {
+    try{
+      this.conS.borrarRegistro(element.id).then(resp=>{
+    
+  
+       this.Registros=this.Registros.filter(reg=>reg.id!=element.id)
+       Contador=+1
+      })
 
-     this.conS.borrarRegistro(element.id).then(resp=>{
-      this.toastr.success('', 'Registro borrado',{
+      if(Contador==this.registrosSeleccionados.length){
+        this.toastr.success('', `${this.registrosSeleccionados.length} registros borrados`,{
+          timeOut: 1000,
+        });
+      }
+
+    }
+    catch(error){
+      this.toastr.success('', 'Hubo un error inesperado, inténtelo de nuevo',{
         timeOut: 1000,
       });
+    }
 
-      this.Registros=this.Registros.filter(reg=>reg.id!=element.id)
-     })
+
    });
    this.registrosSeleccionados=[]
    let OrdenNuevo:number=1
