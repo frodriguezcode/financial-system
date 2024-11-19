@@ -12,6 +12,8 @@
         *ngIf="TipoRubro==1"
         [options]="Sucursales" 
         [(ngModel)]="SucursalesSeleccionadas" 
+        [maxSelectedLabels]="1" 
+        [selectedItemsLabel]="getSelectedSucursalesLabel()"
         optionLabel="Nombre" 
         placeholder="Sucursales" 
         class="m-1"
@@ -25,6 +27,8 @@
         *ngIf="TipoRubro==2"
         [options]="Proyectos" 
         [(ngModel)]="ProyectosSeleccionado" 
+        [maxSelectedLabels]="1" 
+        [selectedItemsLabel]="getSelectedPoryectosLabel()"
         optionLabel="NombreSucursal" 
         placeholder="Proyectos"
         class="m-1" 
@@ -146,6 +150,8 @@
                          <p-multiSelect 
                           [options]="Sucursales" 
                           [(ngModel)]="item.Sucursales" 
+                          [maxSelectedLabels]="1" 
+                          [selectedItemsLabel]="getSelectedSucursalesLabelList(item.Sucursales)"
                           optionLabel="Nombre" 
                           placeholder="Seleccione las Sucursales" />
                        </ng-template>
@@ -159,6 +165,8 @@
                          <p-multiSelect 
                           [options]="Proyectos" 
                           [(ngModel)]="item.Proyectos" 
+                          [maxSelectedLabels]="1" 
+                          [selectedItemsLabel]="getSelecteProyectosLabelList(item.Sucursales)"
                           optionLabel="Nombre" 
                           placeholder="Seleccione los proyectos" />
                        </ng-template>
@@ -479,6 +487,8 @@
                       [options]="Sucursales" 
                       formControlName="Sucursales"
                       optionLabel="Nombre" 
+                      [maxSelectedLabels]="1" 
+                      [selectedItemsLabel]="getSelecteSucursalesLabelCrear()"
                       placeholder="Seleccione una sucursal"
                       class="multiselect-fijo"
                       />
@@ -489,12 +499,15 @@
                     <div *ngIf="TipoRubro==2" class="col-12 col-md-12 col-lg-12">
                       <label for="exampleInputPassword1">Proyecto</label>
                       <br>
-                      <p-multiSelect 
+                      <p-multiSelect
                       [options]="Proyectos" 
                       formControlName="Proyectos"
+                      [maxSelectedLabels]="1" 
+                      [selectedItemsLabel]="getSelecteProyectosLabelCrear()"
                       optionLabel="Nombre" 
                       placeholder="Seleccione un proyecto"
-                      class="multiselect-fijo"
+                      [style]="{'width':'300px'}"
+                      [panelStyle]="{'width':'350px'}"
                       />
                       
                     </div>

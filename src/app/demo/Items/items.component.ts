@@ -132,15 +132,16 @@ borrarCuenta(idCuenta:string){
     this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
     this.Proyectos=resp
       this.obtenerItems()
-    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
+    this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal,proyect.idEmpresa) )
     this.cargarFormulario()
   
     })
   }
 
-  getNameSucursal(idSucursal:any){
+  getNameSucursal(idSucursal:any,idEmpresa:string){
     if(idSucursal=='0'){
-      return 'General'
+        return this.getNombreEmpresa(idEmpresa)
+
     }
     else {
 
@@ -275,14 +276,42 @@ borrarCuenta(idCuenta:string){
 
 
   }
-
-
+  getSelectedPoryectosLabel(): any {
+    const count = this.ProyectosSeleccionado ? this.ProyectosSeleccionado.length : 0
+    
+    return count >= 2 ? `${count} proyectos seleccionados` : null;
+  }
+  getSelectedSucursalesLabel(): any {
+    const count = this.SucursalesSeleccionadas ? this.SucursalesSeleccionadas.length : 0
+    
+    return count >= 2 ? `${count} sucursales seleccionadas` : null;
+  }
+  getSelectedSucursalesLabelList(SucursalesSeleccionadas:any): any {
+    const count = SucursalesSeleccionadas? SucursalesSeleccionadas.length : 0
+    
+    return count >= 2 ? `${count} sucursales seleccionadas` : null;
+  }
+  getSelecteProyectosLabelList(ProyectosSeleccionados:any): any {
+    const count = ProyectosSeleccionados? ProyectosSeleccionados.length : 0
+    
+    return count >= 2 ? `${count} sucursales seleccionadas` : null;
+  }
+  getSelecteProyectosLabelCrear(): any {
+    const count = this.ItemForm.value['Proyectos']? this.ItemForm.value['Proyectos'].length : 0
+    
+    return count >= 2 ? `${count} proyectos seleccionados` : null;
+  }
+  getSelecteSucursalesLabelCrear(): any {
+    const count = this.ItemForm.value['Sucursales']? this.ItemForm.value['Sucursales'].length : 0
+    
+    return count >= 2 ? `${count} sucursales seleccionadas` : null;
+  }
 
   getNameSucursales(sucursales:any){
     let Sucursales=[]
     if (sucursales.length>0){
       sucursales.forEach((suc:any) => {
-        Sucursales.push(this.getNameSucursal(suc.id))
+        Sucursales.push(this.getNameSucursal(suc.id,''))
       })
     }
     else {
