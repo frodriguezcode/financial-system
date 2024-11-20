@@ -301,8 +301,6 @@
 
         <td class="text-center">
           <input
-          (keyup.enter)="salvarRegistro(registros,Valor.value)"
-          [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
           style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
           [(ngModel)]="registros.Comentarios "
           class="form-control text-center col-6"/>

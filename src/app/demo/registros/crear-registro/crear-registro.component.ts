@@ -906,7 +906,7 @@ else {
       Swal.fire({
         position: "center",
         icon: "warning",
-        title: "Debe elegir un elemento",
+        title: "Debe elegir una cuenta contable",
         showConfirmButton: false,
         timer: 1500
       });
@@ -925,27 +925,27 @@ else {
   
     }
   
-  else  if(Registro.idFlujo==""){
-      Swal.fire({
-        position: "center",
-        icon: "warning",
-        title: "Debe elegir un flujo (caja o banco)",
-        showConfirmButton: false,
-        timer: 1500
-      });
+  // else  if(Registro.idFlujo==""){
+  //     Swal.fire({
+  //       position: "center",
+  //       icon: "warning",
+  //       title: "Debe elegir un flujo (caja o banco)",
+  //       showConfirmButton: false,
+  //       timer: 1500
+  //     });
   
-    }
+  //   }
   
-   else if(Registro.idFlujo.id=="1" && Registro.Cuenta==""){
-      Swal.fire({
-        position: "center",
-        icon: "warning",
-        title: "Debe colocar una cuenta de banco",
-        showConfirmButton: false,
-        timer: 1500
-      });
+  //  else if(Registro.idFlujo.id=="1" && Registro.Cuenta==""){
+  //     Swal.fire({
+  //       position: "center",
+  //       icon: "warning",
+  //       title: "Debe colocar una cuenta de banco",
+  //       showConfirmButton: false,
+  //       timer: 1500
+  //     });
   
-    }
+  //   }
   
     else {
       let _categoriaEncontrada:any=[]
