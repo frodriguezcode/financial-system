@@ -37,6 +37,7 @@ import { TabViewModule } from 'primeng/tabview';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 import TiposOperacionComponent from '../../tipos-operacion/tipos-operacion.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-crear',
@@ -296,11 +297,29 @@ borrarRegistros(){
     try{
       this.conS.borrarRegistro(element.id).then(resp=>{
     
-  
-       this.Registros=this.Registros.filter(reg=>reg.id!=element.id)
-       Contador=+1
+        Contador=+1
       })
+      //this.Registros=this.Registros.filter((reg:any)=>reg.id!=element.id && reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
 
+
+      if(this.idTipoRegistro==1){
+        if(this.SucursaleSeleccionada!=undefined){
+         this.Registros=this.registrosBackUp.filter((reg:any)=>reg.id!=element.id  && reg.TipoRegistro==this.idTipoRegistro && reg.idSucursal==this.SucursaleSeleccionada.id).sort((a:any, b:any) => b.Orden - a.Orden)
+        }
+        else {
+       this.Registros=this.registrosBackUp.filter((reg:any)=> reg.id!=element.id  && reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+        }
+      } 
+     else {
+        if(this.ProyectoSeleccionado!=undefined){
+         this.Registros=this.registrosBackUp.filter((reg:any)=> reg.id!=element.id  && reg.TipoRegistro==this.idTipoRegistro && reg.idProyecto==this.ProyectoSeleccionado.id).sort((a:any, b:any) => b.Orden - a.Orden)
+        }
+        else {
+       this.Registros=this.registrosBackUp.filter((reg:any)=>reg.id!=element.id  && reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+        }
+      }
+      this.registrosBackUp=this.registrosBackUp.filter((reg:any)=>reg.id!=element.id)
+      console.log('Registros',this.Registros)
       if(Contador==this.registrosSeleccionados.length){
         this.toastr.success('', `${this.registrosSeleccionados.length} registros borrados`,{
           timeOut: 1000,
@@ -317,18 +336,20 @@ borrarRegistros(){
 
    });
    this.registrosSeleccionados=[]
-   let OrdenNuevo:number=1
-   const coleccionRef = this.firestore.collection('Registro');
+   this.calcularImporteTotal(this.Registros)
+   this.calcularImporteSubTotal(this.Registros)
+  //  let OrdenNuevo:number=1
+  //  const coleccionRef = this.firestore.collection('Registro');
 
-    this.Registros.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
+  //   this.Registros.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
       
-      const registroRef = coleccionRef.doc(element.id).ref; 
-      const batch = this.firestore.firestore.batch();
-      batch.update(registroRef, { Orden: OrdenNuevo });
-      element.Orden =OrdenNuevo;
-      OrdenNuevo+=1
+  //     const registroRef = coleccionRef.doc(element.id).ref; 
+  //     const batch = this.firestore.firestore.batch();
+  //     batch.update(registroRef, { Orden: OrdenNuevo });
+  //     element.Orden =OrdenNuevo;
+  //     OrdenNuevo+=1
 
-    })
+  //   })
   }  
    else {
     this.toastr.warning('', '¡Acceso Denegado!',{
@@ -600,12 +621,15 @@ restablecer(){
 }
 obtenerRegistros(){
   if(this.usuario.isAdmin==true){
-    this.conS.obtenerRegistrosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
-   
+    let Subscribe:Subscription
+    Subscribe=  this.conS.obtenerRegistrosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
+      Subscribe.unsubscribe()
                this.registrosBackUp=[]
-               resp.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
+               resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
                  let _Registro={
                    "Activo":element.Activo,
+                   "Animation":'animate__animated animate__flipInX',
+                   "ActivarAnimation":false,
                    "AnioRegistro":element.AnioRegistro,
                    "Cuenta":element.Cuenta,
                    "Editando":element.Editando,
@@ -659,6 +683,8 @@ obtenerRegistros(){
                this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
                 }
               } 
+
+              console.log('Registros',this.Registros)
   
        
                this.calcularImporteTotal(this.Registros)
@@ -672,13 +698,15 @@ obtenerRegistros(){
 
   }
   else {
-    
-  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
-  
+    let Subscribe:Subscription
+    Subscribe= this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
+    Subscribe.unsubscribe()
     this.registrosBackUp=[]
-    resp.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
+    resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
       let _Registro={
         "Activo":element.Activo,
+        "Animation":'animate__animated animate__flipInX',
+        "ActivarAnimation":false,
         "AnioRegistro":element.AnioRegistro,
         "Cuenta":element.Cuenta,
         "Editando":element.Editando,
@@ -977,10 +1005,13 @@ else {
         Registro.Valor2=Number(  this.quitarSimbolo(Valor))
       }
       Registro.Usuario=this.usuario.Usuario
-      
+      this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor=Registro.Valor
+      this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor2=Registro.Valor
    
       this.conS.ActualizarRegistro(Registro).then(resp=>{
             this.toastr.success('Guardado', '¡Exito!');
+            this.calcularImporteTotal(this.Registros)
+            this.calcularImporteSubTotal(this.Registros)
         })
   
     
@@ -1140,13 +1171,13 @@ crearRegistro(tipo:any) {
   if(this.authS.validarAtributo('Oc1llyeOkxfUlMz96F0a',[])==true && tipo==1){
 
     this.guardarRegistro(tipo)
-    this.obtenerRegistros()
+   // this.obtenerRegistros()
     
    }
  else if(this.authS.validarAtributo('Uzt6wv7KRCcTOp63coNJ',[])==true && tipo==2){
 
     this.guardarRegistro(tipo)
-    this.obtenerRegistros()
+   // this.obtenerRegistros()
  
    }
    else {
@@ -1388,14 +1419,58 @@ if(this.idTipoRegistro==1){
 else {
   this.registroForm.value.Proyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.NombreSucursal;
 }
+this.conS.crearRegistro(this.registroForm.value).then(id => {
 
-this.conS.crearRegistro(this.registroForm.value).then(resp=>{
 
-  this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+  this.OrdenMax = this.registrosBackUp.reduce((maxOrden, objeto) => {
     return Math.max(maxOrden, objeto.Orden);
 }, 0);
+  let _Registro={
+    "Activo":this.registroForm.value.Activo,
+    "Animation":'animate__animated animate__flipInX',
+    "ActivarAnimation":true,
+    "AnioRegistro":this.registroForm.value.AnioRegistro,
+    "Cuenta":this.registroForm.value.Cuenta,
+    "Editando":this.registroForm.value.Editando,
+    "Elemento":this.registroForm.value.Elemento,
+    "FechaRegistro":this.registroForm.value.FechaRegistro,
+    "MesRegistro":this.registroForm.value.MesRegistro,
+    "Nuevo":this.registroForm.value.Nuevo,
+    "NumMes":this.registroForm.value.NumMes,
+    "NumSemana":this.registroForm.value.NumSemana,
+    "Orden": this.OrdenMax+1,
+    "Semana":this.registroForm.value.Semana,
+    "Valor":this.registroForm.value.Valor,
+    "Valor2":this.registroForm.value.Valor,
+    "TipoOperacion":this.registroForm.value.TipoOperacion || '',
+    "Tipo":this.registroForm.value.Tipo || '',
+    "TipoRegistro":this.idTipoRegistro,
+    "id":id,
+    "idCategoria":this.registroForm.value.idCategoria,
+    "idEmpresa":this.registroForm.value.idEmpresa,
+    "idFlujo":this.registroForm.value.idFlujo,
+    "idTipo":idTipo,
+    "idMatriz":this.registroForm.value.idMatriz,
+    "idSocioNegocio":this.registroForm.value.idSocioNegocio,
+    "idSucursal":this.registroForm.value.idSucursal,
+    "idProyecto":this.registroForm.value.idProyecto || '',
+    "Sucursal":this.registroForm.value.Sucursal || '',
+    "Proyecto":this.registroForm.value.Proyecto || '',
+    "NombreElemento":this.registroForm.value.Elemento.label || '',
+    "NumCuenta":this.registroForm.value.Cuenta.Cuenta || '',
+    "CategoriaNombre":this.registroForm.value.idCategoria.Nombre || '',
+    "SocioNegocio":this.registroForm.value.idSocioNegocio.Nombre || '',
+    "Comentarios":this.registroForm.value.Comentarios || '',
+  
+  }
+
+  this.registrosBackUp.push(_Registro)
+  this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+  console.log('Registros',this.Registros)
 this.cargarFormulario()
-})
+}).catch(error => {
+  console.error('Error al crear el registro:', error);
+});
 
 }
 copiarRegistro(registro:any){

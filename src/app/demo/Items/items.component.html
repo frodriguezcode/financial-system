@@ -166,7 +166,8 @@
                           [options]="Proyectos" 
                           [(ngModel)]="item.Proyectos" 
                           [maxSelectedLabels]="1" 
-                          [selectedItemsLabel]="getSelecteProyectosLabelList(item.Sucursales)"
+                          appendTo="body"
+                          [selectedItemsLabel]="getSelecteProyectosLabelList(item.Proyectos)"
                           optionLabel="Nombre" 
                           placeholder="Seleccione los proyectos" />
                        </ng-template>

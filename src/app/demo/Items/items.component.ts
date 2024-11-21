@@ -293,7 +293,6 @@ borrarCuenta(idCuenta:string){
   }
   getSelecteProyectosLabelList(ProyectosSeleccionados:any): any {
     const count = ProyectosSeleccionados? ProyectosSeleccionados.length : 0
-    
     return count >= 2 ? `${count} sucursales seleccionadas` : null;
   }
   getSelecteProyectosLabelCrear(): any {
@@ -303,7 +302,7 @@ borrarCuenta(idCuenta:string){
   }
   getSelecteSucursalesLabelCrear(): any {
     const count = this.ItemForm.value['Sucursales']? this.ItemForm.value['Sucursales'].length : 0
-    
+
     return count >= 2 ? `${count} sucursales seleccionadas` : null;
   }
 
@@ -337,6 +336,7 @@ borrarCuenta(idCuenta:string){
   getNameProyectos(proyectos:any){
     let Proyectos=[]
     if (proyectos.length>0){
+      
       proyectos.forEach((proy:any) => {
         Proyectos.push(this.getNameProyecto(proy.id))
       })
@@ -744,7 +744,7 @@ getIdCategoria(idCategoria:string){
 
 }
   toggleEdicion(Item: any) {
-
+    console.log('Item',Item)
     Item.Editando = !Item.Editando;
   }
 

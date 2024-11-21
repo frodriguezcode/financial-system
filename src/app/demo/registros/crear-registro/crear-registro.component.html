@@ -214,6 +214,7 @@
         </th>
         <!-- <th style="text-transform: uppercase;font-size: 13px;">Registro</th> -->
         <th  style="text-transform: uppercase;font-size: 13px;" >Fecha</th>
+        <th  style="text-transform: uppercase;font-size: 13px;" >Orden</th>
         <th  *ngIf="this.idTipoRegistro==1" style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th  *ngIf="this.idTipoRegistro==2" style="text-transform: uppercase;font-size: 13px;">Proyecto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
         <th  style="text-transform: uppercase;font-size: 13px;">Concepto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
@@ -256,6 +257,9 @@
         </td> -->
         <td class="text-center">
           <input style="min-height: 1rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
+        </td>
+        <td class="text-center">
+          {{registros.Orden}}
         </td>
 
         <td *ngIf="registros.TipoRegistro==1" class="text-center">
