@@ -1474,57 +1474,57 @@ this.cargarFormulario()
 
 }
 copiarRegistro(registro:any){
-  this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
-    return Math.max(maxOrden, objeto.Orden);
-}, 0);
-  if (this.Registros.some(r => r.Orden === registro.Orden + 1 && r.idFlujo === registro.idFlujo)) {
+  
+  this.registrosBackUp.push(registro)
+  this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+//   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+//     return Math.max(maxOrden, objeto.Orden);
+// }, 0);
+//   if (this.Registros.some(r => r.Orden === registro.Orden + 1 && r.idFlujo === registro.idFlujo)) {
 
-    return; // Salir si el registro ya ha sido duplicado
-  }
-  const coleccionRef = this.firestore.collection('Registro');
-  const nuevoDocRef = coleccionRef.doc().ref; 
-  const nuevoId = nuevoDocRef.id;
-  let _RegistroCopy=
-  {
-    "Elemento": registro.Elemento,
-    "Cuenta": registro.Cuenta,
-    "Valor": registro.Valor,
-    "idFlujo": registro.idFlujo,
-    "NumMes": registro.NumMes,
-    "NumSemana": registro.NumSemana,
-    "AnioRegistro": registro.AnioRegistro,
-    "Semana": registro.Semana,
-    "MesRegistro": registro.MesRegistro,
-    "Activo": registro.Activo,
-    "Nuevo": registro.Nuevo,
-    "Editando": registro.Editando,
-    "Orden": this.OrdenMax+1,
-    "Proyecto":registro.Proyecto,
-    "idSocioNegocio": registro.idSocioNegocio,
-    "idEmpresa": registro.idEmpresa,
-    "idMatriz": registro.idMatriz,
-    "idCategoria": registro.idCategoria,
-    "NombreElemento": registro.NombreElemento,
-    "NumCuenta": registro.NumCuenta,
-    "Comentarios": registro.Comentarios,
-    "CategoriaNombre": registro.CategoriaNombre,
-    "SocioNegocio": registro.SocioNegocio,
-    "idSucursal": registro.idSucursal,
-    "FechaRegistro": registro.FechaRegistro,
-    "idTipo": registro.idTipo,
-    "TipoRegistro": registro.TipoRegistro,
-    "idProyecto": registro.idProyecto,
-    "Sucursal": registro.Sucursal,
-    "id":nuevoId
+//     return; 
+//   }
+//   const coleccionRef = this.firestore.collection('Registro');
+//   const nuevoDocRef = coleccionRef.doc().ref; 
+//   const nuevoId = nuevoDocRef.id;
+//   let _RegistroCopy=
+//   {
+//     "Elemento": registro.Elemento,
+//     "Cuenta": registro.Cuenta,
+//     "Valor": registro.Valor,
+//     "idFlujo": registro.idFlujo,
+//     "NumMes": registro.NumMes,
+//     "NumSemana": registro.NumSemana,
+//     "AnioRegistro": registro.AnioRegistro,
+//     "Semana": registro.Semana,
+//     "MesRegistro": registro.MesRegistro,
+//     "Activo": registro.Activo,
+//     "Nuevo": registro.Nuevo,
+//     "Editando": registro.Editando,
+//     "Orden": this.OrdenMax+1,
+//     "Proyecto":registro.Proyecto,
+//     "idSocioNegocio": registro.idSocioNegocio,
+//     "idEmpresa": registro.idEmpresa,
+//     "idMatriz": registro.idMatriz,
+//     "idCategoria": registro.idCategoria,
+//     "NombreElemento": registro.NombreElemento,
+//     "NumCuenta": registro.NumCuenta,
+//     "Comentarios": registro.Comentarios,
+//     "CategoriaNombre": registro.CategoriaNombre,
+//     "SocioNegocio": registro.SocioNegocio,
+//     "idSucursal": registro.idSucursal,
+//     "FechaRegistro": registro.FechaRegistro,
+//     "idTipo": registro.idTipo,
+//     "TipoRegistro": registro.TipoRegistro,
+//     "idProyecto": registro.idProyecto,
+//     "Sucursal": registro.Sucursal,
+//     "id":nuevoId
 
-  }
-
- 
-
+//   }
     // const indiceRegistro = this.Registros.findIndex(r => r.Orden === registro.Orden);
     // this.Registros.splice(indiceRegistro + 1, 0, _RegistroCopy);
-    const batch = this.firestore.firestore.batch();
-    batch.set(nuevoDocRef, _RegistroCopy);
+    // const batch = this.firestore.firestore.batch();
+    // batch.set(nuevoDocRef, _RegistroCopy);
   
     // let OrdenNuevo:number=1
     // this.Registros.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
@@ -1544,19 +1544,16 @@ copiarRegistro(registro:any){
     
 
 
-    batch.commit()
-    .then(() => {
-      this.toastr.success('Exitoso', `¡Registro copiado al final de la lista! Registro # ${_RegistroCopy.Orden}`,{
-        timeOut: 3000,
-        positionClass: 'toast-bottom-right' 
-      });
-    })
-    .catch(error => {
+    // batch.commit()
+    // .then(() => {
+    //   this.toastr.success('Exitoso', `¡Registro copiado al final de la lista! Registro # ${_RegistroCopy.Orden}`,{
+    //     timeOut: 3000,
+    //     positionClass: 'toast-bottom-right' 
+    //   });
+    // })
+    // .catch(error => {
    
-    });
-
-
-
+    // });
 
 }
 getSelectedItemsLabel(): string {
