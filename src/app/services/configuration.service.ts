@@ -545,6 +545,12 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
         .ref.set({ ...Registro, id }) // Usa spread operator para añadir el id al objeto
         .then(() => id); // Retorna el ID una vez que se complete la operación
     }
+    copiarRegistro(Registro: any) {
+      return this.afs
+        .collection('Registro')
+        .doc(Registro.id)
+        .ref.set(Object.assign(Registro, { id: Registro.id }));
+    }
     
     crearRegistroFactura(Registro: any) {
       const id = this.afs.createId();

@@ -1438,7 +1438,7 @@ this.conS.crearRegistro(this.registroForm.value).then(id => {
     "Nuevo":this.registroForm.value.Nuevo,
     "NumMes":this.registroForm.value.NumMes,
     "NumSemana":this.registroForm.value.NumSemana,
-    "Orden": this.OrdenMax+1,
+    "Orden": this.registrosBackUp.length+1,
     "Semana":this.registroForm.value.Semana,
     "Valor":this.registroForm.value.Valor,
     "Valor2":this.registroForm.value.Valor,
@@ -1475,8 +1475,46 @@ this.cargarFormulario()
 }
 copiarRegistro(registro:any){
   
-  this.registrosBackUp.push(registro)
-  this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+  try{
+    let RegistroCopiado: any = JSON.parse(JSON.stringify(registro)); // Crear una copia independiente
+  
+    delete RegistroCopiado.id;
+    
+    const coleccionRef = this.firestore.collection('Registro');
+    const nuevoDocRef = coleccionRef.doc().ref;
+    const nuevoId = nuevoDocRef.id;
+    
+    RegistroCopiado.id = nuevoId;
+    
+    const ordenOriginal = registro.Orden; // Orden del registro original
+    let _RegistrosPost:any=this.registrosBackUp.filter((reg:any)=>reg.Orden>ordenOriginal)
+
+    if(_RegistrosPost.length>0){
+      _RegistrosPost.forEach(element => {
+        element.Orden+=1
+      });
+    }
+    console.log('_RegistrosPost',_RegistrosPost)
+    RegistroCopiado.Orden = ordenOriginal + 1;
+
+    RegistroCopiado.Orden = this.OrdenMax + 1;
+    
+    this.conS.copiarRegistro(RegistroCopiado).then(resp => {
+    })
+      
+      this.registrosBackUp.push(RegistroCopiado)
+      this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+      console.log('Registros',this.Registros)
+
+      this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+        return Math.max(maxOrden, objeto.Orden);
+      }, 0);
+      
+  }
+  catch(error){
+
+  }
+
 //   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
 //     return Math.max(maxOrden, objeto.Orden);
 // }, 0);
