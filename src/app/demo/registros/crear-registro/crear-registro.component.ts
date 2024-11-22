@@ -296,7 +296,6 @@ borrarRegistros(){
    this.registrosSeleccionados.forEach(element => {
     try{
       this.conS.borrarRegistro(element.id).then(resp=>{
-    
         Contador=+1
       })
       //this.Registros=this.Registros.filter((reg:any)=>reg.id!=element.id && reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
@@ -335,6 +334,8 @@ borrarRegistros(){
 
 
    });
+
+   
    this.registrosSeleccionados=[]
    this.calcularImporteTotal(this.Registros)
    this.calcularImporteSubTotal(this.Registros)
@@ -631,6 +632,7 @@ obtenerRegistros(){
                    "Animation":'animate__animated animate__flipInX',
                    "ActivarAnimation":false,
                    "AnioRegistro":element.AnioRegistro,
+                   "NumTransaction":element.NumTransaction,
                    "Cuenta":element.Cuenta,
                    "Editando":element.Editando,
                    "Elemento":element.Elemento,
@@ -708,6 +710,7 @@ obtenerRegistros(){
         "Animation":'animate__animated animate__flipInX',
         "ActivarAnimation":false,
         "AnioRegistro":element.AnioRegistro,
+        "NumTransaction":element.NumTransaction,
         "Cuenta":element.Cuenta,
         "Editando":element.Editando,
         "Elemento":element.Elemento,
@@ -793,7 +796,7 @@ switchTipoRegistro(idTipo){
   else {
 
     this.idTipoRegistro=idTipo
-    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo)
+    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo).sort((a:any, b:any) => b.Orden - a.Orden)
     this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
 
  
@@ -1412,6 +1415,7 @@ this.registroForm.value.TipoRegistro=this.idTipoRegistro;
 
 this.registroForm.value.idSucursal=this.SucursaleSeleccionada==undefined ? "":this.SucursaleSeleccionada.id;
 this.registroForm.value.idProyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.id;
+this.registroForm.value.NumTransaction='000-'+ Number(this.registrosBackUp.length+1)
 if(this.idTipoRegistro==1){
 
   this.registroForm.value.Sucursal=this.getNombreSucursal(this.registroForm.value.idSucursal);
@@ -1439,6 +1443,7 @@ this.conS.crearRegistro(this.registroForm.value).then(id => {
     "NumMes":this.registroForm.value.NumMes,
     "NumSemana":this.registroForm.value.NumSemana,
     "Orden": this.registrosBackUp.length+1,
+    "NumTransaction":'000-'+ this.registrosBackUp.length+1,
     "Semana":this.registroForm.value.Semana,
     "Valor":this.registroForm.value.Valor,
     "Valor2":this.registroForm.value.Valor,
@@ -1489,16 +1494,27 @@ copiarRegistro(registro:any){
     const ordenOriginal = registro.Orden; // Orden del registro original
     let _RegistrosPost:any=this.registrosBackUp.filter((reg:any)=>reg.Orden>ordenOriginal)
 
+    const batch = this.firestore.firestore.batch();
     if(_RegistrosPost.length>0){
       _RegistrosPost.forEach(element => {
+        const docRef = this.firestore.collection('Registro').doc(element.id).ref;
         element.Orden+=1
+        batch.update(docRef, { Orden: element.Orden });
       });
+
+      batch.commit()
+      .then(() => {
+        console.log('Registros actualizados exitosamente');
+      })
+      .catch((error) => {
+        console.error('Error al actualizar registros: ', error);
+      });
+
     }
-    console.log('_RegistrosPost',_RegistrosPost)
     RegistroCopiado.Orden = ordenOriginal + 1;
 
-    RegistroCopiado.Orden = this.OrdenMax + 1;
-    
+
+    RegistroCopiado.ActivarAnimation=true
     this.conS.copiarRegistro(RegistroCopiado).then(resp => {
     })
       
@@ -1506,9 +1522,9 @@ copiarRegistro(registro:any){
       this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
       console.log('Registros',this.Registros)
 
-      this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
-        return Math.max(maxOrden, objeto.Orden);
-      }, 0);
+      // this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+      //   return Math.max(maxOrden, objeto.Orden);
+      // }, 0);
       
   }
   catch(error){

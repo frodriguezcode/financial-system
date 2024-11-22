@@ -232,7 +232,12 @@
 
     <ng-template pTemplate="body" let-registros let-index="index">
    
-      <tr  *ngIf="cargando==false"   [ngClass]="{'Egreso': registros.idTipo === 2, 'Ingreso' : registros.idTipo === 1 }">
+      <tr  *ngIf="cargando==false"   
+      [ngClass]="{
+        'Egreso': registros.idTipo === 2, 
+        'Ingreso': registros.idTipo === 1, 
+        'animate__animated animate__fadeIn': registros.ActivarAnimation
+      }">
         
         <!-- Elementos -->
         <td  style="background-color: #F8FAFB;" pFrozenColumn>
