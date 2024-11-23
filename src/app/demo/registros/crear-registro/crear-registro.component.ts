@@ -600,8 +600,10 @@ if(this.FechaDesde.value==''|| this.FechaHasta.value==''){
 }
 else {
   this.Registros=registrosFiltrados.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro
-  && reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value
+  && (reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value)
 )
+
+this.FiltrosSideBar=false
 this.calcularImporteSubTotal(this.Registros)
 }
 
@@ -933,7 +935,8 @@ else {
   //     timer: 1500
   //   });
   // }
-   if(Registro.Elemento==""){
+  console.log('Registro',Registro)
+   if(Registro.Elemento=="" || Registro.Elemento==undefined){
       Swal.fire({
         position: "center",
         icon: "warning",
@@ -1442,8 +1445,8 @@ this.conS.crearRegistro(this.registroForm.value).then(id => {
     "Nuevo":this.registroForm.value.Nuevo,
     "NumMes":this.registroForm.value.NumMes,
     "NumSemana":this.registroForm.value.NumSemana,
-    "Orden": this.registrosBackUp.length+1,
-    "NumTransaction":'000-'+ this.registrosBackUp.length+1,
+    "Orden":  this.OrdenMax+1 ,
+    "NumTransaction":'000-'+ this.OrdenMax+1 ,
     "Semana":this.registroForm.value.Semana,
     "Valor":this.registroForm.value.Valor,
     "Valor2":this.registroForm.value.Valor,
@@ -1521,6 +1524,9 @@ copiarRegistro(registro:any){
       this.registrosBackUp.push(RegistroCopiado)
       this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
       console.log('Registros',this.Registros)
+
+      this.calcularImporteSubTotal(this.Registros)
+      this.calcularImporteTotal(this.Registros)
 
       // this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
       //   return Math.max(maxOrden, objeto.Orden);
