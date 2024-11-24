@@ -181,75 +181,65 @@
 </div>
 <br>
 
-  <p-table
-  #dt1
-  [value]="Registros"
-  [paginator]="true"
-  [rows]="10"
-  [scrollable]="true"
-  [styleClass]="claseTabla"
-  scrollHeight="550px"
-  [(selection)]="registrosSeleccionados"
-  dataKey="id"
-  [showCurrentPageReport]="true"
-  scrollDirection="both"
-  [resizableColumns]="true"
-  [autoLayout]="true"
-  [tableStyle]="{ 'min-width': '50rem' }"
-  [globalFilterFields]="['AnioRegistro', 'FechaRegistro', 'MesRegistro', 'Semana', 'NombreElemento','NumCuenta','CategoriaNombre','SocioNegocio']"
-  currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
-  [rowsPerPageOptions]="[10, 20, 30]"
-    
-  >
-  
-  
-    <ng-template pTemplate="caption" >
-  
-    </ng-template>
-  
-    <ng-template pTemplate="header">
+<div class="table table-responsive" style="max-height: 600px;overflow-y: auto;">
+  <table class="table table-100 sticky-top">
+    <thead>
       <tr class="text-center">
-        <th style="width: 4rem;background-color: #F8FAFB;" pFrozenColumn [frozen]="true"><p-tableHeaderCheckbox /></th>
-        <th [frozen]="true"
-        style="text-transform: uppercase;font-size: 13px; background-color: #F8FAFB;" pFrozenColumn
+        <th scope="col">
+          <div class="form-check">
+          <input (change)="seleccionarRegistros()"  class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+        </div>
+      </th>
+      <ng-container style="margin-right:100px; ">
+        <th class="text-center" 
+        style="text-transform: uppercase;font-size: 13px;background-color: #F8FAFB " 
         >
        <span>Copiar</span> 
       
         </th>
-        <!-- <th style="text-transform: uppercase;font-size: 13px;">Registro</th> -->
-        <th  style="text-transform: uppercase;font-size: 13px;" >Fecha</th>
-        <th  style="text-transform: uppercase;font-size: 13px;" >Orden</th>
-        <th  *ngIf="this.idTipoRegistro==1" style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th  *ngIf="this.idTipoRegistro==2" style="text-transform: uppercase;font-size: 13px;">Proyecto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Concepto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Tipo de Flujo</th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Cuenta Contable</th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Importe</th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Tipo de Operación</th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Cuenta Bancaria <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <!-- <th style="text-transform: uppercase;font-size: 13px;">Flujo</th> -->
-        <th style="text-transform: uppercase;font-size: 13px;">Socio Negocios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th style="text-transform: uppercase;font-size: 13px;">Guardar</th>
-      </tr>
-    </ng-template>
+
+      </ng-container>
+      <!-- <th style="text-transform: uppercase;font-size: 13px;">Registro</th> -->
+      <th  style="text-transform: uppercase;font-size: 13px;" >Fecha</th>
+      <th  style="text-transform: uppercase;font-size: 13px;" >Orden</th>
+      <th  *ngIf="this.idTipoRegistro==1" style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+      <th  *ngIf="this.idTipoRegistro==2" style="text-transform: uppercase;font-size: 13px;">Proyecto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+      <th  style="text-transform: uppercase;font-size: 13px;">Concepto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+      <th  style="text-transform: uppercase;font-size: 13px;">Tipo de Flujo</th>
+      <th  style="text-transform: uppercase;font-size: 13px;">Cuenta Contable</th>
+      <th  style="text-transform: uppercase;font-size: 13px;">Importe</th>
+      <th  style="text-transform: uppercase;font-size: 13px;">Tipo de Operación</th>
+      <th  style="text-transform: uppercase;font-size: 13px;">Cuenta Bancaria <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+      <!-- <th style="text-transform: uppercase;font-size: 13px;">Flujo</th> -->
+      <th style="text-transform: uppercase;font-size: 13px;">Socio Negocios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
+      <th style="text-transform: uppercase;font-size: 13px;">Guardar</th>
+    </tr>
   
-  
-    <ng-template pTemplate="body" let-registros let-index="index">
-   
-      <tr  *ngIf="cargando==false"   
+    </thead>
+    <tbody  *ngIf="cargando==false"  >
+      <tr  
+      *ngFor="let registros of Registros"
       [ngClass]="{
         'Egreso': registros.idTipo === 2, 
         'Ingreso': registros.idTipo === 1, 
         'animate__animated animate__fadeIn': registros.ActivarAnimation
       }">
         
-        <!-- Elementos -->
-        <td  style="background-color: #F8FAFB;" pFrozenColumn>
-          <p-tableCheckbox [value]="registros" />
+      
+        <td  >
+          <div class="form-check">
+            <input class="form-check-input"
+             type="checkbox"
+             (change)="seleccionarRegistro(registros)" 
+             value="" id="flexCheckChecked" [checked]="registros.Seleccionado">
+         
+          </div>
       </td>
+      <ng-container style="margin-left:100px; ">
+
         <td class="text-center"
        style="background-color: #F8FAFB"
-         pFrozenColumn>
+         >
           <ng-container >
             <button type="button" (click)="copiarRegistro(registros)" 
            
@@ -259,6 +249,7 @@
             <i class="fa-solid fa-copy"></i></button>
           </ng-container>
         </td>
+      </ng-container>
         <!-- <td class="text-center">
           <ng-container>
             {{ registros.Orden }}
@@ -480,9 +471,10 @@
             ><i class="fa-solid fa-floppy-disk"></i
           ></button>
         </td>
-      </tr>
-    </ng-template>
-  </p-table>
+    </tbody>
+  </table>
+
+</div>
 
 
 

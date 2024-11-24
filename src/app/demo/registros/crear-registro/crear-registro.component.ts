@@ -291,6 +291,33 @@ getNombreEmpresa(idEmpresa:string){
     return 'Sin empresa'
   }
 }
+seleccionarRegistro(registro:any){
+  let RegistroEncontrado:any=[]
+  registro.Seleccionado=!registro.Seleccionado
+  RegistroEncontrado=this.registrosSeleccionados.filter((reg:any)=>reg.id==registro.id)
+  if(RegistroEncontrado.length==0){
+    this.registrosSeleccionados.push(registro)
+
+  }
+  else {
+    this.registrosSeleccionados.splice(this.registrosSeleccionados.indexOf(RegistroEncontrado[0]))
+  }
+  console.log('registrosSeleccionados',this.registrosSeleccionados)
+  console.log('registros',this.Registros)
+}
+seleccionarRegistros(){
+  this.Registros.forEach(element => {
+    element.Seleccionado=!element.Seleccionado
+    
+  });
+  if(!this.Registros.every(obj => obj.Seleccionado) ) {
+    this.registrosSeleccionados=[]
+  }
+  else {
+    this.registrosSeleccionados=this.Registros
+  }
+
+}
 borrarRegistros(){
 
   if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
@@ -853,6 +880,8 @@ else {
     return true
   }
 }
+
+
 borrarRegistro(idRegistro){
   if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
 
@@ -1428,6 +1457,7 @@ if(this.idTipoRegistro==1){
 else {
   this.registroForm.value.Proyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.NombreSucursal;
 }
+this.registroForm.value.Seleccionado=false
 this.conS.crearRegistro(this.registroForm.value).then(id => {
 
 
@@ -1441,6 +1471,7 @@ this.conS.crearRegistro(this.registroForm.value).then(id => {
     "AnioRegistro":this.registroForm.value.AnioRegistro,
     "Cuenta":this.registroForm.value.Cuenta,
     "Editando":this.registroForm.value.Editando,
+    "Seleccionado":false,
     "Elemento":this.registroForm.value.Elemento,
     "FechaRegistro":this.registroForm.value.FechaRegistro,
     "MesRegistro":this.registroForm.value.MesRegistro,

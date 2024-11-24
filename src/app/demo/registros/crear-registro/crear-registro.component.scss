@@ -108,39 +108,52 @@
   text-overflow: ellipsis;
 }
 
-
-// :host ::ng-deep .p-dropdown { 
-//   background-color: white; 
-//   transform: scale(0.9);
-// }
-
-::ng-deep .p-multiselect-panel .p-multiselect-items {
-  width: 100%;
-  transform: scale(0.9);
+.table-100 th,
+.table-100 td {
+  width:250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
 }
 
-
-
-::ng-deep .p-multiselect-panel .p-multiselect-item {
-  width: 100%;
-  text-align: center; /* opcional: para que el texto esté alineado a la izquierda */
+/* Encabezado fijo */
+thead th {
+  position: sticky;
+  top: 0; /* Fijar el encabezado en la parte superior */
+  background-color: white; /* Fondo del encabezado para evitar superposición visual */
+  z-index: 3; /* Asegura que el encabezado esté encima de las celdas normales */
 }
 
-.p-multiSelect {
+/* Primera columna fija (incluye encabezado y cuerpo) */
+
+tbody td:first-child {
+  position: sticky;
+  left: 0; /* Fija la primera columna al inicio */
+  background-color: white; /* Fondo blanco para evitar superposición visual */
+  z-index: 3; /* Más alto que las celdas normales y encabezado */
+}
+thead th:first-child {
+  position: sticky;
+  left: 0; /* Fija la primera columna al inicio */
+  background-color: white; /* Fondo blanco para evitar superposición visual */
+  z-index: 4; /* Más alto que las celdas normales y encabezado */
+}
+
+/* Segunda columna fija (incluye encabezado y cuerpo) */
+tbody td:nth-child(2) {
+  position: sticky;
+  left: 48px; /* Ajusta según el ancho de la primera columna */
   background-color: white;
-  transform: scale(0.9);
+  z-index: 3; /* Menor que la primera columna, mayor que las celdas normales */
+}
+thead th:nth-child(2) {
+  position: sticky;
+  left: 48px; /* Ajusta según el ancho de la primera columna */
+  background-color: white;
+  z-index: 4; /* Menor que la primera columna, mayor que las celdas normales */
 }
 
-.scroll-wrapper {
-  position: relative;
+thead th {
+  border-bottom: 2px solid #dee2e6;
 }
 
-.scroll-header {
-  overflow-x: auto;
-  height: 17px; /* Ajustar según la barra de desplazamiento */
-  margin-bottom: -17px; /* Superpone visualmente la tabla */
-}
-
-::ng-deep .p-datatable-scrollable-body {
-  overflow-x: hidden; /* Oculta la barra inferior */
-}
