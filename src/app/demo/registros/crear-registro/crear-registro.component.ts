@@ -1,5 +1,5 @@
 // angular import
-import { Component, Injectable, Input, OnInit, importProvidersFrom } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Injectable, Input, OnInit, ViewChild, importProvidersFrom } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 // project import
@@ -81,9 +81,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./crear-registro.component.scss'],
   providers: [MessageService]
 })
-export default class CrearRegistroComponent implements OnInit {
+export default class CrearRegistroComponent implements OnInit  {
 @Input() TipoRegistro: any;
-activeIndex: number = 0;
   constructor(
     private conS:ConfigurationService,private datePipe: DatePipe, 
     private messageService: MessageService,
@@ -156,6 +155,7 @@ cargando:boolean
   Fecha:any= new Date();
   ImporteTotal:number=0
   ImporteSubTotal:number=0
+
 ngOnInit(): void {
 
   this.MesesTodos= [
@@ -245,6 +245,8 @@ ngOnInit(): void {
 
       
 }
+
+
 
 obtenerTiposOperacionByEmpresa(){
   this.conS.obtenerTiposOperacionByMatriz(this.usuario.idMatriz).subscribe(resp=>{

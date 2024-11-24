@@ -180,6 +180,7 @@
   </div>
 </div>
 <br>
+
   <p-table
   #dt1
   [value]="Registros"
@@ -191,18 +192,21 @@
   [(selection)]="registrosSeleccionados"
   dataKey="id"
   [showCurrentPageReport]="true"
+  scrollDirection="both"
+  [resizableColumns]="true"
+  [autoLayout]="true"
   [tableStyle]="{ 'min-width': '50rem' }"
   [globalFilterFields]="['AnioRegistro', 'FechaRegistro', 'MesRegistro', 'Semana', 'NombreElemento','NumCuenta','CategoriaNombre','SocioNegocio']"
   currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
   [rowsPerPageOptions]="[10, 20, 30]"
     
   >
-
-
+  
+  
     <ng-template pTemplate="caption" >
-
+  
     </ng-template>
-
+  
     <ng-template pTemplate="header">
       <tr class="text-center">
         <th style="width: 4rem;background-color: #F8FAFB;" pFrozenColumn [frozen]="true"><p-tableHeaderCheckbox /></th>
@@ -228,8 +232,8 @@
         <th style="text-transform: uppercase;font-size: 13px;">Guardar</th>
       </tr>
     </ng-template>
- 
-
+  
+  
     <ng-template pTemplate="body" let-registros let-index="index">
    
       <tr  *ngIf="cargando==false"   
@@ -266,7 +270,7 @@
         <td class="text-center">
           {{registros.Orden}}
         </td>
-
+  
         <td *ngIf="registros.TipoRegistro==1" class="text-center">
           <p-dropdown
           [options]="Sucursales"
@@ -307,7 +311,7 @@
         </p-dropdown>
         
         </td>
-
+  
         <td class="text-center">
           <input
           style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
@@ -335,7 +339,7 @@
           </ng-template>
         </p-dropdown>
         </td>
-
+  
         <td class="text-center" >
           <p *ngIf="this.Items.length==0" 
           class="animate__animated animate__bounceIn"
@@ -349,7 +353,7 @@
           </p>
           <p-dropdown
           [options]="getCuentabyCategoria(registros.idCategoria)"
-
+  
           [(ngModel)]="registros.NombreElemento"
           name="registros.Elemento"
           optionLabel="label"
@@ -368,9 +372,9 @@
           </ng-template>
         </p-dropdown>
         </td>
-
+  
         
-
+  
         <td class="text-center">
           <!-- <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
           style="color: red; font-size: 11px;" 
@@ -386,7 +390,7 @@
               [ngModel]="registros.Valor | currencySymbol"
               class="form-control text-center col-6"/>
         </td>
-
+  
         <td class="text-center">
           <p-dropdown
             [options]="TiposOperacion"
@@ -406,7 +410,7 @@
             </ng-template>
           </p-dropdown>
         </td>
-
+  
         <td class="text-center">
           <p-dropdown
             [options]="cuentas"
@@ -426,10 +430,10 @@
             </ng-template>
           </p-dropdown>
         </td>
-
- 
-
-
+  
+  
+  
+  
         <!-- <td class="text-center">
           <p-dropdown
             [options]="Flujos"
@@ -468,8 +472,8 @@
             </ng-template>
           </p-dropdown>
         </td>
-
-
+  
+  
        
         <td class="text-center">
           <button type="button" [disabled]="isNegativo==false || this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0" (click)="salvarRegistro(registros,Valor.value)" class="btn btn-success" ngbTooltip="Guardar registro"
@@ -479,6 +483,10 @@
       </tr>
     </ng-template>
   </p-table>
+
+
+
+
   <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
   *ngIf="ImporteSubTotal<0">
   Importe Sub-Total: <strong>{{ " -$ " + (ImporteSubTotal*-1 | number)}}</strong>

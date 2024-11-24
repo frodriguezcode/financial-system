@@ -131,3 +131,16 @@
   transform: scale(0.9);
 }
 
+.scroll-wrapper {
+  position: relative;
+}
+
+.scroll-header {
+  overflow-x: auto;
+  height: 17px; /* Ajustar según la barra de desplazamiento */
+  margin-bottom: -17px; /* Superpone visualmente la tabla */
+}
+
+::ng-deep .p-datatable-scrollable-body {
+  overflow-x: hidden; /* Oculta la barra inferior */
+}
