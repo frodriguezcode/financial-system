@@ -293,7 +293,7 @@ borrarCuenta(idCuenta:string){
   }
   getSelecteProyectosLabelList(ProyectosSeleccionados:any): any {
     const count = ProyectosSeleccionados? ProyectosSeleccionados.length : 0
-    return count >= 2 ? `${count} sucursales seleccionadas` : null;
+    return count >= 2 ? `${count} proyectos seleccionados` : null;
   }
   getSelecteProyectosLabelCrear(): any {
     const count = this.ItemForm.value['Proyectos']? this.ItemForm.value['Proyectos'].length : 0
@@ -319,9 +319,9 @@ borrarCuenta(idCuenta:string){
     return Sucursales
   }
 
-  getNameProyecto(idProyecto:any){
+  getNameProyecto(idProyecto:any,idEmpresa:any){
     if(idProyecto=='0'){
-      return 'General'
+      return this.getNombreEmpresa(idEmpresa)
     }
     else {
       let Proyecto = this.Proyectos.filter((proy: any) => proy.id==idProyecto)
@@ -329,7 +329,7 @@ borrarCuenta(idCuenta:string){
         return '' + Proyecto[0].Nombre
       }
       else{
-        return 'General'
+        return this.getNombreEmpresa(idEmpresa)
       }
     }
   }
@@ -338,7 +338,7 @@ borrarCuenta(idCuenta:string){
     if (proyectos.length>0){
       
       proyectos.forEach((proy:any) => {
-        Proyectos.push(this.getNameProyecto(proy.id))
+        Proyectos.push(this.getNameProyecto(proy.id,proy.idEmpresa))
       })
     }
     else {
@@ -745,6 +745,7 @@ getIdCategoria(idCategoria:string){
 }
   toggleEdicion(Item: any) {
     console.log('Item',Item)
+    console.log('Proyectos',this.Proyectos)
     Item.Editando = !Item.Editando;
   }
 
