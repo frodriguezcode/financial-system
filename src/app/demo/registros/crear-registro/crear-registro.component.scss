@@ -167,4 +167,8 @@ thead th {
   border-bottom: 2px solid #dee2e6;
 }
 
-
+.ui-dropdown-panel {
+  background-color: white !important;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999 !important;
+}
