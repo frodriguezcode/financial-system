@@ -102,7 +102,7 @@ File: style.css
 }
 
 .p-dropdown .p-dropdown-label {
-  background: transparent;
+  // background: transparent;
   border: 0 none;
   font-size: 13px;
   font-weight: bold;
@@ -117,3 +117,8 @@ input, button, select, optgroup, textarea {
   height: 2.5rem;
 }
 
+
+
+.p-overlay, .p-component, .ng-star-inserted{
+  z-index: 1024 !important;
+}
