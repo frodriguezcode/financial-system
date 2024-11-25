@@ -116,6 +116,16 @@
   text-overflow: ellipsis; 
 }
 
+.table-responsive {
+  cursor: grab; /* Mostrar la mano abierta cuando no se arrastra */
+  overflow-x: auto; /* Habilitar el scroll horizontal */
+
+}
+
+.table-responsive:active {
+  cursor: grabbing; /* Cambiar a la mano cerrada cuando se arrastra */
+}
+
 /* Encabezado fijo */
 thead th {
   position: sticky;
@@ -156,4 +166,5 @@ thead th:nth-child(2) {
 thead th {
   border-bottom: 2px solid #dee2e6;
 }
+
 

@@ -538,12 +538,12 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
 
     // !Registros
     crearRegistro(Registro: any): Promise<string> {
-      const id = this.afs.createId();
+   
       return this.afs
         .collection('Registro')
-        .doc(id)
-        .ref.set({ ...Registro, id }) // Usa spread operator para añadir el id al objeto
-        .then(() => id); // Retorna el ID una vez que se complete la operación
+        .doc(Registro.id)
+        .ref.set({ ...Registro}) // Usa spread operator para añadir el id al objeto
+        .then(() => Registro.id); // Retorna el ID una vez que se complete la operación
     }
     copiarRegistro(Registro: any) {
       return this.afs

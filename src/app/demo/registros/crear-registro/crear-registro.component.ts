@@ -38,6 +38,7 @@ import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 import TiposOperacionComponent from '../../tipos-operacion/tipos-operacion.component';
 import { Subscription } from 'rxjs';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-crear',
@@ -74,8 +75,8 @@ import { Subscription } from 'rxjs';
     TabViewModule,
     ButtonModule,
     MultiSelectModule,
-    SidebarModule
-    
+    SidebarModule,
+    ScrollingModule
    ],
   templateUrl: './crear-registro.component.html',
   styleUrls: ['./crear-registro.component.scss'],
@@ -83,6 +84,7 @@ import { Subscription } from 'rxjs';
 })
 export default class CrearRegistroComponent implements OnInit  {
 @Input() TipoRegistro: any;
+@ViewChild('scrollContainer', { static: false }) scrollContainer!: ElementRef;
   constructor(
     private conS:ConfigurationService,private datePipe: DatePipe, 
     private messageService: MessageService,
@@ -90,6 +92,10 @@ export default class CrearRegistroComponent implements OnInit  {
     private authS:AuthService,
     private firestore: AngularFirestore
   ){}
+
+  isDragging = false;
+  startX = 0;
+  scrollLeft = 0;
   registroForm!:FormGroup
   EditRegistroForm!:FormGroup
   registroDialog: boolean = false;
@@ -129,6 +135,7 @@ export default class CrearRegistroComponent implements OnInit  {
   SociosNegocios: any=[];
   MesesTodos: any=[];
   Registros: any=[];
+  batchSize: number = 20; // Cantidad de registros por carga
   Items: any=[];
   ItemsBack: any=[];
   ItemSeleccionados: any=[];
@@ -145,13 +152,14 @@ export default class CrearRegistroComponent implements OnInit  {
   ProyectoSeleccionado: any;
   SucursaleSeleccionada: any;
   CuentasContables:any=[]
+  SeleccionarTodo:boolean=false
   Empresas:any
   Flujos: any = [
     {id: "1", name: "Banco"},
     {id: "2", name: "Efectivo"},
     
   ]
-cargando:boolean
+cargando:boolean=true
   Fecha:any= new Date();
   ImporteTotal:number=0
   ImporteSubTotal:number=0
@@ -246,6 +254,52 @@ ngOnInit(): void {
       
 }
 
+onScroll(event: Event) {
+  const container = this.scrollContainer.nativeElement;
+  const threshold = 50; // Umbral para disparar la carga (en píxeles)
+
+  if (
+    container.scrollHeight - container.scrollTop <=
+    container.clientHeight + threshold
+  ) 
+
+  
+  {
+
+
+  }
+}
+
+
+
+
+onMouseDown(event: MouseEvent) {
+  // Activar el arrastre
+  this.isDragging = true;
+  const container = this.scrollContainer.nativeElement;
+  if (this.scrollContainer) {
+    this.startX = event.pageX - container.offsetLeft;
+    this.scrollLeft = container.scrollLeft;
+  }
+
+}
+
+
+onMouseMove(event: MouseEvent) {
+  if (!this.isDragging) return; // Solo mover si está arrastrando
+  const container = this.scrollContainer.nativeElement;
+  const x = event.pageX - container.offsetLeft;
+  const walk = (x - this.startX) * 1; // *1 es la velocidad del scroll (puedes ajustarlo)
+  container.scrollLeft = this.scrollLeft - walk;
+  event.preventDefault(); // Evitar el comportamiento predeterminado
+}
+
+onMouseUp() {
+  // Desactivar el arrastre
+  this.isDragging = false;
+}
+
+
 
 
 obtenerTiposOperacionByEmpresa(){
@@ -297,15 +351,15 @@ seleccionarRegistro(registro:any){
   RegistroEncontrado=this.registrosSeleccionados.filter((reg:any)=>reg.id==registro.id)
   if(RegistroEncontrado.length==0){
     this.registrosSeleccionados.push(registro)
-
+    
   }
   else {
     this.registrosSeleccionados.splice(this.registrosSeleccionados.indexOf(RegistroEncontrado[0]))
   }
-  console.log('registrosSeleccionados',this.registrosSeleccionados)
-  console.log('registros',this.Registros)
+
 }
 seleccionarRegistros(){
+  this.SeleccionarTodo=true
   this.Registros.forEach(element => {
     element.Seleccionado=!element.Seleccionado
     
@@ -317,39 +371,49 @@ seleccionarRegistros(){
     this.registrosSeleccionados=this.Registros
   }
 
+
 }
 borrarRegistros(){
 
   if(this.authS.validarAtributo('sAXrUYfJvISYOx6Tbg3L',[])==true){
-    let Contador:number=0
+    let Contador:number=this.registrosSeleccionados.length
    this.registrosSeleccionados.forEach(element => {
     try{
       this.conS.borrarRegistro(element.id).then(resp=>{
-        Contador=+1
       })
       //this.Registros=this.Registros.filter((reg:any)=>reg.id!=element.id && reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+   
 
+      this.registrosSeleccionados=this.registrosSeleccionados.filter((reg:any)=>reg.id!=element.id)
 
       if(this.idTipoRegistro==1){
         if(this.SucursaleSeleccionada!=undefined){
          this.Registros=this.registrosBackUp.filter((reg:any)=>reg.id!=element.id  && reg.TipoRegistro==this.idTipoRegistro && reg.idSucursal==this.SucursaleSeleccionada.id).sort((a:any, b:any) => b.Orden - a.Orden)
+      
         }
         else {
        this.Registros=this.registrosBackUp.filter((reg:any)=> reg.id!=element.id  && reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+      
         }
+
+
       } 
      else {
         if(this.ProyectoSeleccionado!=undefined){
          this.Registros=this.registrosBackUp.filter((reg:any)=> reg.id!=element.id  && reg.TipoRegistro==this.idTipoRegistro && reg.idProyecto==this.ProyectoSeleccionado.id).sort((a:any, b:any) => b.Orden - a.Orden)
+        
         }
         else {
        this.Registros=this.registrosBackUp.filter((reg:any)=>reg.id!=element.id  && reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+
         }
+
+
       }
       this.registrosBackUp=this.registrosBackUp.filter((reg:any)=>reg.id!=element.id)
-      console.log('Registros',this.Registros)
-      if(Contador==this.registrosSeleccionados.length){
-        this.toastr.success('', `${this.registrosSeleccionados.length} registros borrados`,{
+      if(this.registrosSeleccionados.length==0){
+        this.SeleccionarTodo=false
+        this.toastr.success('', `${Contador} registros borrados`,{
           timeOut: 1000,
         });
       }
@@ -643,6 +707,7 @@ this.calcularImporteSubTotal(this.Registros)
 restablecer(){
   this.Registros=this.registrosBackUp.
   filter((reg:any)=>  reg.TipoRegistro == this.idTipoRegistro)
+
   this.FechaDesde.setValue('')
   this.FechaHasta.setValue('')
   this.CategoriasSeleccionadas=[]
@@ -716,10 +781,6 @@ obtenerRegistros(){
                this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
                 }
               } 
-
-              console.log('Registros',this.Registros)
-  
-       
                this.calcularImporteTotal(this.Registros)
                this.calcularImporteSubTotal(this.Registros)
                this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
@@ -794,14 +855,14 @@ obtenerRegistros(){
     this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
      }
    } 
-  
-  
+
     this.calcularImporteTotal(this.Registros)
     this.calcularImporteSubTotal(this.Registros)
     this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
       return Math.max(maxOrden, objeto.Orden);
   }, 0);
     this.cargarFormulario()
+
     this.cargando=false
   })
 
@@ -1458,56 +1519,62 @@ else {
   this.registroForm.value.Proyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.NombreSucursal;
 }
 this.registroForm.value.Seleccionado=false
+
+const coleccionRef = this.firestore.collection('Registro');
+const nuevoDocRef = coleccionRef.doc().ref;
+const nuevoId = nuevoDocRef.id;
+
+this.OrdenMax = this.registrosBackUp.reduce((maxOrden, objeto) => {
+  return Math.max(maxOrden, objeto.Orden);
+}, 0);
+let _Registro={
+  "Activo":this.registroForm.value.Activo,
+  "Animation":'animate__animated animate__flipInX',
+  "ActivarAnimation":true,
+  "AnioRegistro":this.registroForm.value.AnioRegistro,
+  "Cuenta":this.registroForm.value.Cuenta,
+  "Editando":this.registroForm.value.Editando,
+  "Seleccionado":false,
+  "Elemento":this.registroForm.value.Elemento,
+  "FechaRegistro":this.registroForm.value.FechaRegistro,
+  "MesRegistro":this.registroForm.value.MesRegistro,
+  "Nuevo":this.registroForm.value.Nuevo,
+  "NumMes":this.registroForm.value.NumMes,
+  "NumSemana":this.registroForm.value.NumSemana,
+  "Orden":  this.OrdenMax+1 ,
+  "NumTransaction":'000-'+ this.OrdenMax+1 ,
+  "Semana":this.registroForm.value.Semana,
+  "Valor":this.registroForm.value.Valor,
+  "Valor2":this.registroForm.value.Valor,
+  "TipoOperacion":this.registroForm.value.TipoOperacion || '',
+  "Tipo":this.registroForm.value.Tipo || '',
+  "TipoRegistro":this.idTipoRegistro,
+  "id":nuevoId,
+  "idCategoria":this.registroForm.value.idCategoria,
+  "idEmpresa":this.registroForm.value.idEmpresa,
+  "idFlujo":this.registroForm.value.idFlujo,
+  "idTipo":idTipo,
+  "idMatriz":this.registroForm.value.idMatriz,
+  "idSocioNegocio":this.registroForm.value.idSocioNegocio,
+  "idSucursal":this.registroForm.value.idSucursal,
+  "idProyecto":this.registroForm.value.idProyecto || '',
+  "Sucursal":this.registroForm.value.Sucursal || '',
+  "Proyecto":this.registroForm.value.Proyecto || '',
+  "NombreElemento":this.registroForm.value.Elemento.label || '',
+  "NumCuenta":this.registroForm.value.Cuenta.Cuenta || '',
+  "CategoriaNombre":this.registroForm.value.idCategoria.Nombre || '',
+  "SocioNegocio":this.registroForm.value.idSocioNegocio.Nombre || '',
+  "Comentarios":this.registroForm.value.Comentarios || '',
+
+}
+
+this.registrosBackUp.push(_Registro)
+this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+
+this.registroForm.value.id=nuevoId
+
 this.conS.crearRegistro(this.registroForm.value).then(id => {
 
-
-  this.OrdenMax = this.registrosBackUp.reduce((maxOrden, objeto) => {
-    return Math.max(maxOrden, objeto.Orden);
-}, 0);
-  let _Registro={
-    "Activo":this.registroForm.value.Activo,
-    "Animation":'animate__animated animate__flipInX',
-    "ActivarAnimation":true,
-    "AnioRegistro":this.registroForm.value.AnioRegistro,
-    "Cuenta":this.registroForm.value.Cuenta,
-    "Editando":this.registroForm.value.Editando,
-    "Seleccionado":false,
-    "Elemento":this.registroForm.value.Elemento,
-    "FechaRegistro":this.registroForm.value.FechaRegistro,
-    "MesRegistro":this.registroForm.value.MesRegistro,
-    "Nuevo":this.registroForm.value.Nuevo,
-    "NumMes":this.registroForm.value.NumMes,
-    "NumSemana":this.registroForm.value.NumSemana,
-    "Orden":  this.OrdenMax+1 ,
-    "NumTransaction":'000-'+ this.OrdenMax+1 ,
-    "Semana":this.registroForm.value.Semana,
-    "Valor":this.registroForm.value.Valor,
-    "Valor2":this.registroForm.value.Valor,
-    "TipoOperacion":this.registroForm.value.TipoOperacion || '',
-    "Tipo":this.registroForm.value.Tipo || '',
-    "TipoRegistro":this.idTipoRegistro,
-    "id":id,
-    "idCategoria":this.registroForm.value.idCategoria,
-    "idEmpresa":this.registroForm.value.idEmpresa,
-    "idFlujo":this.registroForm.value.idFlujo,
-    "idTipo":idTipo,
-    "idMatriz":this.registroForm.value.idMatriz,
-    "idSocioNegocio":this.registroForm.value.idSocioNegocio,
-    "idSucursal":this.registroForm.value.idSucursal,
-    "idProyecto":this.registroForm.value.idProyecto || '',
-    "Sucursal":this.registroForm.value.Sucursal || '',
-    "Proyecto":this.registroForm.value.Proyecto || '',
-    "NombreElemento":this.registroForm.value.Elemento.label || '',
-    "NumCuenta":this.registroForm.value.Cuenta.Cuenta || '',
-    "CategoriaNombre":this.registroForm.value.idCategoria.Nombre || '',
-    "SocioNegocio":this.registroForm.value.idSocioNegocio.Nombre || '',
-    "Comentarios":this.registroForm.value.Comentarios || '',
-  
-  }
-
-  this.registrosBackUp.push(_Registro)
-  this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
-  console.log('Registros',this.Registros)
 this.cargarFormulario()
 }).catch(error => {
   console.error('Error al crear el registro:', error);
@@ -1556,8 +1623,7 @@ copiarRegistro(registro:any){
       
       this.registrosBackUp.push(RegistroCopiado)
       this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
-      console.log('Registros',this.Registros)
-
+ 
       this.calcularImporteSubTotal(this.Registros)
       this.calcularImporteTotal(this.Registros)
 
