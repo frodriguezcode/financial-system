@@ -55,6 +55,7 @@
                    <!-- <th class="text-center">Empresa</th> -->
                    <th *ngIf="this.TipoRubro==1" class="text-center">Sucursales</th>
                    <th *ngIf="this.TipoRubro==2" class="text-center">Proyectos</th>
+                   <th  class="text-center">Usuarios</th>
                    <th class="text-center">Subir</th>
                    <th class="text-center">Bajar</th>
                    <th class="text-center">Editar</th>
@@ -153,6 +154,7 @@
                           [maxSelectedLabels]="1" 
                           [selectedItemsLabel]="getSelectedSucursalesLabelList(item.Sucursales)"
                           optionLabel="Nombre" 
+                          appendTo="body"
                           placeholder="Seleccione las Sucursales" />
                        </ng-template>
                      </td>
@@ -170,6 +172,22 @@
                           [selectedItemsLabel]="getSelecteProyectosLabelList(item.Proyectos)"
                           optionLabel="NombreSucursal" 
                           placeholder="Seleccione los proyectos" />
+                       </ng-template>
+                     </td>
+                      <td  class="text-center">
+                       <ng-container *ngIf="!item.Editando; else editarUsuarios">
+                         {{item.NombresUsuarios}}
+                       </ng-container>
+                       <ng-template #editarUsuarios>
+                    
+                         <p-multiSelect 
+                          [options]="Usuarios" 
+                          [(ngModel)]="item.Usuarios" 
+                          [maxSelectedLabels]="1" 
+                          appendTo="body"
+                          [selectedItemsLabel]="getSelecteUsuariosLabelList(item.Usuarios)"
+                          optionLabel="Nombres" 
+                          placeholder="Seleccione usuarios" />
                        </ng-template>
                      </td>
        

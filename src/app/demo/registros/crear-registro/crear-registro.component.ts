@@ -1203,6 +1203,7 @@ getCuentabyCategoria(Categoria:any){
 let cuentaContable:any=[]
 
 this.Items.filter((item:any)=>item.idCategoria==Categoria.id
+&& item.idUsuarios.some((user) => user == this.usuario.id)
 
 ).forEach((cuenta:any) => {
   cuentaContable.push({

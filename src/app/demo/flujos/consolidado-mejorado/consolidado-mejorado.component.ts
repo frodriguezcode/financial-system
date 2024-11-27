@@ -1649,7 +1649,9 @@ getDataFlujoLibreAnual(Anio:any){
    getItems(idCategoria:any){
     let _Items:any=[]
 
-    _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria)
+    _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria
+    && item.idUsuarios.some((user:any) => user == this.usuario.id)
+     )
     return _Items
     }
 

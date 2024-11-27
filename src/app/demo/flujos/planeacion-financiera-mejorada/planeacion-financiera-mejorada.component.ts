@@ -1097,6 +1097,7 @@ getItems(idCategoria:any){
   _Items = this.Items.filter((item: any) => 
     item.idCategoria == idCategoria && 
     (this.idTipoRegistro === 0 || item.TipoRubro == this.idTipoRegistro)
+    && item.idUsuarios.some((user:any) => user == this.usuario.id)
   );  return _Items
   }
 obtenerItems(){

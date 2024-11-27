@@ -115,7 +115,7 @@ obtenerUsuarios(){
     this.authS.obtenerUsuariosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
       this.Usuarios=resp
       this.UsuariosSeleccionados=resp
-      console.log('Usuarios',this.Usuarios)
+   
     })
   }
 }
@@ -200,7 +200,9 @@ borrarCuenta(idCuenta:string){
         "Sucursales":item.Sucursales,
         "NombreSucursales":this.getNameSucursales(item.Sucursales),
         "NombreProyectos":this.getNameProyectos(item.Proyectos),
+        "NombresUsuarios":this.getNameUsuario(item.Usuarios),
         "Proyectos":item.Proyectos,
+        "Usuarios":item.Usuarios,
         "idCategoria":item.idCategoria,
         "representative": {
           name: this.getNombreCategoria(item.idCategoria),
@@ -209,7 +211,7 @@ borrarCuenta(idCuenta:string){
       }
       this.ItemsGroup.push(_Item)
     });
-
+ 
   }
   descargarExcel(){
     const headerRow: any[] = [];
@@ -316,6 +318,10 @@ borrarCuenta(idCuenta:string){
     const count = ProyectosSeleccionados? ProyectosSeleccionados.length : 0
     return count >= 2 ? `${count} proyectos seleccionados` : null;
   }
+  getSelecteUsuariosLabelList(UsuariosSeleccionados:any): any {
+    const count = UsuariosSeleccionados? UsuariosSeleccionados.length : 0
+    return count >= 2 ? `${count} usuarios seleccionados` : null;
+  }
   getSelecteProyectosLabelCrear(): any {
     const count = this.ItemForm.value['Proyectos']? this.ItemForm.value['Proyectos'].length : 0
     
@@ -336,7 +342,7 @@ borrarCuenta(idCuenta:string){
     let Sucursales=[]
     if (sucursales.length>0){
       sucursales.forEach((suc:any) => {
-        Sucursales.push(this.getNameSucursal(suc.id,''))
+        Sucursales.push(' ' + this.getNameSucursal(suc.id,''))
       })
     }
     else {
@@ -345,14 +351,25 @@ borrarCuenta(idCuenta:string){
     return Sucursales
   }
 
+  getNameUsuario(Usuarios:any){
+    let NombresUsuarios:any=[]
+    Usuarios.forEach(usuario => {
+      let Usuario = this.Usuarios.filter((user: any) => user.id==usuario.id)
+      NombresUsuarios.push(' ' +Usuario[0].Nombres)
+    });
+  
+        return NombresUsuarios
+      
+    
+  }
   getNameProyecto(idProyecto:any,idEmpresa:any){
     if(idProyecto=='0'){
       return this.getNombreEmpresa(idEmpresa)
     }
     else {
       let Proyecto = this.Proyectos.filter((proy: any) => proy.id==idProyecto)
-      if(Proyecto.length){
-        return '' + Proyecto[0].Nombre
+      if(Proyecto.length>0){
+        return ' ' + Proyecto[0].Nombre
       }
       else{
         return this.getNombreEmpresa(idEmpresa)
@@ -371,6 +388,19 @@ borrarCuenta(idCuenta:string){
       Proyectos=[]
     }
     return Proyectos
+  }
+  getNameUsuarios(usuarios:any){
+    let Usuarios=[]
+    if (usuarios.length>0){
+      
+      usuarios.forEach((proy:any) => {
+        Usuarios.push(this.getNameProyecto(proy.id,proy.idEmpresa))
+      })
+    }
+    else {
+      Usuarios=[]
+    }
+    return Usuarios
   }
 
   SelectGeneral(){
@@ -546,7 +576,8 @@ borrarCuenta(idCuenta:string){
     
 
         this.Items.map((item:any)=>item.animation='')
-     
+        
+      
     
 
       }
@@ -736,9 +767,13 @@ removeAnimation(element: HTMLElement | null, animationClass: string) {
       else if(ItemForm.Proyectos.length>0){
         ItemForm.Sucursales=[]
       }
+      ItemForm.idUsuarios=[]
+      ItemForm.Usuarios.forEach(user => {
+        ItemForm.idUsuarios.push(user.id)
+      });
   
-        ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
-        ItemForm.Alias=ItemForm.Nombre 
+      ItemForm.Alias=ItemForm.Nombre 
+      ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
         ItemForm.idMatriz=this.usuario.idMatriz
         this.conS.crearItem(ItemForm).then(resp=>{
           let SucursalesSeleccionadas:any=ItemForm.Sucursales
@@ -785,8 +820,7 @@ getIdCategoria(idCategoria:string){
 
 }
   toggleEdicion(Item: any) {
-    console.log('Item',Item)
-    console.log('Proyectos',this.Proyectos)
+
     Item.Editando = !Item.Editando;
   }
 
@@ -825,6 +859,12 @@ getIdCategoria(idCategoria:string){
     itemEncontrado[0].Editando = !item.Editando;
     itemEncontrado[0].Sucursales = item.Sucursales;
     itemEncontrado[0].Proyectos =item.Proyectos;
+    itemEncontrado[0].Usuarios =item.Usuarios;
+
+    itemEncontrado[0].idUsuarios=[]
+    itemEncontrado[0].Usuarios.forEach(user => {
+      itemEncontrado[0].idUsuarios.push(user.id)
+    });
 
     this.conS.ActualizarItem(itemEncontrado[0]).then(resp=>{
       this.getItemsGroup()
