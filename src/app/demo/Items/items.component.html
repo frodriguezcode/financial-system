@@ -480,38 +480,55 @@
                         <p>Ya existe un item con este nombre</p>
                       </span>
                     </div>
-             
-                    <div *ngIf="TipoRubro==1" class="col-12 col-md-12 col-lg-12">
-                      <label for="exampleInputPassword1">Sucursal</label>
-                      <br>
-                      <p-multiSelect 
-                      [options]="Sucursales" 
-                      formControlName="Sucursales"
-                      optionLabel="Nombre" 
-                      [maxSelectedLabels]="1" 
-                      [selectedItemsLabel]="getSelecteSucursalesLabelCrear()"
-                      placeholder="Seleccione una sucursal"
-                      class="multiselect-fijo"
-                      />
-                      
-                    </div>
-    
-                    
-                    <div *ngIf="TipoRubro==2" class="col-12 col-md-12 col-lg-12">
-                      <label for="exampleInputPassword1">Proyecto</label>
-                      <br>
-                      <p-multiSelect
-                      [options]="Proyectos" 
-                      formControlName="Proyectos"
-                      [maxSelectedLabels]="1" 
-                      [selectedItemsLabel]="getSelecteProyectosLabelCrear()"
-                      optionLabel="Nombre" 
-                      placeholder="Seleccione un proyecto"
-                      [style]="{'width':'300px'}"
-                      [panelStyle]="{'width':'350px'}"
-                      />
-                      
-                    </div>
+             <div class="row">
+               <div *ngIf="TipoRubro==1" class="col-12 col-md-6 col-lg-6">
+                 <label for="exampleInputPassword1">Sucursal</label>
+                 <br>
+                 <p-multiSelect 
+                 [options]="Sucursales" 
+                 formControlName="Sucursales"
+                 optionLabel="Nombre" 
+                 [maxSelectedLabels]="1" 
+                 [selectedItemsLabel]="getSelecteSucursalesLabelCrear()"
+                 placeholder="Seleccione una sucursal"
+                 class="multiselect-fijo"
+                 />
+                 
+               </div>
+
+               <div *ngIf="TipoRubro==2" class="col-12 col-md-6 col-lg-6">
+                 <label for="exampleInputPassword1">Proyecto</label>
+                 <br>
+                 <p-multiSelect
+                 [options]="Proyectos" 
+                 formControlName="Proyectos"
+                 [maxSelectedLabels]="1" 
+                 [selectedItemsLabel]="getSelecteProyectosLabelCrear()"
+                 optionLabel="Nombre" 
+                 placeholder="Seleccione un proyecto"
+                 [style]="{'width':'300px'}"
+                 [panelStyle]="{'width':'350px'}"
+                 />
+                 
+               </div>
+
+               <div  class="col-12 col-md-6 col-lg-6">
+                 <label for="exampleInputPassword1">Usuarios</label>
+                 <br>
+                 <p-multiSelect
+                 [options]="Usuarios" 
+                 formControlName="Usuarios"
+                 [maxSelectedLabels]="1" 
+                 [selectedItemsLabel]="getSelecteUsuariosLabelCrear()"
+                 optionLabel="Nombres" 
+                 placeholder="Seleccione los usuarios"
+                 [style]="{'width':'300px'}"
+                 [panelStyle]="{'width':'350px'}"
+                 />
+                 
+               </div>
+
+             </div>
               
             
                     <div class="form-group">

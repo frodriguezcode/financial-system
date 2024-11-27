@@ -1,8 +1,11 @@
 
-<p-tabView>
+<app-card cardTitle="Módulo registros" [options]="false">
+  <app-crear [TipoRegistro]="idTipo"></app-crear>
+
+</app-card>
+<!-- <p-tabView>
   <p-tabPanel header="Registros">
 
-        <app-crear [TipoRegistro]="idTipo"></app-crear>
 
   </p-tabPanel>
   <p-tabPanel header="Empresas">
@@ -31,4 +34,4 @@
     <app-crear-usuario></app-crear-usuario>
   </p-tabPanel>
 
-</p-tabView>
+</p-tabView> -->

@@ -21,6 +21,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { Workbook } from 'exceljs';
 import * as FileSaver from 'file-saver';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-elemento',
@@ -45,10 +46,13 @@ import * as FileSaver from 'file-saver';
 })
 export default class ItemsComponent  implements OnInit{
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,
+    private authS:AuthService,
     private toastr: ToastrService,private renderer: Renderer2) {}
   Items:any=[]
   ItemsGroup:any=[]
   ItemsBack:any=[]
+  Usuarios:any=[]
+  UsuariosSeleccionados:any=[]
   Categorias:any=[]
   CategoriasSeleccionadas:any=[]
   CategoriasBack:any=[]
@@ -82,11 +86,12 @@ export default class ItemsComponent  implements OnInit{
       }
       else {
         this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+
       }
       this.obtenerCategorias()
       this.obtenerEmpresas()
       this.obtenerSucursales()
-    
+      this.obtenerUsuarios()
      
    
     });
@@ -97,6 +102,22 @@ export default class ItemsComponent  implements OnInit{
 
   showDialog() {
     this.visible = true;
+}
+
+obtenerUsuarios(){
+  if(this.usuario.isAdmin==false){
+    this.authS.obtenerUsuarios(this.usuario.idEmpresa).subscribe((resp:any)=>{
+      this.Usuarios=resp
+      this.UsuariosSeleccionados=resp
+    })
+  }
+  else {
+    this.authS.obtenerUsuariosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
+      this.Usuarios=resp
+      this.UsuariosSeleccionados=resp
+      console.log('Usuarios',this.Usuarios)
+    })
+  }
 }
 
 borrarCuenta(idCuenta:string){
@@ -300,6 +321,11 @@ borrarCuenta(idCuenta:string){
     
     return count >= 2 ? `${count} proyectos seleccionados` : null;
   }
+  getSelecteUsuariosLabelCrear(): any {
+    const count = this.ItemForm.value['Usuarios']? this.ItemForm.value['Usuarios'].length : 0
+    
+    return count >= 2 ? `${count} usuarios seleccionados` : null;
+  }
   getSelecteSucursalesLabelCrear(): any {
     const count = this.ItemForm.value['Sucursales']? this.ItemForm.value['Sucursales'].length : 0
 
@@ -371,6 +397,7 @@ borrarCuenta(idCuenta:string){
       Orden: new FormControl(this.MaxOrden), 
       Sucursales: new FormControl(this.Sucursales), 
       Proyectos: new FormControl(this.Proyectos), 
+      Usuarios: new FormControl(this.Usuarios), 
       Editando: new FormControl(false), 
       idEmpresa: new FormControl(this.usuario.idEmpresa), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
@@ -691,29 +718,43 @@ removeAnimation(element: HTMLElement | null, animationClass: string) {
           timer: 1500
         });
     }
-
-    if(ItemForm.Sucursales.length>0){
-      ItemForm.Proyectos=[]
+   else if(ItemForm.Usuarios.length==0 ){
+          Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "Debe asignar esta cuenta a 1 o varios usuarios",
+          showConfirmButton: false,
+          timer: 1500
+        });
     }
 
-    else if(ItemForm.Proyectos.length>0){
-      ItemForm.Sucursales=[]
+    else {
+      if(ItemForm.Sucursales.length>0){
+        ItemForm.Proyectos=[]
+      }
+  
+      else if(ItemForm.Proyectos.length>0){
+        ItemForm.Sucursales=[]
+      }
+  
+        ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
+        ItemForm.Alias=ItemForm.Nombre 
+        ItemForm.idMatriz=this.usuario.idMatriz
+        this.conS.crearItem(ItemForm).then(resp=>{
+          let SucursalesSeleccionadas:any=ItemForm.Sucursales
+          let ProyectosSeleccionados:any=ItemForm.Proyectos
+          let idCategoria:any=ItemForm.idCategoria
+          this.toastr.success('Cuenta  Creada', '¡Exito!');
+          this.ItemForm.get('Nombre').setValue('');
+          this.ItemForm.get('Sucursales').setValue(SucursalesSeleccionadas);
+          this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
+          this.ItemForm.get('Usuarios').setValue(this.UsuariosSeleccionados);
+          this.ItemForm.get('idCategoria').setValue(idCategoria);
+          this.obtenerItems()
+        })
+
     }
 
-      ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
-      ItemForm.Alias=ItemForm.Nombre 
-      ItemForm.idMatriz=this.usuario.idMatriz
-      this.conS.crearItem(ItemForm).then(resp=>{
-        let SucursalesSeleccionadas:any=ItemForm.Sucursales
-        let ProyectosSeleccionados:any=ItemForm.Proyectos
-        let idCategoria:any=ItemForm.idCategoria
-        this.toastr.success('Cuenta  Creada', '¡Exito!');
-        this.ItemForm.get('Nombre').setValue('');
-        this.ItemForm.get('Sucursales').setValue(SucursalesSeleccionadas);
-        this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
-        this.ItemForm.get('idCategoria').setValue(idCategoria);
-        this.obtenerItems()
-      })
 
     
     
@@ -775,6 +816,7 @@ getIdCategoria(idCategoria:string){
     let _Item= this.Items;
     const itemEncontrado = _Item.filter((it:any) => it.id == item.id);
     const numeros = item.name.match(/^\d+(\.\d+)*/)
+    itemEncontrado[0].Nombre='',
     itemEncontrado[0].Nombre=numeros[0] + ' '+ item.alias,
     itemEncontrado[0].Alias= item.alias,
     itemEncontrado[0].idCategoria=item.idCategoria
@@ -785,7 +827,7 @@ getIdCategoria(idCategoria:string){
     itemEncontrado[0].Proyectos =item.Proyectos;
 
     this.conS.ActualizarItem(itemEncontrado[0]).then(resp=>{
-   
+      this.getItemsGroup()
       this.toastr.success('Item  editado', '¡Exito!');
     })
   }
