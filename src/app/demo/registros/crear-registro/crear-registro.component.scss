@@ -187,9 +187,25 @@ thead th {
   height: 16px; /* Altura para mostrar la barra superior */
 }
 
-.table-scroll-top div {
-  height: 1px; /* Línea invisible para activar la barra */
-  width: 160%; /* Ancho mayor que el contenedor para activar el scroll */
+
+
+@media only screen and (min-width: 600px) and (max-width: 1280px) {
+  .table-scroll-top div {
+    height: 1px; /* Línea invisible para activar la barra */
+    width: 300%; /* Ancho mayor que el contenedor para activar el scroll */
+  }
+}
+@media only screen and (min-width: 1300px) and (max-width: 1400px) {
+  .table-scroll-top div {
+    height: 1px; /* Línea invisible para activar la barra */
+    width: 220%; /* Ancho mayor que el contenedor para activar el scroll */
+  }
+}
+@media only screen and (min-width: 1500px) and (max-width: 2000px) {
+  .table-scroll-top div {
+    height: 1px; /* Línea invisible para activar la barra */
+    width: 160%; /* Ancho mayor que el contenedor para activar el scroll */
+  }
 }
 
 .table-scroll-container {
