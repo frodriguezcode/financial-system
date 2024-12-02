@@ -189,7 +189,7 @@ thead th {
 
 .table-scroll-top div {
   height: 1px; /* Línea invisible para activar la barra */
-  width: 150%; /* Ancho mayor que el contenedor para activar el scroll */
+  width: 160%; /* Ancho mayor que el contenedor para activar el scroll */
 }
 
 .table-scroll-container {
@@ -198,7 +198,7 @@ thead th {
 }
 
 .table-scroll-container table {
-  min-width: 1200px; /* Fuerza un ancho mayor que el contenedor */
+  min-width: 2000px; /* Fuerza un ancho mayor que el contenedor */
 }
 
 .table-scroll-container::-webkit-scrollbar {
