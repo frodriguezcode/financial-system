@@ -80,9 +80,12 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./crear-registro.component.scss'],
   providers: [MessageService]
 })
-export default class CrearRegistroComponent implements OnInit  {
+export default class CrearRegistroComponent implements OnInit,AfterViewInit  {
 @Input() TipoRegistro: any;
-@ViewChild('scrollContainer', { static: false }) scrollContainer!: ElementRef;
+
+@ViewChild('scrollTop') scrollTop!: ElementRef;
+@ViewChild('scrollContainer') scrollContainer!: ElementRef;
+
   constructor(
     private conS:ConfigurationService,private datePipe: DatePipe, 
     private messageService: MessageService,
@@ -164,7 +167,9 @@ cargando:boolean=true
   Fecha:any= new Date();
   ImporteTotal:number=0
   ImporteSubTotal:number=0
-
+  ngAfterViewInit() {
+    this.syncScroll();
+  }
 ngOnInit(): void {
 
   this.MesesTodos= [
@@ -255,6 +260,17 @@ ngOnInit(): void {
       
 }
 
+syncScroll() {
+  this.scrollTop.nativeElement.addEventListener('scroll', () => {
+    this.scrollContainer.nativeElement.scrollLeft =
+      this.scrollTop.nativeElement.scrollLeft;
+  });
+
+  this.scrollContainer.nativeElement.addEventListener('scroll', () => {
+    this.scrollTop.nativeElement.scrollLeft =
+      this.scrollContainer.nativeElement.scrollLeft;
+  });
+}
 onScroll(event: Event) {
   const container = this.scrollContainer.nativeElement;
   const threshold = 50; // Umbral para disparar la carga (en píxeles)

@@ -180,18 +180,19 @@
   </div>
 </div>
 <br>
-
-
-
-<div class="table table-responsive" 
-itemSize="20"
-#scrollContainer
-style="max-height: 600px;overflow-y: auto;"
-(mousedown)="onMouseDown($event)" 
+<!-- (mousedown)="onMouseDown($event)" 
 (mousemove)="onMouseMove($event)" 
 (mouseup)="onMouseUp()"
-(mouseleave)="onMouseUp()">
-    <table class="table table-100 sticky-top">
+(mouseleave)="onMouseUp()" -->
+<div class="table-scroll-wrapper">
+  <!-- Barra de desplazamiento superior -->
+  <div class="table-scroll-top" #scrollTop>
+    <div></div>
+  </div>
+
+  <!-- Contenedor de la tabla -->
+  <div class="table-scroll-container" #scrollContainer>
+    <table class="table">
       <thead>
         <tr class="text-center">
           <th scope="col">

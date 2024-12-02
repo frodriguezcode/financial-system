@@ -118,14 +118,14 @@
 }
 
 .table-responsive {
-  cursor: grab; /* Mostrar la mano abierta cuando no se arrastra */
+  // cursor: grab;
   overflow-x: auto; /* Habilitar el scroll horizontal */
 
 }
 
-.table-responsive:active {
-  cursor: grabbing; /* Cambiar a la mano cerrada cuando se arrastra */
-}
+// .table-responsive:active {
+//   cursor: grabbing;
+// }
 
 /* Encabezado fijo */
 thead th {
@@ -174,3 +174,33 @@ thead th {
    z-index: 9999 !important;
 }
 
+
+
+
+////
+.table-scroll-wrapper {
+  position: relative;
+}
+
+.table-scroll-top {
+  overflow-x: auto;
+  height: 16px; /* Altura para mostrar la barra superior */
+}
+
+.table-scroll-top div {
+  height: 1px; /* Línea invisible para activar la barra */
+  width: 150%; /* Ancho mayor que el contenedor para activar el scroll */
+}
+
+.table-scroll-container {
+  overflow-x: auto;
+  max-height: 600px; /* Ajusta según tu diseño */
+}
+
+.table-scroll-container table {
+  min-width: 1200px; /* Fuerza un ancho mayor que el contenedor */
+}
+
+.table-scroll-container::-webkit-scrollbar {
+  display: none; /* Oculta la barra de desplazamiento inferior */
+}
