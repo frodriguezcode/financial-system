@@ -3,12 +3,12 @@
   <button type="button" (click)="showDialog()" class="btn btn-success">+ Proyecto</button>
 <br>
 <div class="mt-2">
-  <div *ngIf="!cargando"  class="d-flex justify-content-center">
+  <div *ngIf="cargando"  class="d-flex justify-content-center">
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
-  <p-table  *ngIf="cargando"  [value]="Proyectos" [tableStyle]="{ 'min-width': '50rem' }">
+  <p-table  *ngIf="!cargando"  [value]="Proyectos" [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="header">
         <tr>
           <th class="text-center">#</th>
@@ -101,7 +101,7 @@ header="Crear Proyecto"
 
   </div>
 
-  <div *ngIf="this.usuario.Rol=='Super Usuario'" class="form-group">
+  <div *ngIf="this.usuario.isAdmin==true" class="form-group">
     <label for="exampleInputPassword1">Empresa</label>
     <select (change)="selectSucursalByEmpresa($any($event.target).value)" formControlName="idEmpresa" class="form-control" id="exampleFormControlSelect1">
       <option value="0">Seleccione una empresa</option>
@@ -109,7 +109,7 @@ header="Crear Proyecto"
 
     </select>
   </div>
-  <div *ngIf="this.usuario.Rol=='Super Usuario'"  class="form-group">
+  <div *ngIf="this.usuario.isAdmin==true"  class="form-group">
     <label for="exampleInputPassword1">Sucursal (opcional)
        <span 
        *ngIf="this.Sucursales.length==0"
@@ -121,7 +121,7 @@ header="Crear Proyecto"
 
     </select>
   </div>
-  <div *ngIf="this.usuario.Rol!='Super Usuario'" class="form-group">
+  <div *ngIf="this.usuario.isAdmin==false" class="form-group">
     <label for="exampleInputPassword1">Sucursal (opcional)
        <span 
        *ngIf="this.Sucursales.length==0"
@@ -133,7 +133,25 @@ header="Crear Proyecto"
 
     </select>
   </div>
+
   <button type="button" [disabled]="this.idEmpresa=='' || this.idEmpresa== '0' " (click)="showCrearSucursal()" class="btn btn-success">Crear Sucursal</button>
+<br>
+<br>
+<div *ngIf="this.idEmpresa!='' ">
+  <p-multiSelect
+  [options]="getUsuarioByEmpresa(this.idEmpresa)" 
+  formControlName="Usuarios"
+  [maxSelectedLabels]="1" 
+ 
+  [selectedItemsLabel]="getSelecteUsuariosLabelCrear()"
+  optionLabel="NombreEmpresa" 
+  appendTo="body"
+  placeholder="Seleccione los usuarios"
+  [style]="{'width':'600px'}"
+  [panelStyle]="{'width':'600px'}"
+  />
+
+</div>
   <div class="form-group">
     <label for="exampleInputPassword1">Duración del proyecto</label>
     <br>

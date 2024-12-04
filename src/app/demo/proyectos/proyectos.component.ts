@@ -14,11 +14,13 @@ import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-proyectos',
   standalone: true,
-  imports: [CommonModule, SharedModule,FormsModule,ReactiveFormsModule,CalendarModule,TableModule,DialogModule],
+  imports: [CommonModule, SharedModule,FormsModule,ReactiveFormsModule,CalendarModule,TableModule,DialogModule,MultiSelectModule],
   templateUrl: './proyectos.component.html',
   styleUrls: ['./proyectos.component.scss']
 })
@@ -32,16 +34,20 @@ export default class ProyectosComponent implements OnInit {
   Fecha:any= new Date();
   usuario:any
   MostrarRangoFechas:boolean=true
+  Usuarios:any
+  UsuariosSeleccionados:any=[]
   es: any;
   visible: boolean = false;
-  cargando: boolean = false;
+  cargando: boolean = true;
   CambiarRegistros: boolean = false;
   idEmpresa:string=''
   nombreEmpresa:any
   Sucursal:FormControl=new FormControl ('')
   visibleSucursal: boolean = false;
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,
-    private toastr: ToastrService,private primengConfig: PrimeNGConfig,
+    private toastr: ToastrService,
+    private authS: AuthService,
+    private primengConfig: PrimeNGConfig,
     private readonly router: Router
   ) {}
 
@@ -81,13 +87,37 @@ ngOnInit(): void {
       this.obtenerSucursales()
 
     }
-  
+  this.obtenerUsuarios()
  
   });
 
   
 }
 
+getSelecteUsuariosLabelCrear(): any {
+  const count = this.ProyectoForm.value['Usuarios']? this.ProyectoForm.value['Usuarios'].length : 0
+  
+  return count >= 2 ? `${count} usuarios seleccionados` : null;
+}
+
+obtenerUsuarios(){
+ this.authS.obtenerUsuariosByMatriz(this.usuario.idMatriz).subscribe(resp=>{
+
+  if(this.usuario.isAdmin==true){
+    this.Usuarios=resp
+  }
+
+  else {
+    this.Usuarios=resp.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
+    
+  }
+  this.Usuarios.map((user:any)=>user.NombreEmpresa=user.Nombres + ' - ' + user.Empresa)
+ })
+}
+
+getUsuarioByEmpresa(idEmpresa:any){
+  return this.Usuarios.filter((emp:any)=>emp.idEmpresa==idEmpresa)
+}
 showDialog() {
   this.visible = true;
 }
@@ -132,6 +162,7 @@ cargarFormulario(){
     idMatriz: new FormControl(this.usuario.idMatriz,[Validators.required]), 
     idEmpresa: new FormControl('',[Validators.required]), 
     Activo: new FormControl(true), 
+    Usuarios: new FormControl([]), 
     Editando: new FormControl(false), 
     RangoFechas: new FormControl(null),
     FechaInicio: new FormControl(''),
@@ -268,22 +299,28 @@ this.ProyectoForm.value.FechaInicio=FechaInicio
 this.ProyectoForm.value.FechaFinal=FechaFinal
 console.log('Form',this.ProyectoForm.value);
 
-Swal.fire({
-  title: 'Ahora crearemos los usuarios para la nueva empresa'
- });
- Swal.showLoading();
+
+
   this.conS.crearProyecto(this.ProyectoForm.value).then((resp: any)=>{
-    Swal.hideLoading();
-    setTimeout(()=>{                           // <<<---using ()=> syntax
-      this.router.navigate(['/Usuarios'])
-  }, 3000);
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Éxito, proyecto creado",
+      showConfirmButton: false,
+      timer: 1500
+    });
+
 
     this.cargarFormulario()
   })
 
 }
 }
+ActualizarUsuario(usuario:any){
+  this.authS.ActualizarUsuario(usuario).then(resp=>{
 
+  })
+}
 calcularDuracion(fechaInicio: Date, fechaFinal: Date): string {
   const fechaInicioObj = new Date(fechaInicio);
   const fechaFinalObj = new Date(fechaFinal);
@@ -318,7 +355,8 @@ getNombreEmpresa(idEmpresa){
   }
 }
 obtenerProyectos(){
-  if(this.usuario.Rol=='Super Usuario'){
+  this.cargando=true
+  if(this.usuario.isAdmin==true){
     this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
     this.Proyectos=resp
   
@@ -343,7 +381,8 @@ obtenerProyectos(){
   
   );
     
-  this.cargando=true
+  this.cargando=false
+  console.log('cargando',this.cargando)
     })
     
   }
@@ -369,7 +408,8 @@ obtenerProyectos(){
     
   
   
-  
+    this.cargando=false
+  console.log('cargando',this.cargando)
   
     })
 

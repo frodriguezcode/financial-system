@@ -382,8 +382,22 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     .collection('Proyectos',(ref)=>ref.where('idMatriz','==',idMatriz))
     .valueChanges();
   }
+  ActualizarUsuario(usuario: any) {
+     this.afs
+      .collection('Usuarios')
+      .doc(usuario.id)
+      .ref.update(usuario);
+  }
   crearProyecto(proyecto:any) {
     const id = this.afs.createId();
+    proyecto.Usuarios.forEach(user => {
+      if( !user.Proyectos){
+        user.Proyectos = []
+      }
+      user.Proyectos.push(id)
+      this.ActualizarUsuario(user)
+    });
+    delete proyecto.Usuarios
     return this.afs
       .collection('Proyectos')
       .doc(id)

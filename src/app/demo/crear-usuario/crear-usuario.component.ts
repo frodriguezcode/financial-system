@@ -71,7 +71,7 @@ ngOnInit(): void {
    
     this.obtenerProyectosByMatriz()
     this.obtenerSucursales()
-    this.obtenerRoles()
+ 
     this.obtenerEmpresas()
   
  
@@ -150,6 +150,7 @@ obtenerProyectosByMatriz(){
   this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((data=>{
     this.Proyectos=data
     this.ProyectosBack=data
+    this.obtenerRoles()
   }))
 }
 
@@ -250,11 +251,26 @@ obtenerUsuarios(){
         this.Usuarios=resp.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
         
       }
-      
-      this.Usuarios.map((user:any)=>user.ProyectosAsignados=this.getNameProyectos(user.Proyectos))
+    
+    this.Usuarios.forEach(proyecto => {
+      if (!proyecto.Proyectos) {
+        proyecto.Proyectos = [];
+    }
+    });
+
+    this.Usuarios.map((proyecto: any) => {
+      proyecto.ProyectosSelect = this.Proyectos.filter(proy => 
+          Array.isArray(proyecto.Proyectos) && proyecto.Proyectos.length > 0 
+              ? proyecto.Proyectos.includes(proy.id) 
+              : false // Retorna falso si `proyecto.Proyectos` no es válido
+      );
+  });
+  console.log('Usuarios',this.Usuarios)
+       this.Usuarios.map((user:any)=>user.ProyectosAsignados=this.getNameProyectos(user.ProyectosSelect))
       this.Usuarios.map((user:any)=>user.SucursalesAsignadas=this.getNameSucursales(user.Sucursales))
       this.Usuarios.map((user:any)=>user.Empresa=this.getNombreEmpresa(user.idEmpresa))
 
+    
     if(this.getNombreRol(this.usuario.idRol)=='Super Usuario'){
       this.Roles=this.RolesBack
     }
@@ -266,6 +282,7 @@ obtenerUsuarios(){
     localStorage.setItem('usuarioFinancialSystems', JSON.stringify( this.usuario)); 
     this.UsuariosBack=resp
     this.cargarFormulario()
+ 
   })
 }
 
@@ -531,14 +548,17 @@ toggleEdicion(Usuario: any) {
 }
 actualizarUsuario(Usuario:any){
     let _usuario= this.Usuarios;
+    let ProyectosSeleccionados = Usuario.ProyectosSelect.map((proyecto: any) => proyecto.id);
     const usuarioEncontrado = _usuario.filter((user:any) => user.id == Usuario.id);
     usuarioEncontrado[0].Nombres=Usuario.Nombres
-    usuarioEncontrado[0].Proyectos=Usuario.Proyectos
+
     usuarioEncontrado[0].Correo=Usuario.Correo
     usuarioEncontrado[0].Password=Usuario.Password
     usuarioEncontrado[0].IdSucursal=Usuario.IdSucursal
     usuarioEncontrado[0].Editando = !Usuario.Editando;
     usuarioEncontrado[0].idRol=Usuario.idRol
+    usuarioEncontrado[0].Proyectos=ProyectosSeleccionados
+   console.log('ProyectosSeleccionados',ProyectosSeleccionados)
     this.authS.ActualizarUsuario(usuarioEncontrado[0]).then(resp=>{
       this.toastr.success('Usuario editado', '¡Exito!');
     })
