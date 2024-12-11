@@ -352,13 +352,20 @@ borrarCuenta(idCuenta:string){
   }
 
   getNameUsuario(Usuarios:any){
-    let NombresUsuarios:any=[]
-    Usuarios.forEach(usuario => {
-      let Usuario = this.Usuarios.filter((user: any) => user.id==usuario.id)
-      NombresUsuarios.push(' ' +Usuario[0].Nombres)
-    });
-  
-        return NombresUsuarios
+    console.log('Usuarios',Usuarios)
+    if(Usuarios==undefined || Usuarios.length==0){
+      return []
+    }
+    else {
+      
+      let NombresUsuarios:any=[]
+      Usuarios.forEach(usuario => {
+        let Usuario = this.Usuarios.filter((user: any) => user.id==usuario.id)
+        NombresUsuarios.push(' ' +Usuario[0].Nombres)
+      });
+    
+          return NombresUsuarios
+    }
       
     
   }
