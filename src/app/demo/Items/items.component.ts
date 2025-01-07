@@ -352,7 +352,7 @@ borrarCuenta(idCuenta:string){
   }
 
   getNameUsuario(Usuarios:any){
-    console.log('Usuarios',Usuarios)
+
     if(Usuarios==undefined || Usuarios.length==0){
       return []
     }
