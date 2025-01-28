@@ -1,5 +1,5 @@
 // angular import
-import { AfterViewInit, Component, ElementRef, Injectable, Input, OnInit, ViewChild, importProvidersFrom } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Injectable, Input, OnInit, TemplateRef, ViewChild, importProvidersFrom, inject } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 // project import
@@ -21,8 +21,7 @@ import { Registro } from 'src/app/models/registro';
 import { ToastrService } from 'ngx-toastr';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
-import { SidebarModule } from 'primeng/sidebar';
-
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { CalendarModule } from 'primeng/calendar';
 import { MultiSelectModule } from 'primeng/multiselect';
 
@@ -73,8 +72,7 @@ import { Subscription } from 'rxjs';
     CurrencySymbolPipe,
     TabViewModule,
     ButtonModule,
-    MultiSelectModule,
-    SidebarModule
+    MultiSelectModule
    ],
   templateUrl: './crear-registro.component.html',
   styleUrls: ['./crear-registro.component.scss'],
@@ -82,7 +80,7 @@ import { Subscription } from 'rxjs';
 })
 export default class CrearRegistroComponent implements OnInit,AfterViewInit  {
 @Input() TipoRegistro: any;
-
+private offcanvasService = inject(NgbOffcanvas);
 @ViewChild('scrollTop') scrollTop!: ElementRef;
 @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
@@ -258,6 +256,10 @@ ngOnInit(): void {
 
 
       
+}
+
+openEnd(content: TemplateRef<any>) {
+  this.offcanvasService.open(content, { position: 'end' });
 }
 
 syncScroll() {
