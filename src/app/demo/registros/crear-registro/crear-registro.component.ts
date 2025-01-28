@@ -836,7 +836,6 @@ refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
         registrosFiltrados = this.registrosBackUp.filter(
           (reg: any) => reg.TipoRegistro == this.idTipoRegistro && reg.idSucursal == this.SucursaleSeleccionada.id
         );
-        console.log('SucursaleSeleccionada',this.SucursaleSeleccionada)
       } 
       
       else {
@@ -890,6 +889,7 @@ refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
   }
 
   this.calcularImporteSubTotal(this.Registros);
+  this.calcularImporteTotal(this.Registros);
 
   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
     return Math.max(maxOrden, objeto.Orden);
@@ -1218,7 +1218,7 @@ obtenerCategorias(){
 getCuentabyCategoria(Categoria:any){
 let cuentaContable:any=[]
 
-this.Items.filter((item:any)=>item.idCategoria==Categoria.id
+this.ItemsBack.filter((item:any)=>item.idCategoria==Categoria.id
 && item.idUsuarios.some((user) => user == this.usuario.id)
 
 ).forEach((cuenta:any) => {
@@ -1566,13 +1566,11 @@ let _Registro={
 
 this.registrosBackUp.push(_Registro)
 console.log('Registro',this.registroForm.value)
-// this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
-
 this.refreshRegistros([],false)
-this.registroForm.value.id=nuevoId
+//this.registroForm.value.id=nuevoId
 this.conS.crearRegistro(_Registro).then(id => {
 
-this.cargarFormulario()
+//this.cargarFormulario()
 }).catch(error => {
   console.error('Error al crear el registro:', error);
 });
