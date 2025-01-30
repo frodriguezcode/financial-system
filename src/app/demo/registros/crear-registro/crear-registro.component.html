@@ -60,32 +60,32 @@
 	<div class="offcanvas-body">
 	  <div class="row">
       <div class="col-12">
-        <button type="button" (click)="crearCuenta()" class="btn btn-success  shadow-4" ngbTooltip="Click para crear registro"
+        <button type="button" (click)="crearCuenta();offcanvas.dismiss('Cross click')" class="btn btn-success  shadow-4" ngbTooltip="Click para crear registro"
           >Cuenta Bancaria <i class="fa-solid fa-plus"></i
         ></button></div>
         <div class="col-12">
-          <button type="button" (click)="crearElemento()" class="btn btn-success  shadow-4 m-1" ngbTooltip="Click para crear registro"
+          <button type="button" (click)="crearElemento();offcanvas.dismiss('Cross click')" class="btn btn-success  shadow-4 m-1" ngbTooltip="Click para crear registro"
             >Cuenta Contable <i class="fa-solid fa-plus"></i
           ></button>
         </div>
         <div class="col-12">
-          <button type="button" (click)="crearSocioNegocio()" class="btn btn-success  shadow-4 m-1" ngbTooltip="Click para crear registro"
+          <button type="button" (click)="crearSocioNegocio();offcanvas.dismiss('Cross click')" class="btn btn-success  shadow-4 m-1" ngbTooltip="Click para crear registro"
             >Socio de Negocio <i class="fa-solid fa-plus"></i
           ></button>
         </div>
   
         <div class="col-12">
-          <button type="button" (click)="crearTipoOperacion()" class="btn btn-success  shadow-4 m-1" ngbTooltip="Click para crear registro"
+          <button type="button" (click)="crearTipoOperacion();offcanvas.dismiss('Cross click')" class="btn btn-success  shadow-4 m-1" ngbTooltip="Click para crear registro"
             >Tipo Operación <i class="fa-solid fa-plus"></i
           ></button>
         </div>
         <h5>Tipos de registro</h5>
         <div class="col-12">
-          <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info  shadow-4 m-1">General
+          <button type="button" (click)="switchTipoRegistro(1);offcanvas.dismiss('Cross click')" class="btn btn-info  shadow-4 m-1">General
              <i class="fa-solid fa-building"></i></button>
         </div>  
         <div class="col-12">
-          <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning  shadow-4 m-1">Proyectos
+          <button type="button" (click)="switchTipoRegistro(2);offcanvas.dismiss('Cross click')" class="btn btn-warning  shadow-4 m-1">Proyectos
              <i class="fa-solid fa-diagram-project"></i></button>
   
         </div> 
@@ -668,9 +668,10 @@
   [modal]="true"
   [style]="{ width: '75vw', height: '70vh' }"
   [modal]="true"
+  appendTo="body"
   styleClass="p-fluid"
-  [draggable]="false"
-  [resizable]="false"
+  [draggable]="true"
+  [resizable]="true"
 >
 <app-bancos  *ngIf="visibleCuenta==true"></app-bancos>
 </p-dialog>

@@ -128,12 +128,7 @@
 // }
 
 /* Encabezado fijo */
-thead th {
-  position: sticky;
-  top: 0; /* Fijar el encabezado en la parte superior */
-  background-color: white; /* Fondo del encabezado para evitar superposición visual */
-  z-index: 3; /* Asegura que el encabezado esté encima de las celdas normales */
-}
+
 
 /* Primera columna fija (incluye encabezado y cuerpo) */
 
@@ -219,4 +214,9 @@ thead th {
 
 .table-scroll-container::-webkit-scrollbar {
   display: none; /* Oculta la barra de desplazamiento inferior */
+}
+
+.p-dialog {
+  position: sticky;
+  z-index: 1050 !important;
 }
