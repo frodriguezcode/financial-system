@@ -118,7 +118,13 @@ input, button, select, optgroup, textarea {
 }
 
 
+//!Version anterior para solucion de dropdowns en crear registros
+// .p-overlay, .p-component, .ng-star-inserted{
+//   z-index: 1024 !important;
+// }
 
-.p-overlay, .p-component, .ng-star-inserted{
+
+//* !Version nueva para solucion de dropdowns y modales en  crear registros
+.p-overlay, .p-component{
   z-index: 1024 !important;
 }

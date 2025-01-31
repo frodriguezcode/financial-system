@@ -662,6 +662,8 @@
 
 
 
+  
+
 <p-dialog
   header=""
   [(visible)]="visibleCuenta"
@@ -681,10 +683,11 @@
   [modal]="true"
   [style]="{ width: '75vw', height: '90vh' }"
   [modal]="true"
-  styleClass="p-fluid"
+  styleClass="my-dialog p-fluid"
   [draggable]="false"
   [resizable]="true"
   [maximizable]="true"
+ 
 >
 <app-elemento *ngIf="visibleElemento==true"></app-elemento>
 </p-dialog>
