@@ -1579,6 +1579,13 @@ this.conS.crearRegistro(_Registro).then(id => {
 
 }
 copiarRegistro(registro:any){
+    Swal.fire({
+      title: 'Copiando registro',
+      showCloseButton:false,
+      showConfirmButton:false,
+      showCancelButton:false
+     });
+     Swal.close();
   
   try{
     let RegistroCopiado: any = JSON.parse(JSON.stringify(registro)); // Crear una copia independiente
@@ -1616,12 +1623,14 @@ copiarRegistro(registro:any){
 
     RegistroCopiado.ActivarAnimation=true
     this.conS.copiarRegistro(RegistroCopiado).then(resp => {
+      this.registrosBackUp.push(RegistroCopiado)
+      this.refreshRegistros([],false)
+      Swal.hideLoading();
+
     })
       
-      this.registrosBackUp.push(RegistroCopiado)
-      // this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
-      this.refreshRegistros([],false)
-      // this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+    // this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
+    // this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
       //   return Math.max(maxOrden, objeto.Orden);
       // }, 0);
       
