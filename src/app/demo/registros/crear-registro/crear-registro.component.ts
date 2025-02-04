@@ -867,12 +867,12 @@ refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
     // Ordena y aplica paginación
     this.Registros = registrosFiltrados
       .sort((a: any, b: any) => b.Orden - a.Orden)
-      .map((registro, i) => ({ id: i + 1, ...registro }))
+      // .map((registro, i) => ({ id: i + 1, ...registro }))
       .slice(
         (this.page - 1) * this.pageSize,
         (this.page - 1) * this.pageSize + this.pageSize
       );
-  
+      console.log('Registros',this.Registros)
     // Actualiza otros cálculos
     
   }
@@ -1579,13 +1579,13 @@ this.conS.crearRegistro(_Registro).then(id => {
 
 }
 copiarRegistro(registro:any){
-    Swal.fire({
-      title: 'Copiando registro',
-      showCloseButton:false,
-      showConfirmButton:false,
-      showCancelButton:false
-     });
-     Swal.close();
+    // Swal.fire({
+    //   title: 'Copiando registro',
+    //   showCloseButton:false,
+    //   showConfirmButton:false,
+    //   showCancelButton:false
+    //  });
+    //  Swal.close();
   
   try{
     let RegistroCopiado: any = JSON.parse(JSON.stringify(registro)); // Crear una copia independiente
@@ -1622,12 +1622,12 @@ copiarRegistro(registro:any){
 
 
     RegistroCopiado.ActivarAnimation=true
-    this.conS.copiarRegistro(RegistroCopiado).then(resp => {
-      this.registrosBackUp.push(RegistroCopiado)
-      this.refreshRegistros([],false)
-      Swal.hideLoading();
-
-    })
+    // this.conS.copiarRegistro(RegistroCopiado).then(resp => {
+    //   Swal.hideLoading();
+      
+    // })
+    this.registrosBackUp.push(RegistroCopiado)
+    this.refreshRegistros([],false)
       
     // this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
     // this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
