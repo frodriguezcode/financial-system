@@ -19,9 +19,9 @@ import ConsolidadoMejoradoComponent from '../consolidado-mejorado/consolidado-me
   imports: [
     CommonModule,
     SharedModule,
-    FlujoBancosComponent,
-    FlujoCajaComponent,
-    FlujoConsolidadoComponent,
+    // FlujoBancosComponent,
+    // FlujoCajaComponent,
+    // FlujoConsolidadoComponent,
     TabViewModule,
     ButtonModule,
     StyleClassModule,

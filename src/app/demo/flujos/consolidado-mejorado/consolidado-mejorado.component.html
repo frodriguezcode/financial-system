@@ -71,6 +71,31 @@
 </div>
 
 
+<p-table *ngIf="cargar==true" [value]="DataTreeTable">
+  <ng-template pTemplate="header">
+      <tr>
+          <th>Categoría</th>
+          <th *ngFor="let cab of Cabecera">
+            <ng-container *ngIf="cab.Tipo!=1">
+              {{ cab.Mes }} {{ cab.Anio }}
+
+            </ng-container>
+          </th>
+      </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-rowData>
+      <tr>
+          <td>{{ rowData.categoria }}</td>
+          <td *ngFor="let cab of Cabecera">
+            <ng-container *ngIf="cab.Tipo!=1">
+              {{ rowData.values[cab.Mes + '-' + cab.Anio] || 0 }}
+
+            </ng-container>
+          </td>
+      </tr>
+  </ng-template>
+</p-table>
 
 
 <!-- <div *ngIf="this.Cabecera.length>1" class="table-responsive mt-1">

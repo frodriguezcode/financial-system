@@ -9,10 +9,11 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 import { TreeTableModule } from 'primeng/treetable';
+import { TableModule } from 'primeng/table';
 @Component({
   selector: 'app-consolidado-mejorado',
   standalone: true,
-  imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule,TreeTableModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule,TreeTableModule,TableModule],
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
 })
@@ -79,6 +80,8 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   MaestroSeleccionado:any
 
   showSemanas:boolean=true
+
+  DataTreeTable:any=[]
   ngOnInit(): void {
     this.conS.usuario$.subscribe(usuario => {
       if (usuario) {
@@ -1286,6 +1289,62 @@ getDataItemAnual(){
       }) 
   });
 
+
+
+  console.log('Cabecera',this.Cabecera)
+  console.log('Categorias',this.Categorias)
+  console.log('DataCategorias',this.DataCategorias)
+  this.Categorias.forEach(categ => {
+    let newRow: any = {
+      categoria: categ.Nombre, // O el campo relevante de Categorias
+      values: {} // Aquí guardaremos los valores por mes-año
+    };
+    this.Cabecera.filter((cab:any)=>cab.Tipo!=1).forEach(cab => {
+
+      let key = `${cab.Mes}-${cab.Anio}`;
+      if(cab.Tipo==3){
+        if(categ.Orden==0) {
+          newRow.values[key] = this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio) || 0;
+         
+
+        }
+        else if(categ.Orden==1) {
+          newRow.values[key] = this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio) || 0;
+     
+
+        }
+        else if(categ.Orden==4) {
+          newRow.values[key] = this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio) || 0;
+
+
+        }
+        else if(categ.Orden==7) {
+          newRow.values[key] = this.getDataFlujoFinancieroMensual(cab.NumMes,cab.Anio) || 0;
+
+        }
+        else if(categ.Orden==10) {
+          newRow.values[key] = this.getDataFlujoLibreMensual(cab.NumMes,cab.Anio) || 0;
+
+
+        }
+        else if(categ.Orden==11) {
+          newRow.values[key] = this.obtenerValorSaldoFinalMensual(cab.NumMes,cab.Anio) || 0;
+    
+
+        }
+        else {
+          newRow.values[key] = this.getValorCategoriaMensual(categ.id,cab.NumMes,cab.Anio) || 0;
+        
+
+        }
+      }
+      
+      
+    });
+    
+    this.DataTreeTable.push(newRow)
+  });
+  
   this.cargar=true
   }
 
@@ -1537,22 +1596,22 @@ getDataFlujoLibreAnual(Anio:any){
     })
     this.Anios.forEach((anio:any) => {
       this.Meses.forEach((mes:any) => {
-        this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
-          this.Cabecera.push({
-            "Nombre":sem.Semana + ' '+ mes.Mes + ' ' + anio.Anio,
-            "Mes":mes.Mes,
-            "NumMes":mes.NumMes,
-            "Anio":anio.Anio,
-            "Tipo":2,
-            "NumSemana":sem.NumSemana,
-            "Mostrar":true,
-            "MostrarBoton":true
+        // this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
+        //   this.Cabecera.push({
+        //     "Nombre":sem.Semana + ' '+ mes.Mes + ' ' + anio.Anio,
+        //     "Mes":mes.Mes,
+        //     "NumMes":mes.NumMes,
+        //     "Anio":anio.Anio,
+        //     "Tipo":2,
+        //     "NumSemana":sem.NumSemana,
+        //     "Mostrar":true,
+        //     "MostrarBoton":true
             
           
-          })
+        //   })
           
-        });
-        if(this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0){
+        // });
+       // if(this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0){
           this.Cabecera.push({
             "Nombre":"Total "+ mes.Mes + ' ' + anio.Anio,
             "Mes":mes.Mes,
@@ -1566,7 +1625,7 @@ getDataFlujoLibreAnual(Anio:any){
             "MostrarSemanas":true,
           })
 
-        }
+      //  }
       });
       this.Cabecera.push({
         "Nombre":"Total " + anio.Anio,
@@ -1579,8 +1638,9 @@ getDataFlujoLibreAnual(Anio:any){
       })
     });
 
+
     this.CabeceraBack=this.Cabecera
-  
+
  
     this.DataSaldoInicial=[]
     this.DataSaldoFinal=[]
