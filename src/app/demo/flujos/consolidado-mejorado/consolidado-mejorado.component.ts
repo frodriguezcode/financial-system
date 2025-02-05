@@ -8,10 +8,11 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { TreeSelectModule } from 'primeng/treeselect';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
+import { TreeTableModule } from 'primeng/treetable';
 @Component({
   selector: 'app-consolidado-mejorado',
   standalone: true,
-  imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule,TreeTableModule],
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
 })

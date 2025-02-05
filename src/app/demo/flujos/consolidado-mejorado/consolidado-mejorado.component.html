@@ -69,9 +69,12 @@
     <span class="visually-hidden">Loading...</span>
   </div>
 </div>
-<div *ngIf="this.Cabecera.length>1" class="table-responsive mt-1">
+
+
+
+
+<!-- <div *ngIf="this.Cabecera.length>1" class="table-responsive mt-1">
   <table class="table">
-    <!-- <thead style="background-color: rgb(113,189,158,255); color:white" class="sticky-header categoria-toggle"> -->
     <thead style="color:white" class="sticky-header categoria-toggle">
       <ng-container *ngFor="let cab of Cabecera">
         <ng-container  *ngIf="cab.Tipo == 3 && cab.MostrarSemanas==true">
@@ -143,7 +146,6 @@
           </td>
           <ng-container *ngFor="let cab of Cabecera">
             <ng-container *ngIf="cab.Tipo!=1">
-                  <!-- Semanas -->
                   <ng-container *ngIf="cab.Tipo==2 && cab.Mostrar==true">
                     <th class="text-center" [ngClass]="{
                      'cabecera-categoria': categoria.Calculado == true && (categoria.Tipo!=0 || categoria.Tipo!=11 ), 
@@ -216,7 +218,6 @@
                   }}</span></td>
               <ng-container *ngFor="let cab of Cabecera">
                  <ng-container *ngIf="cab.Tipo!=1">
-                     <!-- Semanas -->
                      <ng-container *ngIf="cab.Tipo==2 && cab.Mostrar==true">
 
                        <td style="font-weight: bolder;" class="text-center">
@@ -290,4 +291,4 @@
       </ng-container>
     </tbody>
   </table>
-</div>
+</div> -->
