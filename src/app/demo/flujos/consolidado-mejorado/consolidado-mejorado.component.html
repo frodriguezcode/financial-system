@@ -89,7 +89,12 @@
           <td>{{ rowData.data.categoria }}</td>
           <td *ngFor="let cab of Cabecera">
             <ng-container *ngIf="cab.Tipo!=1">
-              {{ rowData.data.values[cab.Mes + '-' + cab.Anio] || 0 }}
+              <ng-container *ngIf="cab.Tipo==3">
+                {{ rowData.data.values[cab.Mes + '-' + cab.Anio] || 0 }}
+              </ng-container>
+              <ng-container *ngIf="cab.Tipo==4">
+                {{ rowData.data.values[cab.Anio] || 0 }}
+              </ng-container>
 
             </ng-container>
           </td>

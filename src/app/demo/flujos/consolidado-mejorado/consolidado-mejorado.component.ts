@@ -1306,8 +1306,9 @@ getDataItemAnual(){
  
     this.Cabecera.filter((cab:any)=>cab.Tipo!=1).forEach(cab => {
 
-      let key = `${cab.Mes}-${cab.Anio}`;
+    
       if(cab.Tipo==3){
+        let key = `${cab.Mes}-${cab.Anio}`;
         if(categ.Orden==0) {
           newRow.data.values[key] = this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio) || 0;
          
@@ -1345,6 +1346,7 @@ getDataItemAnual(){
       }
 
       if(cab.Tipo==4){
+        let key = `${cab.Anio}`;
         if(categ.Orden==0) {
           newRow.data.values[key] = 0;
          
