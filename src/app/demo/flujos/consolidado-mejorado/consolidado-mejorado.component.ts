@@ -1290,60 +1290,130 @@ getDataItemAnual(){
   });
 
 
-
-  console.log('Cabecera',this.Cabecera)
-  console.log('Categorias',this.Categorias)
-  console.log('DataCategorias',this.DataCategorias)
+  let indexCategoria:number=0
+  let indexItem:number=0
   this.Categorias.forEach(categ => {
+    indexCategoria+=1
     let newRow: any = {
-      categoria: categ.Nombre, // O el campo relevante de Categorias
-      values: {} // Aquí guardaremos los valores por mes-año
+      key: `${indexCategoria}`,
+      data: {
+        categoria: categ.Nombre, // O el campo relevante de Categorias
+        values: {}, // Aquí guardaremos los valores por mes-año
+        children: []
+      }
     };
+
+ 
     this.Cabecera.filter((cab:any)=>cab.Tipo!=1).forEach(cab => {
 
       let key = `${cab.Mes}-${cab.Anio}`;
       if(cab.Tipo==3){
         if(categ.Orden==0) {
-          newRow.values[key] = this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio) || 0;
+          newRow.data.values[key] = this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio) || 0;
          
 
         }
         else if(categ.Orden==1) {
-          newRow.values[key] = this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio) || 0;
+          newRow.data.values[key] = this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio) || 0;
      
 
         }
         else if(categ.Orden==4) {
-          newRow.values[key] = this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio) || 0;
+          newRow.data.values[key] = this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio) || 0;
 
 
         }
         else if(categ.Orden==7) {
-          newRow.values[key] = this.getDataFlujoFinancieroMensual(cab.NumMes,cab.Anio) || 0;
+          newRow.data.values[key] = this.getDataFlujoFinancieroMensual(cab.NumMes,cab.Anio) || 0;
 
         }
         else if(categ.Orden==10) {
-          newRow.values[key] = this.getDataFlujoLibreMensual(cab.NumMes,cab.Anio) || 0;
+          newRow.data.values[key] = this.getDataFlujoLibreMensual(cab.NumMes,cab.Anio) || 0;
 
 
         }
         else if(categ.Orden==11) {
-          newRow.values[key] = this.obtenerValorSaldoFinalMensual(cab.NumMes,cab.Anio) || 0;
+          newRow.data.values[key] = this.obtenerValorSaldoFinalMensual(cab.NumMes,cab.Anio) || 0;
     
 
         }
         else {
-          newRow.values[key] = this.getValorCategoriaMensual(categ.id,cab.NumMes,cab.Anio) || 0;
+          newRow.data.values[key] = this.getValorCategoriaMensual(categ.id,cab.NumMes,cab.Anio) || 0;
+        
+
+        }
+      }
+
+      if(cab.Tipo==4){
+        if(categ.Orden==0) {
+          newRow.data.values[key] = 0;
+         
+
+        }
+        else if(categ.Orden==1) {
+          newRow.data.values[key] = this.getDataFlujoOperativoAnual(cab.Anio) || 0;
+     
+
+        }
+        else if(categ.Orden==4) {
+          newRow.data.values[key] = this.getDataFlujoInversionAnual(cab.Anio) || 0;
+
+
+        }
+        else if(categ.Orden==7) {
+          newRow.data.values[key] = this.getDataFlujoFinancieroAnual(cab.Anio) || 0;
+
+        }
+        else if(categ.Orden==10) {
+          newRow.data.values[key] = this.getDataFlujoLibreAnual(cab.Anio) || 0;
+
+
+        }
+        else if(categ.Orden==11) {
+          newRow.data.values[key] = this.obtenerValorSaldoFinalAnual(cab.Anio) || 0;
+    
+
+        }
+        else {
+          newRow.data.values[key] = this.getValorCategoriaAnual(categ.id,cab.Anio) || 0;
         
 
         }
       }
       
-      
     });
+
+      // **AGREGAR ITEMS COMO HIJOS**
+  this.getItems(categ.id).forEach(item => {
+    let newItem: any = {
+      key: `${indexCategoria}-${indexItem}`,
+      data: {
+        categoria: item.Nombre, // Nombre del item
+        values: {}
+      }
+    };
+    indexItem+=1
+    this.Cabecera.filter((cab: any) => cab.Tipo != 1).forEach(cab => {
+      let key = `${cab.Mes}-${cab.Anio}`;
+
+      if(cab.Tipo==3){
+        newItem.data.values[key] = this.getValorItemMensual(item.id, cab.NumMes, cab.Anio) || 0;
+      }
+     else if(cab.Tipo==4){
+        newItem.data.values[key] = this.getValorItemAnual(item.id,cab.Anio) || 0;
+      }
+
     
+    
+    });
+
+    newRow.data.children.push(newItem); // Agregar el item como hijo de la categoría
+  });
+    
+
     this.DataTreeTable.push(newRow)
   });
+  console.log('DataTreeTable',this.DataTreeTable)
   
   this.cargar=true
   }

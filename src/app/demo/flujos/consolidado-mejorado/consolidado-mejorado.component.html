@@ -86,10 +86,10 @@
 
   <ng-template pTemplate="body" let-rowData>
       <tr>
-          <td>{{ rowData.categoria }}</td>
+          <td>{{ rowData.data.categoria }}</td>
           <td *ngFor="let cab of Cabecera">
             <ng-container *ngIf="cab.Tipo!=1">
-              {{ rowData.values[cab.Mes + '-' + cab.Anio] || 0 }}
+              {{ rowData.data.values[cab.Mes + '-' + cab.Anio] || 0 }}
 
             </ng-container>
           </td>
