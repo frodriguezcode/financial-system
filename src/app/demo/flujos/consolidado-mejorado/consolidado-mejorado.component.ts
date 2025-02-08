@@ -1289,9 +1289,9 @@ getDataItemAnual(){
       }) 
   });
 
-
   let indexCategoria:number=0
   let indexItem:number=0
+  this.DataTreeTable=[]
   this.Categorias.forEach(categ => {
     indexCategoria+=1
     let newRow: any = {
@@ -1305,8 +1305,6 @@ getDataItemAnual(){
 
  
     this.Cabecera.filter((cab:any)=>cab.Tipo!=1).forEach(cab => {
-
-    
       if(cab.Tipo==3){
         let key = `${cab.Mes}-${cab.Anio}`;
         if(categ.Orden==0) {
@@ -1412,9 +1410,9 @@ getDataItemAnual(){
     newRow.data.children.push(newItem); // Agregar el item como hijo de la categoría
   });
     
-
-    this.DataTreeTable.push(newRow)
-  });
+  
+  this.DataTreeTable.push(newRow)
+});
   console.log('DataTreeTable',this.DataTreeTable)
   
   this.cargar=true
