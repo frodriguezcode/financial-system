@@ -1221,6 +1221,7 @@ getCuentabyCategoria(Categoria:any){
 let cuentaContable:any=[]
 
 this.ItemsBack.filter((item:any)=>item.idCategoria==Categoria.id
+&& item.TipoRubro==this.TipoRegistro
 && item.idUsuarios.some((user) => user == this.usuario.id)
 
 ).forEach((cuenta:any) => {

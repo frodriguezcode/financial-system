@@ -258,6 +258,10 @@ th.cabeceraConcepto {
 }
 
 
+.children-items {
+  background-color: #f3f3f3;
+
+}
 
 
 .flex-row {
@@ -269,4 +273,23 @@ th.cabeceraConcepto {
 
 .form-check-input {
   margin-right: 0.5rem; /* Ajusta este valor según el espacio deseado */
+}
+
+/* Contenedor de la tabla con scroll horizontal */
+.p-table-wrapper {
+  min-width: 800px; /* Ancho mínimo de la tabla */
+  overflow-x: auto; /* Scroll horizontal */
+}
+
+/* Estilo para las celdas de la tabla */
+.p-table td, .p-table th {
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+.row-categorias-padre{
+  background-color:#64a792;
+  color: #ffffff;
+}
+.row-categorias-hijo{
+  background-color:#ffffff;
 }

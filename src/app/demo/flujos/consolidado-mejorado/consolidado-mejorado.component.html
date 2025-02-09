@@ -42,23 +42,24 @@
 (click)="descargarExcel()" class="btn btn-success m-1 mt-2">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
 <button *ngIf="Expandir==false"
 [disabled]="this.Cabecera.length<=1"
-(click)="expandirTodo()" type="button" class="btn btn-info m-1 mt-2">Expandir Todo <i
-    class="fa-solid fa-plus"></i>
-</button>
-<button *ngIf="Expandir==true" 
-[disabled]="this.Cabecera.length<=1"
-(click)="contraerTodo()" type="button" class="btn btn-danger m-1 mt-2">Contraer Todo <i
-    class="fa-solid fa-minus"></i>
+(click)="toggleAllRows()" type="button" class="btn btn-info m-1 mt-2">
+<span *ngIf="!ExpandirCuentas">
+  Expandir <i class="fa-solid fa-plus"></i>
+</span>
+<span *ngIf="ExpandirCuentas"> 
+  Contraer <i class="fa-solid fa-minus"></i>
+</span>
 </button>
 
-<button *ngIf="showSemanas" 
+
+<!-- <button *ngIf="showSemanas" 
 [disabled]="this.Cabecera.length<=1"
 (click)="ocultarSemanas()" type="button" class="btn btn-danger m-1 mt-2">Mensual 
 </button>
 <button *ngIf="!showSemanas"
 [disabled]="this.Cabecera.length<=1"
 (click)="mostrarSemanas()" type="button" class="btn btn-warning m-1 mt-2">Semanal 
-</button>
+</button> -->
 
 <div *ngIf="this.Cabecera.length<=1 && this.cargar==true"  class="alert alert-warning mt-2" role="alert">
   No tiene registros en esta empresa
@@ -71,7 +72,7 @@
 </div>
 
 
-<p-table *ngIf="cargar==true" [value]="DataTreeTable">
+<!-- <p-table *ngIf="cargar==true" [value]="DataTreeTable">
   <ng-template pTemplate="header">
       <tr>
           <th>Categoría</th>
@@ -100,9 +101,75 @@
           </td>
       </tr>
   </ng-template>
-</p-table>
+</p-table> -->
+<div class="p-table-wrapper">
+  <p-table #dt *ngIf="cargar==true" 
+  [tableStyle]="{ 'min-width': '50rem' }"
+  [styleClass]="'p-datatable-sm'"	
+  [value]="DataTreeTable" dataKey="key">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Categoría</th>
+        <th *ngFor="let cab of Cabecera">
+          <ng-container *ngIf="cab.Tipo!=1">
+            {{ cab.Mes }} {{ cab.Anio }}
+          </ng-container>
+        </th>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="body" let-rowData let-expanded="expanded">
+      <tr
+      [ngClass]="{
+        'row-categorias-hijo': rowData.data.tipo != 3 && rowData.data.tipo != 11 && rowData.data.tipo != 0, 
+        'row-categorias-padre': rowData.data.tipo == 3 || rowData.data.tipo == 11 || rowData.data.tipo == 0
+      }"
+    >
+        <td>
+          <button *ngIf="rowData.data.tipo!=3 && rowData.data.tipo!=11 && rowData.data.tipo!=0" 
+          type="button"
+          pButton pRipple 
+          style="width: 25px; height: 25px; font-size: 12px; padding: 2px;"
+          [pRowToggler]="rowData" 
+          [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+  </button>
+  
+       
+          <span>
+            {{ rowData.data.categoria }}
+          </span>
+        </td>
+        <td *ngFor="let cab of Cabecera">
+          <ng-container *ngIf="cab.Tipo!=1">
+            <ng-container *ngIf="cab.Tipo==3">
+              {{ "$ " +((rowData.data.values[cab.Mes + '-' + cab.Anio] || 0) | number)  }}
+            </ng-container>
+            <ng-container *ngIf="cab.Tipo==4">
+              {{ "$ " +((rowData.data.values[cab.Anio] || 0) | number)  }}
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="rowexpansion" let-rowData>
+      <tr class="children-items" *ngFor="let child of rowData.data.children">
+        <td class="text-center justify-content-between">{{ child.data.categoria }}</td>
+        <td *ngFor="let cab of Cabecera">
+          <ng-container *ngIf="cab.Tipo!=1">
+            <ng-container *ngIf="cab.Tipo==3">
+              {{ "$ " +((child.data.values[cab.Mes + '-' + cab.Anio] || 0) | number) }}
+            </ng-container>
+            <ng-container *ngIf="cab.Tipo==4">
+              {{ "$ " +((child.data.values[cab.Anio] || 0)| number ) }}
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 
-
+</div>
 <!-- <div *ngIf="this.Cabecera.length>1" class="table-responsive mt-1">
   <table class="table">
     <thead style="color:white" class="sticky-header categoria-toggle">

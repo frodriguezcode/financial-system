@@ -1,5 +1,5 @@
 // angular import
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -9,18 +9,22 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 import { TreeTableModule } from 'primeng/treetable';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-consolidado-mejorado',
   standalone: true,
-  imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule,TreeTableModule,TableModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule,
+    TreeTableModule,TableModule,ButtonModule],
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
 })
 export default class ConsolidadoMejoradoComponent implements OnInit {
+  @ViewChild('dt') table: Table; 
   constructor(
     private conS:ConfigurationService
   ) {}
+  ExpandirCuentas:boolean=false
   Categorias:any=[]
   categoriasExpandidas: { [id: number]: boolean } = {};
   Items:any=[]
@@ -99,6 +103,23 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
     });
   }
   
+  toggleAllRows() {
+    if (this.table) {
+      // Si hay filas expandidas, contraerlas todas
+      if (Object.keys(this.table.expandedRowKeys).length > 0) {
+        this.ExpandirCuentas=false
+        this.table.expandedRowKeys = {}; // Contraer todas las filas
+      } else {
+        // Expandir todas las filas
+        const expandedKeys = {};
+        this.table.value.forEach((row) => {
+          expandedKeys[row.key] = true; // Marcar todas las filas como expandidas
+        });
+        this.table.expandedRowKeys = expandedKeys;
+        this.ExpandirCuentas=true
+      }
+    }
+  }
 descargarExcel(){
   let _Cabecera:any=[]
  _Cabecera=this.Cabecera.filter((cab:any)=>cab.Mostrar==true)
@@ -1292,6 +1313,7 @@ getDataItemAnual(){
   let indexCategoria:number=0
   let indexItem:number=0
   this.DataTreeTable=[]
+  console.log('Categorias', this.Categorias)
   this.Categorias.forEach(categ => {
     indexCategoria+=1
     let newRow: any = {
@@ -1299,7 +1321,8 @@ getDataItemAnual(){
       data: {
         categoria: categ.Nombre, // O el campo relevante de Categorias
         values: {}, // Aquí guardaremos los valores por mes-año
-        children: []
+        children: [],
+        tipo:0
       }
     };
 
@@ -1307,6 +1330,7 @@ getDataItemAnual(){
     this.Cabecera.filter((cab:any)=>cab.Tipo!=1).forEach(cab => {
       if(cab.Tipo==3){
         let key = `${cab.Mes}-${cab.Anio}`;
+        newRow.data.tipo=categ.Tipo
         if(categ.Orden==0) {
           newRow.data.values[key] = this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio) || 0;
          
@@ -1314,7 +1338,7 @@ getDataItemAnual(){
         }
         else if(categ.Orden==1) {
           newRow.data.values[key] = this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio) || 0;
-     
+          
 
         }
         else if(categ.Orden==4) {
@@ -1385,6 +1409,7 @@ getDataItemAnual(){
 
       // **AGREGAR ITEMS COMO HIJOS**
   this.getItems(categ.id).forEach(item => {
+
     let newItem: any = {
       key: `${indexCategoria}-${indexItem}`,
       data: {
@@ -1392,15 +1417,17 @@ getDataItemAnual(){
         values: {}
       }
     };
-    indexItem+=1
     this.Cabecera.filter((cab: any) => cab.Tipo != 1).forEach(cab => {
+    indexItem+=1
       let key = `${cab.Mes}-${cab.Anio}`;
 
       if(cab.Tipo==3){
         newItem.data.values[key] = this.getValorItemMensual(item.id, cab.NumMes, cab.Anio) || 0;
       }
      else if(cab.Tipo==4){
-        newItem.data.values[key] = this.getValorItemAnual(item.id,cab.Anio) || 0;
+      let keyAnio = `${cab.Anio}`;
+      console.log('Valor',this.getValorItemAnual(item.id,cab.Anio) )
+        newItem.data.values[keyAnio] = this.getValorItemAnual(item.id,cab.Anio) || 0;
       }
 
     
@@ -1782,6 +1809,7 @@ getDataFlujoLibreAnual(Anio:any){
 
     _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria
     && item.idUsuarios.some((user:any) => user == this.usuario.id)
+
      )
     return _Items
     }
