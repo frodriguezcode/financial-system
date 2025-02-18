@@ -145,7 +145,7 @@
 	</div>
 	<div class="offcanvas-body">
     <div class="row align-items-center g-2">
-      <div *ngIf="idTipoRegistro==1" class="col-12">
+      <div *ngIf="idTipoRegistro==1" class="col-12" style="z-index: 2000; top: 0;">
         <label for="formGroupExampleInput" class="form-label">Buscar por sucursal</label>
         <br>
         <p-dropdown 
@@ -155,7 +155,7 @@
           [options]="Sucursales" 
           [(ngModel)]="SucursaleSeleccionada" 
           optionLabel="Nombre" 
-         
+          
           placeholder="Seleccione una sucursal" />
       </div>
       
