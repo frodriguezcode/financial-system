@@ -484,7 +484,7 @@ obtenerProyectos(){
     this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
     this.Proyectos=resp
     this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal,proyect.idEmpresa) )
-  
+  console.log('Proyectos',this.Proyectos)
     this.Proyectos.push({
       "Activo":true,
       "Editando":false,
