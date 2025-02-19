@@ -193,13 +193,13 @@ thead th {
 @media only screen and (min-width: 1300px) and (max-width: 1400px) {
   .table-scroll-top div {
     height: 1px; /* Línea invisible para activar la barra */
-    width: 220%; /* Ancho mayor que el contenedor para activar el scroll */
+    width: 600%; /* Ancho mayor que el contenedor para activar el scroll */
   }
 }
 @media only screen and (min-width: 1500px) and (max-width: 2000px) {
   .table-scroll-top div {
     height: 1px; /* Línea invisible para activar la barra */
-    width: 160%; /* Ancho mayor que el contenedor para activar el scroll */
+    width: 300%; /* Ancho mayor que el contenedor para activar el scroll */
   }
 }
 
@@ -219,4 +219,18 @@ thead th {
 
 .p-dropdown-panel {
   z-index: 1000 !important; /* Ajusta según necesidad */
+}
+.importe{
+  margin-left: 400px;
+}
+
+td:nth-child(9), th:nth-child(9) { 
+  width: 150px; /* Ajusta según necesites */
+  text-align: center;
+}
+
+tfoot tr {
+
+  background: white;
+
 }

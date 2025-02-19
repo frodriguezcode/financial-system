@@ -484,7 +484,6 @@ obtenerProyectos(){
     this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
     this.Proyectos=resp
     this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal,proyect.idEmpresa) )
-  console.log('Proyectos',this.Proyectos)
     this.Proyectos.push({
       "Activo":true,
       "Editando":false,
@@ -872,7 +871,6 @@ refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
         (this.page - 1) * this.pageSize,
         (this.page - 1) * this.pageSize + this.pageSize
       );
-      console.log('Registros',this.Registros)
     // Actualiza otros cálculos
     
   }
@@ -1218,10 +1216,11 @@ obtenerCategorias(){
 }
 
 getCuentabyCategoria(Categoria:any){
+
 let cuentaContable:any=[]
 
 this.ItemsBack.filter((item:any)=>item.idCategoria==Categoria.id
-&& item.TipoRubro==this.TipoRegistro
+&& item.TipoRubro==this.idTipoRegistro
 && item.idUsuarios.some((user) => user == this.usuario.id)
 
 ).forEach((cuenta:any) => {
@@ -1568,7 +1567,6 @@ let _Registro={
 }
 
 this.registrosBackUp.push(_Registro)
-console.log('Registro',this.registroForm.value)
 this.refreshRegistros([],false)
 //this.registroForm.value.id=nuevoId
 this.conS.crearRegistro(_Registro).then(id => {

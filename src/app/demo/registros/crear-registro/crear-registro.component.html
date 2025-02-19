@@ -159,7 +159,7 @@
           placeholder="Seleccione una sucursal" />
       </div>
       
-        <div *ngIf="idTipoRegistro==2" class="col-12">
+        <div *ngIf="idTipoRegistro==2" class="col-12" style="z-index: 2000; top: 0;">
           <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
           <br>
           <p-dropdown 
@@ -168,7 +168,6 @@
             (onChange)="filtrarByCategoria()"
             [options]="Proyectos" 
             [(ngModel)]="ProyectoSeleccionado" 
-            appendTo="body"
             optionLabel="NombreSucursal" 
             placeholder="Seleccione un proyecto" />
         </div>
@@ -309,10 +308,6 @@
   </div>
 </div>
 <br>
-<!-- (mousedown)="onMouseDown($event)" 
-(mousemove)="onMouseMove($event)" 
-(mouseup)="onMouseUp()"
-(mouseleave)="onMouseUp()" -->
 <div class="table-scroll-wrapper">
   <!-- Barra de desplazamiento superior -->
   <div class="table-scroll-top" #scrollTop>
@@ -322,7 +317,7 @@
   <!-- Contenedor de la tabla -->
   <div class="table-scroll-container" #scrollContainer>
     <table class="table">
-      <thead>
+      <thead style="position: sticky;top: 0;background-color: #F8FAFB;z-index: 2000 ">
         <tr class="text-center">
           <th scope="col">
             <div class="form-check">
@@ -390,11 +385,6 @@
               </ng-container>
             </td>
           </ng-container>
-            <!-- <td class="text-center">
-              <ng-container>
-                {{ registros.Orden }}
-              </ng-container>
-            </td> -->
             <td class="text-center">
               <input style="min-height: 1rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
             </td>
@@ -427,6 +417,8 @@
               <p-dropdown
               [options]="Proyectos"
               [(ngModel)]="registros.Proyecto"
+              [style]="{'width':'200px'}"
+              [panelStyle]="{'width':'200px'}"
               name="ProyectosSeleccionados"
               optionLabel="NombreSucursal"
               optionValue="NombreSucursal"
@@ -456,6 +448,8 @@
               <p-dropdown
               [options]="this.getCategoriasByTipo(registros.idTipo)"
               [(ngModel)]="registros.idCategoria"
+              [style]="{'width':'300px'}"
+              [panelStyle]="{'width':'300px'}"
               name="ItemSeleccionados"
               optionLabel="Nombre"
               [filter]="true"
@@ -508,10 +502,6 @@
             
       
             <td class="text-center">
-              <!-- <div class="animate__animated animate__bounceIn custom-alert shadow-1" 
-              style="color: red; font-size: 11px;" 
-              *ngIf="validarEgreso(registros.idTipo,Valor.value,registros.Orden)==false">El valor debe ser negativo
-            </div> -->
                   <input
                   [ngClass]="registros.idTipo == 1 ? 'textoInputPositivo' : 'textoInputNegativo'"
                   (keyup.enter)="salvarRegistro(registros,Valor.value)"
@@ -545,6 +535,8 @@
       
             <td class="text-center">
               <p-dropdown
+              [style]="{'width':'200px'}"
+              [panelStyle]="{'width':'200px'}"
                 [options]="cuentas"
                 [(ngModel)]="registros.Cuenta"
                 name="ItemSeleccionados"
@@ -561,32 +553,11 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-            </td>
-      
-      
-      
-      
-            <!-- <td class="text-center">
-              <p-dropdown
-                [options]="Flujos"
-                [(ngModel)]="registros.idFlujo"
-                name="flujos"
-                optionLabel="name"
-                [filter]="true"
-                filterBy="name"
-                [showClear]="false"
-                placeholder="Seleccione un flujo"
-                appendTo="body"
-              >
-                <ng-template pTemplate="selectedItem" let-selectedItem>
-                  <div class="flex align-items-center gap-2">
-                    <div class="seleccion-item" style="min-width: 9rem">{{ selectedItem.name }}</div>
-                  </div>
-                </ng-template>
-              </p-dropdown>
-            </td> -->
+            </td>  
             <td class="text-center">
               <p-dropdown
+              [style]="{'width':'200px'}"
+              [panelStyle]="{'width':'200px'}"
                 [options]="SociosNegocios"
                 [(ngModel)]="registros.idSocioNegocio"
                 name="SociosNegocios"
@@ -613,13 +584,64 @@
               ></button>
             </td>
           </tr>
-
+     
        
       </tbody>
+
+      <tfoot >
+        <tr>
+          <td colspan="8" class="text-end"><strong >Sub-Total:</strong></td>
+          <td  class="text-center"><strong>
+            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
+            *ngIf="ImporteSubTotal<0">
+            <strong>{{ " -$ " + (ImporteSubTotal*-1 | number)}}</strong>
+            </p>
+            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
+            *ngIf="ImporteSubTotal>=0">
+           <strong>{{ " $ " + (ImporteSubTotal| number)}}</strong> 
+            </p>
+          </strong>
+        </td>
+        </tr>
+        <tr>
+          <td colspan="8" class="text-end"><strong>Total:</strong></td>
+          <td  class="text-center"><strong>
+            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
+            *ngIf="ImporteSubTotal<0">
+            <strong>{{ " -$ " + (ImporteSubTotal*-1 | number)}}</strong>
+            </p>
+            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
+            *ngIf="ImporteSubTotal>=0">
+           <strong>{{ " $ " + (ImporteSubTotal| number)}}</strong> 
+            </p>
+          </strong>
+        </td>
+        </tr>
+        <!-- <tr>
+          <td colspan="8" class="text-end"><strong>Total:</strong></td>
+          <td  class="text-center">
+            <strong>
+            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
+            *ngIf="ImporteTotal<0">
+            <strong>{{ " -$ " + (ImporteTotal*-1 | number)}}</strong> 
+            </p>
+            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
+            *ngIf="ImporteTotal>=0">
+            <strong>{{ " $ " + (ImporteTotal| number)}}</strong> 
+            </p>
+
+          </strong>
+        
+        </td>
+        </tr> -->
+      </tfoot>
+
     </table>
 
   
   </div>
+ 
+</div>
   <div class="d-flex justify-content-between p-2">
     <ngb-pagination
       [collectionSize]="collectionSize"
@@ -644,7 +666,7 @@
   </div>
 
 
-
+<!-- <div class="importe">
   <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
   *ngIf="ImporteSubTotal<0">
   Importe Sub-Total: <strong>{{ " -$ " + (ImporteSubTotal*-1 | number)}}</strong>
@@ -654,14 +676,17 @@
   Importe Sub-Total: <strong>{{ " $ " + (ImporteSubTotal| number)}}</strong> 
   </p>
 
-  <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
-  *ngIf="ImporteTotal<0">
-  Importe Total: <strong>{{ " -$ " + (ImporteTotal*-1 | number)}}</strong> 
-  </p>
-  <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
-  *ngIf="ImporteTotal>=0">
-  Importe Total: <strong>{{ " $ " + (ImporteTotal| number)}}</strong> 
-  </p>
+  <div style="margin-top: -20px;">
+    <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
+    *ngIf="ImporteTotal<0">
+    Importe Total: <strong>{{ " -$ " + (ImporteTotal*-1 | number)}}</strong> 
+    </p>
+    <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
+    *ngIf="ImporteTotal>=0">
+    Importe Total: <strong>{{ " $ " + (ImporteTotal| number)}}</strong> 
+    </p>
+  </div>
+</div> -->
 
 
 
