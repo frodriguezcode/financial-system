@@ -1313,7 +1313,6 @@ getDataItemAnual(){
   let indexCategoria:number=0
   let indexItem:number=0
   this.DataTreeTable=[]
-  console.log('Categorias', this.Categorias)
   this.Categorias.forEach(categ => {
     indexCategoria+=1
     let newRow: any = {
@@ -1426,7 +1425,6 @@ getDataItemAnual(){
       }
      else if(cab.Tipo==4){
       let keyAnio = `${cab.Anio}`;
-      console.log('Valor',this.getValorItemAnual(item.id,cab.Anio) )
         newItem.data.values[keyAnio] = this.getValorItemAnual(item.id,cab.Anio) || 0;
       }
 
@@ -1440,7 +1438,6 @@ getDataItemAnual(){
   
   this.DataTreeTable.push(newRow)
 });
-  console.log('DataTreeTable',this.DataTreeTable)
   
   this.cargar=true
   }
