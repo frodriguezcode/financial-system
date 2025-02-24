@@ -694,6 +694,7 @@ filtrarCuentas(TipoRubro:any){
 obtenerRegistros(){
       this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
         this.Registros=[]  
+
         resp.filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
           let _Registro={
             "Activo":element.Activo,
@@ -730,49 +731,68 @@ obtenerRegistros(){
           });
 
           this.RegistrosBackUp=this.Registros
-       
-          const uniqueMesNumMesSet = new Set(this.Registros.map(item => JSON.stringify({ Mes: item.MesRegistro, NumMes: item.NumMes})));
-          this.SaldoInicial.forEach(item => {
-            JSON.stringify({ Mes: item.MesRegistro, NumMes: Number(item.NumMes) })
-          });
-          const uniqueMesNumMes = Array.from(uniqueMesNumMesSet).map((item:any) => JSON.parse(item));
-
-          const uniqueNumSemanaSet = new Set(this.Registros.map(item => JSON.stringify({ 
-            NumSemana: item.NumSemana,
-            Semana: "Semana " + item.NumSemana, 
-            SemanaAnio: "Semana " + item.NumSemana + ' ' + '(' + item.AnioRegistro + ')', 
-            Mes:item.NumMes,
-         
-            Anio:item.AnioRegistro  })));
-          this.SaldoInicial.forEach(item => {
-            uniqueNumSemanaSet.add(JSON.stringify({ NumSemana: item.SemanaNum, 
-              Semana: "Semana " + item.SemanaNum, 
-            
-              SemanaAnio: "Semana " + item.SemanaNum + ' ' + '(' + item.AnioRegistro + ')', 
-              Mes:Number(item.NumMes),Anio:item.AnioRegistro }));
-          });         
-          const uniqueNumSemana = Array.from(uniqueNumSemanaSet).map((item:any) => JSON.parse(item));
+   
 
 
-          const uniqueAniosSet = new Set(this.Registros.map(item => JSON.stringify({ Anio: item.AnioRegistro})));
-          this.SaldoInicial.forEach(item => {
-            uniqueAniosSet.add(JSON.stringify({Anio:item.AnioRegistro }));
-          });   
-          const uniqueAnios= Array.from(uniqueAniosSet).map((item:any) => JSON.parse(item));
-     
-
-          const semanasIdentificadas = this.conS.posicionarSemanas(uniqueNumSemana);
-          //this.Semanas=uniqueNumSemana.sort((a:any, b:any) => a.NumSemana- b.NumSemana)
-          this.Semanas=semanasIdentificadas
-          this.Semanas.map((sem:any)=>{sem.Mostrar=true,sem.MostrarBoton=true})
+          const obtenerAniosUnicos = (registros1: any[], registros2: any[]) => {
+            const aniosUnicos = new Map();
           
-          this.Meses=uniqueMesNumMes.sort((a:any, b:any) => a.NumMes- b.NumMes)
-          this.Anios=uniqueAnios.sort((a:any, b:any) => a.Anio- b.Anio)
-          this.Anios.map((anio:any)=>{anio.Mostrar=true,anio.MostrarBoton=true})
-          this.Meses.map((mes:any)=>{mes.Mostrar=true,mes.MostrarBoton=true})
+            // Unir ambos arreglos y extraer los años únicos
+            [...registros1, ...registros2].forEach((item) => {
+              if (!aniosUnicos.has(item.AnioRegistro)) {
+                aniosUnicos.set(item.AnioRegistro, {
+                  Anio: item.AnioRegistro,
+                  seleccionado: false,
+                  label: item.AnioRegistro,
+                  icon: '',
+                });
+              }
+            });
+          
+            // Convertir a array y agregar índices
+            return Array.from(aniosUnicos.values()).map((item, index) => ({
+              ...item,
+              index: index + 1,
+            }));
+          };
 
-          this.MesesSeleccionados=this.Meses
+          const aniosActivos = obtenerAniosUnicos(this.Registros, this.SaldoInicial);
+
+          const obtenerMesesUnicos = (registros1: any[], registros2: any[]) => {
+            const mesesUnicos = new Map();
+          
+            // Unir ambos arreglos y extraer los años únicos
+            [...registros1, ...registros2].forEach((item) => {
+              if (!mesesUnicos.has(item.MesRegistro)) {
+                mesesUnicos.set(item.MesRegistro, {
+                  Anio: item.AnioRegistro,
+                  Mes: item.MesRegistro,
+                  NumMes: item.NumMes,
+                  seleccionado: false,
+                  label: item.MesRegistro,
+                  icon: '',
+                });
+              }
+            });
+          
+            // Convertir a array y agregar índices
+            return Array.from(mesesUnicos.values()).map((item, index) => ({
+              ...item,
+              index: index + 1,
+            }));
+          };
+
+          const mesesActivos = obtenerMesesUnicos(this.Registros, this.SaldoInicial);
+
+
+          this.Meses=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
+          this.Anios=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
+          // this.Anios.map((anio:any)=>{anio.Mostrar=true,anio.MostrarBoton=true})
+          // this.Meses.map((mes:any)=>{mes.Mostrar=true,mes.MostrarBoton=true})
+
+          // this.MesesSeleccionados=this.Meses
     
+
      
           
 
@@ -843,7 +863,7 @@ if(Posicion==0 || Posicion==1){
     }
   
     if(UltimaSemana.length>0){
-      return this.getValorSaldoFinal(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes,UltimaSemana[0].Anio,UltimaSemana[0].posicion)
+      return this.getValorSaldoFinal(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes)
   
     }
     else {
@@ -882,18 +902,36 @@ else if (Posicion == 2) {
 
 }
 
-getValorSaldoFinal(NumSemana:any,Mes:any,Anio:any,Posicion:any){
+getValorSaldoFinal(Mes:any,Anio:any){
 
-  return  this.getValorSaldoInicial(NumSemana,Mes,Anio,Posicion) + this.getDataFlujoLibre(NumSemana,Mes,Anio)
+  return  this.getSaldoInicialMensual(Mes,Anio) + 
+  this.getDataFlujoLibreMensual(Mes,Anio)
 
 }
 getSaldoInicialMensual(Mes:any,Anio:any){
-  let UltimaSemana:any=[]
-  UltimaSemana= this.getSemanasByMesAnio(Anio,Mes).filter((sem:any)=>(sem.posicion==0 || sem.posicion==1))
+  // let UltimaSemana:any=[]
+  // UltimaSemana= this.getSemanasByMesAnio(Anio,Mes).filter((sem:any)=>(sem.posicion==0 || sem.posicion==1))
 
-  if(UltimaSemana.length>0){
-    return this.getValorSaldoInicial(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes,UltimaSemana[0].Anio,UltimaSemana[0].posicion)
+  // if(UltimaSemana.length>0){
+  //   return this.getValorSaldoInicial(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes,UltimaSemana[0].Anio,UltimaSemana[0].posicion)
 
+  // }
+  // else {
+  //   return 0
+  // }
+
+  let _Data: any=[];
+  _Data=this.SaldoInicial.filter((saldo:any)=>saldo
+  && saldo.NumMes==Mes
+  && saldo.AnioRegistro==Anio
+  )
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
   }
   else {
     return 0
@@ -904,7 +942,7 @@ getSaldoFinalMensual(Mes:any,Anio:any){
   UltimaSemana= this.getSemanasByMesAnio(Anio,Mes).filter((sem:any)=>(sem.posicion==0 || sem.posicion==2))
 
   if(UltimaSemana.length>0){
-    return this.getValorSaldoFinal(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes,UltimaSemana[0].Anio,UltimaSemana[0].posicion)
+    return this.getValorSaldoFinal(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes)
 
   }
   else {
@@ -1355,7 +1393,7 @@ getDataItemAnual(){
 
         }
         else if(categ.Orden==11) {
-          newRow.data.values[key] = this.obtenerValorSaldoFinalMensual(cab.NumMes,cab.Anio) || 0;
+          newRow.data.values[key] = this.getValorSaldoFinal(cab.NumMes,cab.Anio) || 0;
     
 
         }
@@ -1369,7 +1407,7 @@ getDataItemAnual(){
       if(cab.Tipo==4){
         let key = `${cab.Anio}`;
         if(categ.Orden==0) {
-          newRow.data.values[key] = 0;
+          newRow.data.values[key] = this.obtenerValorSaldoInicialAnual(cab.Anio);
          
 
         }
@@ -1675,8 +1713,10 @@ getDataFlujoLibreAnual(Anio:any){
   + this.getDataFlujoFinancieroAnual(Anio)
 }
 
-
-   construirCabecera(){
+getMesesByAnio(anio:any){
+  return this.Meses.filter((mes:any)=>mes.Anio==anio)
+}
+construirCabecera(){
 
     this.Cabecera=[]
     this.Cabecera.push({
@@ -1689,7 +1729,7 @@ getDataFlujoLibreAnual(Anio:any){
       "MostrarBoton":true
     })
     this.Anios.forEach((anio:any) => {
-      this.Meses.forEach((mes:any) => {
+      this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
         // this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
         //   this.Cabecera.push({
         //     "Nombre":sem.Semana + ' '+ mes.Mes + ' ' + anio.Anio,
@@ -1741,7 +1781,7 @@ getDataFlujoLibreAnual(Anio:any){
     this.DataSaldoInicialMensual=[]
     this.DataSaldoFinalMensual=[]
     this.Anios.forEach((anio:any) => {
-      this.Meses.forEach((mes:any) => {
+      this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
         this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
           let _SemanaDataInicial:any=[]
           _SemanaDataInicial=this.DataSaldoInicial.filter((data:any)=>data.NumSemana==sem.NumSemana && data.Anio==anio.Anio && data.Mes==sem.Mes)
@@ -1762,7 +1802,7 @@ getDataFlujoLibreAnual(Anio:any){
               "NumSemana":sem.NumSemana,
               "Mes":sem.Mes,
               "Anio":sem.Anio,
-              "Valor":this.getValorSaldoFinal(sem.NumSemana,sem.Mes,anio.Anio,sem.posicion)
+              "Valor":this.getValorSaldoFinal(sem.NumSemana,sem.Mes)
   
             })
 
@@ -1780,7 +1820,6 @@ getDataFlujoLibreAnual(Anio:any){
           })
 
         }    
-
         let _MesDataFinal:any=[]
         _MesDataFinal=this.DataSaldoFinalMensual.filter((data:any)=>data.Anio==anio.Anio && data.Mes==mes.NumMes)
         if(_MesDataFinal.length==0){
@@ -1842,6 +1881,22 @@ obtenerValorSaldoInicialMensual(Mes:any,Anio:any){
     return 0
   }
 }
+obtenerValorSaldoInicialAnual(Anio:any){
+  let _ValorInicialMensual:any=[]
+  let _ValorInicialesAnuales:any=[]
+  _ValorInicialMensual=this.DataSaldoInicialMensual.filter((data:any)=>data.Mes==1 && data.Anio==Anio)
+  _ValorInicialesAnuales=this.DataSaldoInicialMensual.filter((data:any)=>data.Anio==Anio)
+  if(_ValorInicialMensual.length>0){
+    return _ValorInicialMensual[0].Valor
+  }
+ else if(_ValorInicialesAnuales.length>0){
+    return _ValorInicialesAnuales[0].Valor
+  }
+
+  else {
+    return 0
+  }
+}
 obtenerValorSaldoFinalMensual(Mes:any,Anio:any){
   let _ValorFinalMensual:any=[]
   _ValorFinalMensual=this.DataSaldoFinalMensual.filter((data:any)=>data.Mes==Mes && data.Anio==Anio)
@@ -1853,14 +1908,17 @@ obtenerValorSaldoFinalMensual(Mes:any,Anio:any){
   }
 }
 obtenerValorSaldoFinalAnual(Anio:any){
-  let _ValorFinalMensual:any=[]
-  _ValorFinalMensual=this.DataSaldoFinalMensual.filter((data:any)=>data.Anio==Anio)
-  if(_ValorFinalMensual.length>0){
-    return _ValorFinalMensual[0].Valor
-  }
-  else {
-    return 0
-  }
-}
+//   let _ValorFinalMensual:any=[]
+//   _ValorFinalMensual=this.DataSaldoFinalMensual.filter((data:any)=>data.Anio==Anio)
+//   if(_ValorFinalMensual.length>0){
+//     return _ValorFinalMensual[0].Valor
+//   }
+//   else {
+//     return 0
+//   }
+ return this.obtenerValorSaldoInicialAnual(Anio) + this.getDataFlujoLibreAnual(Anio) 
+ }
+
+
 
 }

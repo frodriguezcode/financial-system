@@ -16,6 +16,7 @@
 <p-multiSelect [disabled]="ProyectoSeleccionado.length>0" class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" [options]="Sucursales"
   [(ngModel)]="SucursalSeleccionada" 
   optionLabel="Nombre"
+  appendTo="body"
   placeholder="Seleccione una sucursal" 
   emptyMessage="No hay sucursales disponibles"
   emptyFilterMessage="No se encontraron coincidencias"
@@ -23,11 +24,14 @@
 <p-multiSelect [disabled]="SucursalSeleccionada.length>0" class="m-1" (onChange)=" filtrarData();filtrarCuentas(2)" [options]="Proyectos"
   [(ngModel)]="ProyectoSeleccionado"
   optionLabel="NombreSucursal" 
+  appendTo="body"
   placeholder="Seleccione un proyecto"
   emptyMessage="No hay proyectos disponibles"
   emptyFilterMessage="No se encontraron coincidencias"
   />
-<p-multiSelect (onChange)=" filtrarData()" class="m-1" [options]="CuentasBancarias"
+<p-multiSelect
+appendTo="body"
+(onChange)=" filtrarData()" class="m-1" [options]="CuentasBancarias"
   [(ngModel)]="CuentaBancariaSeleccionada" optionLabel="CuentaNombre" placeholder="Seleccione una cuenta" />
 <br>
 
