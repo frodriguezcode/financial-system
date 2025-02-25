@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,HostListener,ElementRef, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // project import
@@ -34,9 +34,39 @@ import ConsolidadoMejoradoComponent from '../consolidado-mejorado/consolidado-me
 })
 export default class FlujosPanelComponent implements OnInit {
   activeIndex: number = 0;
+  scale = 1;
+  height :any
   visible: boolean = false;
-  ngOnInit(): void {}
-  showDialog() {
+  width: number = window.innerWidth;
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  ngOnInit(): void {
+    this.adjustZoom();
+    window.addEventListener('resize', () => this.adjustZoom());
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.adjustZoom();
+  }
+  showDialog() {  
     this.visible = true;
+}
+// Swal.fire({
+//       position: 'center',
+//       icon: 'success',
+//       title: `${this.width} ${this.height} `,
+//       showConfirmButton: true
+//       })
+
+adjustZoom() {
+  this.width = window.innerWidth;
+  this.height = window.innerHeight;
+
+  if (this.width >=1000 && this.width <= 1300) {
+  
+    (document.body.style as any).zoom = '0.7';  // Aplicar zoom al 70%
+  } else {
+    (document.body.style as any).zoom = '1';  // Mantener zoom normal
+  }
 }
 }

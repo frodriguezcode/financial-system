@@ -763,7 +763,7 @@ obtenerRegistros(){
           
             // Unir ambos arreglos y extraer los años únicos
             [...registros1, ...registros2].forEach((item) => {
-              if (!mesesUnicos.has(item.MesRegistro)) {
+              if (!mesesUnicos.has(item.AnioRegistro)) {
                 mesesUnicos.set(item.MesRegistro, {
                   Anio: item.AnioRegistro,
                   Mes: item.MesRegistro,
@@ -784,7 +784,7 @@ obtenerRegistros(){
 
           const mesesActivos = obtenerMesesUnicos(this.Registros, this.SaldoInicial);
 
-
+          console.log('mesesActivos',mesesActivos)
           this.Meses=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
           // this.Anios.map((anio:any)=>{anio.Mostrar=true,anio.MostrarBoton=true})
