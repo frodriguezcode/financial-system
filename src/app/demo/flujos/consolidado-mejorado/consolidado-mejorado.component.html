@@ -148,7 +148,7 @@ appendTo="body"
         <td *ngFor="let cab of Cabecera">
           <ng-container *ngIf="cab.Tipo!=1">
             <ng-container class="text-center" *ngIf="cab.Tipo==3">
-              {{ "$ " +((rowData.data.values[cab.Mes + '-' + cab.Anio] || 0) | number)  }}
+              {{ "$ " +((rowData.data.values[cab.NumMes + '-' + cab.Anio] || 0) | number)  }}
             </ng-container>
             <ng-container class="text-center" *ngIf="cab.Tipo==4">
               {{ "$ " +((rowData.data.values[cab.Anio] || 0) | number)  }}

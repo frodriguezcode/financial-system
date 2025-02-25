@@ -86,6 +86,8 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   showSemanas:boolean=true
 
   DataTreeTable:any=[]
+  DataTreeTableBack:any=[]
+  RegistrosSaldosFinalesMensuales:any=[]
   ngOnInit(): void {
     this.conS.usuario$.subscribe(usuario => {
       if (usuario) {
@@ -763,8 +765,9 @@ obtenerRegistros(){
           
             // Unir ambos arreglos y extraer los años únicos
             [...registros1, ...registros2].forEach((item) => {
-              if (!mesesUnicos.has(item.AnioRegistro)) {
-                mesesUnicos.set(item.MesRegistro, {
+              const claveUnica = `${item.AnioRegistro}-${item.MesRegistro}`;
+              if (!mesesUnicos.has(claveUnica)) {
+                mesesUnicos.set(claveUnica, {
                   Anio: item.AnioRegistro,
                   Mes: item.MesRegistro,
                   NumMes: item.NumMes,
@@ -921,8 +924,14 @@ getSaldoInicialMensual(Mes:any,Anio:any){
   // }
 
   let _Data: any=[];
+  let _DataSaldoFinal: any=[];
   _Data=this.SaldoInicial.filter((saldo:any)=>saldo
   && saldo.NumMes==Mes
+  && saldo.AnioRegistro==Anio
+  )
+
+  _DataSaldoFinal=this.SaldoInicial.filter((saldo:any)=>saldo
+  && saldo.NumMes==Mes-1
   && saldo.AnioRegistro==Anio
   )
   if(_Data.length>0){
@@ -933,8 +942,17 @@ getSaldoInicialMensual(Mes:any,Anio:any){
 
     return Valor
   }
+
+
   else {
-    return 0
+    let key=`${Mes-1}-${Anio}`
+   
+      return this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key).length==0 ? 0 :
+      this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key)[0].Valor
+      
+      // this.DataTreeTable[11].data.values[key]==undefined?0:
+      // this.DataTreeTable[11].data.values[key]
+
   }
 }
 getSaldoFinalMensual(Mes:any,Anio:any){
@@ -1096,7 +1114,7 @@ getDataCategoriasMensual(){
   this.DataCategoriasMensual=[]
 this.Categorias.forEach((categ:any) => {
   this.Anios.forEach((anio:any) => {
-    this.Meses.forEach((mes:any) => {
+    this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
         const key = `${anio.Anio}-${mes.NumMes}-${categ.id}`;  
         if (!this.DataCategoriasMensual[key]) {
           this.DataCategoriasMensual[key] =[];
@@ -1356,93 +1374,103 @@ getDataItemAnual(){
     let newRow: any = {
       key: `${indexCategoria}`,
       data: {
+        id_categoria: categ.id, // O el campo relevante de Categorias
         categoria: categ.Nombre, // O el campo relevante de Categorias
         values: {}, // Aquí guardaremos los valores por mes-año
         children: [],
         tipo:0
       }
     };
-
- 
-    this.Cabecera.filter((cab:any)=>cab.Tipo!=1).forEach(cab => {
-      if(cab.Tipo==3){
-        let key = `${cab.Mes}-${cab.Anio}`;
-        newRow.data.tipo=categ.Tipo
-        if(categ.Orden==0) {
-          newRow.data.values[key] = this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio) || 0;
-         
-
-        }
-        else if(categ.Orden==1) {
-          newRow.data.values[key] = this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio) || 0;
-          
-
-        }
-        else if(categ.Orden==4) {
-          newRow.data.values[key] = this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio) || 0;
-
-
-        }
-        else if(categ.Orden==7) {
-          newRow.data.values[key] = this.getDataFlujoFinancieroMensual(cab.NumMes,cab.Anio) || 0;
-
-        }
-        else if(categ.Orden==10) {
-          newRow.data.values[key] = this.getDataFlujoLibreMensual(cab.NumMes,cab.Anio) || 0;
-
-
-        }
-        else if(categ.Orden==11) {
-          newRow.data.values[key] = this.getValorSaldoFinal(cab.NumMes,cab.Anio) || 0;
-    
-
-        }
-        else {
-          newRow.data.values[key] = this.getValorCategoriaMensual(categ.id,cab.NumMes,cab.Anio) || 0;
+    this.Anios.forEach((anio:any) => {
+      this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
         
-
-        }
-      }
-
-      if(cab.Tipo==4){
-        let key = `${cab.Anio}`;
-        if(categ.Orden==0) {
-          newRow.data.values[key] = this.obtenerValorSaldoInicialAnual(cab.Anio);
-         
-
-        }
-        else if(categ.Orden==1) {
-          newRow.data.values[key] = this.getDataFlujoOperativoAnual(cab.Anio) || 0;
-     
-
-        }
-        else if(categ.Orden==4) {
-          newRow.data.values[key] = this.getDataFlujoInversionAnual(cab.Anio) || 0;
-
-
-        }
-        else if(categ.Orden==7) {
-          newRow.data.values[key] = this.getDataFlujoFinancieroAnual(cab.Anio) || 0;
-
-        }
-        else if(categ.Orden==10) {
-          newRow.data.values[key] = this.getDataFlujoLibreAnual(cab.Anio) || 0;
-
-
-        }
-        else if(categ.Orden==11) {
-          newRow.data.values[key] = this.obtenerValorSaldoFinalAnual(cab.Anio) || 0;
-    
-
-        }
-        else {
-          newRow.data.values[key] = this.getValorCategoriaAnual(categ.id,cab.Anio) || 0;
+                let key = `${mes.NumMes}-${anio.Anio}`;
+                newRow.data.tipo=categ.Tipo
+                if(categ.Orden==0) {
+                  this.RegistrosSaldosFinalesMensuales.push({
+                    "key":key,
+                    "Valor":this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
+                  })
+                  newRow.data.values[key] = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0;
+                 
         
+                }
+                else if(categ.Orden==1) {
+                  newRow.data.values[key] = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio) || 0;
+                  
+        
+                }
+                else if(categ.Orden==4) {
+                  newRow.data.values[key] = this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio) || 0;
+        
+        
+                }
+                else if(categ.Orden==7) {
+                  newRow.data.values[key] = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio) || 0;
+        
+                }
+                else if(categ.Orden==10) {
+                  newRow.data.values[key] = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) || 0;
+        
+        
+                }
+                else if(categ.Orden==11) {
+              
+                  newRow.data.values[key] = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0;
+            
+        
+                }
+                else {
+                  newRow.data.values[key] = this.getValorCategoriaMensual(categ.id,mes.NumMes,anio.Anio) || 0;
+                
+        
+                }
 
-        }
-      }
+              })
+        
+                let key = `${anio.Anio}`;
+                if(categ.Orden==0) {
+                  newRow.data.values[key] = this.obtenerValorSaldoInicialAnual(anio.Anio);
+                 
+        
+                }
+                else if(categ.Orden==1) {
+                  newRow.data.values[key] = this.getDataFlujoOperativoAnual(anio.Anio) || 0;
+             
+        
+                }
+                else if(categ.Orden==4) {
+                  newRow.data.values[key] = this.getDataFlujoInversionAnual(anio.Anio) || 0;
+        
+        
+                }
+                else if(categ.Orden==7) {
+                  newRow.data.values[key] = this.getDataFlujoFinancieroAnual(anio.Anio) || 0;
+        
+                }
+                else if(categ.Orden==10) {
+                  newRow.data.values[key] = this.getDataFlujoLibreAnual(anio.Anio) || 0;
+        
+        
+                }
+                else if(categ.Orden==11) {
+                  newRow.data.values[key] = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0;
+            
+        
+                }
+                else {
+                  newRow.data.values[key] = this.getValorCategoriaAnual(categ.id,anio.Anio) || 0;
+                
+        
+                }
+              
+
+
       
-    });
+    })
+
+      
+
 
       // **AGREGAR ITEMS COMO HIJOS**
   this.getItems(categ.id).forEach(item => {
@@ -1450,6 +1478,7 @@ getDataItemAnual(){
     let newItem: any = {
       key: `${indexCategoria}-${indexItem}`,
       data: {
+        id_item: item.id, // Nombre del item
         categoria: item.Nombre, // Nombre del item
         values: {}
       }
@@ -1476,7 +1505,8 @@ getDataItemAnual(){
   
   this.DataTreeTable.push(newRow)
 });
-  
+  console.log('DataTreeTable',this.DataTreeTable)
+  this.DataTreeTableBack=this.DataTreeTable
   this.cargar=true
   }
 
@@ -1534,13 +1564,13 @@ getDataFlujoOperativoMensual(Mes:any,Anio:any){
     && registro.NumMes==Mes
     && registro.AnioRegistro==Anio
     )
-  
+
     if(_Data.length>0){
       let Valor:number=0
       _Data.forEach((data:any) => {
           Valor+=Number(data.Valor)
       });
-  
+
       return Valor
     }
     else {
@@ -1776,65 +1806,65 @@ construirCabecera(){
     this.CabeceraBack=this.Cabecera
 
  
-    this.DataSaldoInicial=[]
-    this.DataSaldoFinal=[]
-    this.DataSaldoInicialMensual=[]
-    this.DataSaldoFinalMensual=[]
-    this.Anios.forEach((anio:any) => {
-      this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
-        this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
-          let _SemanaDataInicial:any=[]
-          _SemanaDataInicial=this.DataSaldoInicial.filter((data:any)=>data.NumSemana==sem.NumSemana && data.Anio==anio.Anio && data.Mes==sem.Mes)
-          if(_SemanaDataInicial.length==0){
-            this.DataSaldoInicial.push({
-              "NumSemana":sem.NumSemana,
-              "Mes":sem.Mes,
-              "Anio":sem.Anio,
-              "Valor":this.getValorSaldoInicial(sem.NumSemana,sem.Mes,anio.Anio,sem.posicion)
+    // this.DataSaldoInicial=[]
+    // this.DataSaldoFinal=[]
+    // this.DataSaldoInicialMensual=[]
+    // this.DataSaldoFinalMensual=[]
+    // this.Anios.forEach((anio:any) => {
+    //   this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
+    //     this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
+    //       let _SemanaDataInicial:any=[]
+    //       _SemanaDataInicial=this.DataSaldoInicial.filter((data:any)=>data.NumSemana==sem.NumSemana && data.Anio==anio.Anio && data.Mes==sem.Mes)
+    //       if(_SemanaDataInicial.length==0){
+    //         this.DataSaldoInicial.push({
+    //           "NumSemana":sem.NumSemana,
+    //           "Mes":sem.Mes,
+    //           "Anio":sem.Anio,
+    //           "Valor":this.getValorSaldoInicial(sem.NumSemana,sem.Mes,anio.Anio,sem.posicion)
   
-            })
+    //         })
 
-          }
-          let _SemanaDataFinal:any=[]
-          _SemanaDataFinal=this.DataSaldoFinal.filter((data:any)=>data.NumSemana==sem.NumSemana && data.Anio==anio.Anio && data.Mes==sem.Mes)
-          if(_SemanaDataFinal.length==0){
-            this.DataSaldoFinal.push({
-              "NumSemana":sem.NumSemana,
-              "Mes":sem.Mes,
-              "Anio":sem.Anio,
-              "Valor":this.getValorSaldoFinal(sem.NumSemana,sem.Mes)
+    //       }
+    //       let _SemanaDataFinal:any=[]
+    //       _SemanaDataFinal=this.DataSaldoFinal.filter((data:any)=>data.NumSemana==sem.NumSemana && data.Anio==anio.Anio && data.Mes==sem.Mes)
+    //       if(_SemanaDataFinal.length==0){
+    //         this.DataSaldoFinal.push({
+    //           "NumSemana":sem.NumSemana,
+    //           "Mes":sem.Mes,
+    //           "Anio":sem.Anio,
+    //           "Valor":this.getValorSaldoFinal(sem.NumSemana,sem.Mes)
   
-            })
+    //         })
 
-          }
-        })  
-        //DataMensual
-        let _MesDataInicial:any=[]
-        _MesDataInicial=this.DataSaldoInicialMensual.filter((data:any)=>data.Anio==anio.Anio && data.Mes==mes.NumMes)
-        if(_MesDataInicial.length==0){
-          this.DataSaldoInicialMensual.push({
-            "Mes":mes.NumMes,
-            "Anio":anio.Anio,
-            "Valor":this.getSaldoInicialMensual(mes.NumMes,anio.Anio)
+    //       }
+    //     })  
+    //     //DataMensual
+    //     let _MesDataInicial:any=[]
+    //     _MesDataInicial=this.DataSaldoInicialMensual.filter((data:any)=>data.Anio==anio.Anio && data.Mes==mes.NumMes)
+    //     if(_MesDataInicial.length==0){
+    //       this.DataSaldoInicialMensual.push({
+    //         "Mes":mes.NumMes,
+    //         "Anio":anio.Anio,
+    //         "Valor":this.getSaldoInicialMensual(mes.NumMes,anio.Anio)
 
-          })
+    //       })
 
-        }    
-        let _MesDataFinal:any=[]
-        _MesDataFinal=this.DataSaldoFinalMensual.filter((data:any)=>data.Anio==anio.Anio && data.Mes==mes.NumMes)
-        if(_MesDataFinal.length==0){
-          this.DataSaldoFinalMensual.push({
-            "Mes":mes.NumMes,
-            "Anio":anio.Anio,
-            "Valor":this.getSaldoFinalMensual(mes.NumMes,anio.Anio)
+    //     }    
+    //     let _MesDataFinal:any=[]
+    //     _MesDataFinal=this.DataSaldoFinalMensual.filter((data:any)=>data.Anio==anio.Anio && data.Mes==mes.NumMes)
+    //     if(_MesDataFinal.length==0){
+    //       this.DataSaldoFinalMensual.push({
+    //         "Mes":mes.NumMes,
+    //         "Anio":anio.Anio,
+    //         "Valor":this.getSaldoFinalMensual(mes.NumMes,anio.Anio)
 
-          })
+    //       })
 
-        }    
+    //     }    
 
 
-      })      
-    })      
+    //   })      
+    // })      
     this.getDataCategorias()
     this.getDataCategoriasMensual()
     this.getDataCategoriasAnual()
@@ -1874,10 +1904,20 @@ else {
 obtenerValorSaldoInicialMensual(Mes:any,Anio:any){
   let _ValorInicialMensual:any=[]
   _ValorInicialMensual=this.DataSaldoInicialMensual.filter((data:any)=>data.Mes==Mes && data.Anio==Anio)
+
   if(_ValorInicialMensual.length>0){
-    return _ValorInicialMensual[0].Valor
+      if(_ValorInicialMensual[0].Valor>0){
+        return _ValorInicialMensual[0].Valor
+      }
+      else {
+        return this.obtenerValorSaldoFinalAnual(Anio-1)
+      }
   }
+
   else {
+
+
+
     return 0
   }
 }
