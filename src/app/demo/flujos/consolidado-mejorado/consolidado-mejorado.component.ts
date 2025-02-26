@@ -934,11 +934,6 @@ getSaldoInicialMensual(Mes:any,Anio:any){
   && saldo.AnioRegistro==Anio
   )
 
-  if(Mes==2 && Anio==2025){
-    console.log('DataTableMensual',this.DataTreeTable)
-    console.log('_Data',_Data)
-    console.log('_DataSaldoFinal',_DataSaldoFinal)
-  }
 
   if(_Data.length>0){
     let Valor:number=0
@@ -1956,7 +1951,16 @@ obtenerValorSaldoInicialAnual(Anio:any){
   }
 
   else {
-    return 0
+    let ValorSaldo:number=0
+    let RSFM2=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.Anio==Anio-1)
+    if(RSFM2.length>0) {
+      ValorSaldo=RSFM2[RSFM2.length-1].Valor
+    }
+    else {
+      ValorSaldo=0
+    }
+
+    return ValorSaldo
   }
 }
 obtenerValorSaldoFinalMensual(Mes:any,Anio:any){
