@@ -131,7 +131,7 @@ appendTo="body"
         'row-categorias-padre': rowData.data.tipo == 3 || rowData.data.tipo == 11 || rowData.data.tipo == 0
       }"
     >
-        <td>
+        <td style="  z-index: 9000;" >
           <button *ngIf="rowData.data.tipo!=3 && rowData.data.tipo!=11 && rowData.data.tipo!=0" 
           type="button"
           pButton pRipple 
@@ -141,7 +141,7 @@ appendTo="body"
   </button>
   
        
-          <span class="text-center">
+          <span style="  z-index: 9000;" class="text-center">
             {{ rowData.data.categoria }}
           </span>
         </td>
