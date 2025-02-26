@@ -933,6 +933,13 @@ getSaldoInicialMensual(Mes:any,Anio:any){
   && saldo.NumMes==Mes-1
   && saldo.AnioRegistro==Anio
   )
+
+  if(Mes==2 && Anio==2025){
+    console.log('DataTableMensual',this.DataTreeTable)
+    console.log('_Data',_Data)
+    console.log('_DataSaldoFinal',_DataSaldoFinal)
+  }
+
   if(_Data.length>0){
     let Valor:number=0
     _Data.forEach((data:any) => {
@@ -945,8 +952,24 @@ getSaldoInicialMensual(Mes:any,Anio:any){
 
   else {
     let key=`${Mes-1}-${Anio}`
-      return this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key).length==0 ? 0 :
-      this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key)[0].Valor
+    let ValorSaldo:number=0
+
+    let RSFM=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key)
+    let RSFM2=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.Anio==Anio-1)
+
+    if(RSFM.length>0){
+      ValorSaldo=RSFM[0].Valor
+    }
+    else if(RSFM2.length>0) {
+      ValorSaldo=RSFM2[RSFM2.length-1].Valor
+    }
+    else {
+      ValorSaldo=0
+    }
+
+
+
+      return ValorSaldo
 
 
   }
@@ -1385,6 +1408,7 @@ getDataItemAnual(){
                 if(categ.Orden==0) {
                   this.RegistrosSaldosFinalesMensuales.push({
                     "key":key,
+                    "Anio":anio.Anio,
                     "Valor":this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
                   })
                   newRow.data.values[key] = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0;
@@ -1901,12 +1925,14 @@ obtenerValorSaldoInicialMensual(Mes:any,Anio:any){
   let _ValorInicialMensual:any=[]
   _ValorInicialMensual=this.DataSaldoInicialMensual.filter((data:any)=>data.Mes==Mes && data.Anio==Anio)
 
+
+
   if(_ValorInicialMensual.length>0){
       if(_ValorInicialMensual[0].Valor>0){
         return _ValorInicialMensual[0].Valor
       }
       else {
-        return this.obtenerValorSaldoFinalAnual(Anio-1)
+        return 0
       }
   }
 
@@ -1914,7 +1940,7 @@ obtenerValorSaldoInicialMensual(Mes:any,Anio:any){
 
 
 
-    return 0
+    return 0 
   }
 }
 obtenerValorSaldoInicialAnual(Anio:any){
