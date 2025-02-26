@@ -86,7 +86,6 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   showSemanas:boolean=true
 
   DataTreeTable:any=[]
-  DataTreeTableBack:any=[]
   RegistrosSaldosFinalesMensuales:any=[]
   ngOnInit(): void {
     this.conS.usuario$.subscribe(usuario => {
@@ -946,12 +945,9 @@ getSaldoInicialMensual(Mes:any,Anio:any){
 
   else {
     let key=`${Mes-1}-${Anio}`
-   
       return this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key).length==0 ? 0 :
       this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key)[0].Valor
-      
-      // this.DataTreeTable[11].data.values[key]==undefined?0:
-      // this.DataTreeTable[11].data.values[key]
+
 
   }
 }
@@ -1506,7 +1502,6 @@ getDataItemAnual(){
   this.DataTreeTable.push(newRow)
 });
   console.log('DataTreeTable',this.DataTreeTable)
-  this.DataTreeTableBack=this.DataTreeTable
   this.cargar=true
   }
 
@@ -1585,6 +1580,7 @@ getDataFlujoOperativoAnual(Anio:any){
   || registro.idCategoria.Orden==3)
   && registro.AnioRegistro==Anio
   )
+
 
   if(_Data.length>0){
     let Valor:number=0
