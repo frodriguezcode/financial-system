@@ -293,3 +293,9 @@ th.cabeceraConcepto {
 .row-categorias-hijo{
   background-color:#ffffff;
 }
+
+
+/* Use the same green color you already have for other cells */
+.row-categorias-padre td {
+  background-color: #d2ebd9 !important;
+}
