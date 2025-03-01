@@ -11,11 +11,14 @@ import * as ExcelJS from 'exceljs';
 import { TreeTableModule } from 'primeng/treetable';
 import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { Subscription } from 'rxjs';
+import ConsolidadoMejoradoTrimesralComponent from './consolidado-mejorado-trimestral/consolidado-mejorado-trimestral';
 @Component({
   selector: 'app-consolidado-mejorado',
   standalone: true,
   imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule,
-    TreeTableModule,TableModule,ButtonModule],
+    TreeTableModule,TableModule,ButtonModule,
+    ConsolidadoMejoradoTrimesralComponent],
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
 })
@@ -36,6 +39,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   SemanasSeleccionadas:any=[]
   CatalogoFechas:any=[]
   Meses:any=[]
+  Trimestres:any=[]
   MesesSeleccionados:any=[]
   Anios:any=[]
   AniosSeleccionados:any=[]
@@ -410,7 +414,9 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
   }
 
   obtenerProyectos(){
-    this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
+    let _subscribe:Subscription
+    _subscribe= this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
+      _subscribe.unsubscribe()
       this.Proyectos=resp
       this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal) )
 
@@ -549,8 +555,10 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
   }
 
   obtenerSucursales(){
-    this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe((resp:any)=>{
-      this.Sucursales=resp.filter((suc:any)=>suc.Activo==true)
+    let _subscribe:Subscription
+   _subscribe= this.conS.obtenerSucursales( this.usuario.idEmpresa).subscribe((resp:any)=>{
+    _subscribe.unsubscribe()
+    this.Sucursales=resp.filter((suc:any)=>suc.Activo==true)
     })
   }
   obtenerBancos(){
@@ -562,8 +570,15 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
     })
   }
   obtenerSaldoInicial(){
-    this.conS.obtenerSaldoInicial( this.usuario.idEmpresa).subscribe((resp:any)=>{
+    let _subscribe:Subscription
+    _subscribe= this.conS.obtenerSaldoInicial( this.usuario.idEmpresa).subscribe((resp:any)=>{
+      _subscribe.unsubscribe()
       this.SaldoInicial=resp
+      this.SaldoInicial.map((saldo:any)=>{
+        saldo.Trimestre=this.setTrim(saldo.MesRegistro), 
+        saldo.Semestre=this.setSemestre(saldo.NumMes)
+        
+      })
       this.SaldoInicialBack=resp
 
       this.obtenerCategorias()
@@ -571,8 +586,10 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
   }
 
   obtenerCategorias(){
-    this.conS.obtenerCategoriasFlujos().subscribe((data:any)=>{
+    let _subscribe:Subscription
+    _subscribe= this.conS.obtenerCategoriasFlujos().subscribe((data:any)=>{
       // this.Categorias=data.filter((cate:any)=>cate.Mostrar==true)
+      _subscribe.unsubscribe() 
       this.Categorias=[]
      this.Categorias.push(
       {
@@ -640,8 +657,10 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
   }
   
 obtenerItems(){
-      this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
-        this.Items=[]
+  let _subscribe:Subscription
+  _subscribe=  this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
+    _subscribe.unsubscribe()
+    this.Items=[]
           this.Items=resp.filter((item:any)=>item.Activo==true);
           this.ItemsBack=resp.filter((item:any)=>item.Activo==true);;
       
@@ -692,14 +711,53 @@ filtrarCuentas(TipoRubro:any){
 
 }
   
+setTrim(MesRegistro:any){
+
+if(MesRegistro=='Enero' || MesRegistro=='Febrero' || MesRegistro=='Marzo' ){
+    return 1
+}
+else if(MesRegistro=='Abril' || MesRegistro=='Mayo' || MesRegistro=='Junio' ){
+    return 2
+}
+else if(MesRegistro=='Julio' || MesRegistro=='Agosto' || MesRegistro=='Septiembre'){
+    return 3
+}
+else if(MesRegistro=='Octubre' || MesRegistro=='Noviembre' || MesRegistro=='Diciembre'){
+    return 4
+}
+else {
+  return 0
+}
+  
+
+}
+setSemestre(NumMes:any){
+
+if(NumMes>=6){
+    return 2
+}
+else if(NumMes<6){
+    return 1
+}
+else {
+  return 0
+}
+  
+
+}
+
 obtenerRegistros(){
-      this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
-        this.Registros=[]  
+  let _subscribe:Subscription
+  _subscribe=  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
+    _subscribe.unsubscribe()
+    this.Registros=[]  
 
         resp.filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
           let _Registro={
             "Activo":element.Activo,
             "AnioRegistro":element.AnioRegistro,
+            "Trimestre":this.setTrim(element.MesRegistro), 
+            "Semestre":this.setSemestre(element.NumMes),
             "Cuenta":element.Cuenta,
             "Editando":element.Editando,
             "Elemento":element.Elemento,
@@ -731,6 +789,8 @@ obtenerRegistros(){
           this.Registros.push(_Registro)
           });
 
+
+         
           this.RegistrosBackUp=this.Registros
    
 
@@ -761,9 +821,7 @@ obtenerRegistros(){
 
           const obtenerMesesUnicos = (registros1: any[], registros2: any[]) => {
             const mesesUnicos = new Map();
-          
-            // Unir ambos arreglos y extraer los años únicos
-            [...registros1, ...registros2].forEach((item) => {
+              [...registros1, ...registros2].forEach((item) => {
               const claveUnica = `${item.AnioRegistro}-${item.MesRegistro}`;
               if (!mesesUnicos.has(claveUnica)) {
                 mesesUnicos.set(claveUnica, {
@@ -784,11 +842,36 @@ obtenerRegistros(){
             }));
           };
 
+          const obtenerTrimestresUnicos = (registros1: any[], registros2: any[]) => {
+            const trimestresUnicos = new Map();
+              [...registros1, ...registros2].forEach((item) => {
+              const claveUnica = `${item.AnioRegistro}-${item.Trimestre}`;
+              if (!trimestresUnicos.has(claveUnica)) {
+                trimestresUnicos.set(claveUnica, {
+                  Anio: item.AnioRegistro,
+                  NumTrimestre: item.Trimestre,
+                  Trimestre: `Trimestre ${item.Trimestre}`,
+                  seleccionado: false,
+                  label: item.Trimestre,
+                  icon: '',
+                });
+              }
+            });
+          
+            // Convertir a array y agregar índices
+            return Array.from(trimestresUnicos.values()).map((item, index) => ({
+              ...item,
+              index: index + 1,
+            }));
+          };
+
+          console.log('Trimestres',obtenerTrimestresUnicos(this.Registros, this.SaldoInicial))
+
           const mesesActivos = obtenerMesesUnicos(this.Registros, this.SaldoInicial);
 
-          console.log('mesesActivos',mesesActivos)
           this.Meses=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
+          this.Trimestres=obtenerTrimestresUnicos(this.Registros, this.SaldoInicial)
           // this.Anios.map((anio:any)=>{anio.Mostrar=true,anio.MostrarBoton=true})
           // this.Meses.map((mes:any)=>{mes.Mostrar=true,mes.MostrarBoton=true})
 
@@ -1520,7 +1603,7 @@ getDataItemAnual(){
   
   this.DataTreeTable.push(newRow)
 });
-  console.log('DataTreeTable',this.DataTreeTable)
+
   this.cargar=true
   }
 
@@ -1883,7 +1966,20 @@ construirCabecera(){
     this.getDataCategorias()
     this.getDataCategoriasMensual()
     this.getDataCategoriasAnual()
-  
+
+
+    let DataTrimestral={
+      'Registros':this.Registros,
+      'Anios':this.Anios,
+      'Cabecera':this.Cabecera,
+      'Categorias':this.Categorias,
+      'Items':this.Items,
+      'Trimestres':this.Trimestres,
+      'SaldoInicial':this.SaldoInicial
+
+    }
+
+    this.conS.enviarRegistrosTrimestrales(DataTrimestral)
    }
    getItems(idCategoria:any){
     let _Items:any=[]
@@ -1941,15 +2037,20 @@ obtenerValorSaldoInicialMensual(Mes:any,Anio:any){
 obtenerValorSaldoInicialAnual(Anio:any){
   let _ValorInicialMensual:any=[]
   let _ValorInicialesAnuales:any=[]
+  let _SaldosInicialesAnual:any=[]
   _ValorInicialMensual=this.DataSaldoInicialMensual.filter((data:any)=>data.Mes==1 && data.Anio==Anio)
   _ValorInicialesAnuales=this.DataSaldoInicialMensual.filter((data:any)=>data.Anio==Anio)
+  _SaldosInicialesAnual=this.SaldoInicial.filter((data:any)=>data.AnioRegistro==Anio)
+
   if(_ValorInicialMensual.length>0){
     return _ValorInicialMensual[0].Valor
   }
  else if(_ValorInicialesAnuales.length>0){
     return _ValorInicialesAnuales[0].Valor
   }
-
+ else if(_SaldosInicialesAnual.length>0){
+    return _SaldosInicialesAnual[0].Valor
+  }
   else {
     let ValorSaldo:number=0
     let RSFM2=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.Anio==Anio-1)

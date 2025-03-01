@@ -12,7 +12,8 @@ export class ConfigurationService {
   private apiUrl = 'http://worldtimeapi.org/api/timezone';
   private usuarioSource = new BehaviorSubject<any>(null)
   usuario$ = this.usuarioSource.asObservable();
-
+  private RegistrosTrimestrales = new BehaviorSubject<any>(null);
+  RegistrosTrimestrales$ = this.RegistrosTrimestrales.asObservable();
   private idEmpresaSource = new BehaviorSubject<any>(null)
   idEmpresa$ = this.idEmpresaSource.asObservable();
   constructor( private afs: AngularFirestore,private http: HttpClient) { 
@@ -22,6 +23,10 @@ export class ConfigurationService {
         doy: 6  // The week that contains Jan 1st is the first week of the year.
       }
     });
+  }
+
+  enviarRegistrosTrimestrales(data: any) {
+    this.RegistrosTrimestrales.next(data);
   }
   setUsuario(usuario: any) {
     this.usuarioSource.next(usuario);
