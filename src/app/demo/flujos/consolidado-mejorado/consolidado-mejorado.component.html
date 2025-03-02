@@ -41,19 +41,37 @@ appendTo="body"
    Ver solo semanas con valores
   </label>
 </div> -->
-<button type="button"
-[disabled]="this.Cabecera.length<=1"
-(click)="descargarExcel()" class="btn btn-success m-1 mt-2">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
-<button *ngIf="Expandir==false"
-[disabled]="this.Cabecera.length<=1"
-(click)="toggleAllRows()" type="button" class="btn btn-info m-1 mt-2">
-<span *ngIf="!ExpandirCuentas">
-  Expandir <i class="fa-solid fa-plus"></i>
-</span>
-<span *ngIf="ExpandirCuentas"> 
-  Contraer <i class="fa-solid fa-minus"></i>
-</span>
-</button>
+
+<br>
+<div class="form-check form-check-inline">
+  <input (change)="cambiarPeriodo(1)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+  <label class="form-check-label" for="inlineRadio1">Mensual</label>
+</div>
+<div class="form-check form-check-inline">
+  <input (change)="cambiarPeriodo(2)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+  <label class="form-check-label" for="inlineRadio2">Trimestral</label>
+</div>
+<div class="form-check form-check-inline">
+  <input (change)="cambiarPeriodo(3)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
+  <label class="form-check-label" for="inlineRadio3">Semestral</label>
+</div>
+
+<div *ngIf="verMensual==true">
+  <button  type="button"
+  [disabled]="this.Cabecera.length<=1"
+  (click)="descargarExcel()" class="btn btn-success m-1 mt-2">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
+  <button *ngIf="Expandir==false"
+  [disabled]="this.Cabecera.length<=1"
+  (click)="toggleAllRows()" type="button" class="btn btn-info m-1 mt-2">
+  <span *ngIf="!ExpandirCuentas">
+    Expandir <i class="fa-solid fa-plus"></i>
+  </span>
+  <span *ngIf="ExpandirCuentas"> 
+    Contraer <i class="fa-solid fa-minus"></i>
+  </span>
+  </button>
+
+</div>
 
 
 <!-- <button *ngIf="showSemanas" 
@@ -110,8 +128,7 @@ appendTo="body"
 
 <!-- Para solucionar la tabla de flujos -->
 
-
-<div class="p-table-wrapper" style="overflow-x: auto; min-width: 100px; max-width: 100%;">
+<div *ngIf="verMensual==true" class="p-table-wrapper" style="overflow-x: auto; min-width: 100px; max-width: 100%;">
   <p-table 
     #dt 
     *ngIf="cargar == true"
@@ -231,8 +248,8 @@ appendTo="body"
     </ng-template>
   </p-table>
 </div>
-
-<consolidado-mejorado-trimestral *ngIf="Trimestres.length>0"></consolidado-mejorado-trimestral>
+<br>
+<consolidado-mejorado-trimestral *ngIf="verTrimestral==true"></consolidado-mejorado-trimestral>
 
 
 

@@ -91,6 +91,10 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   DataTreeTable:any=[]
   RegistrosSaldosFinalesMensuales:any=[]
+
+  verMensual:boolean=true
+  verTrimestral:boolean=false
+  verSemestral:boolean=false
   ngOnInit(): void {
     this.conS.usuario$.subscribe(usuario => {
       if (usuario) {
@@ -106,6 +110,24 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
       this.getCatalogoFechas()
    
     });
+  }
+
+  cambiarPeriodo(periodo:any){
+    if(periodo==1){
+      this.verMensual=true
+      this.verTrimestral=false
+      this.verSemestral=false
+    }
+    else if(periodo==2){
+      this.verMensual=false
+      this.verTrimestral=true
+      this.verSemestral=false
+    }
+    else {
+      this.verMensual=false
+      this.verTrimestral=false
+      this.verSemestral=true
+    }
   }
   
   toggleAllRows() {
@@ -125,6 +147,29 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
       }
     }
   }
+
+  ValoresByItem(dataArray: any[], categoriaId: string, valueKey: string): number {
+    // Filtrar por id_categoria
+    const filteredCategories = dataArray.filter(item => item.data.id_categoria === categoriaId);
+  
+    if (filteredCategories.length > 0) {
+      // Buscar en los children si existen y tienen el id_item
+      for (const category of filteredCategories) {
+        if (category.data.children) {
+          const filteredChildren = category.data.children.filter(child => child.data.id_item === categoriaId);
+  
+          if (filteredChildren.length > 0) {
+            // Si el valor existe en values, devolverlo, si no, null
+            return filteredChildren[0].data.values[valueKey] ?? null;
+          }
+        }
+      }
+    }
+  
+    return 0;
+  } 
+
+
 descargarExcel(){
   let _Cabecera:any=[]
  _Cabecera=this.Cabecera.filter((cab:any)=>cab.Mostrar==true)
@@ -133,48 +178,63 @@ descargarExcel(){
     headerRow.push(element.Nombre);
   });
   let Data: any[] = [];
-
-
- 
-
   let Contador:number=1
   this.Categorias.forEach((categ: any) => {
     let fila: any[] = [`${Contador}- ${categ.Nombre}`];
     Contador+=1
-    _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+    _Cabecera.filter((cab: any) => cab.Tipo != 1 && cab.Tipo != 2).forEach((cab: any) => {
       const index = `${cab.Anio}-${cab.NumMes}-${categ.id}-${cab.NumSemana}`;
-      const indexMensual = `${cab.Anio}-${cab.NumMes}-${categ.id}`;
-      const indexAnual = `${cab.Anio}-${categ.id}`;
+      const indexMensual = `${cab.NumMes}-${cab.Anio}`;
+      const indexAnual = `${cab.Anio}`;
       let valor = 0;
-      if (cab.Tipo == 2) {
-        valor = this.DataCategorias[index]?.[0]?.Valor || 0;
+      const categoriaEncontrada = this.DataTreeTable.find((dataT: any) => dataT.data.id_categoria === categ.id);
+      if (categoriaEncontrada) {
+        if (cab.Tipo === 3) {
+          valor = categoriaEncontrada.data.values?.[indexMensual] ?? 0;
+        } else if (cab.Tipo === 4) {
+          valor = categoriaEncontrada.data.values?.[indexAnual] ?? 0;
+        }
       }
-      else if (cab.Tipo == 3) {
-        valor = this.DataCategoriasMensual[indexMensual]?.[0]?.Valor || 0;
-    }
-    else if (cab.Tipo == 4) {
-      valor = this.DataCategoriasAnual[indexAnual]?.[0]?.Valor || 0;
-  }
+      else {
+        valor=0
+      }
 
   fila.push(valor);
     })
     Data.push(fila);
     this.getItems(categ.id).forEach((item: any) => {
   let filaItem: any[] = [item.Nombre];
-  _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+  _Cabecera.filter((cab: any) => cab.Tipo != 1 && cab.Tipo != 2).forEach((cab: any) => {
     const indexItem = `${cab.Anio}-${cab.NumMes}-${item.id}-${cab.NumSemana}`;
-    const indexItemMensual = `${cab.Anio}-${cab.NumMes}-${item.id}`;
-    const indexItemAnual = `${cab.Anio}-${item.id}`;
+    const indexItemMensual = `${cab.Mes}-${cab.Anio}`;
+    const indexItemAnual = `${cab.Anio}`;
     let valorItem = 0;
-    if (cab.Tipo == 2) {
-      valorItem = this.DataItems[indexItem]?.[0]?.Valor || 0;
-  }
+ if (cab.Tipo == 3) {
+  valorItem = this.DataTreeTable.filter((dataT: any) => dataT.data.id_categoria == categ.id).length === 0
+  ? 0
+  : this.DataTreeTable.filter(
+      (dataT: any) =>
+        dataT.data.id_categoria == categ.id &&
+        dataT.data.children.some((child: any) => child.data.id_item == item.id)
+    ).length === 0
+  ? 0
+  : this.DataTreeTable
+      .flatMap((dataT: any) => dataT.data.children) // Aplanar los children
+      .find((child: any) => child.data.id_item == item.id)?.data.values[indexItemMensual] || 0;
 
-  else if (cab.Tipo == 3) {
-    valorItem = this.DataItemsMensual[indexItemMensual]?.[0]?.Valor || 0;
   }
   else if (cab.Tipo == 4) {
-    valorItem = this.DataItemsAnual[indexItemAnual]?.[0]?.Valor || 0;
+    valorItem = this.DataTreeTable.filter((dataT: any) => dataT.data.id_categoria == categ.id).length === 0
+    ? 0
+    : this.DataTreeTable.filter(
+        (dataT: any) =>
+          dataT.data.id_categoria == categ.id &&
+          dataT.data.children.some((child: any) => child.data.id_item == item.id)
+      ).length === 0
+    ? 0
+    : this.DataTreeTable
+        .flatMap((dataT: any) => dataT.data.children) // Aplanar los children
+        .find((child: any) => child.data.id_item == item.id)?.data.values[indexItemAnual] || 0;
 }
 filaItem.push(valorItem);
 
@@ -213,7 +273,6 @@ headerRowData.eachCell((cell) => {
 Data.forEach((row: any, index: any) => {
   const dataRow = worksheet.addRow(row);
 
-  // Aplicar estilo intercalado (gris suave en filas pares)
 
   if(row[0].startsWith('1-') || row[0].startsWith('12-') 
   ){
@@ -221,7 +280,7 @@ Data.forEach((row: any, index: any) => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'b4b4b4' }, // Gris suave
+        fgColor: { argb: 'b4b4b4' },
       };
     });
   }
@@ -237,7 +296,7 @@ Data.forEach((row: any, index: any) => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'F2F2F2' }, // Gris suave
+        fgColor: { argb: 'F2F2F2' }, 
       };
     });
   }
@@ -252,7 +311,7 @@ else  if(row[0].startsWith('2-')
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'afeffb' }, // Gris suave
+        fgColor: { argb: 'afeffb' },
       };
     });
   }
@@ -262,32 +321,18 @@ else
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'ffffff' }, // Gris suave
+        fgColor: { argb: 'ffffff' }, 
       };
     });
   }
 
-  // if (index % 2 === 0) {
-  //   dataRow.eachCell((cell, colNumber) => {
-  //     cell.fill = {
-  //       type: 'pattern',
-  //       pattern: 'solid',
-  //       fgColor: { argb: 'F2F2F2' }
-  //     };
-  //   });
-  // }
-
-
-  // Alinear las celdas, la primera a la izquierda y las demás centradas
   dataRow.eachCell((cell: any, colNumber: number) => {
     if (colNumber === 1) {
-      // Si es la primera columna, alinear a la izquierda
       cell.alignment = {
         horizontal: 'left',
         vertical: 'middle'
       };
     } else {
-      // Para las demás columnas, alinear al centro
       cell.alignment = {
         horizontal: 'center',
         vertical: 'middle'
@@ -865,7 +910,6 @@ obtenerRegistros(){
             }));
           };
 
-          console.log('Trimestres',obtenerTrimestresUnicos(this.Registros, this.SaldoInicial))
 
           const mesesActivos = obtenerMesesUnicos(this.Registros, this.SaldoInicial);
 
@@ -1603,7 +1647,6 @@ getDataItemAnual(){
   
   this.DataTreeTable.push(newRow)
 });
-
   this.cargar=true
   }
 

@@ -1,3 +1,17 @@
+<button type="button"
+[disabled]="this.Cabecera.length<=1"
+(click)="descargarExcel()" class="btn btn-success m-1 mt-2">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
+<button *ngIf="Expandir==false"
+[disabled]="this.Cabecera.length<=1"
+(click)="toggleAllRows()" type="button" class="btn btn-info m-1 mt-2">
+<span *ngIf="!ExpandirCuentas">
+  Expandir <i class="fa-solid fa-plus"></i>
+</span>
+<span *ngIf="ExpandirCuentas"> 
+  Contraer <i class="fa-solid fa-minus"></i>
+</span>
+</button>
+
 <div class="row">
   <div class="col-sm-12">
     <div class="p-table-wrapper" style="overflow-x: auto; min-width: 100px; max-width: 100%;">

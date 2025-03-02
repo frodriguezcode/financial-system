@@ -1,12 +1,14 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import * as FileSaver from 'file-saver';
+import * as ExcelJS from 'exceljs';
 @Component({
   selector: 'consolidado-mejorado-trimestral',
   standalone: true,
@@ -16,6 +18,7 @@ import { ButtonModule } from 'primeng/button';
 })
 export default class ConsolidadoMejoradoTrimesralComponent implements OnInit {
 constructor(private conS:ConfigurationService){}
+@ViewChild('dt') table: Table; 
 Anios: any[] = [];
 AnioSeleccionados: any[] = [];
 Trimestres: any[] = [];
@@ -29,6 +32,8 @@ usuario:any
 cargando:boolean=true
 RegistrosSaldosFinalesTrimestrales=[]
 TrimestresSeleccionados: any[] = [];
+ExpandirCuentas:boolean=false
+Expandir:boolean=false
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
 
@@ -85,14 +90,27 @@ construirCabecera(){
       "MostrarBoton":true
     })
   });
-
-
-
-
-
-  console.log('Cabecera',this.Cabecera)
+  console.log('CabeceraTrimestral',this.Cabecera)
   this.construirData()
  }
+
+ toggleAllRows() {
+  if (this.table) {
+    // Si hay filas expandidas, contraerlas todas
+    if (Object.keys(this.table.expandedRowKeys).length > 0) {
+      this.ExpandirCuentas=false
+      this.table.expandedRowKeys = {}; // Contraer todas las filas
+    } else {
+      // Expandir todas las filas
+      const expandedKeys = {};
+      this.table.value.forEach((row) => {
+        expandedKeys[row.key] = true; // Marcar todas las filas como expandidas
+      });
+      this.table.expandedRowKeys = expandedKeys;
+      this.ExpandirCuentas=true
+    }
+  }
+}
 
 construirData(){
   
@@ -217,7 +235,7 @@ construirData(){
     this.DataTreeTable.push(newRow)
   })
 
-  console.log('DataTreeTable',this.DataTreeTable)
+  console.log('DataTreeTableTrimestral',this.DataTreeTable)
 this.cargando=false
 } 
 
@@ -565,6 +583,188 @@ getValorCategoriaAnual(idCategoria:any,Anio:any){
   else {
     return 0
   }
+}
+
+descargarExcel(){
+  let _Cabecera:any=[]
+ _Cabecera=this.Cabecera.filter((cab:any)=>cab.Mostrar==true)
+  const headerRow: any[] = [];
+  _Cabecera.forEach((element: any) => {
+    headerRow.push(element.Nombre);
+  });
+  let Data: any[] = [];
+  let Contador:number=1
+  this.Categorias.forEach((categ: any) => {
+    let fila: any[] = [`${Contador}- ${categ.Nombre}`];
+    Contador+=1
+    _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+      const indexItemTrimesral = `${cab.NumTrimestre}-${cab.Anio}`;
+      const indexAnual = `${cab.Anio}`;
+      let valor = 0;
+      const categoriaEncontrada = this.DataTreeTable.find((dataT: any) => dataT.data.id_categoria === categ.id);
+      if (categoriaEncontrada) {
+        if (cab.Tipo === 2) {
+          valor = categoriaEncontrada.data.values?.[indexItemTrimesral] ?? 0;
+        } else if (cab.Tipo === 3) {
+          valor = categoriaEncontrada.data.values?.[indexAnual] ?? 0;
+        }
+      }
+      else {
+        valor=0
+      }
+
+  fila.push(valor);
+    })
+    Data.push(fila);
+    this.getItems(categ.id).forEach((item: any) => {
+  let filaItem: any[] = [item.Nombre];
+  _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
+    const indexItemTrimesral = `${cab.NumTrimestre}-${cab.Anio}`;
+    const indexItemAnual = `${cab.Anio}`;
+    let valorItem = 0;
+ if (cab.Tipo == 2) {
+  valorItem = this.DataTreeTable.filter((dataT: any) => dataT.data.id_categoria == categ.id).length === 0
+  ? 0
+  : this.DataTreeTable.filter(
+      (dataT: any) =>
+        dataT.data.id_categoria == categ.id &&
+        dataT.data.children.some((child: any) => child.data.id_item == item.id)
+    ).length === 0
+  ? 0
+  : this.DataTreeTable
+      .flatMap((dataT: any) => dataT.data.children) // Aplanar los children
+      .find((child: any) => child.data.id_item == item.id)?.data.values[indexItemTrimesral] || 0;
+
+  }
+  else if (cab.Tipo == 3) {
+    valorItem = this.DataTreeTable.filter((dataT: any) => dataT.data.id_categoria == categ.id).length === 0
+    ? 0
+    : this.DataTreeTable.filter(
+        (dataT: any) =>
+          dataT.data.id_categoria == categ.id &&
+          dataT.data.children.some((child: any) => child.data.id_item == item.id)
+      ).length === 0
+    ? 0
+    : this.DataTreeTable
+        .flatMap((dataT: any) => dataT.data.children) // Aplanar los children
+        .find((child: any) => child.data.id_item == item.id)?.data.values[indexItemAnual] || 0;
+}
+filaItem.push(valorItem);
+
+  })
+  Data.push(filaItem);
+    })
+
+  })
+
+const workbook = new ExcelJS.Workbook();
+const worksheet = workbook.addWorksheet('Datos');
+const headerRowData = worksheet.addRow(headerRow);
+
+headerRowData.eachCell((cell) => {
+  cell.fill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: '71bd9e' } // Fondo amarillo
+  };
+  cell.font = {
+    bold: true,
+    color: { argb: 'ffffff' } // Texto azul
+  };
+  cell.alignment = {
+    horizontal: 'left',
+    vertical: 'middle'
+  };
+  cell.border = {
+    top: { style: 'thin' },
+    bottom: { style: 'thin' },
+    left: { style: 'thin' },
+    right: { style: 'thin' }
+  };
+});
+
+Data.forEach((row: any, index: any) => {
+  const dataRow = worksheet.addRow(row);
+
+
+  if(row[0].startsWith('1-') || row[0].startsWith('12-') 
+  ){
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'b4b4b4' },
+      };
+    });
+  }
+ else  if( 
+     row[0].startsWith('3-') 
+    || row[0].startsWith('4-')  
+    || row[0].startsWith('6-') 
+    || row[0].startsWith('7-')  
+    || row[0].startsWith('9-')  
+    || row[0].startsWith('10-')  
+  ){
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'F2F2F2' }, 
+      };
+    });
+  }
+else  if(row[0].startsWith('2-') 
+    || row[0].startsWith('5-')
+    || row[0].startsWith('8-') 
+    || row[0].startsWith('10-')  
+    || row[0].startsWith('11-')  
+  )
+  {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'afeffb' },
+      };
+    });
+  }
+else 
+  {
+    dataRow.eachCell((cell, colNumber) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'ffffff' }, 
+      };
+    });
+  }
+
+  dataRow.eachCell((cell: any, colNumber: number) => {
+    if (colNumber === 1) {
+      cell.alignment = {
+        horizontal: 'left',
+        vertical: 'middle'
+      };
+    } else {
+      cell.alignment = {
+        horizontal: 'center',
+        vertical: 'middle'
+      };
+    }
+  });
+});
+
+worksheet.columns.forEach((column:any) => {
+  const maxLength = column.values.reduce((acc: number, curr: any) => {
+    return curr && curr.toString().length > acc ? curr.toString().length : acc;
+  }, 10);
+  column.width = maxLength + 2; // Ajustar el ancho de la columna
+});
+workbook.xlsx.writeBuffer().then((buffer: any) => {
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  FileSaver.saveAs(blob, 'datos.xlsx');
+});
+
 }
 
 }
