@@ -13,7 +13,9 @@
     optionLabel="SemanaAnio" 
     placeholder="Seleccione semanas" /> -->
 <!-- <p-multiSelect class="m-1" [options]="Meses" [(ngModel)]="MesesSeleccionados" optionLabel="Mes" placeholder="Meses" /> -->
-<p-multiSelect [disabled]="ProyectoSeleccionado.length>0" class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" [options]="Sucursales"
+<p-multiSelect [disabled]="ProyectoSeleccionado.length>0" 
+  class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" 
+  [options]="Sucursales"
   [(ngModel)]="SucursalSeleccionada" 
   optionLabel="Nombre"
   appendTo="body"
