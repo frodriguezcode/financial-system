@@ -38,9 +38,6 @@ ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
 
   this.conS.RegistrosTrimestrales$.subscribe((data:any)=>{
-
-  
-    console.log('data',data)
     this.Trimestres=data.Trimestres.sort((a:any, b:any) => a.NumTrimestre - b.NumTrimestre)
     this.Anios=data.Anios
     this.Categorias=data.Categorias
@@ -90,7 +87,6 @@ construirCabecera(){
       "MostrarBoton":true
     })
   });
-  console.log('CabeceraTrimestral',this.Cabecera)
   this.construirData()
  }
 
@@ -234,8 +230,6 @@ construirData(){
   
     this.DataTreeTable.push(newRow)
   })
-
-  console.log('DataTreeTableTrimestral',this.DataTreeTable)
 this.cargando=false
 } 
 

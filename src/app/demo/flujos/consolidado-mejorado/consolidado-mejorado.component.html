@@ -44,15 +44,22 @@ appendTo="body"
 
 <br>
 <div class="form-check form-check-inline">
-  <input (change)="cambiarPeriodo(1)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+  <input (change)="cambiarPeriodo(1)" class="form-check-input" 
+  type="radio" name="inlineRadioOptions"
+  [checked]="verMensual"
+  id="inlineRadio1" value="option1">
   <label class="form-check-label" for="inlineRadio1">Mensual</label>
 </div>
 <div class="form-check form-check-inline">
-  <input (change)="cambiarPeriodo(2)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+  <input (change)="cambiarPeriodo(2)" class="form-check-input" type="radio" 
+  [checked]="verTrimestral"
+  name="inlineRadioOptions" id="inlineRadio2" value="option2">
   <label class="form-check-label" for="inlineRadio2">Trimestral</label>
 </div>
 <div class="form-check form-check-inline">
-  <input (change)="cambiarPeriodo(3)" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" disabled>
+  <input (change)="cambiarPeriodo(3)" class="form-check-input"
+  [checked]="verSemestral"
+  type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
   <label class="form-check-label" for="inlineRadio3">Semestral</label>
 </div>
 
