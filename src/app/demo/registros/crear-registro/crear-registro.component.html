@@ -308,6 +308,10 @@
   </div>
 </div>
 <br>
+
+<!--? Tabla de registro y sus elementos -->
+
+<!--? Tabla de registro y sus elementos -->
 <div class="table-scroll-wrapper">
   <!-- Barra de desplazamiento superior -->
   <div class="table-scroll-top" #scrollTop>
@@ -317,83 +321,109 @@
   <!-- Contenedor de la tabla -->
   <div class="table-scroll-container" #scrollContainer>
     <table class="table">
-      <thead style="position: sticky;top: 0;background-color: #F8FAFB;z-index: 200 ">
+      <thead style="position: sticky; top: 0; background-color: #F8FAFB; z-index: 1000;">
         <tr class="text-center">
           <th scope="col">
             <div class="form-check">
-            <input (change)="seleccionarRegistros()"  class="form-check-input" type="checkbox" value="" [checked]="SeleccionarTodo" id="flexCheckChecked">
-          </div>
-        </th>
-        <ng-container style="margin-right:100px; ">
-          <th class="text-center" 
-          style="text-transform: uppercase;font-size: 13px;background-color: #F8FAFB " 
-          >
-         <span>Copiar</span> 
-        
+              <input
+                (change)="seleccionarRegistros()"
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                [checked]="SeleccionarTodo"
+                id="flexCheckChecked"
+              />
+            </div>
           </th>
-  
-        </ng-container>
-        <!-- <th style="text-transform: uppercase;font-size: 13px;">Registro</th> -->
-        <th  style="text-transform: uppercase;font-size: 13px;" >Fecha</th>
-        <th  style="text-transform: uppercase;font-size: 13px;" >Orden</th>
-        <th  *ngIf="this.idTipoRegistro==1" style="text-transform: uppercase;font-size: 13px;">Sucursal <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th  *ngIf="this.idTipoRegistro==2" style="text-transform: uppercase;font-size: 13px;">Proyecto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Concepto <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Tipo de Flujo</th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Cuenta Contable</th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Importe</th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Tipo de Operación</th>
-        <th  style="text-transform: uppercase;font-size: 13px;">Cuenta Bancaria <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <!-- <th style="text-transform: uppercase;font-size: 13px;">Flujo</th> -->
-        <th style="text-transform: uppercase;font-size: 13px;">Socio Negocios <span style="color: #0c8c86;font-weight: bold;">(opcional)</span></th>
-        <th style="text-transform: uppercase;font-size: 13px;">Guardar</th>
-      </tr>
-    
+          <ng-container style="margin-right: 100px;">
+            <th
+              class="text-center"
+              style="text-transform: uppercase; font-size: 13px; background-color: #F8FAFB"
+            >
+              <span>Copiar</span>
+            </th>
+          </ng-container>
+          <!-- <th style="text-transform: uppercase;font-size: 13px;">Registro</th> -->
+          <th style="text-transform: uppercase; font-size: 13px;">Fecha</th>
+          <th style="text-transform: uppercase; font-size: 13px;">Orden</th>
+          <th
+            *ngIf="this.idTipoRegistro == 1"
+            style="text-transform: uppercase; font-size: 13px;"
+          >
+            Sucursal <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          </th>
+          <th
+            *ngIf="this.idTipoRegistro == 2"
+            style="text-transform: uppercase; font-size: 13px;"
+          >
+            Proyecto <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          </th>
+          <th style="text-transform: uppercase; font-size: 13px;">
+            Concepto <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          </th>
+          <th style="text-transform: uppercase; font-size: 13px;">Tipo de Flujo</th>
+          <th style="text-transform: uppercase; font-size: 13px;">Cuenta Contable</th>
+          <th style="text-transform: uppercase; font-size: 13px;">Importe</th>
+          <th style="text-transform: uppercase; font-size: 13px;">Tipo de Operación</th>
+          <th style="text-transform: uppercase; font-size: 13px;">
+            Cuenta Bancaria <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          </th>
+          <!-- <th style="text-transform: uppercase;font-size: 13px;">Flujo</th> -->
+          <th style="text-transform: uppercase; font-size: 13px;">
+            Socio Negocios <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          </th>
+          <th style="text-transform: uppercase; font-size: 13px;">Guardar</th>
+        </tr>
       </thead>
-    
-      <tbody  *ngIf="!cargando"  >
-          <tr  
+
+      <tbody *ngIf="!cargando" style="z-index: 999; position: relative;">
+        <tr
           *ngFor="let registros of Registros"
           [ngClass]="{
-            'Egreso': registros.idTipo === 2, 
-            'Ingreso': registros.idTipo === 1, 
+            Egreso: registros.idTipo === 2,
+            Ingreso: registros.idTipo === 1,
             'animate__animated animate__fadeIn': registros.ActivarAnimation
-          }">
-            
-          
-            <td  >
-              <div class="form-check">
-                <input class="form-check-input"
-                 type="checkbox"
-                 (change)="seleccionarRegistro(registros)" 
-                 value="" id="flexCheckChecked" [checked]="registros.Seleccionado">
-             
-              </div>
+          }"
+        >
+          <td>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                (change)="seleccionarRegistro(registros)"
+                value=""
+                id="flexCheckChecked"
+                [checked]="registros.Seleccionado"
+              />
+            </div>
           </td>
-          <ng-container style="margin-left:100px; ">
-    
-            <td class="text-center"
-           style="background-color: #F8FAFB"
-             >
-              <ng-container >
-                <button type="button" (click)="copiarRegistro(registros)" 
-               
-                [ngClass]="registros.idTipo==1 ? 'btn btn-info':'btn btn-danger'" 
+
+          <ng-container style="margin-left: 100px;">
+            <td class="text-center" style="background-color: #F8FAFB">
+              <ng-container>
+                <button
+                  type="button"
+                  (click)="copiarRegistro(registros)"
+                  [ngClass]="registros.idTipo == 1 ? 'btn btn-info' : 'btn btn-danger'"
                 >
-                
-                <i class="fa-solid fa-copy"></i></button>
+                  <i class="fa-solid fa-copy"></i>
+                </button>
               </ng-container>
             </td>
           </ng-container>
-            <td class="text-center">
-              <input style="min-height: 1rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
-            </td>
-            <td class="text-center mt-2">
-              {{registros.Orden}}
-            </td>
-      
-            <td *ngIf="registros.TipoRegistro==1" class="text-center">
-           <p-dropdown
+
+          <td class="text-center">
+            <input
+              style="min-height: 1rem"
+              type="date"
+              [(ngModel)]="registros.FechaRegistro"
+              class="form-control text-center col-4"
+            />
+          </td>
+          <td class="text-center mt-2">{{ registros.Orden }}</td>
+
+          <td *ngIf="registros.TipoRegistro == 1" class="text-center">
+            <p-dropdown
               [options]="Sucursales"
               [(ngModel)]="registros.Sucursal"
               name="SucursalesSeleccionadas"
@@ -403,22 +433,22 @@
               filterBy="Sucursal"
               [showClear]="false"
               placeholder="Sucursales"
-              appendTo="body">
+              appendTo="body"
+            >
               <ng-template pTemplate="selectedItem" let-selectedItem>
                 <div class="flex align-items-lg-start gap-2">
                   <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
                 </div>
               </ng-template>
             </p-dropdown>
-         
-            
-            </td>
-            <td *ngIf="registros.TipoRegistro==2" class="text-center">
-              <p-dropdown
+          </td>
+
+          <td *ngIf="registros.TipoRegistro == 2" class="text-center">
+            <p-dropdown
               [options]="Proyectos"
               [(ngModel)]="registros.Proyecto"
-              [style]="{'width':'200px'}"
-              [panelStyle]="{'width':'200px'}"
+              [style]="{ width: '200px' }"
+              [panelStyle]="{ width: '200px' }"
               name="ProyectosSeleccionados"
               optionLabel="NombreSucursal"
               optionValue="NombreSucursal"
@@ -426,30 +456,30 @@
               filterBy="NombreSucursal"
               [showClear]="false"
               placeholder="Proyectos"
-              appendTo="body">
+              appendTo="body"
+            >
               <ng-template pTemplate="selectedItem" let-selectedItem>
                 <div class="flex align-items-lg-start gap-2">
                   <div class="seleccion-item">{{ selectedItem.NombreSucursal }}</div>
                 </div>
               </ng-template>
             </p-dropdown>
-            
-            </td>
-      
-            <td class="text-center">
-              <input
+          </td>
+
+          <td class="text-center">
+            <input
               style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
-              [(ngModel)]="registros.Comentarios "
-              class="form-control text-center col-6"/>
-        </td>
-       
-            <td class="text-center" >
-       
-              <p-dropdown
+              [(ngModel)]="registros.Comentarios"
+              class="form-control text-center col-6"
+            />
+          </td>
+
+          <td class="text-center">
+            <p-dropdown
               [options]="this.getCategoriasByTipo(registros.idTipo)"
               [(ngModel)]="registros.idCategoria"
-              [style]="{'width':'300px'}"
-              [panelStyle]="{'width':'300px'}"
+              [style]="{ width: '300px' }"
+              [panelStyle]="{ width: '300px' }"
               name="ItemSeleccionados"
               optionLabel="Nombre"
               [filter]="true"
@@ -464,29 +494,39 @@
                 </div>
               </ng-template>
             </p-dropdown>
-            </td>
-      
-            <td class="text-center" >
-              <p *ngIf="this.Items.length==0" 
+          </td>
+
+          <td class="text-center">
+            <p
+              *ngIf="this.Items.length == 0"
               class="animate__animated animate__bounceIn"
-              style="color: red; font-size: 10px;">
+              style="color: red; font-size: 10px;"
+            >
               No tienes cuentas asociadas a este proyecto
-              </p>
-              <p *ngIf="getCuentabyCategoria(registros.idCategoria).length==0 && registros.idCategoria!=''" 
+            </p>
+            <p
+              *ngIf="
+                getCuentabyCategoria(registros.idCategoria).length == 0 &&
+                registros.idCategoria != ''
+              "
               class="animate__animated animate__bounceIn"
-              style="color: red; font-size: 10px;">
+              style="color: red; font-size: 10px;"
+            >
               No tienes cuentas asociadas a esta categoría
-              </p>
-              <p-dropdown
+            </p>
+            <p-dropdown
               [options]="getCuentabyCategoria(registros.idCategoria)"
-      
               [(ngModel)]="registros.NombreElemento"
               name="registros.Elemento"
               optionLabel="label"
               optionValue="label"
               [filter]="true"
               filterBy="label"
-              [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
+              [disabled]="
+                this.Items.length == 0 ||
+                registros.idCategoria == '' ||
+                getCuentabyCategoria(registros.idCategoria).length == 0
+              "
               [showClear]="false"
               placeholder="Cuentas Contables"
               appendTo="body"
@@ -497,151 +537,165 @@
                 </div>
               </ng-template>
             </p-dropdown>
-            </td>
-      
-            
-      
-            <td class="text-center">
-                  <input
-                  [ngClass]="registros.idTipo == 1 ? 'textoInputPositivo' : 'textoInputNegativo'"
-                  (keyup.enter)="salvarRegistro(registros,Valor.value)"
-                  #Valor
-                  [disabled]="this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0"
-                  (input)="validarEgreso(registros.idTipo,registros.Valor,registros.Orden);onInput($event)"
-                  style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
-                  [ngModel]="registros.Valor | currencySymbol"
-                  class="form-control text-center col-6"/>
-            </td>
-      
-            <td class="text-center">
-              <p-dropdown
-                [options]="TiposOperacion"
-                [(ngModel)]="registros.TipoOperacion"
-                name="TipoSeleccionado"
-                optionLabel="Nombre"
-                [filter]="true"
-                filterBy="Nombre"
-                [showClear]="false"
-                placeholder="Tipo de Operación"
-                appendTo="body"
-              >
-                <ng-template pTemplate="selectedItem" let-selectedItem>
-                  <div class="flex align-items-lg-start gap-2">
-                    <div class="seleccion-item">{{ selectedItem.Nombre}}</div>
-                  </div>
-                </ng-template>
-              </p-dropdown>
-            </td>
-      
-            <td class="text-center">
-              <p-dropdown
-              [style]="{'width':'200px'}"
-              [panelStyle]="{'width':'200px'}"
-                [options]="cuentas"
-                [(ngModel)]="registros.Cuenta"
-                name="ItemSeleccionados"
-                optionLabel="Cuenta"
-                [filter]="true"
-                filterBy="Cuenta"
-                [showClear]="false"
-                placeholder="Cuentas Bancarias"
-                appendTo="body"
-              >
-                <ng-template pTemplate="selectedItem" let-selectedItem>
-                  <div class="flex align-items-lg-start gap-2">
-                    <div class="seleccion-item">{{ selectedItem.Cuenta  }}</div>
-                  </div>
-                </ng-template>
-              </p-dropdown>
-            </td>  
-            <td class="text-center">
-              <p-dropdown
-              [style]="{'width':'200px'}"
-              [panelStyle]="{'width':'200px'}"
-                [options]="SociosNegocios"
-                [(ngModel)]="registros.idSocioNegocio"
-                name="SociosNegocios"
-                optionLabel="Nombre"
-                [filter]="true"
-                filterBy="Nombre"
-                [showClear]="false"
-                placeholder="Socio de Negocios"
-                appendTo="body"
-              >
-                <ng-template pTemplate="selectedItem" let-selectedItem>
-                  <div class="flex align-items-lg-start gap-2">
-                    <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
-                  </div>
-                </ng-template>
-              </p-dropdown>
-            </td>
-      
-      
-           
-            <td class="text-center">
-              <button type="button" [disabled]="isNegativo==false || this.Items.length==0 || registros.idCategoria=='' || getCuentabyCategoria(registros.idCategoria).length==0" (click)="salvarRegistro(registros,Valor.value)" class="btn btn-success" ngbTooltip="Guardar registro"
-                ><i class="fa-solid fa-floppy-disk"></i
-              ></button>
-            </td>
-          </tr>
-     
-       
+          </td>
+
+          <td class="text-center">
+            <input
+              [ngClass]="registros.idTipo == 1 ? 'textoInputPositivo' : 'textoInputNegativo'"
+              (keyup.enter)="salvarRegistro(registros, Valor.value)"
+              #Valor
+              [disabled]="
+                this.Items.length == 0 ||
+                registros.idCategoria == '' ||
+                getCuentabyCategoria(registros.idCategoria).length == 0
+              "
+              (input)="
+                validarEgreso(registros.idTipo, registros.Valor, registros.Orden);
+                onInput($event)
+              "
+              style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
+              [ngModel]="registros.Valor | currencySymbol"
+              class="form-control text-center col-6"
+            />
+          </td>
+
+          <td class="text-center">
+            <p-dropdown
+              [options]="TiposOperacion"
+              [(ngModel)]="registros.TipoOperacion"
+              name="TipoSeleccionado"
+              optionLabel="Nombre"
+              [filter]="true"
+              filterBy="Nombre"
+              [showClear]="false"
+              placeholder="Tipo de Operación"
+              appendTo="body"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedItem>
+                <div class="flex align-items-lg-start gap-2">
+                  <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </td>
+
+          <td class="text-center">
+            <p-dropdown
+              [style]="{ width: '200px' }"
+              [panelStyle]="{ width: '200px' }"
+              [options]="cuentas"
+              [(ngModel)]="registros.Cuenta"
+              name="ItemSeleccionados"
+              optionLabel="Cuenta"
+              [filter]="true"
+              filterBy="Cuenta"
+              [showClear]="false"
+              placeholder="Cuentas Bancarias"
+              appendTo="body"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedItem>
+                <div class="flex align-items-lg-start gap-2">
+                  <div class="seleccion-item">{{ selectedItem.Cuenta }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </td>
+          <td class="text-center">
+            <p-dropdown
+              [style]="{ width: '200px' }"
+              [panelStyle]="{ width: '200px' }"
+              [options]="SociosNegocios"
+              [(ngModel)]="registros.idSocioNegocio"
+              name="SociosNegocios"
+              optionLabel="Nombre"
+              [filter]="true"
+              filterBy="Nombre"
+              [showClear]="false"
+              placeholder="Socio de Negocios"
+              appendTo="body"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedItem>
+                <div class="flex align-items-lg-start gap-2">
+                  <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </td>
+
+          <td class="text-center">
+            <button
+              type="button"
+              [disabled]="
+                isNegativo == false ||
+                this.Items.length == 0 ||
+                registros.idCategoria == '' ||
+                getCuentabyCategoria(registros.idCategoria).length == 0
+              "
+              (click)="salvarRegistro(registros, Valor.value)"
+              class="btn btn-success"
+              ngbTooltip="Guardar registro"
+            >
+              <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+          </td>
+        </tr>
       </tbody>
 
-      <tfoot >
+      <tfoot>
         <tr>
-          <td colspan="8" class="text-end"><strong >Sub-Total:</strong></td>
-          <td  class="text-center"><strong>
-            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
-            *ngIf="ImporteSubTotal<0">
-            <strong>{{ " -$ " + (ImporteSubTotal*-1 | number)}}</strong>
-            </p>
-            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
-            *ngIf="ImporteSubTotal>=0">
-           <strong>{{ " $ " + (ImporteSubTotal| number)}}</strong> 
-            </p>
-          </strong>
-        </td>
-        </tr>
-        <tr>
-          <td colspan="8" class="text-end"><strong>Total:</strong></td>
-          <td  class="text-center"><strong>
-            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
-            *ngIf="ImporteSubTotal<0">
-            <strong>{{ " -$ " + (ImporteSubTotal*-1 | number)}}</strong>
-            </p>
-            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
-            *ngIf="ImporteSubTotal>=0">
-           <strong>{{ " $ " + (ImporteSubTotal| number)}}</strong> 
-            </p>
-          </strong>
-        </td>
-        </tr>
-        <!-- <tr>
-          <td colspan="8" class="text-end"><strong>Total:</strong></td>
-          <td  class="text-center">
+          <td colspan="8" class="text-end"><strong>Sub-Total:</strong></td>
+          <td class="text-center">
             <strong>
-            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
-            *ngIf="ImporteTotal<0">
-            <strong>{{ " -$ " + (ImporteTotal*-1 | number)}}</strong> 
-            </p>
-            <p style="text-transform: uppercase;font-size: 13px; font-weight: bold;"
-            *ngIf="ImporteTotal>=0">
-            <strong>{{ " $ " + (ImporteTotal| number)}}</strong> 
-            </p>
-
-          </strong>
-        
-        </td>
-        </tr> -->
+              <p
+                style="text-transform: uppercase; font-size: 13px; font-weight: bold; color: red;"
+                *ngIf="ImporteSubTotal < 0"
+              >
+                <strong>{{ ' -$ ' + (ImporteSubTotal * -1 | number) }}</strong>
+              </p>
+              <p
+                style="text-transform: uppercase; font-size: 13px; font-weight: bold;"
+                *ngIf="ImporteSubTotal >= 0"
+              >
+                <strong>{{ ' $ ' + (ImporteSubTotal | number) }}</strong>
+              </p>
+            </strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8" class="text-end"><strong>Total:</strong></td>
+          <td class="text-center">
+            <strong>
+              <p
+                style="text-transform: uppercase; font-size: 13px; font-weight: bold; color: red;"
+                *ngIf="ImporteSubTotal < 0"
+              >
+                <strong>{{ ' -$ ' + (ImporteSubTotal * -1 | number) }}</strong>
+              </p>
+              <p
+                style="text-transform: uppercase; font-size: 13px; font-weight: bold;"
+                *ngIf="ImporteSubTotal >= 0"
+              >
+                <strong>{{ ' $ ' + (ImporteSubTotal | number) }}</strong>
+              </p>
+            </strong>
+          </td>
+        </tr>
       </tfoot>
-
     </table>
-
-  
   </div>
- 
+
+  <!-- Barra de desplazamiento inferior -->
+  <div class="table-scroll-bottom" #scrollBottom>
+    <div></div>
+  </div>
 </div>
+<!--? Tabla de registro y sus elementos -->
+
+
+<!--? Tabla de registro y sus elementos -->
+
+
+
   <div class="d-flex justify-content-between p-2">
     <ngb-pagination
       [collectionSize]="collectionSize"

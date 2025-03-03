@@ -84,6 +84,9 @@ private offcanvasService = inject(NgbOffcanvas);
 @ViewChild('scrollTop') scrollTop!: ElementRef;
 @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
+  // NEW: bottom scrollbar
+  @ViewChild('scrollBottom') scrollBottom!: ElementRef;
+
   constructor(
     private conS:ConfigurationService,private datePipe: DatePipe, 
     private messageService: MessageService,
@@ -96,9 +99,9 @@ private offcanvasService = inject(NgbOffcanvas);
 	pageSize = 10;
 	collectionSize = 0;
 
-  isDragging = false;
-  startX = 0;
-  scrollLeft = 0;
+  // isDragging = false;
+  // startX = 0;
+  // scrollLeft = 0;
   registroForm!:FormGroup
   EditRegistroForm!:FormGroup
   registroDialog: boolean = false;
@@ -165,9 +168,7 @@ cargando:boolean=true
   Fecha:any= new Date();
   ImporteTotal:number=0
   ImporteSubTotal:number=0
-  ngAfterViewInit() {
-    this.syncScroll();
-  }
+
 ngOnInit(): void {
 
   this.MesesTodos= [
@@ -258,65 +259,55 @@ ngOnInit(): void {
       
 }
 
+ngAfterViewInit() {
+  this.syncScroll();
+}
+
+
+// SYNC top, container, bottom scrollbars
+syncScroll() {
+  // 1) Ajusta el ancho dinámico al real de la tabla
+  const tableWidth = this.scrollContainer.nativeElement.scrollWidth + 'px';
+  this.scrollTop.nativeElement.children[0].style.width = tableWidth;
+  this.scrollBottom.nativeElement.children[0].style.width = tableWidth;
+
+  // 2) Vincula eventos scroll en top, container, bottom
+
+  // (A) Barra TOP -> contenedor & bottom
+  this.scrollTop.nativeElement.addEventListener('scroll', () => {
+    const x = this.scrollTop.nativeElement.scrollLeft;
+    this.scrollContainer.nativeElement.scrollLeft = x;
+    this.scrollBottom.nativeElement.scrollLeft = x;
+  });
+
+  // (B) Contenedor -> top & bottom
+  this.scrollContainer.nativeElement.addEventListener('scroll', () => {
+    const x = this.scrollContainer.nativeElement.scrollLeft;
+    this.scrollTop.nativeElement.scrollLeft = x;
+    this.scrollBottom.nativeElement.scrollLeft = x;
+  });
+
+  // (C) Barra BOTTOM -> contenedor & top
+  this.scrollBottom.nativeElement.addEventListener('scroll', () => {
+    const x = this.scrollBottom.nativeElement.scrollLeft;
+    this.scrollContainer.nativeElement.scrollLeft = x;
+    this.scrollTop.nativeElement.scrollLeft = x;
+  });
+}
+
+
+
+
+
+
 openEnd(content: TemplateRef<any>) {
   this.offcanvasService.open(content, { position: 'end' });
 }
 
-syncScroll() {
-  this.scrollTop.nativeElement.addEventListener('scroll', () => {
-    this.scrollContainer.nativeElement.scrollLeft =
-      this.scrollTop.nativeElement.scrollLeft;
-  });
-
-  this.scrollContainer.nativeElement.addEventListener('scroll', () => {
-    this.scrollTop.nativeElement.scrollLeft =
-      this.scrollContainer.nativeElement.scrollLeft;
-  });
-}
-onScroll(event: Event) {
-  const container = this.scrollContainer.nativeElement;
-  const threshold = 50; // Umbral para disparar la carga (en píxeles)
-
-  if (
-    container.scrollHeight - container.scrollTop <=
-    container.clientHeight + threshold
-  ) 
-
-  
-  {
-
-
-  }
-}
 
 
 
 
-onMouseDown(event: MouseEvent) {
-  // Activar el arrastre
-  this.isDragging = true;
-  const container = this.scrollContainer.nativeElement;
-  if (this.scrollContainer) {
-    this.startX = event.pageX - container.offsetLeft;
-    this.scrollLeft = container.scrollLeft;
-  }
-
-}
-
-
-onMouseMove(event: MouseEvent) {
-  if (!this.isDragging) return; // Solo mover si está arrastrando
-  const container = this.scrollContainer.nativeElement;
-  const x = event.pageX - container.offsetLeft;
-  const walk = (x - this.startX) * 1; // *1 es la velocidad del scroll (puedes ajustarlo)
-  container.scrollLeft = this.scrollLeft - walk;
-  event.preventDefault(); // Evitar el comportamiento predeterminado
-}
-
-onMouseUp() {
-  // Desactivar el arrastre
-  this.isDragging = false;
-}
 
 
 
@@ -766,6 +757,10 @@ obtenerRegistros(){
                  this.registrosBackUp.push(_Registro)
                })
                this.refreshRegistros([],false)
+
+               setTimeout(() => {
+                this.syncScroll();
+              }, 0);
       })
 
   }
@@ -817,6 +812,10 @@ obtenerRegistros(){
       this.registrosBackUp.push(_Registro)
     })
     this.refreshRegistros([],false)
+
+    setTimeout(() => {
+      this.syncScroll();
+    }, 0);
 
   })
 

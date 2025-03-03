@@ -6,7 +6,6 @@
   text-align: left;
   font-size: 15px;
   font-weight: bold;
- 
 }
 
 .departamento-socio {
@@ -16,10 +15,10 @@
   justify-content: space-between;
 }
 
-.textoInputNegativo{
+.textoInputNegativo {
   color: red;
 }
-.textoInputPositivo{
+.textoInputPositivo {
   color: black;
 }
 
@@ -60,7 +59,6 @@
 }
 
 // ~Responsive
-
 @media (max-width: 640px) {
   .departamento-socio {
     flex-direction: column;
@@ -97,9 +95,7 @@
   text-align: center;
   padding: 0.25rem;
   border-radius: 6px;
-  // font-weight: bold;
 }
-
 
 /* Fija el ancho del multiSelect */
 .fixed-multiselect .ui-multiselect-label-container {
@@ -111,27 +107,22 @@
 
 .table-100 th,
 .table-100 td {
-  width:250px;
+  width: 250px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
 }
 
 .table-responsive {
   // cursor: grab;
   overflow-x: auto; /* Habilitar el scroll horizontal */
-
 }
 
 // .table-responsive:active {
 //   cursor: grabbing;
 // }
 
-/* Encabezado fijo */
-
-
-/* Primera columna fija (incluye encabezado y cuerpo) */
-
+/* Primera columna fija */
 tbody td:first-child {
   position: sticky;
   left: 0; /* Fija la primera columna al inicio */
@@ -140,23 +131,23 @@ tbody td:first-child {
 }
 thead th:first-child {
   position: sticky;
-  left: 0; /* Fija la primera columna al inicio */
-  background-color: white; /* Fondo blanco para evitar superposición visual */
-  z-index: 1025; /* Más alto que las celdas normales y encabezado */
+  left: 0;
+  background-color: white;
+  z-index: 1025;
 }
 
-/* Segunda columna fija (incluye encabezado y cuerpo) */
+/* Segunda columna fija */
 tbody td:nth-child(2) {
   position: sticky;
   left: 48px; /* Ajusta según el ancho de la primera columna */
   background-color: white;
-  z-index: 1025; /* Menor que la primera columna, mayor que las celdas normales */
+  z-index: 1025;
 }
 thead th:nth-child(2) {
   position: sticky;
-  left: 48px; /* Ajusta según el ancho de la primera columna */
+  left: 48px;
   background-color: white;
-  z-index: 1025; /* Menor que la primera columna, mayor que las celdas normales */
+  z-index: 1025;
 }
 
 thead th {
@@ -166,41 +157,33 @@ thead th {
 .ui-dropdown-panel {
   background-color: white !important;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-   z-index: 9999 !important;
+  z-index: 9999 !important;
 }
 
-
-
-
-////
+/* Scroll containers */
 .table-scroll-wrapper {
   position: relative;
 }
 
+/* TOP SCROLLBAR */
 .table-scroll-top {
   overflow-x: auto;
   height: 16px; /* Altura para mostrar la barra superior */
 }
 
+/* BOTTOM SCROLLBAR (NEW) */
+.table-scroll-bottom {
+  overflow-x: auto;
+  height: 16px;
+}
 
 
-@media only screen and (min-width: 600px) and (max-width: 1280px) {
-  .table-scroll-top div {
-    height: 1px; /* Línea invisible para activar la barra */
-    width: 300%; /* Ancho mayor que el contenedor para activar el scroll */
-  }
-}
-@media only screen and (min-width: 1300px) and (max-width: 1400px) {
-  .table-scroll-top div {
-    height: 1px; /* Línea invisible para activar la barra */
-    width: 600%; /* Ancho mayor que el contenedor para activar el scroll */
-  }
-}
-@media only screen and (min-width: 1500px) and (max-width: 2000px) {
-  .table-scroll-top div {
-    height: 1px; /* Línea invisible para activar la barra */
-    width: 300%; /* Ancho mayor que el contenedor para activar el scroll */
-  }
+/* Quita las medias queries con width:300%/600%. */
+.table-scroll-top div,
+.table-scroll-bottom div {
+  height: 1px;
+  width: auto; /* O 100% */
+  display: inline-block;
 }
 
 .table-scroll-container {
@@ -208,29 +191,33 @@ thead th {
   max-height: 800px; /* Ajusta según tu diseño */
 }
 
+
+/* Fuerza la tabla a ocupar el ancho real de su contenido */
 .table-scroll-container table {
-  min-width: 500px; /* Fuerza un ancho mayor que el contenedor */
+  width: max-content;   /* se ajusta al contenido */
+  white-space: nowrap;  /* evita que las celdas hagan wrap */
 }
 
+
+/* Oculta la barra de desplazamiento real del .table-scroll-container */
 .table-scroll-container::-webkit-scrollbar {
-  display: none; /* Oculta la barra de desplazamiento inferior */
+  display: none;
 }
-
 
 .p-dropdown-panel {
-  z-index: 1000 !important; /* Ajusta según necesidad */
+  z-index: 1000 !important;
 }
-.importe{
+
+.importe {
   margin-left: 400px;
 }
 
-td:nth-child(9), th:nth-child(9) { 
+td:nth-child(9),
+th:nth-child(9) {
   width: 150px; /* Ajusta según necesites */
   text-align: center;
 }
 
 tfoot tr {
-
   background: white;
-
 }
