@@ -1576,146 +1576,64 @@ this.conS.crearRegistro(_Registro).then(id => {
 });
 
 }
-copiarRegistro(registro:any){
-    // Swal.fire({
-    //   title: 'Copiando registro',
-    //   showCloseButton:false,
-    //   showConfirmButton:false,
-    //   showCancelButton:false
-    //  });
-    //  Swal.close();
-  
-  try{
-    let RegistroCopiado: any = JSON.parse(JSON.stringify(registro)); // Crear una copia independiente
-  
+
+async copiarRegistro(registro: any) {
+  try {
+    // 1) Realiza una copia profunda del registro y elimina el id para asignarle uno nuevo.
+    const RegistroCopiado: any = JSON.parse(JSON.stringify(registro));
     delete RegistroCopiado.id;
-    
+
+    // 2) Obtén una referencia a la colección y genera un nuevo ID
     const coleccionRef = this.firestore.collection('Registro');
     const nuevoDocRef = coleccionRef.doc().ref;
     const nuevoId = nuevoDocRef.id;
-    
     RegistroCopiado.id = nuevoId;
-    
-    const ordenOriginal = registro.Orden; // Orden del registro original
-    let _RegistrosPost:any=this.registrosBackUp.filter((reg:any)=>reg.Orden>ordenOriginal)
 
+    // 3) Guarda el orden original y filtra los registros que deben ser actualizados
+    const ordenOriginal = registro.Orden;
+    const _RegistrosPost = this.registrosBackUp.filter((reg: any) => reg.Orden > ordenOriginal);
+
+    // 4) Crea un batch para actualizar los registros posteriores y para crear el nuevo registro
     const batch = this.firestore.firestore.batch();
-    if(_RegistrosPost.length>0){
-      _RegistrosPost.forEach(element => {
-        const docRef = this.firestore.collection('Registro').doc(element.id).ref;
-        element.Orden+=1
-        batch.update(docRef, { Orden: element.Orden });
-      });
 
-      batch.commit()
-      .then(() => {
-        console.log('Registros actualizados exitosamente');
-      })
-      .catch((error) => {
-        console.error('Error al actualizar registros: ', error);
-      });
-
+    // Actualiza los documentos cuyo Orden sea mayor que el del registro original
+    if (_RegistrosPost.length > 0) {
+      for (const element of _RegistrosPost) {
+        const docRef = coleccionRef.doc(element.id).ref;
+        // Verifica si el documento existe
+        const snapshot = await docRef.get();
+        if (snapshot.exists) {
+          // Si existe, incrementa su Orden y añade la actualización al batch
+          element.Orden += 1;
+          batch.update(docRef, { Orden: element.Orden });
+        } else {
+          console.warn(`Documento ${element.id} no existe, se omite update.`);
+        }
+      }
     }
+
+    // 5) Asigna el nuevo Orden al registro copiado
     RegistroCopiado.Orden = ordenOriginal + 1;
+    RegistroCopiado.ActivarAnimation = true;
 
+    // 6) Agrega la creación del nuevo registro al batch
+    batch.set(nuevoDocRef, RegistroCopiado);
 
-    RegistroCopiado.ActivarAnimation=true
-    // this.conS.copiarRegistro(RegistroCopiado).then(resp => {
-    //   Swal.hideLoading();
-      
-    // })
-    this.registrosBackUp.push(RegistroCopiado)
-    this.refreshRegistros([],false)
-      
-    // this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
-    // this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
-      //   return Math.max(maxOrden, objeto.Orden);
-      // }, 0);
-      
+    // 7) Espera a que se ejecute el batch
+    await batch.commit();
+
+    // 8) Actualiza la lista local y refresca la vista
+    this.registrosBackUp.push(RegistroCopiado);
+    this.refreshRegistros([], false);
+
+  } catch (error) {
+    console.error('Error al copiar registro:', error);
+    this.toastr.error('Error al copiar registro', 'Error');
   }
-  catch(error){
-
-  }
-
-//   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
-//     return Math.max(maxOrden, objeto.Orden);
-// }, 0);
-//   if (this.Registros.some(r => r.Orden === registro.Orden + 1 && r.idFlujo === registro.idFlujo)) {
-
-//     return; 
-//   }
-//   const coleccionRef = this.firestore.collection('Registro');
-//   const nuevoDocRef = coleccionRef.doc().ref; 
-//   const nuevoId = nuevoDocRef.id;
-//   let _RegistroCopy=
-//   {
-//     "Elemento": registro.Elemento,
-//     "Cuenta": registro.Cuenta,
-//     "Valor": registro.Valor,
-//     "idFlujo": registro.idFlujo,
-//     "NumMes": registro.NumMes,
-//     "NumSemana": registro.NumSemana,
-//     "AnioRegistro": registro.AnioRegistro,
-//     "Semana": registro.Semana,
-//     "MesRegistro": registro.MesRegistro,
-//     "Activo": registro.Activo,
-//     "Nuevo": registro.Nuevo,
-//     "Editando": registro.Editando,
-//     "Orden": this.OrdenMax+1,
-//     "Proyecto":registro.Proyecto,
-//     "idSocioNegocio": registro.idSocioNegocio,
-//     "idEmpresa": registro.idEmpresa,
-//     "idMatriz": registro.idMatriz,
-//     "idCategoria": registro.idCategoria,
-//     "NombreElemento": registro.NombreElemento,
-//     "NumCuenta": registro.NumCuenta,
-//     "Comentarios": registro.Comentarios,
-//     "CategoriaNombre": registro.CategoriaNombre,
-//     "SocioNegocio": registro.SocioNegocio,
-//     "idSucursal": registro.idSucursal,
-//     "FechaRegistro": registro.FechaRegistro,
-//     "idTipo": registro.idTipo,
-//     "TipoRegistro": registro.TipoRegistro,
-//     "idProyecto": registro.idProyecto,
-//     "Sucursal": registro.Sucursal,
-//     "id":nuevoId
-
-//   }
-    // const indiceRegistro = this.Registros.findIndex(r => r.Orden === registro.Orden);
-    // this.Registros.splice(indiceRegistro + 1, 0, _RegistroCopy);
-    // const batch = this.firestore.firestore.batch();
-    // batch.set(nuevoDocRef, _RegistroCopy);
-  
-    // let OrdenNuevo:number=1
-    // this.Registros.sort((a:any, b:any) => a.Orden - b.Orden).forEach(element => {
-      
-    //   const registroRef = coleccionRef.doc(element.id).ref; 
-    //   batch.update(registroRef, { Orden: OrdenNuevo });
-    //   element.Orden =OrdenNuevo;
-    //   OrdenNuevo+=1
-
-    // })
- 
-      // for (let i = indiceRegistro + 2; i < this.Registros.length; i++) {
-      //   const registroRef = coleccionRef.doc(this.Registros[i].id).ref; 
-      //   batch.update(registroRef, { Orden: this.Registros[i].Orden + 1 });
-      //   this.Registros[i].Orden += 1;
-      // }
-    
-
-
-    // batch.commit()
-    // .then(() => {
-    //   this.toastr.success('Exitoso', `¡Registro copiado al final de la lista! Registro # ${_RegistroCopy.Orden}`,{
-    //     timeOut: 3000,
-    //     positionClass: 'toast-bottom-right' 
-    //   });
-    // })
-    // .catch(error => {
-   
-    // });
-
 }
+
+
+
 getSelectedItemsLabel(): string {
   const count = this.CategoriasSeleccionadas ? this.CategoriasSeleccionadas.length : 0;
   
