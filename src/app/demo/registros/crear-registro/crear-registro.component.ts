@@ -898,33 +898,45 @@ refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
   this.cargando = false;
 }
 
-switchTipoRegistro(idTipo){
-  this.cargando=true
-  if(idTipo==2  && this.Proyectos.length==0){
-    this.registroForm.value.idSucursal=''
+switchTipoRegistro(idTipo: number) {
+  this.cargando = true;
+
+  // Caso donde no hay proyectos
+  if (idTipo === 2 && this.Proyectos.length === 0) {
+    this.registroForm.value.idSucursal = '';
     Swal.fire({
-      position: "center",
-      icon: "warning",
-      title: "No tiene proyectos creados",
+      position: 'center',
+      icon: 'warning',
+      title: 'No tiene proyectos creados',
       showConfirmButton: false,
       timer: 1500
     });
-    this.idTipoRegistro=1
-    this.ProyectoSeleccionado={}
-  }
-  else {
+    this.idTipoRegistro = 1;
+    this.ProyectoSeleccionado = {};
+  } else {
+    // Asigna el nuevo tipo de registro y filtra datos
+    this.idTipoRegistro = idTipo;
+    this.Registros = this.registrosBackUp
+      .filter((reg: any) => reg.TipoRegistro === idTipo)
+      .sort((a: any, b: any) => b.Orden - a.Orden);
 
-    this.idTipoRegistro=idTipo
-    this.Registros=this.registrosBackUp.filter((reg:any)=>reg.TipoRegistro==idTipo).sort((a:any, b:any) => b.Orden - a.Orden)
-    this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.idTipoRegistro)
-
- 
+    // Filtra Items si es necesario
+    this.Items = this.ItemsBack.filter((item: any) => item.TipoRubro === this.idTipoRegistro);
   }
-  this.calcularImporteSubTotal( this.Registros)
-  this.calcularImporteTotal( this.Registros)
-  this.cargando=false
-  this.OpcionesSideBar=false
+
+  // Recalcula importes
+  this.calcularImporteSubTotal(this.Registros);
+  this.calcularImporteTotal(this.Registros);
+
+  this.cargando = false;
+  this.OpcionesSideBar = false;
+
+  // Espera un tick para que la tabla se renderice y luego recalcula las barras
+  setTimeout(() => {
+    this.syncScroll();
+  }, 0);
 }
+
 
 calcularImporteTotal(registros:any){
   this.ImporteTotal=0
