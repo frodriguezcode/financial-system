@@ -934,7 +934,7 @@ switchTipoRegistro(idTipo: number) {
   // Espera un tick para que la tabla se renderice y luego recalcula las barras
   setTimeout(() => {
     this.syncScroll();
-  }, 0);
+  }, 150);
 }
 
 
