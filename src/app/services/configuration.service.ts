@@ -14,6 +14,10 @@ export class ConfigurationService {
   usuario$ = this.usuarioSource.asObservable();
   private RegistrosTrimestrales = new BehaviorSubject<any>(null);
   RegistrosTrimestrales$ = this.RegistrosTrimestrales.asObservable();
+
+  private RegistrosSemestrales = new BehaviorSubject<any>(null);
+  RegistrosSemestrales$ = this.RegistrosSemestrales.asObservable();
+
   private idEmpresaSource = new BehaviorSubject<any>(null)
   idEmpresa$ = this.idEmpresaSource.asObservable();
   constructor( private afs: AngularFirestore,private http: HttpClient) { 
@@ -27,6 +31,9 @@ export class ConfigurationService {
 
   enviarRegistrosTrimestrales(data: any) {
     this.RegistrosTrimestrales.next(data);
+  }
+  enviarRegistrosSemestrales(data: any) {
+    this.RegistrosSemestrales.next(data);
   }
   setUsuario(usuario: any) {
     this.usuarioSource.next(usuario);

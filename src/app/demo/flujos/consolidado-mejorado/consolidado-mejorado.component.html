@@ -12,7 +12,20 @@
     [(ngModel)]="SemanasSeleccionadas" 
     optionLabel="SemanaAnio" 
     placeholder="Seleccione semanas" /> -->
-<!-- <p-multiSelect class="m-1" [options]="Meses" [(ngModel)]="MesesSeleccionados" optionLabel="Mes" placeholder="Meses" /> -->
+<p-multiSelect class="m-1"
+ [options]="MesesBack" 
+ (onChange)="filtrarPorAnioMes()"
+ appendTo="body"
+ [(ngModel)]="MesesSeleccionados"
+ optionLabel="Mes" placeholder="Meses" 
+ />
+<p-multiSelect class="m-1"
+ [options]="AniosBack"
+ (onChange)="filtrarPorAnioMes()"
+ appendTo="body" 
+ [(ngModel)]="AniosSeleccionados"
+ optionLabel="Anio" placeholder="Años" 
+ />
 <p-multiSelect [disabled]="ProyectoSeleccionado.length>0" 
   class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" 
   [options]="Sucursales"
@@ -233,15 +246,14 @@ appendTo="body"
       <tr class="children-items" *ngFor="let child of rowData.data.children">
         <!-- Sticky first column for child rows as well (optional) -->
         <td 
-          class="text-center justify-content-between"
+       
           style="
-            position: sticky; 
-            left: 0; 
-            z-index: 1; 
+      
             background-color: #fff;
+            margin-left: 10px;
           "
         >
-          {{ child.data.categoria }}
+          <span style="margin-left: 50px">{{ child.data.categoria }}</span>
         </td>
         <td *ngFor="let cab of Cabecera">
           <ng-container *ngIf="cab.Tipo != 1">
@@ -259,6 +271,7 @@ appendTo="body"
 </div>
 <br>
 <consolidado-mejorado-trimestral *ngIf="verTrimestral==true"></consolidado-mejorado-trimestral>
+<app-consolidado-mejorado-semestral *ngIf="verSemestral==true"></app-consolidado-mejorado-semestral>
 
 
 

@@ -667,15 +667,15 @@
             <strong>
               <p
                 style="text-transform: uppercase; font-size: 13px; font-weight: bold; color: red;"
-                *ngIf="ImporteSubTotal < 0"
+                *ngIf="ImporteTotal < 0"
               >
-                <strong>{{ ' -$ ' + (ImporteSubTotal * -1 | number) }}</strong>
+                <strong>{{ ' -$ ' + (ImporteTotal * -1 | number) }}</strong>
               </p>
               <p
                 style="text-transform: uppercase; font-size: 13px; font-weight: bold;"
-                *ngIf="ImporteSubTotal >= 0"
+                *ngIf="ImporteTotal >= 0"
               >
-                <strong>{{ ' $ ' + (ImporteSubTotal | number) }}</strong>
+                <strong>{{ ' $ ' + (ImporteTotal | number) }}</strong>
               </p>
             </strong>
           </td>

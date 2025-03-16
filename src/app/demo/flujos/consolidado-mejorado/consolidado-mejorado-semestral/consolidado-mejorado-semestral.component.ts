@@ -10,63 +10,65 @@ import { ButtonModule } from 'primeng/button';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 @Component({
-  selector: 'consolidado-mejorado-trimestral',
+  selector: 'app-consolidado-mejorado-semestral',
   standalone: true,
   imports: [CommonModule, SharedModule,TableModule,ButtonModule],
-  templateUrl: './consolidado-mejorado-trimestral.html',
-  styleUrls: ['./consolidado-mejorado-trimestral.scss']
+  templateUrl: './consolidado-mejorado-semestral.component.html',
+  styleUrls: ['./consolidado-mejorado-semestral.component.scss']
 })
-export default class ConsolidadoMejoradoTrimesralComponent implements OnInit {
-constructor(private conS:ConfigurationService){}
-@ViewChild('dt') table: Table; 
-Anios: any[] = [];
-AnioSeleccionados: any[] = [];
-Trimestres: any[] = [];
-Cabecera: any[] = [];
-Registros: any[] = [];
-Items: any[] = [];
-SaldoInicial: any[] = [];
-Categorias: any[] = [];
-DataTreeTable=[]
-usuario:any
-cargando:boolean=true
-RegistrosSaldosFinalesTrimestrales=[]
-TrimestresSeleccionados: any[] = [];
-ExpandirCuentas:boolean=false
-Expandir:boolean=false
-ngOnInit(): void {
-  this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+export default class ConsolidadoSemestralComponent implements OnInit {
 
-  this.conS.RegistrosTrimestrales$.subscribe((data:any)=>{
-    this.Trimestres=data.Trimestres.sort((a:any, b:any) => a.NumTrimestre - b.NumTrimestre)
-    this.Anios=data.Anios
-    this.Categorias=data.Categorias
-    this.Items=data.Items
-    this.Registros=data.Registros
-    this.SaldoInicial=data.SaldoInicial
-    this.construirCabecera()
-  })
+  constructor(private conS:ConfigurationService){}
+
+  @ViewChild('dt') table: Table; 
+  Anios: any[] = [];
+  RegistrosSaldosFinalesSemestrales: any[] = [];
+  AnioSeleccionados: any[] = [];
+  Semestres: any[] = [];
+  Cabecera: any[] = [];
+  Registros: any[] = [];
+  Items: any[] = [];
+  SaldoInicial: any[] = [];
+  Categorias: any[] = [];
+  DataTreeTable=[]
+  usuario:any
+  cargando:boolean=true
+  RegistrosSaldosFinalesSemestres=[]
+  SemestresSeleccionados: any[] = [];
+  ExpandirCuentas:boolean=false
+  Expandir:boolean=false
+
+
+
+  ngOnInit(): void {
+    this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+
+    this.conS.RegistrosSemestrales$.subscribe((data:any)=>{
+      console.log('data',data)
+      this.Semestres=data.Semestres.sort((a:any, b:any) => a.NumSemestre - b.NumSemestre)
+      this.Anios=data.Anios
+      this.Categorias=data.Categorias
+      this.Items=data.Items
+      this.Registros=data.Registros
+      this.SaldoInicial=data.SaldoInicial
+      this.construirCabecera()
+  
+    })
+    
+  }
+getSemestresByAnio(anio:any){
+  return this.Semestres.filter((sem:any)=>sem.Anio==anio)
 }
 
 construirCabecera(){
-
   this.Cabecera=[]
-  // this.Cabecera.push({
-  //   "Nombre":"Concepto",
-  //   "Mes":"",
-  //   "NumMes":"",
-  //   "Anio":"",
-  //   "Tipo":1,
-  //   "Mostrar":true,
-  //   "MostrarBoton":true
-  // })
   this.Anios.forEach((anio:any) => {
-    this.getTrimestresByAnio(anio.Anio).forEach((trim:any) => {
+    this.getSemestresByAnio(anio.Anio).forEach((sem:any) => {
   
         this.Cabecera.push({
-          "Nombre":trim.Trimestre + ' - ' + anio.Anio,
-          "Trimestre":trim.Trimestre,
-          "NumTrimestre":trim.NumTrimestre,
+          "Nombre":"Semestre " + sem.NumSemestre + ' - ' + anio.Anio,
+          "Semestre":sem.NumSemestre,
+          "NumSemestre":sem.NumSemestre,
           "Anio":anio.Anio,
           "Tipo":2,
           "Mostrar":true,
@@ -87,28 +89,10 @@ construirCabecera(){
       "MostrarBoton":true
     })
   });
+  console.log('Cabecera',this.Cabecera)
   this.construirData()
  }
-
- toggleAllRows() {
-  if (this.table) {
-    // Si hay filas expandidas, contraerlas todas
-    if (Object.keys(this.table.expandedRowKeys).length > 0) {
-      this.ExpandirCuentas=false
-      this.table.expandedRowKeys = {}; // Contraer todas las filas
-    } else {
-      // Expandir todas las filas
-      const expandedKeys = {};
-      this.table.value.forEach((row) => {
-        expandedKeys[row.key] = true; // Marcar todas las filas como expandidas
-      });
-      this.table.expandedRowKeys = expandedKeys;
-      this.ExpandirCuentas=true
-    }
-  }
-}
-
-construirData(){
+ construirData(){
   
   let indexCategoria:number=0
   let indexItem:number=0
@@ -127,41 +111,41 @@ construirData(){
     }
 
     this.Anios.forEach((anio:any) => {
-      this.getTrimestresByAnio(anio.Anio).forEach((trim:any) => {
-        let key = `${trim.NumTrimestre}-${anio.Anio}`;
+      this.getSemestresByAnio(anio.Anio).forEach((sem:any) => {
+        let key = `${sem.NumSemestre}-${anio.Anio}`;
         newRow.data.tipo=categ.Tipo
         if(categ.Orden==0) {
-          this.RegistrosSaldosFinalesTrimestrales.push({
+          this.RegistrosSaldosFinalesSemestrales.push({
             "key":key,
             "Anio":anio.Anio,
-            "Valor":this.getValorSaldoFinalTrimestral(trim.NumTrimestre,anio.Anio) || 0
+            "Valor":this.getValorSaldoFinalSemestral(sem.NumSemestre,anio.Anio) || 0
           })
-          newRow.data.values[key] = this.getSaldoInicialTrimestral(trim.NumTrimestre,anio.Anio) || 0;
+          newRow.data.values[key] = this.getSaldoInicialSemestral(sem.NumSemestre,anio.Anio) || 0;
          
 
         }
         else if(categ.Orden==1) {
-          newRow.data.values[key] = this.getDataFlujoOperativoTrimestral(trim.NumTrimestre,anio.Anio) || 0;         
+          newRow.data.values[key] = this.getDataFlujoOperativoSemestral(sem.NumSemestre,anio.Anio) || 0;         
         }
         else if(categ.Orden==4) {
-          newRow.data.values[key] = this.getDataFlujoInversionTrimestral(trim.NumTrimestre,anio.Anio) || 0;
+          newRow.data.values[key] = this.getDataFlujoInversionSemestral(sem.NumSemestre,anio.Anio) || 0;
         }
 
         else if(categ.Orden==7) {
-          newRow.data.values[key] = this.getDataFlujoFinancieroTrimestre(trim.NumTrimestre,anio.Anio) || 0;
+          newRow.data.values[key] = this.getDataFlujoFinancieroSemestral(sem.NumSemestre,anio.Anio) || 0;
 
         }
 
         else if(categ.Orden==10) {
-          newRow.data.values[key] = this.getDataFlujoLibreTrimestral(trim.NumTrimestre,anio.Anio) || 0;
+          newRow.data.values[key] = this.getDataFlujoLibreSemestral(sem.NumSemestre,anio.Anio) || 0;
         }
 
         else if(categ.Orden==11) {
-          newRow.data.values[key] = this.getValorSaldoFinalTrimestral(trim.NumTrimestre,anio.Anio) || 0;
+          newRow.data.values[key] = this.getValorSaldoFinalSemestral(sem.NumSemestre,anio.Anio) || 0;
         }
 
         else {
-          newRow.data.values[key] = this.getValorCategoriaTrimestral(categ.id,trim.NumTrimestre,anio.Anio) || 0;
+          newRow.data.values[key] = this.getValorCategoriaSemestral(categ.id,sem.NumSemestre,anio.Anio) || 0;
         }
 
       })
@@ -213,11 +197,11 @@ construirData(){
         }
       };
       this.Anios.forEach((anio:any) => {
-        this.getTrimestresByAnio(anio.Anio).forEach((trim:any) => {
+        this.getSemestresByAnio(anio.Anio).forEach((sem:any) => {
           indexItem+=1
-          let key = `${trim.NumTrimestre}-${anio.Anio}`;
+          let key = `${sem.NumSemestre}-${anio.Anio}`;
        
-            newItem.data.values[key] = this.getValorItemTrimestral(item.id, trim.NumTrimestre, anio.Anio) || 0;
+            newItem.data.values[key] = this.getValorItemSemestral(item.id, sem.NumSemestre, anio.Anio) || 0;
           
     
         
@@ -233,28 +217,55 @@ construirData(){
 this.cargando=false
 } 
 
-getValorItemTrimestral(idElemento:any,Trim:any,Anio:any){
-  let _Data: any=[];
-  let Valor: number =0
-  _Data=this.Registros.filter((registro:any)=>
-    registro.idElemento==idElemento 
-    && registro.Trimestre==Trim
-    && registro.AnioRegistro==Anio
-    )
-  
-  if(_Data.length>0){
-    _Data.forEach((element:any) => {
-      Valor+=Number(element.Valor);
-    });
-    if(_Data[0].Tipo=='Egreso')
-      {
-        Valor=Valor*-1;
-      }
-    return Number(Valor)
+toggleAllRows() {
+  if (this.table) {
+    // Si hay filas expandidas, contraerlas todas
+    if (Object.keys(this.table.expandedRowKeys).length > 0) {
+      this.ExpandirCuentas=false
+      this.table.expandedRowKeys = {}; // Contraer todas las filas
+    } else {
+      // Expandir todas las filas
+      const expandedKeys = {};
+      this.table.value.forEach((row) => {
+        expandedKeys[row.key] = true; // Marcar todas las filas como expandidas
+      });
+      this.table.expandedRowKeys = expandedKeys;
+      this.ExpandirCuentas=true
+    }
   }
-  else {
-    return 0
+}
+
+getItems(idCategoria:any){
+  let _Items:any=[]
+
+  _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria
+  && item.idUsuarios.some((user:any) => user == this.usuario.id)
+
+   )
+  return _Items
   }
+getValorItemSemestral(idElemento:any,Sem:any,Anio:any){
+    let _Data: any=[];
+    let Valor: number =0
+    _Data=this.Registros.filter((registro:any)=>
+      registro.idElemento==idElemento 
+      && registro.Semestre==Sem
+      && registro.AnioRegistro==Anio
+      )
+    
+    if(_Data.length>0){
+      _Data.forEach((element:any) => {
+        Valor+=Number(element.Valor);
+      });
+      if(_Data[0].Tipo=='Egreso')
+        {
+          Valor=Valor*-1;
+        }
+      return Number(Valor)
+    }
+    else {
+      return 0
+    }
 }
 
 getValorItemAnual(idElemento:any,Anio:any){
@@ -280,27 +291,17 @@ getValorItemAnual(idElemento:any,Anio:any){
   }
 }
 
-getItems(idCategoria:any){
-  let _Items:any=[]
-
-  _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria
-  && item.idUsuarios.some((user:any) => user == this.usuario.id)
-
-   )
-  return _Items
-  }
-
-getSaldoInicialTrimestral(NumTrim:any,Anio:any){
+getSaldoInicialSemestral(NumSemestre:any,Anio:any){
 
   let _Data: any=[];
   let _DataSaldoFinal: any=[];
   _Data=this.SaldoInicial.filter((saldo:any)=>saldo
-  && saldo.Trimestre==NumTrim
+  && saldo.Semestre==NumSemestre
   && saldo.AnioRegistro==Anio
   )
 
   _DataSaldoFinal=this.SaldoInicial.filter((saldo:any)=>saldo
-  && saldo.Trimestre==NumTrim-1
+  && saldo.Semestre==NumSemestre-1
   && saldo.AnioRegistro==Anio
   )
 
@@ -316,11 +317,11 @@ getSaldoInicialTrimestral(NumTrim:any,Anio:any){
 
 
   else {
-    let key=`${NumTrim-1}-${Anio}`
+    let key=`${NumSemestre-1}-${Anio}`
     let ValorSaldo:number=0
 
-    let RSFM=this.RegistrosSaldosFinalesTrimestrales.filter((reg:any)=>reg.key==key)
-    let RSFM2=this.RegistrosSaldosFinalesTrimestrales.filter((reg:any)=>reg.Anio==Anio-1)
+    let RSFM=this.RegistrosSaldosFinalesSemestrales.filter((reg:any)=>reg.key==key)
+    let RSFM2=this.RegistrosSaldosFinalesSemestrales.filter((reg:any)=>reg.Anio==Anio-1)
 
     if(RSFM.length>0){
       ValorSaldo=RSFM[0].Valor
@@ -332,25 +333,22 @@ getSaldoInicialTrimestral(NumTrim:any,Anio:any){
       ValorSaldo=0
     }
 
-
-
       return ValorSaldo
 
 
   }
 }
 
-getValorSaldoFinalTrimestral(NumTrim:any,Anio:any){
-  return  this.getSaldoInicialTrimestral(NumTrim,Anio) + 
-  this.getDataFlujoLibreTrimestral(NumTrim,Anio)
+getValorSaldoFinalSemestral(NumSem:any,Anio:any){
+  return  this.getSaldoInicialSemestral(NumSem,Anio) + 
+  this.getDataFlujoLibreSemestral(NumSem,Anio)
 }
-
-getDataFlujoOperativoTrimestral(NumTrim:any,Anio:any){
+getDataFlujoOperativoSemestral(NumSem:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
   (registro.idCategoria.Orden==2
   || registro.idCategoria.Orden==3)
-  && registro.Trimestre==NumTrim
+  && registro.Semestre==NumSem
   && registro.AnioRegistro==Anio
   )
 
@@ -367,12 +365,12 @@ getDataFlujoOperativoTrimestral(NumTrim:any,Anio:any){
   }
 } 
 
-getDataFlujoInversionTrimestral(NumTrim:any,Anio:any){
+getDataFlujoInversionSemestral(NumSem:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
   (registro.idCategoria.Orden==5
   || registro.idCategoria.Orden==6)
-  && registro.Trimestre==NumTrim
+  && registro.Semestre==NumSem
   && registro.AnioRegistro==Anio
   )
 
@@ -389,12 +387,12 @@ getDataFlujoInversionTrimestral(NumTrim:any,Anio:any){
   }
 }
 
-getDataFlujoFinancieroTrimestre(NumTrim:any,Anio:any){
+getDataFlujoFinancieroSemestral(NumSem:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
   (registro.idCategoria.Orden==9
   || registro.idCategoria.Orden==8)
-  && registro.Trimestre==NumTrim
+  && registro.Semestre==NumSem
   && registro.AnioRegistro==Anio
   )
 
@@ -410,21 +408,18 @@ getDataFlujoFinancieroTrimestre(NumTrim:any,Anio:any){
     return 0
   }
 }
-getDataFlujoLibreTrimestral(NumTrim:any,Anio:any){
-  return this.getDataFlujoOperativoTrimestral(NumTrim,Anio) 
-  + this.getDataFlujoInversionTrimestral(NumTrim,Anio)
-  + this.getDataFlujoFinancieroTrimestre(NumTrim,Anio)
+
+getDataFlujoLibreSemestral(NumSem:any,Anio:any){
+  return this.getDataFlujoOperativoSemestral(NumSem,Anio) 
+  + this.getDataFlujoInversionSemestral(NumSem,Anio)
+  + this.getDataFlujoFinancieroSemestral(NumSem,Anio)
 }
 
-getTrimestresByAnio(anio:any){
-  return this.Trimestres.filter((trim:any)=>trim.Anio==anio)
-}
-
-getValorCategoriaTrimestral(idCategoria:any,NumTrim:any,Anio:any){
+getValorCategoriaSemestral(idCategoria:any,Sem:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>registro
   .idCategoria.id==idCategoria
-  && registro.Trimestre==NumTrim
+  && registro.Semestre==Sem
   && registro.AnioRegistro==Anio
   )
   if(_Data.length>0){
@@ -444,16 +439,16 @@ getValorCategoriaTrimestral(idCategoria:any,NumTrim:any,Anio:any){
 }
 
 obtenerValorSaldoInicialAnual(Anio:any){
-  let _ValorInicialTrimestral:any=[]
+  let _ValorInicialSemestral:any=[]
   let _ValorInicialesAnuales:any=[]
   let _SaldosInicialesAnual:any=[]
-  _ValorInicialTrimestral=this.SaldoInicial.filter((data:any)=>data.Trimestre==1 && data.Anio==Anio)
+  _ValorInicialSemestral=this.SaldoInicial.filter((data:any)=>data.Semestre==1 && data.Anio==Anio)
   _ValorInicialesAnuales=this.SaldoInicial.filter((data:any)=>data.Anio==Anio)
   _SaldosInicialesAnual=this.SaldoInicial.filter((data:any)=>data.AnioRegistro==Anio)
 
-  if(_ValorInicialTrimestral.length>0){
+  if(_ValorInicialSemestral.length>0){
     let Valor:number=0
-    _ValorInicialTrimestral.forEach((data:any)=>{
+    _ValorInicialSemestral.forEach((data:any)=>{
       Valor+=data.Valor
     })
     return Valor
@@ -466,7 +461,7 @@ obtenerValorSaldoInicialAnual(Anio:any){
   }
   else {
     let ValorSaldo:number=0
-    let RSFM2=this.RegistrosSaldosFinalesTrimestrales.filter((reg:any)=>reg.Anio==Anio-1)
+    let RSFM2=this.RegistrosSaldosFinalesSemestrales.filter((reg:any)=>reg.Anio==Anio-1)
     if(RSFM2.length>0) {
       ValorSaldo=RSFM2[RSFM2.length-1].Valor
     }
@@ -592,7 +587,7 @@ descargarExcel(){
     let fila: any[] = [`${Contador}- ${categ.Nombre}`];
     Contador+=1
     _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
-      const indexItemTrimesral = `${cab.NumTrimestre}-${cab.Anio}`;
+      const indexItemTrimesral = `${cab.NumSemestre}-${cab.Anio}`;
       const indexAnual = `${cab.Anio}`;
       let valor = 0;
       const categoriaEncontrada = this.DataTreeTable.find((dataT: any) => dataT.data.id_categoria === categ.id);
@@ -613,7 +608,7 @@ descargarExcel(){
     this.getItems(categ.id).forEach((item: any) => {
   let filaItem: any[] = [item.Nombre];
   _Cabecera.filter((cab: any) => cab.Tipo != 1).forEach((cab: any) => {
-    const indexItemTrimesral = `${cab.NumTrimestre}-${cab.Anio}`;
+    const indexItemTrimesral = `${cab.NumSemestre}-${cab.Anio}`;
     const indexItemAnual = `${cab.Anio}`;
     let valorItem = 0;
  if (cab.Tipo == 2) {

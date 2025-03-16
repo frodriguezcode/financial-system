@@ -13,12 +13,13 @@ import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { Subscription } from 'rxjs';
 import ConsolidadoMejoradoTrimesralComponent from './consolidado-mejorado-trimestral/consolidado-mejorado-trimestral';
+import ConsolidadoSemestralComponent from './consolidado-mejorado-semestral/consolidado-mejorado-semestral.component';
 @Component({
   selector: 'app-consolidado-mejorado',
   standalone: true,
   imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule,
     TreeTableModule,TableModule,ButtonModule,
-    ConsolidadoMejoradoTrimesralComponent],
+    ConsolidadoMejoradoTrimesralComponent,ConsolidadoSemestralComponent],
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
 })
@@ -38,12 +39,15 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   SemanasSingle:any=[]
   SemanasSeleccionadas:any=[]
   CatalogoFechas:any=[]
-  Meses:any=[]
   Trimestres:any=[]
+  Meses:any=[]
+  MesesBack:any=[]
   MesesSeleccionados:any=[]
   Anios:any=[]
   AniosSeleccionados:any=[]
+  AniosBack:any=[]
   Cabecera:any=[]
+  Semestres:any=[]
   CabeceraBack:any=[]
   usuario:any
   cargar:boolean=false
@@ -547,6 +551,12 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
 
   }
 
+  filtrarPorAnioMes(){
+    this.Anios=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados: this.AniosBack
+    this.Meses=this.MesesSeleccionados.length>0 ? this.MesesSeleccionados: this.MesesBack
+    this.construirCabecera()
+  }
+
   filtrarData(){
     let SemanasRegistros:any=[]
     let Cuentas:any=[]
@@ -910,12 +920,38 @@ obtenerRegistros(){
             }));
           };
 
+          const obtenerSemestresUnicos = (registros1: any[], registros2: any[]) => {
+            const semestresUnicos = new Map();
+              [...registros1, ...registros2].forEach((item) => {
+              const claveUnica = `${item.AnioRegistro}-${item.Semestre}`;
+              if (!semestresUnicos.has(claveUnica)) {
+                semestresUnicos.set(claveUnica, {
+                  Anio: item.AnioRegistro,
+                  NumSemestre: item.Semestre,
+                  Semestre: `Semestre ${item.Semestre}`,
+                  seleccionado: false,
+                  label: item.Semestre,
+                  icon: '',
+                });
+              }
+            });
+          
+            // Convertir a array y agregar índices
+            return Array.from(semestresUnicos.values()).map((item, index) => ({
+              ...item,
+              index: index + 1,
+            }));
+          };
+
 
           const mesesActivos = obtenerMesesUnicos(this.Registros, this.SaldoInicial);
 
           this.Meses=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
+          this.MesesBack=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
           this.Anios=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
+          this.AniosBack=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
           this.Trimestres=obtenerTrimestresUnicos(this.Registros, this.SaldoInicial)
+          this.Semestres=obtenerSemestresUnicos(this.Registros, this.SaldoInicial)
           // this.Anios.map((anio:any)=>{anio.Mostrar=true,anio.MostrarBoton=true})
           // this.Meses.map((mes:any)=>{mes.Mostrar=true,mes.MostrarBoton=true})
 
@@ -1890,15 +1926,15 @@ getMesesByAnio(anio:any){
 construirCabecera(){
 
     this.Cabecera=[]
-    this.Cabecera.push({
-      "Nombre":"Concepto",
-      "Mes":"",
-      "NumMes":"",
-      "Anio":"",
-      "Tipo":1,
-      "Mostrar":true,
-      "MostrarBoton":true
-    })
+    // this.Cabecera.push({
+    //   "Nombre":"Concepto",
+    //   "Mes":"",
+    //   "NumMes":"",
+    //   "Anio":"",
+    //   "Tipo":1,
+    //   "Mostrar":true,
+    //   "MostrarBoton":true
+    // })
     this.Anios.forEach((anio:any) => {
       this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
         // this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
@@ -2021,8 +2057,19 @@ construirCabecera(){
       'SaldoInicial':this.SaldoInicial
 
     }
-
     this.conS.enviarRegistrosTrimestrales(DataTrimestral)
+    let DataSemestral={
+      'Registros':this.Registros,
+      'Anios':this.Anios,
+      'Cabecera':this.Cabecera,
+      'Categorias':this.Categorias,
+      'Items':this.Items,
+      'Semestres':this.Semestres,
+      'SaldoInicial':this.SaldoInicial
+      
+    }
+    this.conS.enviarRegistrosSemestrales(DataSemestral)
+
    }
    getItems(idCategoria:any){
     let _Items:any=[]
