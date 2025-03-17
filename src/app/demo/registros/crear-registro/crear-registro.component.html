@@ -424,6 +424,7 @@
 
           <td *ngIf="registros.TipoRegistro == 1" class="text-center">
             <p-dropdown
+              (onChange)="renderizarBarra()"
               [options]="Sucursales"
               [(ngModel)]="registros.Sucursal"
               name="SucursalesSeleccionadas"
@@ -445,6 +446,7 @@
 
           <td *ngIf="registros.TipoRegistro == 2" class="text-center">
             <p-dropdown
+              (onChange)="renderizarBarra()"
               [options]="Proyectos"
               [(ngModel)]="registros.Proyecto"
               [style]="{ width: '200px' }"
@@ -477,6 +479,7 @@
           <td class="text-center">
             <p-dropdown
               [options]="this.getCategoriasByTipo(registros.idTipo)"
+              (onChange)="renderizarBarra()"
               [(ngModel)]="registros.idCategoria"
               [style]="{ width: '300px' }"
               [panelStyle]="{ width: '300px' }"
@@ -515,6 +518,7 @@
               No tienes cuentas asociadas a esta categoría
             </p>
             <p-dropdown
+            (onChange)="renderizarBarra()"
               [options]="getCuentabyCategoria(registros.idCategoria)"
               [(ngModel)]="registros.NombreElemento"
               name="registros.Elemento"
@@ -562,6 +566,7 @@
           <td class="text-center">
             <p-dropdown
               [options]="TiposOperacion"
+              (onChange)="renderizarBarra()"
               [(ngModel)]="registros.TipoOperacion"
               name="TipoSeleccionado"
               optionLabel="Nombre"
@@ -584,6 +589,7 @@
               [style]="{ width: '200px' }"
               [panelStyle]="{ width: '200px' }"
               [options]="cuentas"
+              (onChange)="renderizarBarra()"
               [(ngModel)]="registros.Cuenta"
               name="ItemSeleccionados"
               optionLabel="Cuenta"
@@ -605,6 +611,7 @@
               [style]="{ width: '200px' }"
               [panelStyle]="{ width: '200px' }"
               [options]="SociosNegocios"
+              (onChange)="renderizarBarra()"
               [(ngModel)]="registros.idSocioNegocio"
               name="SociosNegocios"
               optionLabel="Nombre"

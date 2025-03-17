@@ -937,6 +937,11 @@ switchTipoRegistro(idTipo: number) {
   }, 150);
 }
 
+renderizarBarra(){
+  setTimeout(() => {
+    this.syncScroll();
+  }, 150);
+}
 
 calcularImporteTotal(registros:any){
   this.ImporteTotal=0
