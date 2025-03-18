@@ -1,40 +1,43 @@
-
-
-<div style="margin-top: -5px;" class="fondo">
-
-
-
-
-<div class="row ">
-  <div class="alert alert-success " role="alert">
-    <h3 class="pricing-table__title text-center">Planes</h3>
+<div class="fondo">
+  <!-- Encabezado “Planes” -->
+  <div class="planes-header text-center">
+    <h2 class="planes-title">Planes</h2>
   </div>
-  <div class="col-sm-12">
- 
-      <div class="pricing-table-wrapper">
-        <ul class="pricing-table">
-          <li *ngFor="let plan of Planes" class="pricing-table__item">
-            <img src="https://css-tricks.ir/wp-content/themes/css-tricks-ir-1396/images/products/packages/1.svg" alt="" class="pricing-table__img" />
-            <h3 class="pricing-table__title">{{plan.Nombre}}</h3>
-            <p class="pricing-table__description">
-              <!-- <span class="pricing-table__tagline">The tagline goes here</span> -->
-              <span class="pricing-table__price">$ {{plan.Precio}}</span>
-              <!-- <span class="pricing-table__label">900 is the real price</span>
-              <span class="pricing-table__save">You save 100</span> -->
-            </p>
-            <ul class="pricing-table__products">
-              <li *ngFor="let beneficio of plan.Beneficios" class="pricing-table__product"><a href="">{{beneficio.Beneficio}}</a></li>
-              <!-- <li class="pricing-table__product"><a href="">Included item title</a></li>
-              <li class="pricing-table__product pricing-table__product--excluded"><a href="">Excluded item title</a></li>
-              <li class="pricing-table__product pricing-table__product--excluded"><a href="">Excluded item title</a></li> -->
-            </ul>
-            <a routerLink="/auth/signin/signup/{{plan.id}}" class="pricing-table__button">Continuar</a>
+
+  <!-- Contenedor de la tabla de precios -->
+  <div class="pricing-table-wrapper">
+    <ul class="pricing-table">
+      <li 
+        class="pricing-table__item"
+        *ngFor="let plan of Planes"
+      >
+        <img 
+          src="https://css-tricks.ir/wp-content/themes/css-tricks-ir-1396/images/products/packages/1.svg" 
+          alt="" 
+          class="pricing-table__img" 
+        />
+        <h3 class="pricing-table__title">{{ plan.Nombre }}</h3>
+
+        <p class="pricing-table__description">
+          <span class="pricing-table__price">$ {{ plan.Precio }}</span>
+        </p>
+
+        <ul class="pricing-table__products">
+          <li 
+            class="pricing-table__product" 
+            *ngFor="let beneficio of plan.Beneficios"
+          >
+            <a href="">{{ beneficio.Beneficio }}</a>
           </li>
-          <!-- <li class="pricing-table__item pricing-table__item--popular" data-popular="Popular"> -->
         </ul>
-      </div>
 
+        <a 
+          routerLink="/auth/signin/signup/{{ plan.id }}" 
+          class="pricing-table__button"
+        >
+          Continuar
+        </a>
+      </li>
+    </ul>
   </div>
-</div>
-
 </div>
