@@ -1610,7 +1610,10 @@ async copiarRegistro(registro: any) {
 
     // 3) Guarda el orden original y filtra los registros que deben ser actualizados
     const ordenOriginal = registro.Orden;
-    const _RegistrosPost = this.registrosBackUp.filter((reg: any) => reg.Orden > ordenOriginal);
+    const _RegistrosPost = this.registrosBackUp
+    .filter((reg: any) => reg.Orden > ordenOriginal
+    && reg.TipoRegistro==this.idTipoRegistro
+    );
 
     // 4) Crea un batch para actualizar los registros posteriores y para crear el nuevo registro
     const batch = this.firestore.firestore.batch();
