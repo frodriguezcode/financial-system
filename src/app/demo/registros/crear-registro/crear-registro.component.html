@@ -425,6 +425,8 @@
           <td *ngIf="registros.TipoRegistro == 1" class="text-center">
             <p-dropdown
               (onChange)="renderizarBarra()"
+              [style]="{ width: '300px' }"
+              [panelStyle]="{ width: '300px' }"
               [options]="Sucursales"
               [(ngModel)]="registros.Sucursal"
               name="SucursalesSeleccionadas"
@@ -449,8 +451,8 @@
               (onChange)="renderizarBarra()"
               [options]="Proyectos"
               [(ngModel)]="registros.Proyecto"
-              [style]="{ width: '200px' }"
-              [panelStyle]="{ width: '200px' }"
+              [style]="{ width: '300px' }"
+              [panelStyle]="{ width: '300px' }"
               name="ProyectosSeleccionados"
               optionLabel="NombreSucursal"
               optionValue="NombreSucursal"
@@ -518,6 +520,7 @@
               No tienes cuentas asociadas a esta categoría
             </p>
             <p-dropdown
+        
             (onChange)="renderizarBarra()"
               [options]="getCuentabyCategoria(registros.idCategoria)"
               [(ngModel)]="registros.NombreElemento"

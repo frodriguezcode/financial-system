@@ -1538,7 +1538,9 @@ const coleccionRef = this.firestore.collection('Registro');
 const nuevoDocRef = coleccionRef.doc().ref;
 const nuevoId = nuevoDocRef.id;
 
-this.OrdenMax = this.registrosBackUp.reduce((maxOrden, objeto) => {
+this.OrdenMax = this.registrosBackUp
+.filter((r:any)=>r.TipoRegistro==this.idTipoRegistro)
+.reduce((maxOrden, objeto) => {
   return Math.max(maxOrden, objeto.Orden);
 }, 0);
 let _Registro={
