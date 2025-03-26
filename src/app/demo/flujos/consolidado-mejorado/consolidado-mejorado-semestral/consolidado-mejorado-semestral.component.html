@@ -41,6 +41,7 @@
                 background-color: #f8f7f7;
                 font-weight: bolder;
               "
+              
             >
               Categoría
             </th>
@@ -73,6 +74,8 @@
             z-index: 1; 
             background-color: #f8f7f7;
           "
+
+[style.width.px]="calcColumnWidthPx()"
         >
           <button 
             *ngIf="rowData.data.tipo != 3 && rowData.data.tipo != 11 && rowData.data.tipo != 0"
@@ -117,7 +120,10 @@
             left: 0; 
             z-index: 1; 
             background-color: #fff;
+            white-space: nowrap;
           "
+
+[style.width.px]="calcColumnWidthPx()"
         >
         <span style="margin-left: 50px">{{ child.data.categoria }}</span>
         </td>

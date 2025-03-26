@@ -99,6 +99,8 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   verMensual:boolean=true
   verTrimestral:boolean=false
   verSemestral:boolean=false
+
+  maxCategoryLength: number = 0;
   ngOnInit(): void {
     this.conS.usuario$.subscribe(usuario => {
       if (usuario) {
@@ -114,7 +116,40 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
       this.getCatalogoFechas()
    
     });
+
+    this.maxCategoryLength = this.findLongestCategory();
   }
+
+  findLongestCategory(): number {
+    let maxLen = 0;
+    // Recorre las filas principales
+    for (const row of this.DataTreeTable) {
+      const text = row.data.categoria || '';
+      if (text.length > maxLen) {
+        maxLen = text.length;
+      }
+      // Recorre los children
+      if (row.data.children) {
+        for (const child of row.data.children) {
+          const childText = child.data.categoria || '';
+          if (childText.length > maxLen) {
+            maxLen = childText.length;
+          }
+        }
+      }
+    }
+    return maxLen;
+  }
+  
+  /**
+   * Convierte la longitud de texto en px 
+   * (aprox. 7px por carácter, puedes ajustar).
+   */
+  calcColumnWidthPx(): number {
+    const factor = 7; // ~7px por carácter
+    return this.maxCategoryLength * factor;
+  }
+  
 
   cambiarPeriodo(periodo:any){
     if(periodo==1){
