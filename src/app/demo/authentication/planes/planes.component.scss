@@ -15,13 +15,19 @@
 
 /* Encabezado “Planes” */
 .planes-header {
-  background-color: rgba(0, 0, 0, 0.05); /* Sutil fondo para el header */
+  // background-color: rgba(0, 0, 0, 0.05); 
+  background-color: rgba(4, 178, 175, 0.682); 
   padding: 1em 2em;
-  border-radius: 0.5em;
+  border-radius: 0.8em;
   margin-bottom: 2em;
   color: #333;
+  width: 84em;
+  text-transform: uppercase;
 
   .planes-title {
+    color: white;
+    letter-spacing: 0.05em;
+    font-weight: bolder;
     margin: 0;
     font-size: 2rem;
   }
