@@ -56,6 +56,16 @@ export const NavigationItems: NavigationItem[] = [
           breadcrumbs: false
         },
         {
+          id: 'manager-recapt-mensual',
+          title: 'Manager Recapt',
+          type: 'item',
+          url: '/manager-recapt',
+          // icon: 'feather icon-bold',
+          icon: 'fa-solid fa-magnifying-glass-chart',
+       
+          breadcrumbs: false
+        },
+        {
           id: 'dashboard',
           title: 'Dashboard',
           type: 'item',

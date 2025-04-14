@@ -1,0 +1,88 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Store Manager Recapt Mensual" [options]="false">
+      <button type="button" 
+      (click)="expandir()"
+      class="btn btn-success m-1">Expandir todo <i class="fa-solid fa-chevron-up"></i></button>
+      <button type="button"
+      (click)="contraer()"
+       class="btn btn-danger m-1">Contraer todo <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="contenedor-main">
+        <div *ngIf="!cargando" class="container-table table-responsive">
+          <table style="table-layout: fixed; width: 100%;" class="table table-100">
+            <thead class="cabecera">
+              <tr>
+                <th class="text-left"
+                    style="width: 400px; padding: 0.5rem; background-color: #0c8c86;
+                    color: white;
+                     text-transform: uppercase; position: sticky; top: 0; z-index: 3;">
+                  Catálogo
+                </th>
+                <ng-container *ngFor="let cab of Cabecera">
+                  <th *ngIf="cab.Mostrar==true && cab.Tipo!=1"
+                      class="text-center"
+                      style="width: 200px; 
+                      color: white;
+                      padding: 0.5rem; font-weight:
+                       500; text-transform: uppercase; position: sticky; top: 0; z-index: 1;">
+                    {{ cab.Nombre }}
+                  </th>
+                </ng-container>
+              </tr>
+            </thead>
+          
+            <tbody *ngFor="let catalogo of CatalogoElementos">
+              <!-- Fila para el título del catálogo con botón de toggle -->
+<tr class="fixed-header" style="position: sticky; left: 0; z-index: 10;">
+  <td  [attr.colspan]="Cabecera.length + 1" 
+       style="font-weight: bold; background-color: white; position: sticky; left: 0;">
+    <button (click)="catalogo.Mostrar = !catalogo.Mostrar" class="toggle-btn">
+      <i class="fas" 
+         [class.fa-chevron-down]="!catalogo.Mostrar" 
+         [class.fa-chevron-up]="catalogo.Mostrar"></i>
+      {{ catalogo.Nombre }}
+    </button>
+  </td>
+</tr>
+              
+              <!-- Filas para cada elemento del catálogo (con *ngIf para mostrar/ocultar) -->
+              <ng-container *ngIf="catalogo.Mostrar">
+                <tr   *ngFor="let element of catalogo.Elementos">
+                  <td style="margin-right: -50px; background-color: rgb(245, 245, 245)" >{{ element.Nombre }}</td>
+                  <ng-container
+                  
+                  *ngFor="let cab of Cabecera">
+                    <td 
+                      class="text-center"
+                      *ngIf="cab.Mostrar==true 
+                      && cab.Tipo!=1 
+                      && element.Editable==false">
+                      0 <!-- Aquí puedes poner el valor correspondiente -->
+                    </td>
+                    <td 
+                      class="text-center"
+                      *ngIf="cab.Mostrar==true 
+                      && cab.Tipo!=1
+                      &&
+                      element.Editable==true">
+                      <input 
+                      #Valor
+                      type="text" 
+                      class="form-control text-center" 
+                      >
+                    </td>
+                  </ng-container>
+                </tr>
+
+              </ng-container>
+            </tbody>
+          </table>
+          
+
+  
+        </div>
+
+      </div>
+    </app-card>
+  </div>
+</div>

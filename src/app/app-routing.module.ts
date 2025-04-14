@@ -79,6 +79,10 @@ const routes: Routes = [
         loadComponent: () => import('./demo/flujos/panel-flujos/flujos-panel.component')
       },
       {
+        path: 'manager-recapt',
+        loadComponent: () => import('./demo/manager-recap-admin/manager-recap-admincomponent')
+      },
+      {
         path: 'roles',
         loadComponent: () => import('./demo/roles/roles.component')
       },
