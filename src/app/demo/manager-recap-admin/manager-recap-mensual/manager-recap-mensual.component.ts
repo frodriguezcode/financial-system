@@ -183,7 +183,7 @@ getCategorias(){
         "Editable":true,
         },
         {
-        "Nombre":"(x) % de Conversión",
+        "Nombre":"(X) % de Conversión",
         "id":'01-02',
         "Orden":2,
         "Editable":false,
@@ -219,7 +219,7 @@ getCategorias(){
         "Editable":false,
         },
         {
-        "Nombre":"(x) Monto Promedio de Venta",
+        "Nombre":"(X) Monto Promedio de Venta",
         "id":'01-08',
         "Orden":8,
         "Editable":false,
