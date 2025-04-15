@@ -1,12 +1,40 @@
 <div class="row">
   <div class="col-sm-12">
     <app-card cardTitle="Store Manager Recapt Mensual" [options]="false">
-      <button type="button" 
-      (click)="expandir()"
-      class="btn btn-success m-1">Expandir todo <i class="fa-solid fa-chevron-up"></i></button>
-      <button type="button"
-      (click)="contraer()"
-       class="btn btn-danger m-1">Contraer todo <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="row">
+        <div class="col-2">
+          <button type="button" 
+          (click)="expandir()"
+          class="btn btn-success m-1">Expandir todo <i class="fa-solid fa-chevron-up"></i>
+         </button>
+        </div>
+        <div class="col-2">
+          <button type="button"
+          (click)="contraer()"
+          class="btn btn-danger m-1">Contraer todo <i class="fa-solid fa-chevron-down"></i></button>
+        </div>
+        <div class="col-4">
+          <p-multiSelect class="m-1" 
+          [options]="Anios"
+          [(ngModel)]="AniosSeleccionados"
+          [style]="{'width':'250px'}"
+          [panelStyle]="{'width':'250px'}"
+          (onChange)="construirCabecera()"
+          optionLabel="Anio" placeholder="Años" />
+        </div>
+
+        <div class="col-4">
+          <p-multiSelect class="m-1"
+           (onChange)="construirCabecera()"
+            [options]="Meses" 
+            [style]="{'width':'250px'}"
+            [panelStyle]="{'width':'100%'}"
+            [(ngModel)]="MesesSeleccionados"
+          optionLabel="Mes" placeholder="Meses" />
+        </div>
+      </div>
+
+
       <div class="contenedor-main">
         <div *ngIf="!cargando" class="container-table table-responsive">
           <table style="table-layout: fixed; width: 100%;" class="table table-100">
@@ -33,17 +61,17 @@
           
             <tbody *ngFor="let catalogo of CatalogoElementos">
               <!-- Fila para el título del catálogo con botón de toggle -->
-<tr class="fixed-header" style="position: sticky; left: 0; z-index: 10;">
-  <td  [attr.colspan]="Cabecera.length + 1" 
-       style="font-weight: bold; background-color: white; position: sticky; left: 0;">
-    <button (click)="catalogo.Mostrar = !catalogo.Mostrar" class="toggle-btn">
-      <i class="fas" 
-         [class.fa-chevron-down]="!catalogo.Mostrar" 
-         [class.fa-chevron-up]="catalogo.Mostrar"></i>
-      {{ catalogo.Nombre }}
-    </button>
-  </td>
-</tr>
+          <tr class="fixed-header" style="position: sticky; left: 0; z-index: 10;">
+            <td  [attr.colspan]="Cabecera.length + 1" 
+              style="font-weight: bold; background-color: white; position: sticky; left: 0;">
+              <button (click)="catalogo.Mostrar = !catalogo.Mostrar" class="toggle-btn">
+            <i class="fas" 
+              [class.fa-chevron-down]="!catalogo.Mostrar" 
+              [class.fa-chevron-up]="catalogo.Mostrar"></i>
+              {{ catalogo.Nombre }}
+            </button>
+            </td>
+          </tr>
               
               <!-- Filas para cada elemento del catálogo (con *ngIf para mostrar/ocultar) -->
               <ng-container *ngIf="catalogo.Mostrar">
@@ -66,6 +94,7 @@
                       &&
                       element.Editable==true">
                       <input 
+                      (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
                       #Valor
                       type="text" 
                       class="form-control text-center" 

@@ -1,26 +1,29 @@
 // angular import
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { Subscription } from 'rxjs';
-
+import { MultiSelectModule } from 'primeng/multiselect';
 @Component({
   selector: 'app-manager-recap-mensual',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule,MultiSelectModule],
   templateUrl: './manager-recap-mensual.component.html',
   styleUrls: ['./manager-recap-mensual.component.scss']
 })
 export default class ManagerRecapMensualComponent implements OnInit {
-  constructor(private conS:ConfigurationService){}
+  constructor(private conS:ConfigurationService,private datePipe: DatePipe){}
   Cabecera:any=[]
+  Fecha:any= new Date();
   Categorias:any=[]
   CatalogoElementos:any=[]
   Meses:any=[]
+  MesesSeleccionados:any=[]
   Anios:any=[]
+  AniosSeleccionados:any=[]
   cargando:boolean=true
   ngOnInit(): void {
   this.Anios=[
@@ -41,61 +44,73 @@ export default class ManagerRecapMensualComponent implements OnInit {
     {
       Mes: 'Enero',
       NumMes:1,
+      Trimestre:1,
       Mostrar: true
     },
     {
       Mes: 'Febrero',
       NumMes:2,
+      Trimestre:1,
       Mostrar: true
     },
     {
       Mes: 'Marzo',
       NumMes:3,
+      Trimestre:1,
       Mostrar: true
     },
     {
       Mes: 'Abril',
       NumMes:4,
+      Trimestre:2,
       Mostrar: true
     },
     {
       Mes: 'Mayo',
       NumMes:5,
+      Trimestre:2,
       Mostrar: true
     },
     {
       Mes: 'Junio',
       NumMes:6,
+      Trimestre:2,
       Mostrar: true
     },
     {
       Mes: 'Julio',
       NumMes:7,
+      Trimestre:3,
       Mostrar: true
     },
     {
       Mes: 'Agosto',
       NumMes:8,
+      Trimestre:3,
       Mostrar: true
     },
     {
       Mes: 'Septiembre',
       NumMes:9,
+      Trimestre:3,
       Mostrar: true
     },
     {
       Mes: 'Octubre',
       NumMes:10,
+      Trimestre:4,
       Mostrar: true
     },
     {
       Mes: 'Noviembre',
       NumMes:11,
+      Trimestre:4,
       Mostrar: true
     },
     {
       Mes: 'Diciembre',
       NumMes:12,
+      Trimestre:4,
       Mostrar: true
     },
   
@@ -117,12 +132,16 @@ construirCabecera(){
     "MostrarBoton":true
   })
 
-  this.Anios.forEach((anio:any) => {
-   this.Meses.forEach((mes:any) => {
+  let Anios:any=this.AniosSeleccionados.length>0?this.AniosSeleccionados : this.Anios
+  let Meses:any=this.MesesSeleccionados.length>0?this.MesesSeleccionados : this.Meses
+
+  Anios.forEach((anio:any) => {
+    Meses.forEach((mes:any) => {
     this.Cabecera.push({
       "Nombre": mes.Mes + " " + anio.Anio,
       "Mes":mes.Mes,
       "NumMes":mes.NumMes,
+      "Trimestre":mes.Trimestre,
       "Anio":anio.Anio,
       "Tipo":2,
       "Mostrar":true,
@@ -179,54 +198,63 @@ getCategorias(){
         {
         "Nombre":"Prospectos",
         "id":'01-01',
+        "idPadre":'01',
         "Orden":1,
         "Editable":true,
         },
         {
         "Nombre":"(X) % de Conversión",
         "id":'01-02',
+        "idPadre":'01',
         "Orden":2,
         "Editable":false,
         },
         {
         "Nombre":"(=) Clientes Nuevos",
         "id":'01-03',
+        "idPadre":'01',
         "Orden":3,
         "Editable":true,
         },
         {
         "Nombre":"(+) Clientes Existentes",
         "id":'01-04',
+        "idPadre":'01',
         "Orden":4,
         "Editable":true,
         },
         {
         "Nombre":"(=) Clientes Totales",
         "id":'01-05',
+        "idPadre":'01',
         "Orden":5,
         "Editable":false,
         },
         {
         "Nombre":"Transacciones Totales",
         "id":'01-06',
+        "idPadre":'01',
         "Orden":6,
         "Editable":true,
         },
         {
         "Nombre":"(X) Transacciones Promedio",
         "id":'01-07',
+        "idPadre":'01',
         "Orden":7,
         "Editable":false,
         },
         {
         "Nombre":"(X) Monto Promedio de Venta",
         "id":'01-08',
+        "idPadre":'01',
         "Orden":8,
         "Editable":false,
         },
         {
         "Nombre":"(=) Ventas Netas",
         "id":'01-09',
+        "idPadre":'01',
         "Orden":9,
         "Editable":true,
         },
@@ -244,108 +272,126 @@ getCategorias(){
         {
         "Nombre":"Ventas",
         "id":'02-01',
+        "idPadre":'02',
         "Orden":1,
         "Editable":false,
         },
         {
         "Nombre":"(-) Costo de ventas",
         "id":'02-02',
+        "idPadre":'02',
         "Orden":2,
         "Editable":true,
         },
         {
         "Nombre":"(=) Utilidad Bruta",
         "id":'02-03',
+        "idPadre":'02',
         "Orden":3,
         "Editable":false,
         },
         {
         "Nombre":"Margen Bruto",
         "id":'02-04',
+        "idPadre":'02',
         "Orden":4,
         "Editable":false,
         },
         {
         "Nombre":"(-) Gastos de Ventas y Mkt",
         "id":'02-05',
+        "idPadre":'02',
         "Orden":5,
         "Editable":true,
         },
         {
         "Nombre":"(-) Gastos de Operación",
         "id":'02-06',
+        "idPadre":'02',
         "Orden":6,
         "Editable":true,
         },
         {
         "Nombre":"(-) Gastos de Administración",
         "id":'02-07',
+        "idPadre":'02',
         "Orden":7,
         "Editable":true,
         },
         {
         "Nombre":"Total gastos de operación",
         "id":'02-08',
+        "idPadre":'02',
         "Orden":8,
         "Editable":false,
         },
         {
         "Nombre":"(=) EBITDA",
         "id":'02-09',
+        "idPadre":'02',
         "Orden":9,
         "Editable":false,
         },
         {
         "Nombre":"Margen de Operación",
         "id":'02-10',
+        "idPadre":'02',
         "Orden":10,
         "Editable":false,
         },
         {
         "Nombre":"Margen de Operación",
         "id":'02-11',
+        "idPadre":'02',
         "Orden":11,
         "Editable":false,
         },
         {
         "Nombre":"(-) Intereses",
         "id":'02-12',
+        "idPadre":'02',
         "Orden":12,
         "Editable":true,
         },
         {
         "Nombre":"(-) Impuestos",
         "id":'02-13',
+        "idPadre":'02',
         "Orden":13,
         "Editable":true,
         },
         {
         "Nombre":"(-) Depreciación",
         "id":'02-14',
+        "idPadre":'02',
         "Orden":14,
         "Editable":true,
         },
         {
         "Nombre":"(-) Amortización",
         "id":'02-15',
+        "idPadre":'02',
         "Orden":15,
         "Editable":true,
         },
         {
         "Nombre":"(=) Utilidad Neta",
         "id":'02-16',
+        "idPadre":'02',
         "Orden":16,
         "Editable":false,
         },
         {
         "Nombre":"Margen Neto",
         "id":'02-17',
+        "idPadre":'02',
         "Orden":17,
         "Editable":false,
         },
         {
         "Nombre":"Gasto en Gente",
         "id":'02-18',
+        "idPadre":'02',
         "Orden":18,
         "Editable":true,
         },
@@ -396,7 +442,8 @@ getCategorias(){
               CategoriasData.push({
                 "Nombre": element.Nombre,
                 "id": element.id,
-                "idPadre": categ.id,
+                "idPadre":'03',
+                "idAbuelo": categ.id,
                 "Orden": CategoriasData.length + 1,
                 "Editable": false,
               });
@@ -415,6 +462,7 @@ getCategorias(){
       CategoriasData.push({
         "Nombre": 'Efectivo Final',
         "id": `03-${CategoriasData.length + 1}`,
+        "idPadre":'03',
         "Orden": CategoriasData.length + 1,
         "Editable": false,
       });
@@ -441,42 +489,49 @@ getCategorias(){
         {
         "Nombre":"Saldo Inicial",
         "id":'04-01',
+        "idPadre":'04',
         "Orden":1,
         "Editable":true,
         },
         {
         "Nombre":"(-) Cobros",
         "id":'04-02',
+        "idPadre":'04',
         "Orden":2,
         "Editable":true,
         },
         {
         "Nombre":"(+) Nuevas ventas a crédito",
         "id":'04-03',
+        "idPadre":'04',
         "Orden":3,
         "Editable":true,
         },
         {
         "Nombre":"(=) Saldo Final",
         "id":'04-04',
+        "idPadre":'04',
         "Orden":4,
         "Editable":false,
         },
         {
         "Nombre":"Variación",
         "id":'04-05',
+        "idPadre":'04',
         "Orden":5,
         "Editable":false,
         },
         {
         "Nombre":"Dias de cobro",
         "id":'04-06',
+        "idPadre":'04',
         "Orden":6,
         "Editable":false,
         },
         {
         "Nombre":"Cash dejado sobre / levantado de la mesa",
         "id":'04-07',
+        "idPadre":'04',
         "Orden":7,
         "Editable":false,
         }
@@ -494,42 +549,49 @@ getCategorias(){
         {
         "Nombre":"Inventario Inicial",
         "id":'05-01',
+        "idPadre":'05',
         "Orden":1,
         "Editable":true,
         },
         {
         "Nombre":"(+) Compras",
         "id":'05-02',
+        "idPadre":'05',
         "Orden":2,
         "Editable":true,
         },
         {
         "Nombre":"(-) Costo de ventas",
         "id":'05-03',
+        "idPadre":'05',
         "Orden":3,
         "Editable":false,
         },
         {
         "Nombre":"(=) Inventario Final",
         "id":'05-04',
+        "idPadre":'05',
         "Orden":4,
         "Editable":false,
         },
         {
         "Nombre":"Variación",
         "id":'05-05',
+        "idPadre":'05',
         "Orden":5,
         "Editable":false,
         },
         {
         "Nombre":"Dias de inventario",
         "id":'05-06',
+        "idPadre":'05',
         "Orden":6,
         "Editable":false,
         },
         {
         "Nombre":"Cash dejado sobre / levantado de la mesa",
         "id":'05-07',
+        "idPadre":'05',
         "Orden":7,
         "Editable":false,
         }
@@ -540,43 +602,49 @@ getCategorias(){
       // Proveedores
       {          
       "Nombre":"Proveedores",
-      "id":'07',
-      "Orden":7,
+      "id":'06',
+      "Orden":6,
       "Mostrar":true,
       "Elementos":[
         {
         "Nombre":"Saldo inicial",
-        "id":'07-01',
+        "id":'06-01',
+        "idPadre":'06',
         "Orden":1,
         "Editable":true,
         },
         {
         "Nombre":"(+) Compras",
-        "id":'07-02',
+        "id":'06-02',
+        "idPadre":'06',
         "Orden":2,
         "Editable":false,
         },
         {
         "Nombre":"(=) Saldo final",
-        "id":'07-03',
+        "id":'06-03',
+        "idPadre":'06',
         "Orden":3,
         "Editable":false,
         },
         {
         "Nombre":"Variación",
-        "id":'07-04',
+        "id":'06-04',
+        "idPadre":'06',
         "Orden":4,
         "Editable":false,
         },
         {
         "Nombre":"Dias de pago",
-        "id":'07-05',
+        "id":'06-05',
+        "idPadre":'06',
         "Orden":5,
         "Editable":false,
         },
         {
         "Nombre":"Cash dejado sobre / levantado de la mesa",
-        "id":'07-06',
+        "id":'06-06',
+        "idPadre":'06',
         "Orden":6,
         "Editable":false,
         }
@@ -587,67 +655,77 @@ getCategorias(){
       // Afectación al Flujo Operativo
       {          
       "Nombre":"Afectación al Flujo Operativo",
-      "id":'08',
-      "Orden":8,
+      "id":'07',
+      "Orden":7,
       "Mostrar":true,
       "Elementos":[
         {
         "Nombre":"Mensual",
-        "id":'08-01',
+        "id":'07-01',
+        "idPadre":'07',
         "Orden":1,
         "Editable":false,
         },
         {
         "Nombre":"What If",
-        "id":'08-02',
+        "id":'07-02',
+        "idPadre":'07',
         "Orden":2,
         "Editable":false,
         },
         {
         "Nombre":"Real",
-        "id":'08-03',
+        "id":'07-03',
+        "idPadre":'07',
         "Orden":3,
         "Editable":false,
         },
         {
         "Nombre":"Factor de conversión a efectivo (What If)",
-        "id":'08-04',
+        "id":'07-04',
+        "idPadre":'07',
         "Orden":4,
         "Editable":false,
         },
         {
         "Nombre":"Factor de conversión a efectivo (Real)",
-        "id":'08-05',
+        "id":'07-05',
+        "idPadre":'07',
         "Orden":5,
         "Editable":false,
         },
         {
         "Nombre":"Acumulado histórico",
-        "id":'08-06',
+        "id":'07-06',
+        "idPadre":'07',
         "Orden":6,
         "Editable":false,
         },
         {
         "Nombre":"What If",
-        "id":'08-07',
+        "id":'07-07',
+        "idPadre":'07',
         "Orden":7,
         "Editable":false,
         },
         {
         "Nombre":"Real",
-        "id":'08-08',
+        "id":'07-08',
+        "idPadre":'07',
         "Orden":8,
         "Editable":false,
         },
         {
         "Nombre":"Factor de conversión a efectivo (What If)",
-        "id":'08-09',
+        "id":'07-09',
+        "idPadre":'07',
         "Orden":9,
         "Editable":false,
         },
         {
         "Nombre":"Factor de conversión a efectivo (Real)",
-        "id":'08-10',
+        "id":'07-10',
+        "idPadre":'07',
         "Orden":10,
         "Editable":false,
         },
@@ -657,31 +735,35 @@ getCategorias(){
       // Activo Fijo
       {          
       "Nombre":"Activo Fijo",
-      "id":'09',
-      "Orden":9,
+      "id":'08',
+      "Orden":8,
       "Mostrar":true,
       "Elementos":[
         {
         "Nombre":"Saldo Inicial",
-        "id":'09-01',
+        "id":'08-01',
+        "idPadre":'08',
         "Orden":1,
         "Editable":true,
         },
         {
         "Nombre":"(+) Compras",
-        "id":'09-02',
+        "id":'08-02',
+        "idPadre":'08',
         "Orden":2,
         "Editable":true,
         },
         {
         "Nombre":"(-) Ventas",
-        "id":'09-03',
+        "id":'08-03',
+        "idPadre":'08',
         "Orden":3,
         "Editable":true,
         },
         {
         "Nombre":"(=) Total - Activo fijo",
-        "id":'09-04',
+        "id":'08-04',
+        "idPadre":'08',
         "Orden":4,
         "Editable":true,
         },
@@ -692,31 +774,35 @@ getCategorias(){
       // Otros pasivos de Corto Plazo
       {          
       "Nombre":"Otros pasivos de Corto Plazo",
-      "id":'10',
-      "Orden":10,
+      "id":'09',
+      "Orden":9,
       "Mostrar":true,
       "Elementos":[
         {
         "Nombre":"Saldo inicial",
-        "id":'10-01',
+        "id":'09-01',
+        "idPadre":'09',
         "Orden":1,
         "Editable":true,
         },
         {
         "Nombre":"(+) Nueva deuda",
-        "id":'10-02',
+        "id":'09-02',
+        "idPadre":'09',
         "Orden":2,
         "Editable":false,
         },
         {
         "Nombre":"(-) Pagos",
-        "id":'10-03',
+        "id":'09-03',
+        "idPadre":'09',
         "Orden":3,
         "Editable":true,
         },
         {
         "Nombre":"(=) Total - Otros pasivos de corto plazo",
-        "id":'10-04',
+        "id":'09-04',
+        "idPadre":'09',
         "Orden":4,
         "Editable":false,
         },
@@ -726,31 +812,35 @@ getCategorias(){
       // Pasivos de Largo Plazo
       {          
       "Nombre":"Pasivos de Largo Plazo",
-      "id":'11',
+      "id":'10',
       "Mostrar":true,
-      "Orden":11,
+      "Orden":10,
       "Elementos":[
         {
         "Nombre":"Saldo inicial",
-        "id":'11-01',
+        "id":'10-01',
+        "idPadre":'10',
         "Orden":1,
         "Editable":true,
         },
         {
         "Nombre":"(+) Nueva deuda",
-        "id":'11-02',
+        "id":'10-02',
+        "idPadre":'10',
         "Orden":2,
         "Editable":true,
         },
         {
         "Nombre":"(-) Pagos",
-        "id":'11-03',
+        "id":'10-03',
+        "idPadre":'10',
         "Orden":3,
         "Editable":true,
         },
         {
         "Nombre":"(=) Total - Pasivos de largo plazo",
-        "id":'11-04',
+        "id":'10-04',
+        "idPadre":'10',
         "Orden":4,
         "Editable":false,
         },
@@ -760,49 +850,56 @@ getCategorias(){
       // Comparativas
       {          
       "Nombre":"Comparativas",
-      "id":'12',
+      "id":'11',
       "Mostrar":true,
-      "Orden":12,
+      "Orden":11,
       "Elementos":[
         {
         "Nombre":"Flujo Libre",
-        "id":'12-01',
+        "id":'11-01',
+        "idPadre":'11',
         "Orden":1,
         "Editable":false,
         },
         {
         "Nombre":"Utilidad neta",
-        "id":'12-02',
+        "id":'11-02',
+        "idPadre":'11',
         "Orden":2,
         "Editable":false,
         },
         {
         "Nombre":"Variación en Cuentas por cobrar",
-        "id":'12-03',
+        "id":'11-03',
+        "idPadre":'11',
         "Orden":3,
         "Editable":false,
         },
         {
         "Nombre":"Variación en Inventarios",
-        "id":'12-04',
+        "id":'11-04',
+        "idPadre":'11',
         "Orden":4,
         "Editable":false,
         },
         {
         "Nombre":"Variación en las Inversiones",
-        "id":'12-05',
+        "id":'11-05',
+        "idPadre":'11',
         "Orden":5,
         "Editable":false,
         },
         {
         "Nombre":"Variación en Proveedores",
-        "id":'12-06',
+        "id":'11-06',
+        "idPadre":'11',
         "Orden":6,
         "Editable":false,
         },
         {
         "Nombre":"Variación en Pasivos de Largo Plazo",
-        "id":'12-07',
+        "id":'11-07',
+        "idPadre":'11',
         "Orden":7,
         "Editable":false,
         },
@@ -812,109 +909,126 @@ getCategorias(){
       // Eficiencia y control
       {          
       "Nombre":"Eficiencia y control",
-      "id":'13',
+      "id":'12',
       "Mostrar":true,
-      "Orden":13,
+      "Orden":12,
       "Elementos":[
         {
         "Nombre":"Costo de ventas ($)",
-        "id":'13-01',
+        "id":'12-01',
+        "idPadre":'12',
         "Orden":1,
         "Editable":false,
         },
         {
         "Nombre":"Compras",
-        "id":'13-02',
+        "id":'12-02',
+        "idPadre":'12',
         "Orden":2,
         "Editable":false,
         },
         {
         "Nombre":"Días de compra",
-        "id":'13-03',
+        "id":'12-03',
+        "idPadre":'12',
         "Orden":3,
         "Editable":false,
         },
         {
         "Nombre":"Pago a proveedores",
-        "id":'13-04',
+        "id":'12-04',
+        "idPadre":'12',
         "Orden":4,
         "Editable":false,
         },
         {
         "Nombre":"Costo de ventas (%)",
-        "id":'13-05',
+        "id":'12-05',
+        "idPadre":'12',
         "Orden":5,
         "Editable":false,
         },
         {
         "Nombre":"% de los ingresos para pagar a proveedores",
-        "id":'13-06',
+        "id":'12-06',
+        "idPadre":'12',
         "Orden":6,
         "Editable":false,
         },
         {
         "Nombre":"Gastos de operación totales ($)",
-        "id":'13-07',
+        "id":'12-07',
+        "idPadre":'12',
         "Orden":7,
         "Editable":false,
         },
         {
         "Nombre":"Egresos de Operación ($)",
-        "id":'13-08',
+        "id":'12-08',
+        "idPadre":'12',
         "Orden":8,
         "Editable":false,
         },
         {
         "Nombre":"Gastos de operación totales (%)",
-        "id":'13-09',
+        "id":'12-09',
+        "idPadre":'12',
         "Orden":9,
         "Editable":false,
         },
         {
         "Nombre":"Egresos de Operación (%)",
-        "id":'13-10',
+        "id":'12-10',
+        "idPadre":'12',
         "Orden":10,
         "Editable":false,
         },
         {
         "Nombre":"Margen Bruto",
-        "id":'13-11',
+        "id":'12-11',
+        "idPadre":'12',
         "Orden":11,
         "Editable":false,
         },
         {
         "Nombre":"Margen de Operación",
-        "id":'13-12',
+        "id":'12-12',
+        "idPadre":'12',
         "Orden":12,
         "Editable":false,
         },
         {
         "Nombre":"Margen Neto",
-        "id":'13-13',
+        "id":'12-13',
+        "idPadre":'12',
         "Orden":13,
         "Editable":false,
         },
         {
         "Nombre":"Inversión en Gente",
-        "id":'13-14',
+        "id":'12-14',
+        "idPadre":'12',
         "Orden":14,
         "Editable":false,
         },
         {
         "Nombre":"Inversión en Marketing",
-        "id":'13-14',
+        "id":'12-14',
+        "idPadre":'12',
         "Orden":14,
         "Editable":false,
         },
         {
         "Nombre":"Punto de Equilibrio Mensual",
-        "id":'13-15',
+        "id":'12-15',
+        "idPadre":'12',
         "Orden":15,
         "Editable":false,
         },
         {
         "Nombre":"Punto de Equilibrio Semanal",
-        "id":'13-16',
+        "id":'12-16',
+        "idPadre":'12',
         "Orden":16,
         "Editable":false,
         },
@@ -924,31 +1038,35 @@ getCategorias(){
       // Actividad y gestión
       {          
       "Nombre":"Actividad y gestión",
-      "id":'14',
-      "Orden":14,
+      "id":'13',
+      "Orden":13,
       "Mostrar":true,
       "Elementos":[
         {
         "Nombre":"Días de Cobro",
-        "id":'14-01',
+        "id":'13-01',
+        "idPadre":'13',
         "Orden":1,
         "Editable":false,
         },
         {
         "Nombre":"Días de Inventario",
-        "id":'14-02',
+        "id":'13-02',
+        "idPadre":'13',
         "Orden":2,
         "Editable":false,
         },
         {
         "Nombre":"Días de Pago",
-        "id":'14-03',
+        "id":'13-03',
+        "idPadre":'13',
         "Orden":3,
         "Editable":false,
         },
         {
         "Nombre":"Días de recuperación del efectivo",
-        "id":'14-04',
+        "id":'13-04',
+        "idPadre":'13',
         "Orden":4,
         "Editable":false,
         }
@@ -958,25 +1076,28 @@ getCategorias(){
       // Actividad y gestión
       {          
       "Nombre":"Retorno y rentabilidad",
-      "id":'15',
+      "id":'14',
       "Mostrar":true,
-      "Orden":15,
+      "Orden":14,
       "Elementos":[
         {
         "Nombre":"ROI en gente",
-        "id":'15-01',
+        "id":'14-01',
+        "idPadre":'14',
         "Orden":1,
         "Editable":false,
         },
         {
         "Nombre":"ROI de Marketing",
-        "id":'15-02',
+        "id":'14-02',
+        "idPadre":'14',
         "Orden":2,
         "Editable":false,
         },
         {
         "Nombre":"ROI de activos operativos",
-        "id":'15-03',
+        "id":'14-03',
+        "idPadre":'14',
         "Orden":3,
         "Editable":false,
         }
@@ -986,25 +1107,28 @@ getCategorias(){
       // Liquidez y solvencia
       {          
       "Nombre":"Liquidez y solvencia",
-      "id":'16',
+      "id":'15',
       "Mostrar":true,
-      "Orden":16,
+      "Orden":15,
       "Elementos":[
         {
         "Nombre":"Dinero dejado sobre / levantado de la mesa",
-        "id":'16-01',
+        "id":'15-01',
+        "idPadre":'15',
         "Orden":1,
         "Editable":false,
         },
         {
         "Nombre":"Liquidez",
-        "id":'16-02',
+        "id":'15-02',
+        "idPadre":'15',
         "Orden":2,
         "Editable":false,
         },
         {
         "Nombre":"Valor del Capital de trabajo",
-        "id":'16-03',
+        "id":'15-03',
+        "idPadre":'15',
         "Orden":3,
         "Editable":false,
         }
@@ -1017,6 +1141,28 @@ getCategorias(){
 
   })
 }
+getMonthName(Fecha: string) {
+  return Number(Fecha.substring(5).substring(0, 2));
+}
+
+
   
+guardarRegistro(elemento:any,Valor:any,Cab:any){
+  let Fecha:any
+  Fecha=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
+  let Registro = {
+    "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+    "MesRegistro":Cab.Mes,
+    "NumRegistro":Cab.NumMes,
+    "Trimestre":Cab.Trimestre,
+    "AnioRegistro": Cab.Anio,    
+    "idElemento": elemento.id,    
+    "Valor": Valor,    
+    "idCatalogo": elemento.idPadre,    
+  }
+  console.log('elemento',elemento)
+  console.log('Registro',Registro)
+
+}
 
 }

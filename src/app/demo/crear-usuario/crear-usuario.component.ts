@@ -265,7 +265,6 @@ obtenerUsuarios(){
               : false // Retorna falso si `proyecto.Proyectos` no es válido
       );
   });
-  console.log('Usuarios',this.Usuarios)
        this.Usuarios.map((user:any)=>user.ProyectosAsignados=this.getNameProyectos(user.ProyectosSelect))
       this.Usuarios.map((user:any)=>user.SucursalesAsignadas=this.getNameSucursales(user.Sucursales))
       this.Usuarios.map((user:any)=>user.Empresa=this.getNombreEmpresa(user.idEmpresa))
