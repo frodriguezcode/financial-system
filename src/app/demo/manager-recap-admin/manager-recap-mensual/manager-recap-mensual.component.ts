@@ -7,6 +7,7 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { Subscription } from 'rxjs';
 import { MultiSelectModule } from 'primeng/multiselect';
+import Swal from 'sweetalert2'
 @Component({
   selector: 'app-manager-recap-mensual',
   standalone: true,
@@ -209,6 +210,7 @@ getCategorias(){
         "Nombre":"Prospectos",
         "id":'01-01',
         "idPadre":'01',
+        "Simbolo":1,
         "Orden":1,
         "Editable":true,
         },
@@ -223,6 +225,7 @@ getCategorias(){
         "Nombre":"(=) Clientes Nuevos",
         "id":'01-03',
         "idPadre":'01',
+        "Simbolo":1,
         "Orden":3,
         "Editable":true,
         },
@@ -230,6 +233,7 @@ getCategorias(){
         "Nombre":"(+) Clientes Existentes",
         "id":'01-04',
         "idPadre":'01',
+        "Simbolo":1,
         "Orden":4,
         "Editable":true,
         },
@@ -244,6 +248,7 @@ getCategorias(){
         "Nombre":"Transacciones Totales",
         "id":'01-06',
         "idPadre":'01',
+        "Simbolo":1,
         "Orden":6,
         "Editable":true,
         },
@@ -265,6 +270,7 @@ getCategorias(){
         "Nombre":"(=) Ventas Netas",
         "id":'01-09',
         "idPadre":'01',
+        "Simbolo":1,
         "Orden":9,
         "Editable":true,
         },
@@ -290,6 +296,7 @@ getCategorias(){
         "Nombre":"(-) Costo de ventas",
         "id":'02-02',
         "idPadre":'02',
+        "Simbolo":2,
         "Orden":2,
         "Editable":true,
         },
@@ -311,6 +318,7 @@ getCategorias(){
         "Nombre":"(-) Gastos de Ventas y Mkt",
         "id":'02-05',
         "idPadre":'02',
+        "Simbolo":2,
         "Orden":5,
         "Editable":true,
         },
@@ -318,6 +326,7 @@ getCategorias(){
         "Nombre":"(-) Gastos de Operación",
         "id":'02-06',
         "idPadre":'02',
+        "Simbolo":2,
         "Orden":6,
         "Editable":true,
         },
@@ -325,6 +334,7 @@ getCategorias(){
         "Nombre":"(-) Gastos de Administración",
         "id":'02-07',
         "idPadre":'02',
+        "Simbolo":2,
         "Orden":7,
         "Editable":true,
         },
@@ -360,6 +370,7 @@ getCategorias(){
         "Nombre":"(-) Intereses",
         "id":'02-12',
         "idPadre":'02',
+        "Simbolo":2,
         "Orden":12,
         "Editable":true,
         },
@@ -367,6 +378,7 @@ getCategorias(){
         "Nombre":"(-) Impuestos",
         "id":'02-13',
         "idPadre":'02',
+        "Simbolo":2,
         "Orden":13,
         "Editable":true,
         },
@@ -374,6 +386,7 @@ getCategorias(){
         "Nombre":"(-) Depreciación",
         "id":'02-14',
         "idPadre":'02',
+        "Simbolo":2,
         "Orden":14,
         "Editable":true,
         },
@@ -381,6 +394,7 @@ getCategorias(){
         "Nombre":"(-) Amortización",
         "id":'02-15',
         "idPadre":'02',
+        "Simbolo":2,
         "Orden":15,
         "Editable":true,
         },
@@ -402,6 +416,7 @@ getCategorias(){
         "Nombre":"Gasto en Gente",
         "id":'02-18',
         "idPadre":'02',
+        "Simbolo":1,
         "Orden":18,
         "Editable":true,
         },
@@ -478,7 +493,7 @@ getCategorias(){
       });
       idsAgregados.add(`03-${CategoriasData.length + 1}`);
     this.CatalogoElementos.push(
-      // Mercadotecnia
+      // Flujo de Efectivo
       {          
       "Nombre":"Flujo de Efectivo",
       "id":'03',
@@ -499,6 +514,7 @@ getCategorias(){
         {
         "Nombre":"Saldo Inicial",
         "id":'04-01',
+        "Simbolo":1,
         "idPadre":'04',
         "Orden":1,
         "Editable":true,
@@ -506,6 +522,7 @@ getCategorias(){
         {
         "Nombre":"(-) Cobros",
         "id":'04-02',
+        "Simbolo":2,
         "idPadre":'04',
         "Orden":2,
         "Editable":true,
@@ -513,6 +530,7 @@ getCategorias(){
         {
         "Nombre":"(+) Nuevas ventas a crédito",
         "id":'04-03',
+        "Simbolo":1,
         "idPadre":'04',
         "Orden":3,
         "Editable":true,
@@ -559,6 +577,7 @@ getCategorias(){
         {
         "Nombre":"Inventario Inicial",
         "id":'05-01',
+        "Simbolo":1,
         "idPadre":'05',
         "Orden":1,
         "Editable":true,
@@ -566,6 +585,7 @@ getCategorias(){
         {
         "Nombre":"(+) Compras",
         "id":'05-02',
+        "Simbolo":1,
         "idPadre":'05',
         "Orden":2,
         "Editable":true,
@@ -619,6 +639,7 @@ getCategorias(){
         {
         "Nombre":"Saldo inicial",
         "id":'06-01',
+        "Simbolo":1,
         "idPadre":'06',
         "Orden":1,
         "Editable":true,
@@ -752,6 +773,7 @@ getCategorias(){
         {
         "Nombre":"Saldo Inicial",
         "id":'08-01',
+        "Simbolo":1,
         "idPadre":'08',
         "Orden":1,
         "Editable":true,
@@ -759,6 +781,7 @@ getCategorias(){
         {
         "Nombre":"(+) Compras",
         "id":'08-02',
+        "Simbolo":1,
         "idPadre":'08',
         "Orden":2,
         "Editable":true,
@@ -767,6 +790,7 @@ getCategorias(){
         "Nombre":"(-) Ventas",
         "id":'08-03',
         "idPadre":'08',
+        "Simbolo":2,
         "Orden":3,
         "Editable":true,
         },
@@ -775,7 +799,7 @@ getCategorias(){
         "id":'08-04',
         "idPadre":'08',
         "Orden":4,
-        "Editable":true,
+        "Editable":false,
         },
         
       ],
@@ -792,12 +816,14 @@ getCategorias(){
         "Nombre":"Saldo inicial",
         "id":'09-01',
         "idPadre":'09',
+        "Simbolo":1,
         "Orden":1,
         "Editable":true,
         },
         {
         "Nombre":"(+) Nueva deuda",
         "id":'09-02',
+        "Simbolo":1,
         "idPadre":'09',
         "Orden":2,
         "Editable":false,
@@ -805,6 +831,7 @@ getCategorias(){
         {
         "Nombre":"(-) Pagos",
         "id":'09-03',
+        "Simbolo":2,
         "idPadre":'09',
         "Orden":3,
         "Editable":true,
@@ -830,6 +857,7 @@ getCategorias(){
         "Nombre":"Saldo inicial",
         "id":'10-01',
         "idPadre":'10',
+        "Simbolo":1,
         "Orden":1,
         "Editable":true,
         },
@@ -837,6 +865,7 @@ getCategorias(){
         "Nombre":"(+) Nueva deuda",
         "id":'10-02',
         "idPadre":'10',
+        "Simbolo":1,
         "Orden":2,
         "Editable":true,
         },
@@ -844,6 +873,7 @@ getCategorias(){
         "Nombre":"(-) Pagos",
         "id":'10-03',
         "idPadre":'10',
+        "Simbolo":2,
         "Orden":3,
         "Editable":true,
         },
@@ -1191,15 +1221,29 @@ getMonthName(Fecha: string) {
 guardarRegistro(elemento:any,Valor:any,Cab:any){
   let Fecha:any
   Fecha=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
-  let Registro = {
+
+  if(elemento.Tipo==2 && Number(Valor)<1)
+    {
+  Swal.fire({
+    position: "center",
+    icon: "warning",
+    title: "El valor debe ser negativo",
+    showConfirmButton: false,
+    timer: 1500
+  });
+
+  }
+
+  let Registro = 
+  {
     "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
     "MesRegistro":Cab.Mes,
-    "NumRegistro":Cab.NumMes,
+    "NumMesRegistro":Cab.NumMes,
     "Trimestre":Cab.Trimestre,
     "AnioRegistro": Cab.Anio,    
     "idElemento": elemento.id,    
     "Valor": Valor,    
-    "idCatalogo": elemento.idPadre,    
+    "idCatalogo": elemento.idPadre   
   }
   console.log('elemento',elemento)
   console.log('Registro',Registro)
