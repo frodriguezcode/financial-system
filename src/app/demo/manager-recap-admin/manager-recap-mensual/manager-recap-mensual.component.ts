@@ -1222,7 +1222,7 @@ guardarRegistro(elemento:any,Valor:any,Cab:any){
   let Fecha:any
   Fecha=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
 
-  if(elemento.Tipo==2 && Number(Valor)<1)
+  if(elemento.Tipo==2 && Number(Valor)>1)
     {
   Swal.fire({
     position: "center",
@@ -1233,20 +1233,23 @@ guardarRegistro(elemento:any,Valor:any,Cab:any){
   });
 
   }
+  else {
 
-  let Registro = 
-  {
-    "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-    "MesRegistro":Cab.Mes,
-    "NumMesRegistro":Cab.NumMes,
-    "Trimestre":Cab.Trimestre,
-    "AnioRegistro": Cab.Anio,    
-    "idElemento": elemento.id,    
-    "Valor": Valor,    
-    "idCatalogo": elemento.idPadre   
+    let Registro = 
+    {
+      "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+      "MesRegistro":Cab.Mes,
+      "NumMesRegistro":Cab.NumMes,
+      "Trimestre":Cab.Trimestre,
+      "AnioRegistro": Cab.Anio,    
+      "idElemento": elemento.id,    
+      "Valor": Valor,    
+      "idCatalogo": elemento.idPadre   
+    }
+    console.log('elemento',elemento)
+    console.log('Registro',Registro)
   }
-  console.log('elemento',elemento)
-  console.log('Registro',Registro)
+
 
 }
 
