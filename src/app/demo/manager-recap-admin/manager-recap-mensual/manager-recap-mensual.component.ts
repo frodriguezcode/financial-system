@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
@@ -172,6 +172,16 @@ construirCabecera(){
   this.cargando=false
   console.log('Cabecera',this.Cabecera)
 }
+
+
+@ViewChild('scrollTopSync') scrollTopSync!: ElementRef<HTMLDivElement>;
+@ViewChild('scrollInner') scrollInner!: ElementRef<HTMLDivElement>;
+
+@ViewChild('containerTable') containerTable!: ElementRef<HTMLDivElement>;
+
+@ViewChild('dataTable') dataTable!: ElementRef<HTMLTableElement>;
+
+
 
 contraer(){
   this.CatalogoElementos.map((cat:any)=>cat.Mostrar=false)
@@ -1137,6 +1147,37 @@ getCategorias(){
     )
     console.log('CatalogoElementos', this.CatalogoElementos);
     this.construirCabecera()
+
+    setTimeout(() => {
+      const table = this.containerTable.nativeElement;
+      const topScroll = this.scrollTopSync.nativeElement;
+      const inner = this.scrollInner.nativeElement;
+    
+      // Actualiza el ancho de la barra superior
+      // inner.style.width = table.scrollWidth + 'px';
+      inner.style.width = this.dataTable.nativeElement.scrollWidth + 'px';
+    
+      let isSyncingTop = false;
+      let isSyncingBottom = false;
+    
+      topScroll.addEventListener('scroll', () => {
+        if (!isSyncingBottom) {
+          isSyncingTop = true;
+          table.scrollLeft = topScroll.scrollLeft;
+        }
+        isSyncingBottom = false;
+      });
+    
+      table.addEventListener('scroll', () => {
+        if (!isSyncingTop) {
+          isSyncingBottom = true;
+          topScroll.scrollLeft = table.scrollLeft;
+        }
+        isSyncingTop = false;
+      });
+    }, 300);
+    
+    
 
 
   })

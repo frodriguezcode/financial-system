@@ -34,10 +34,14 @@
         </div>
       </div>
 
+      <div class="scroll-top-sync" #scrollTopSync>
+        <div class="scroll-inner" #scrollInner></div>
+      </div>
 
       <div class="contenedor-main">
-        <div *ngIf="!cargando" class="container-table table-responsive">
-          <table style="table-layout: fixed; width: 100%;" class="table table-100">
+        <div *ngIf="!cargando" #containerTable class="container-table table-responsive">
+          <!-- Scroll horizontal superior sincronizado -->
+          <table #dataTable style="table-layout: fixed; width: 100%;" class="table table-100">
             <thead class="cabecera">
               <tr>
                 <th class="text-left"
@@ -61,22 +65,24 @@
           
             <tbody *ngFor="let catalogo of CatalogoElementos">
               <!-- Fila para el título del catálogo con botón de toggle -->
-          <tr class="fixed-header" style="position: sticky; left: 0; z-index: 10;">
-            <td  [attr.colspan]="Cabecera.length + 1" 
-              style="font-weight: bold; background-color: white; position: sticky; left: 0;">
-              <button (click)="catalogo.Mostrar = !catalogo.Mostrar" class="toggle-btn">
-            <i class="fas" 
-              [class.fa-chevron-down]="!catalogo.Mostrar" 
-              [class.fa-chevron-up]="catalogo.Mostrar"></i>
-              {{ catalogo.Nombre }}
-            </button>
-            </td>
-          </tr>
-              
+              <tr class="sticky-header-row" >
+                <td class="sticky-area" 
+               >
+                <button (click)="catalogo.Mostrar = !catalogo.Mostrar" class="toggle-btn">
+              <i class="fas" 
+                [class.fa-chevron-down]="!catalogo.Mostrar" 
+                [class.fa-chevron-up]="catalogo.Mostrar"></i>
+                {{ catalogo.Nombre }}
+              </button>
+              </td>
+              </tr>
+        
+  
               <!-- Filas para cada elemento del catálogo (con *ngIf para mostrar/ocultar) -->
               <ng-container *ngIf="catalogo.Mostrar">
                 <tr   *ngFor="let element of catalogo.Elementos">
-                  <td style="margin-right: -50px; background-color: rgb(245, 245, 245)" >{{ element.Nombre }}</td>
+                  <!-- <td style="margin-right: -50px; background-color: rgb(245, 245, 245)" >{{ element.Nombre }}</td> -->
+                  <td style="margin-right: -50px; background-color:  rgb(245, 245, 245)" >{{ element.Nombre }}</td>
                   <ng-container
                   
                   *ngFor="let cab of Cabecera">

@@ -195,13 +195,33 @@
     }
   }
   
-  .fixed-header {
+  .sticky-area{
     position: sticky;
-    top: 0;
-    z-index: 1000; 
-    background-color: white;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    top: 0; 
+    left: -1;
+    z-index: 4; 
+    background-color: rgb(175, 207, 207);
+
+    font-weight: bold;
+    padding: 8px;
+    white-space: nowrap;
   }
 
+  .container-table {
+    max-height: 50rem; 
+    overflow-y: auto;
+    overflow-x: auto;
+    position: relative;
+  }
 
+  .scroll-top-sync {
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 20px;
+    margin-bottom: 5px;
+  }
+  
+  .scroll-inner {
+    height: 1px;
+    min-width: 100%; /* para evitar que desaparezca si scrollWidth = 0 */
+  }
