@@ -99,10 +99,21 @@
                       && cab.Tipo!=1
                       &&
                       element.Editable==true">
+
                       <input 
+                      *ngIf="element.Simbolo==1"
                       (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
                       #Valor
                       type="text" 
+                      style="color: black;"
+                      class="form-control text-center" 
+                      >
+                      <input 
+                      *ngIf="element.Simbolo==2"
+                      (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
+                      #Valor
+                      type="text" 
+                      style="color: red;"
                       class="form-control text-center" 
                       >
                     </td>

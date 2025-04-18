@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Registro } from '../models/registro';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
+import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,10 @@ export class ConfigurationService {
   RegistrosSemestrales$ = this.RegistrosSemestrales.asObservable();
 
   private idEmpresaSource = new BehaviorSubject<any>(null)
+
+ 
   idEmpresa$ = this.idEmpresaSource.asObservable();
-  constructor( private afs: AngularFirestore,private http: HttpClient) { 
+  constructor( private afs: AngularFirestore,private http: HttpClient, private datePipe:DatePipe) { 
     moment.updateLocale('es', {
       week: {
         dow: 0, // Sunday is the first day of the week
@@ -714,6 +717,40 @@ ActualizarValorPlan(Valor: any) {
     .doc(Valor.id)
     .ref.update(Valor);
 }
+
+//Store Manager Recapt
+
+async guardarOModificarRegistro(Registro: any) {
+  try {
+    const snapshot = await firstValueFrom(
+      this.afs.collection('StoreManagerRecapt', ref =>
+        ref.where('AnioRegistro', '==', Registro.AnioRegistro)
+           .where('NumMesRegistro', '==', Registro.NumMesRegistro)
+           .where('idElemento', '==', Registro.idElemento)
+           .where('idEmpresa', '==', Registro.idEmpresa)
+      ).get()
+    );
+
+    if (!snapshot.empty) {
+      const docId = snapshot.docs[0].id;
+      return this.afs.collection('StoreManagerRecapt').doc(docId).update({
+        Valor: Number(Registro.Valor),
+        FechaActualizacion:this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd')
+      });
+    } else {
+      const id = this.afs.createId();
+      return this.afs.collection('StoreManagerRecapt').doc(id).set({
+        ...Registro,
+        id: id
+      });
+    }
+  } catch (error) {
+    console.error('Error al guardar o modificar Meta:', error);
+    throw error;
+  }
+}
+
+
 
 obtenerValoresPlanes(idEmpresa:any): Observable<any[]> {
   return this.afs
