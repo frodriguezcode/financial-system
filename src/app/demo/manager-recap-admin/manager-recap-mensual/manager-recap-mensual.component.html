@@ -92,7 +92,7 @@
                       *ngIf="cab.Mostrar==true 
                       && cab.Tipo!=1 
                       && element.Editable==false">
-                      {{DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor | number}}
+                      {{(DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor || 0) | number}}
                     </td>
                     <td 
                       class="text-center"
