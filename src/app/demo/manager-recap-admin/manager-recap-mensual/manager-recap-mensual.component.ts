@@ -18,10 +18,12 @@ import Swal from 'sweetalert2'
 })
 export default class ManagerRecapMensualComponent implements OnInit {
   constructor(private conS:ConfigurationService,private datePipe: DatePipe,private toastr: ToastrService,){}
+  DatosElementos:any=[]
   Cabecera:any=[]
   Fecha:any= new Date();
   Categorias:any=[]
   CatalogoElementos:any=[]
+  Registros:any=[]
   Meses:any=[]
   MesesSeleccionados:any=[]
   Anios:any=[]
@@ -39,6 +41,7 @@ export default class ManagerRecapMensualComponent implements OnInit {
       else {
         this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
       }
+      this.obtenerRegistrosStoreManagerRecapt()
     })  
   this.Anios=[
     {Anio:2023,
@@ -183,7 +186,8 @@ construirCabecera(){
     })
 
   })
-  this.cargando=false
+  this.construirData()
+
   console.log('Cabecera',this.Cabecera)
 }
 
@@ -209,7 +213,7 @@ getCategorias(){
   Subscription=this.conS.obtenerCategoriasFlujos().subscribe((data:any)=>{
     Subscription.unsubscribe()
     this.Categorias=data
-    console.log('Categorias',this.Categorias)
+
 
     this.CatalogoElementos.push(
       // Mercadotecnia
@@ -226,11 +230,13 @@ getCategorias(){
         "Moneda":false,
         "Simbolo":1,
         "Orden":1,
+        "OrdenData":1,
         "Editable":true,
         },
         {
         "Nombre":"(X) % de Conversión",
         "id":'01-02',
+        "OrdenData":3,
         "idPadre":'01',
         "Orden":2,
         "Editable":false,
@@ -238,6 +244,7 @@ getCategorias(){
         {
         "Nombre":"(=) Clientes Nuevos",
         "id":'01-03',
+        "OrdenData":2,
         "idPadre":'01',
         "Moneda":false,
         "Simbolo":1,
@@ -247,6 +254,7 @@ getCategorias(){
         {
         "Nombre":"(+) Clientes Existentes",
         "id":'01-04',
+        "OrdenData":4,
         "Moneda":false,
         "idPadre":'01',
         "Simbolo":1,
@@ -257,6 +265,7 @@ getCategorias(){
         "Nombre":"(=) Clientes Totales",
         "id":'01-05',
         "idPadre":'01',
+        "OrdenData":5,
         "Moneda":false,
         "Orden":5,
         "Editable":false,
@@ -265,6 +274,7 @@ getCategorias(){
         "Nombre":"Transacciones Totales",
         "id":'01-06',
         "idPadre":'01',
+        "OrdenData":6,
         "Simbolo":1,
         "Moneda":false,
         "Orden":6,
@@ -274,6 +284,7 @@ getCategorias(){
         "Nombre":"(X) Transacciones Promedio",
         "id":'01-07',
         "idPadre":'01',
+        "OrdenData":7,
         "Moneda":false,
         "Orden":7,
         "Editable":false,
@@ -284,11 +295,13 @@ getCategorias(){
         "idPadre":'01',
         "Moneda":true,
         "Orden":8,
+        "OrdenData":9,
         "Editable":false,
         },
         {
         "Nombre":"(=) Ventas Netas",
         "id":'01-09',
+        "OrdenData":8,
         "idPadre":'01',
         "Simbolo":1,
         "Orden":9,
@@ -309,6 +322,7 @@ getCategorias(){
         {
         "Nombre":"Ventas",
         "Moneda":true,
+        "OrdenData":1,
         "id":'02-01',
         "idPadre":'02',
         "Orden":1,
@@ -321,12 +335,14 @@ getCategorias(){
         "idPadre":'02',
         "Simbolo":2,
         "Orden":2,
+        "OrdenData":2,
         "Editable":true,
         },
         {
         "Nombre":"(=) Utilidad Bruta",
         "id":'02-03',
         "Moneda":true,
+        "OrdenData":3,
         "idPadre":'02',
         "Orden":3,
         "Editable":false,
@@ -337,6 +353,7 @@ getCategorias(){
         "Moneda":false,
         "idPadre":'02',
         "Orden":4,
+        "OrdenData":4,
         "Editable":false,
         },
         {
@@ -346,6 +363,7 @@ getCategorias(){
         "idPadre":'02',
         "Simbolo":2,
         "Orden":5,
+        "OrdenData":5,
         "Editable":true,
         },
         {
@@ -355,6 +373,7 @@ getCategorias(){
         "idPadre":'02',
         "Simbolo":2,
         "Orden":6,
+        "OrdenData":6,
         "Editable":true,
         },
         {
@@ -363,6 +382,7 @@ getCategorias(){
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":2,
+        "OrdenData":7,
         "Orden":7,
         "Editable":true,
         },
@@ -372,6 +392,7 @@ getCategorias(){
         "Moneda":true,
         "idPadre":'02',
         "Orden":8,
+        "OrdenData":8,
         "Editable":false,
         },
         {
@@ -380,6 +401,7 @@ getCategorias(){
         "Moneda":true,
         "idPadre":'02',
         "Orden":9,
+        "OrdenData":9,
         "Editable":false,
         },
         {
@@ -388,75 +410,75 @@ getCategorias(){
         "Moneda":false,
         "idPadre":'02',
         "Orden":10,
-        "Editable":false,
-        },
-        {
-        "Nombre":"Margen de Operación",
-        "id":'02-11',
-        "Moneda":true,
-        "idPadre":'02',
-        "Orden":11,
+        "OrdenData":10,
         "Editable":false,
         },
         {
         "Nombre":"(-) Intereses",
+        "id":'02-11',
+        "Moneda":true,
+        "idPadre":'02',
+        "Simbolo":2,
+        "Orden":11,
+        "OrdenData":11,
+        "Editable":true,
+        },
+        {
+        "Nombre":"(-) Impuestos",
         "id":'02-12',
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":2,
         "Orden":12,
-        "Editable":true,
-        },
-        {
-        "Nombre":"(-) Impuestos",
-        "id":'02-13',
-        "Moneda":true,
-        "idPadre":'02',
-        "Simbolo":2,
-        "Orden":13,
+        "OrdenData":12,
         "Editable":true,
         },
         {
         "Nombre":"(-) Depreciación",
-        "id":'02-14',
+        "id":'02-13',
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":2,
-        "Orden":14,
+        "OrdenData":13,
+        "Orden":13,
         "Editable":true,
         },
         {
         "Nombre":"(-) Amortización",
-        "id":'02-15',
+        "id":'02-14',
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":2,
-        "Orden":15,
+        "OrdenData":14,
+        "Orden":14,
         "Editable":true,
         },
         {
         "Nombre":"(=) Utilidad Neta",
-        "id":'02-16',
+        "id":'02-15',
         "Moneda":true,
         "idPadre":'02',
-        "Orden":16,
+        "Orden":15,
+        "OrdenData":15,
         "Editable":false,
         },
         {
         "Nombre":"Margen Neto",
-        "id":'02-17',
+        "id":'02-16',
         "idPadre":'02',
         "Moneda":false,
-        "Orden":17,
+        "Orden":16,
+        "OrdenData":16,
         "Editable":false,
         },
         {
         "Nombre":"Gasto en Gente",
-        "id":'02-18',
+        "id":'02-17',
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":1,
-        "Orden":18,
+        "OrdenData":17,
+        "Orden":17,
         "Editable":true,
         },
       ],
@@ -471,6 +493,7 @@ getCategorias(){
     CategoriasData.push({
       "Nombre": 'Efectivo Inicial',
       "id": "03-01",
+      "idPadre":'03',
       "Orden": CategoriasData.length + 1,
       "Editable": false,
     });
@@ -480,6 +503,8 @@ getCategorias(){
         CategoriasData.push({
           "Nombre": categ.Nombre,
           "id": categ.id,
+          "Moneda":true,
+          "idPadre":'03',
           "Orden": CategoriasData.length + 1,
           "Editable": false,
         });
@@ -512,11 +537,6 @@ getCategorias(){
           });
   
         }
-        
-        
-        
-        
-        
         
       });
       CategoriasData.push({
@@ -1154,12 +1174,14 @@ getCategorias(){
         "id":'12-14',
         "idPadre":'12',
         "Orden":14,
+        "Moneda":false,
         "Editable":false,
         },
         {
         "Nombre":"Punto de Equilibrio Mensual",
         "id":'12-15',
         "idPadre":'12',
+        "Moneda":true,
         "Orden":15,
         "Editable":false,
         },
@@ -1168,6 +1190,7 @@ getCategorias(){
         "id":'12-16',
         "idPadre":'12',
         "Orden":16,
+        "Moneda":true,
         "Editable":false,
         },
       ],
@@ -1184,6 +1207,7 @@ getCategorias(){
         "Nombre":"Días de Cobro",
         "id":'13-01',
         "idPadre":'13',
+        "Moneda":false,
         "Orden":1,
         "Editable":false,
         },
@@ -1191,6 +1215,7 @@ getCategorias(){
         "Nombre":"Días de Inventario",
         "id":'13-02',
         "idPadre":'13',
+        "Moneda":false,
         "Orden":2,
         "Editable":false,
         },
@@ -1198,6 +1223,7 @@ getCategorias(){
         "Nombre":"Días de Pago",
         "id":'13-03',
         "idPadre":'13',
+        "Moneda":false,
         "Orden":3,
         "Editable":false,
         },
@@ -1205,6 +1231,7 @@ getCategorias(){
         "Nombre":"Días de recuperación del efectivo",
         "id":'13-04',
         "idPadre":'13',
+        "Moneda":false,
         "Orden":4,
         "Editable":false,
         }
@@ -1221,6 +1248,7 @@ getCategorias(){
         {
         "Nombre":"ROI en gente",
         "id":'14-01',
+        "Moneda":false,
         "idPadre":'14',
         "Orden":1,
         "Editable":false,
@@ -1228,6 +1256,7 @@ getCategorias(){
         {
         "Nombre":"ROI de Marketing",
         "id":'14-02',
+        "Moneda":false,
         "idPadre":'14',
         "Orden":2,
         "Editable":false,
@@ -1235,6 +1264,7 @@ getCategorias(){
         {
         "Nombre":"ROI de activos operativos",
         "id":'14-03',
+        "Moneda":false,
         "idPadre":'14',
         "Orden":3,
         "Editable":false,
@@ -1253,6 +1283,7 @@ getCategorias(){
         "Nombre":"Dinero dejado sobre / levantado de la mesa",
         "id":'15-01',
         "idPadre":'15',
+        "Moneda":true,
         "Orden":1,
         "Editable":false,
         },
@@ -1260,6 +1291,7 @@ getCategorias(){
         "Nombre":"Liquidez",
         "id":'15-02',
         "idPadre":'15',
+        "Moneda":false,
         "Orden":2,
         "Editable":false,
         },
@@ -1267,14 +1299,17 @@ getCategorias(){
         "Nombre":"Valor del Capital de trabajo",
         "id":'15-03',
         "idPadre":'15',
+        "Moneda":true,
         "Orden":3,
         "Editable":false,
         }
       ],
       },
     )
-    console.log('CatalogoElementos', this.CatalogoElementos);
+
     this.construirCabecera()
+
+    console.log('CatalogoElementos', this.CatalogoElementos)
 
     setTimeout(() => {
       const table = this.containerTable.nativeElement;
@@ -1310,8 +1345,205 @@ getCategorias(){
 
   })
 }
+
+obtenerRegistrosStoreManagerRecapt(){
+  this.conS.obtenerRegistrosStoreManagerRecapt(this.usuario.idEmpresa).subscribe((resp:any)=>{
+    this.Registros=resp
+    console.log('Registros',this.Registros)
+   
+ 
+    
+  })
+}
 getMonthName(Fecha: string) {
   return Number(Fecha.substring(5).substring(0, 2));
+}
+
+construirData(){
+  this.DatosElementos=[]
+
+
+  this.CatalogoElementos.forEach((catalogo:any) => {
+
+    this.Cabecera.filter((cabecera:any)=>cabecera.Tipo!=1).forEach((cab:any) => {
+
+      const copiaCatalogoElementos = [...catalogo.Elementos]
+      .sort((a: any, b: any) => a.OrdenData - b.OrdenData);
+      copiaCatalogoElementos.forEach((elemento:any) => {
+        let RegistrosBySeccion:any=[]
+        RegistrosBySeccion=this.Registros.filter((reg:any)=>reg.idCatalogo==elemento.idPadre)
+        const key = `${cab.Anio}-${cab.NumMes}-${elemento.id}`; 
+        if (!this.DatosElementos[key]) {
+          this.DatosElementos[key] =[];
+        }
+        if(elemento.Editable==true){
+          this.DatosElementos[`${key}`].push({ 
+            "Valor":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion),
+            "TipoNumero":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)<0 ? 1 : 2
+          })
+        }
+        else {
+          //Mercadotecnia
+        if(catalogo.id=='01'){ 
+          if(elemento.id=='01-02'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-03`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-01`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
+              "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
+            })
+          }
+         else if(elemento.id=='01-05'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-03`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-04`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
+              "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
+            })
+          }
+         else if(elemento.id=='01-07'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-05`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-06`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
+              "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
+            })
+          }
+         else if(elemento.id=='01-08'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-07`]?.[0]?.Valor
+            let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-05`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor2 == 0 || Valor3 == 0  ? 0 :(Valor1/Valor2)/Valor3,
+              "TipoNumero":(Valor2 == 0 || Valor3 == 0  ? 0 :(Valor1/Valor2)/Valor3)<0 ? 1 : 2
+            })
+          }
+
+        }
+        //Estado de Resultados
+      if(catalogo.id=='02'){
+          if(elemento.id=='02-01'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor,
+              "TipoNumero":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor<1 ? 1 : 2
+            })
+        }
+        else if(elemento.id=='02-03'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor,
+              "TipoNumero":(
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor 
+                +
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor)<0 ? 1 : 2
+            })
+        }
+        else if(elemento.id=='02-04'){
+          let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-03`]?.[0]?.Valor
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
+              "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
+            })
+        }
+
+        else if(elemento.id=='02-08'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-05`]?.[0]?.Valor +
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-06`]?.[0]?.Valor +
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-07`]?.[0]?.Valor,
+            "TipoNumero":(
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-05`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-06`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-07`]?.[0]?.Valor)<0 ? 1 : 2
+          })
+        }
+
+        else if(elemento.id=='02-09'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-03`]?.[0]?.Valor +
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor,
+            "TipoNumero":(
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-03`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor)<0 ? 1 : 2
+          })
+        }
+
+        else if(elemento.id=='02-10'){
+          let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-09`]?.[0]?.Valor
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
+              "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
+            })
+        }
+
+        else if(elemento.id=='02-15'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-09`]?.[0]?.Valor +
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-10`]?.[0]?.Valor +
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-11`]?.[0]?.Valor +
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-12`]?.[0]?.Valor +
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-13`]?.[0]?.Valor + 
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-14`]?.[0]?.Valor,
+            "TipoNumero":(
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-09`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-10`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-11`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-12`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-13`]?.[0]?.Valor + 
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-14`]?.[0]?.Valor)<0 ? 1 : 2
+
+          })
+        }
+
+        else if(elemento.id=='02-16'){
+          let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-15`]?.[0]?.Valor
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
+              "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
+            })
+        }
+
+
+         }
+
+
+        }
+
+
+
+
+      })
+
+    
+    })
+  
+  })
+  this.cargando=false
+  console.log('DatosElementos',this.DatosElementos)
+}
+
+
+getValorElemento(idElemento:string,Anio:any,NumMes:any,Registros:any){
+
+  let RegistroEncontrado:any=[]
+  RegistroEncontrado=Registros.filter((meta:any)=>
+  meta.AnioRegistro==Anio && 
+  meta.NumMesRegistro==NumMes && 
+  meta.idElemento==idElemento)
+  if(RegistroEncontrado.length>0){
+    return RegistroEncontrado[0].Valor
+  }
+  else {
+    return 0
+  }
+
 }
 
 
@@ -1320,9 +1552,6 @@ guardarRegistro(elemento:any,Valor:any,Cab:any){
   let Fecha:any
   Fecha=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
   let ValorRegisro:any=0
-
-
-
   if(elemento.Simbolo==2)
     {
     ValorRegisro=Number(Valor.replace(/[\s$,\-]/g, ''))*-1

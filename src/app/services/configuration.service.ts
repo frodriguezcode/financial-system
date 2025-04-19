@@ -750,6 +750,12 @@ async guardarOModificarRegistro(Registro: any) {
   }
 }
 
+obtenerRegistrosStoreManagerRecapt(idEmpresa:any) {
+  return this.afs
+    .collection('StoreManagerRecapt',(ref)=>ref.where('idEmpresa','==',idEmpresa))
+    .valueChanges();
+}
+
 
 
 obtenerValoresPlanes(idEmpresa:any): Observable<any[]> {

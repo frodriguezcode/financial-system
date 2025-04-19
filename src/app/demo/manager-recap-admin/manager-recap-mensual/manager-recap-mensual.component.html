@@ -88,10 +88,11 @@
                   *ngFor="let cab of Cabecera">
                     <td 
                       class="text-center"
+                      [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}"
                       *ngIf="cab.Mostrar==true 
                       && cab.Tipo!=1 
                       && element.Editable==false">
-                      0 <!-- Aquí puedes poner el valor correspondiente -->
+                      {{DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor | number}}
                     </td>
                     <td 
                       class="text-center"
@@ -105,6 +106,7 @@
                       (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
                       #Valor
                       type="text" 
+                      [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor | number"
                       style="color: black;"
                       class="form-control text-center" 
                       >
@@ -112,6 +114,7 @@
                       *ngIf="element.Simbolo==2"
                       (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
                       #Valor
+                      [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor | number"
                       type="text" 
                       style="color: red;"
                       class="form-control text-center" 
