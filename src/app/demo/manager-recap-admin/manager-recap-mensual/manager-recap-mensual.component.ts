@@ -24,6 +24,9 @@ export default class ManagerRecapMensualComponent implements OnInit {
   Categorias:any=[]
   CatalogoElementos:any=[]
   Registros:any=[]
+  RegistrosFlujoEfectivo:any=[]
+  RegistrosSaldosIniciales:any=[]
+  RegistrosSaldosFinalesMensuales:any=[]
   Meses:any=[]
   MesesSeleccionados:any=[]
   Anios:any=[]
@@ -132,7 +135,7 @@ export default class ManagerRecapMensualComponent implements OnInit {
     },
   
   ]
-this.getCategorias()
+
 
 
 
@@ -187,7 +190,7 @@ construirCabecera(){
 
   })
   this.construirData()
-
+  this.sincronizarBarra()
   console.log('Cabecera',this.Cabecera)
 }
 
@@ -504,6 +507,7 @@ getCategorias(){
           "Nombre": categ.Nombre,
           "id": categ.id,
           "Moneda":true,
+          "Tipo":'Abuelo',
           "idPadre":'03',
           "Orden": CategoriasData.length + 1,
           "Editable": false,
@@ -527,6 +531,7 @@ getCategorias(){
                 "Nombre": element.Nombre,
                 "id": element.id,
                 "Moneda":true,
+                "Tipo":'Padre',
                 "idPadre":'03',
                 "idAbuelo": categ.id,
                 "Orden": CategoriasData.length + 1,
@@ -1311,45 +1316,127 @@ getCategorias(){
 
     console.log('CatalogoElementos', this.CatalogoElementos)
 
-    setTimeout(() => {
-      const table = this.containerTable.nativeElement;
-      const topScroll = this.scrollTopSync.nativeElement;
-      const inner = this.scrollInner.nativeElement;
-    
-      // Actualiza el ancho de la barra superior
-      // inner.style.width = table.scrollWidth + 'px';
-      inner.style.width = this.dataTable.nativeElement.scrollWidth + 'px';
-    
-      let isSyncingTop = false;
-      let isSyncingBottom = false;
-    
-      topScroll.addEventListener('scroll', () => {
-        if (!isSyncingBottom) {
-          isSyncingTop = true;
-          table.scrollLeft = topScroll.scrollLeft;
-        }
-        isSyncingBottom = false;
-      });
-    
-      table.addEventListener('scroll', () => {
-        if (!isSyncingTop) {
-          isSyncingBottom = true;
-          topScroll.scrollLeft = table.scrollLeft;
-        }
-        isSyncingTop = false;
-      });
-    }, 300);
-    
+
+    this.sincronizarBarra()
     
 
 
   })
 }
 
+sincronizarBarra(){
+  setTimeout(() => {
+    const table = this.containerTable.nativeElement;
+    const topScroll = this.scrollTopSync.nativeElement;
+    const inner = this.scrollInner.nativeElement;
+  
+    // Actualiza el ancho de la barra superior
+    // inner.style.width = table.scrollWidth + 'px';
+    inner.style.width = this.dataTable.nativeElement.scrollWidth + 'px';
+  
+    let isSyncingTop = false;
+    let isSyncingBottom = false;
+  
+    topScroll.addEventListener('scroll', () => {
+      if (!isSyncingBottom) {
+        isSyncingTop = true;
+        table.scrollLeft = topScroll.scrollLeft;
+      }
+      isSyncingBottom = false;
+    });
+  
+    table.addEventListener('scroll', () => {
+      if (!isSyncingTop) {
+        isSyncingBottom = true;
+        topScroll.scrollLeft = table.scrollLeft;
+      }
+      isSyncingTop = false;
+    });
+  }, 300);
+}
+
+setTrim(MesRegistro:any){
+
+  if(MesRegistro=='Enero' || MesRegistro=='Febrero' || MesRegistro=='Marzo' ){
+      return 1
+  }
+  else if(MesRegistro=='Abril' || MesRegistro=='Mayo' || MesRegistro=='Junio' ){
+      return 2
+  }
+  else if(MesRegistro=='Julio' || MesRegistro=='Agosto' || MesRegistro=='Septiembre'){
+      return 3
+  }
+  else if(MesRegistro=='Octubre' || MesRegistro=='Noviembre' || MesRegistro=='Diciembre'){
+      return 4
+  }
+  else {
+    return 0
+  }
+    
+  
+  }
+  setSemestre(NumMes:any){
+  
+  if(NumMes>=6){
+      return 2
+  }
+  else if(NumMes<6){
+      return 1
+  }
+  else {
+    return 0
+  }
+    
+  
+  }
+
 obtenerRegistrosStoreManagerRecapt(){
-  this.conS.obtenerRegistrosStoreManagerRecapt(this.usuario.idEmpresa).subscribe((resp:any)=>{
-    this.Registros=resp
-    console.log('Registros',this.Registros)
+  let Subscribe:Subscription
+  Subscribe= this.conS.obtenerRegistrosStoreManagerRecapt(this.usuario.idEmpresa).subscribe((resp:any)=>{
+    Subscribe.unsubscribe()
+    this.Registros=resp[0]
+    resp[1].filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+      let _Registro={
+        "Activo":element.Activo,
+        "AnioRegistro":element.AnioRegistro,
+        "Trimestre":this.setTrim(element.MesRegistro), 
+        "Semestre":this.setSemestre(element.NumMes),
+        "Cuenta":element.Cuenta,
+        "Editando":element.Editando,
+        "Elemento":element.Elemento,
+        "FechaRegistro":element.FechaRegistro,
+        "MesRegistro":element.MesRegistro,
+        "Nuevo":element.Nuevo,
+        "NumMes":element.NumMes,
+        "NumSemana":element.NumSemana,
+        "Orden":element.Orden,
+        "Semana":element.Semana,
+        "Valor":element.Valor,
+        "id":element.id,
+        "Tipo":element.Tipo || '',
+        "idCategoria":element.idCategoria,
+        "idEmpresa":element.idEmpresa,
+        "idFlujo":element.idFlujo,
+        "idUsuario":element.idUsuario,
+        "idMatriz":element.idMatriz,
+        "idSocioNegocio":element.idSocioNegocio,
+        "idSucursal":element.idSucursal,
+        "idProyecto":element.idProyecto,
+        "NombreElemento":element.Elemento.label || '',
+        "idElemento":element.Elemento.id || '',
+        "NumCuenta":element.Cuenta.Cuenta || '',
+        "CategoriaNombre":element.idCategoria.Nombre || '',
+        "SocioNegocio":element.idSocioNegocio.Nombre || '',
+
+      }
+      this.RegistrosFlujoEfectivo.push(_Registro)
+      });
+
+
+    console.log('RegistrosFlujoEfectivo',this.RegistrosFlujoEfectivo)
+    this.RegistrosSaldosIniciales=resp[2]
+    console.log('RegistrosSaldosIniciales',this.RegistrosSaldosIniciales)
+    this.getCategorias()
    
  
     
@@ -1359,6 +1446,132 @@ getMonthName(Fecha: string) {
   return Number(Fecha.substring(5).substring(0, 2));
 }
 
+
+obtenerValorSaldoInicialMensual(NumMes:any,Anio:any){
+  let _ValorInicialMensual:any=[]
+  _ValorInicialMensual=this.RegistrosSaldosIniciales.
+  filter((data:any)=>data.NumMes==NumMes && data.AnioRegistro==Anio)
+  if(_ValorInicialMensual.length>0){
+      if(_ValorInicialMensual[0].Valor>0){
+        return _ValorInicialMensual[0].Valor
+      }
+      else {
+        return 0
+      }
+  }
+
+  else {
+
+
+
+    return 0 
+  }
+}
+
+getDataFlujoOperativoMensual(Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>
+  (registro.idCategoria.Orden==2
+  || registro.idCategoria.Orden==3)
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+} 
+
+getDataFlujoInversionMensual(Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>
+  (registro.idCategoria.Orden==5
+  || registro.idCategoria.Orden==6)
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+
+getDataFlujoFinancieroMensual(Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>
+  (registro.idCategoria.Orden==9
+  || registro.idCategoria.Orden==8)
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+
+
+
+getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>registro
+  .idCategoria.id==idCategoria
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+
+getDataFlujoLibreMensual(Mes:any,Anio:any){
+  return this.getDataFlujoOperativoMensual(Mes,Anio) 
+  + this.getDataFlujoInversionMensual(Mes,Anio)
+  + this.getDataFlujoFinancieroMensual(Mes,Anio)
+}
+
+getValorSaldoFinal(Mes:any,Anio:any){
+
+  return  this.obtenerValorSaldoInicialMensual(Mes,Anio) + 
+  this.getDataFlujoLibreMensual(Mes,Anio)
+
+}
 construirData(){
   this.DatosElementos=[]
 
@@ -1377,10 +1590,32 @@ construirData(){
           this.DatosElementos[key] =[];
         }
         if(elemento.Editable==true){
-          this.DatosElementos[`${key}`].push({ 
-            "Valor":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion),
-            "TipoNumero":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)<0 ? 1 : 2
-          })
+          if(elemento.id=='04-01'){
+            this.DatosElementos[`${key}`].push({ 
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? 
+              this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor
+              ,
+              "TipoNumero":
+              (
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor
+              )
+              <0 ? 1 : 2,
+              "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? false : true
+            })
+
+          } 
+          else {
+            this.DatosElementos[`${key}`].push({ 
+              "Valor":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion),
+              "TipoNumero":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)<0 ? 1 : 2,
+              "Lectura":false
+            })
+
+          }
         }
         else {
           //Mercadotecnia
@@ -1421,7 +1656,7 @@ construirData(){
 
         }
         //Estado de Resultados
-      if(catalogo.id=='02'){
+        if(catalogo.id=='02'){
           if(elemento.id=='02-01'){
             this.DatosElementos[`${key}`].push({              
               "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor,
@@ -1511,10 +1746,120 @@ construirData(){
         }
 
 
-         }
+        }
+        //Flujo de Efectivo
+        if(catalogo.id=='03'){
+          if(elemento.id=='03-01'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio),
+              "TipoNumero":(this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
+            })
 
+            this.RegistrosSaldosFinalesMensuales.push({
+              "key":key,
+              "Anio":cab.Anio,
+              "Valor":this.getValorSaldoFinal(cab.NumMes,cab.Anio) || 0
+            })
+          }
+        else if(elemento.id=='03-12'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":this.getValorSaldoFinal(cab.NumMes,cab.Anio),
+              "TipoNumero":(this.getValorSaldoFinal(cab.NumMes,cab.Anio))<0 ? 1 : 2
+            })
+        }
+        //Abuelos
+        else if(elemento.Tipo=='Abuelo'){
+
+         if(elemento.id=='EESGPM4hWXvDlXSRnCwA'){
+              this.DatosElementos[`${key}`].push({              
+                "Valor":this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio),
+                "TipoNumero":(this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
+              })
+          }
+
+        else if(elemento.id=='GMzSuF04XQBsPmAkIB2C'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio),
+              "TipoNumero":(this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
+            })
+        }
+
+        else if(elemento.id=='psmpY6iyDJNkW7AKFXgK'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio),
+              "TipoNumero":(this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
+            })
+        }
+        else if(elemento.id=='VmmQpdpunMTqkoSjhzzj'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":this.getDataFlujoLibreMensual(cab.NumMes,cab.Anio),
+              "TipoNumero":(this.getDataFlujoLibreMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
+            })
+        }
+
+        } 
+
+        //Padres
+
+        else if(elemento.Tipo=='Padre'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":this.getValorCategoriaMensual(elemento.id,cab.NumMes,cab.Anio),
+            "TipoNumero":(this.getValorCategoriaMensual(elemento.id,cab.NumMes,cab.Anio))<0 ? 1 : 2
+          })
+        } 
+
+
+
+
+    
 
         }
+
+        //Cuentas por cobrar
+        if(catalogo.id=='04'){
+           if(elemento.id=='04-04'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-01`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-02`]?.[0]?.Valor+
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-03`]?.[0]?.Valor,
+              "TipoNumero":(
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-01`]?.[0]?.Valor +
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-02`]?.[0]?.Valor+
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-03`]?.[0]?.Valor)<0 ? 1 : 2
+            })
+          }
+          
+          else if(elemento.id=='04-05'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-04`]?.[0]?.Valor -
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-01`]?.[0]?.Valor,
+              "TipoNumero":(
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-04`]?.[0]?.Valor -
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-01`]?.[0]?.Valor)<0 ? 1 : 2
+            })
+          }
+          else if(elemento.id=='04-06'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-04`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-02`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":(Valor2/30) == 0   ? 0 :(Valor1/(Valor2/30)),
+              "TipoNumero":(Valor2/30) == 0   ? 0 :(Valor1/(Valor2/30))<0 ? 1 : 2
+            })
+          }
+          else if(elemento.id=='04-07'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-06`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-02`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":(30-Valor1)*(Valor2/30),
+              "TipoNumero":((30-Valor1)*(Valor2/30))<0 ? 1 : 2
+            })
+          }
+        
+        }
+
+       }
 
 
 
@@ -1572,7 +1917,9 @@ guardarRegistro(elemento:any,Valor:any,Cab:any){
   }
 
   else {
-    let Registro = 
+
+   try{
+       let Registro = 
     {
       "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
       "MesRegistro":Cab.Mes,
@@ -1588,9 +1935,33 @@ guardarRegistro(elemento:any,Valor:any,Cab:any){
     console.log('elemento',elemento)
     console.log('Registro',Registro)
 
+    // Buscar si ya existe en el arreglo
+    const index = this.Registros.findIndex((reg:any) =>
+     reg.AnioRegistro === Cab.Anio &&
+     reg.NumMesRegistro === Cab.NumMes &&
+     reg.idElemento === elemento.id
+     );
+ 
+      if (index !== -1) {
+     // Si existe, actualizar
+      this.Registros[index] = Registro;
+      } 
+      else {
+     // Si no existe, agregar
+        this.Registros.push(Registro);
+      }
+    this.construirData()
+    
     this.conS.guardarOModificarRegistro(Registro).then(resp=>{
       this.toastr.success('Guardado', '¡Exito!');
     })
+ 
+
+   } 
+   catch(error){
+
+   }
+
 
   }
 

@@ -751,10 +751,21 @@ async guardarOModificarRegistro(Registro: any) {
 }
 
 obtenerRegistrosStoreManagerRecapt(idEmpresa:any) {
-  return this.afs
-    .collection('StoreManagerRecapt',(ref)=>ref.where('idEmpresa','==',idEmpresa))
-    .valueChanges();
+
+  const StoreManagerRecapt$ = this.afs.collection('StoreManagerRecapt',(ref)=>ref.where('idEmpresa','==',idEmpresa)).valueChanges();
+  const Registros$ = this.afs.collection('Registro',(ref)=>ref.where('idEmpresa','==',idEmpresa)).valueChanges();
+  const SaldosIniciales$ = this.afs.collection('SaldosIniciales',(ref)=>ref.where('idEmpresa','==',idEmpresa)).valueChanges();
+
+  return combineLatest([ StoreManagerRecapt$,Registros$,SaldosIniciales$  ]).pipe(
+    map(([RegistrosSMR, Registros,SaldosIniciales]) => {
+  
+      return [RegistrosSMR, Registros,SaldosIniciales];
+    })
+  );
+
 }
+
+
 
 
 

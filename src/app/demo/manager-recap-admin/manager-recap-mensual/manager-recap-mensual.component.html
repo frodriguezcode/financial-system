@@ -106,8 +106,9 @@
                       (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
                       #Valor
                       type="text" 
+                      [readOnly]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true"
                       [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor | number"
-                      style="color: black;"
+                      [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true?{'background-color': 'gray','color': 'white'} : {'background-color': 'white','color': 'black'}"
                       class="form-control text-center" 
                       >
                       <input 
@@ -116,7 +117,8 @@
                       #Valor
                       [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor | number"
                       type="text" 
-                      style="color: red;"
+                      [readOnly]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true"
+                      [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true?{'background-color': 'gray','color': 'red'} : {'background-color': 'white','color': 'red'}"
                       class="form-control text-center" 
                       >
                     </td>
