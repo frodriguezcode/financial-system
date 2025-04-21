@@ -4,6 +4,10 @@
 // Pago a proveedores / Eficiencia y control
 // % de los ingresos para pagar a proveedores
 // Egresos de Operación (%)
+
+// Agregar (-) Pago a proveedores a Cuentas Padre
+// % de los ingresos para operar
+// % de los ingresos para pagar a proveedores
 [
     {
         "Nombre": "Mercadotecnia",
