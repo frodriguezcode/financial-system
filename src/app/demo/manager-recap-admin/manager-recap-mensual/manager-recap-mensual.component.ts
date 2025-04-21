@@ -712,54 +712,64 @@ getCategorias(){
       "Mostrar":true,
       "Elementos":[
         {
-        "Nombre":"Saldo inicial",
-        "id":'06-01',
-        "Moneda":true,
-        "Simbolo":1,
-        "idPadre":'06',
-        "Orden":1,
-        "Editable":true,
-        },
-        {
-        "Nombre":"(+) Compras",
-        "id":'06-02',
-        "Moneda":true,
-        "idPadre":'06',
-        "Orden":2,
-        "Editable":false,
-        },
-        {
-        "Nombre":"(=) Saldo final",
-        "id":'06-03',
-        "Moneda":true,
-        "idPadre":'06',
-        "Orden":3,
-        "Editable":false,
-        },
-        {
-        "Nombre":"Variación",
-        "id":'06-04',
-        "Moneda":true,
-        "idPadre":'06',
-        "Orden":4,
-        "Editable":false,
-        },
-        {
-        "Nombre":"Dias de pago",
-        "id":'06-05',
-        "Moneda":false,
-        "idPadre":'06',
-        "Orden":5,
-        "Editable":false,
-        },
-        {
-        "Nombre":"Cash dejado sobre / levantado de la mesa",
-        "id":'06-06',
-        "Moneda":true,
-        "idPadre":'06',
-        "Orden":6,
-        "Editable":false,
-        }
+          "Nombre": "Saldo inicial",
+          "id": "06-01",
+          "Moneda": true,
+          "Simbolo": 1,
+          "idPadre": "06",
+          "Orden": 1,
+          "Editable": true
+      },
+      {
+          "Nombre": "(+) Compras",
+          "id": "06-02",
+          "Moneda": true,
+          "Simbolo": 1,
+          "idPadre": "06",
+          "Orden": 2,
+          "Editable": false
+      },
+      {
+          "Nombre": "(-) Pagos",
+          "id": "06-03",
+          "Moneda": true,
+          "idPadre": "06",
+          "Simbolo": 2,
+          "Orden": 3,
+          "Editable": false
+      },
+      {
+          "Nombre": "(=) Saldo final",
+          "id": "06-04",
+          "Moneda": true,
+          "idPadre": "06",
+          "Orden": 4,
+          "Editable": false
+      },
+      {
+          "Nombre": "Variación",
+          "id": "06-05",
+          "Moneda": true,
+          "idPadre": "06",
+          "Orden": 5,
+          "Editable": false
+      },
+      {
+          "Nombre": "Dias de pago",
+          "id": "06-06",
+          "Moneda": false,
+          "idPadre": "06",
+          "Orden": 6,
+          "Editable": false
+      },
+      {
+          "Nombre": "Cash dejado sobre / levantado de la mesa",
+          "id": "06-07",
+          "Moneda": true,
+          "idPadre": "06",
+          "Orden": 7,
+          "Editable": false
+      }
   
   
       ],
@@ -1069,6 +1079,7 @@ getCategorias(){
         "Moneda":true,
         "idPadre":'12',
         "Orden":1,
+        "OrdenData":1,
         "Editable":false,
         },
         {
@@ -1077,6 +1088,7 @@ getCategorias(){
         "Moneda":true,
         "idPadre":'12',
         "Orden":2,
+        "OrdenData":2,
         "Editable":false,
         },
         {
@@ -1085,6 +1097,7 @@ getCategorias(){
         "Moneda":false,
         "idPadre":'12',
         "Orden":3,
+        "OrdenData":3,
         "Editable":false,
         },
         {
@@ -1093,6 +1106,7 @@ getCategorias(){
         "Moneda":true,
         "idPadre":'12',
         "Orden":4,
+        "OrdenData":4,
         "Editable":false,
         },
         {
@@ -1101,6 +1115,7 @@ getCategorias(){
         "Moneda":false,
         "idPadre":'12',
         "Orden":5,
+        "OrdenData":11,
         "Editable":false,
         },
         {
@@ -1108,6 +1123,7 @@ getCategorias(){
         "id":'12-06',
         "idPadre":'12',
         "Moneda":false,
+        "OrdenData":6,
         "Orden":6,
         "Editable":false,
         },
@@ -1115,6 +1131,7 @@ getCategorias(){
         "Nombre":"Gastos de operación totales ($)",
         "id":'12-07',
         "Moneda":true,
+        "OrdenData":7,
         "idPadre":'12',
         "Orden":7,
         "Editable":false,
@@ -1125,6 +1142,7 @@ getCategorias(){
         "Moneda":true,
         "idPadre":'12',
         "Orden":8,
+        "OrdenData":8,
         "Editable":false,
         },
         {
@@ -1133,6 +1151,7 @@ getCategorias(){
         "Moneda":false,
         "idPadre":'12',
         "Orden":9,
+        "OrdenData":9,
         "Editable":false,
         },
         {
@@ -1140,6 +1159,7 @@ getCategorias(){
         "id":'12-10',
         "idPadre":'12',
         "Orden":10,
+        "OrdenData":10,
         "Editable":false,
         },
         {
@@ -1147,6 +1167,7 @@ getCategorias(){
         "id":'12-11',
         "idPadre":'12',
         "Orden":11,
+        "OrdenData":5,
         "Moneda":false,
         "Editable":false,
         },
@@ -1155,6 +1176,7 @@ getCategorias(){
         "id":'12-12',
         "idPadre":'12',
         "Orden":12,
+        "OrdenData":12,
         "Moneda":false,
         "Editable":false,
         },
@@ -1163,6 +1185,7 @@ getCategorias(){
         "id":'12-13',
         "idPadre":'12',
         "Orden":13,
+        "OrdenData":13,
         "Moneda":false,
         "Editable":false,
         },
@@ -1171,30 +1194,34 @@ getCategorias(){
         "id":'12-14',
         "idPadre":'12',
         "Orden":14,
+        "OrdenData":14,
         "Moneda":false,
         "Editable":false,
         },
         {
         "Nombre":"Inversión en Marketing",
-        "id":'12-14',
+        "id":'12-15',
         "idPadre":'12',
-        "Orden":14,
+        "Orden":15,
+        "OrdenData":15,
         "Moneda":false,
         "Editable":false,
         },
         {
         "Nombre":"Punto de Equilibrio Mensual",
-        "id":'12-15',
+        "id":'12-16',
         "idPadre":'12',
         "Moneda":true,
-        "Orden":15,
+        "Orden":16,
+        "OrdenData":16,
         "Editable":false,
         },
         {
         "Nombre":"Punto de Equilibrio Semanal",
-        "id":'12-16',
+        "id":'12-17',
         "idPadre":'12',
-        "Orden":16,
+        "Orden":17,
+        "OrdenData":17,
         "Moneda":true,
         "Editable":false,
         },
@@ -1243,7 +1270,7 @@ getCategorias(){
       ],
       },
 
-      // Actividad y gestión
+      // Retorno y rentabilidad
       {          
       "Nombre":"Retorno y rentabilidad",
       "id":'14',
@@ -1590,24 +1617,246 @@ construirData(){
           this.DatosElementos[key] =[];
         }
         if(elemento.Editable==true){
-          if(elemento.id=='04-01'){
-            this.DatosElementos[`${key}`].push({ 
-              "Valor":
-              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? 
-              this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
-              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor
-              ,
-              "TipoNumero":
-              (
+        if(elemento.id=='04-01'){
+
+            if(cab.NumMes==1){
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
+                this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+
+            }
+            else {
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? 
                 this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+            }
+
+
+        } 
+        else if(elemento.id=='05-01'){
+
+          if(cab.NumMes==1){
+            this.DatosElementos[`${key}`].push({ 
+              "Valor":
+              this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor ==undefined ? 
+              this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+              this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor
+              ,
+              "TipoNumero":
+              (
+                this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor
               )
               <0 ? 1 : 2,
-              "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? false : true
+              "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor ==undefined ? false : true
             })
 
-          } 
+          }
+          else {
+            this.DatosElementos[`${key}`].push({ 
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor ==undefined ? 
+              this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor
+              ,
+              "TipoNumero":
+              (
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor
+              )
+              <0 ? 1 : 2,
+              "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor ==undefined ? false : true
+            })
+
+          }
+
+        } 
+        else if(elemento.id=='06-01'){
+
+            if(cab.NumMes==1){
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
+                this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+  
+            }
+            else {
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+  
+            }
+  
+        } 
+        else if(elemento.id=='08-01'){
+
+            if(cab.NumMes==1){
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
+                this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+  
+            }
+            else {
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+  
+            }
+  
+        } 
+        else if(elemento.id=='09-01'){
+
+            if(cab.NumMes==1){
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
+                this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+  
+            }
+            else {
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+  
+            }
+  
+        } 
+        else if(elemento.id=='10-01'){
+
+            if(cab.NumMes==1){
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
+                this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+  
+            }
+            else {
+              this.DatosElementos[`${key}`].push({ 
+                "Valor":
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor
+                ,
+                "TipoNumero":
+                (
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor
+                )
+                <0 ? 1 : 2,
+                "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor ==undefined ? false : true
+              })
+  
+            }
+  
+        } 
           else {
             this.DatosElementos[`${key}`].push({ 
               "Valor":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion),
@@ -1660,7 +1909,7 @@ construirData(){
           if(elemento.id=='02-01'){
             this.DatosElementos[`${key}`].push({              
               "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor,
-              "TipoNumero":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor<1 ? 1 : 2
+              "TipoNumero":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor<0 ? 1 : 2
             })
         }
         else if(elemento.id=='02-03'){
@@ -1858,7 +2107,519 @@ construirData(){
           }
         
         }
+        // Inventarios
+        if(catalogo.id=='05'){
+          if(elemento.id=='05-03'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor,
+              "TipoNumero":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor<0 ? 1 : 2
+            })
+          }
 
+         else if(elemento.id=='05-04'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-01`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-02`]?.[0]?.Valor+
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-03`]?.[0]?.Valor
+              ,
+              "TipoNumero":
+              (
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-01`]?.[0]?.Valor +
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-02`]?.[0]?.Valor+
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-03`]?.[0]?.Valor
+              )<0 ? 1 : 2
+            })
+          }
+
+          else if(elemento.id=='05-05'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-04`]?.[0]?.Valor -
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-01`]?.[0]?.Valor,
+              "TipoNumero":(
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-04`]?.[0]?.Valor -
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-01`]?.[0]?.Valor)<0 ? 1 : 2
+            })
+          }
+
+          else if(elemento.id=='05-06'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-04`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-03`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":(Valor2*-1) == 0   ? 0 :(Valor1/(Valor2*-1))*30,
+              "TipoNumero":((Valor2*-1) == 0   ? 0 :(Valor1/(Valor2*-1))*30)<0 ? 1 : 2
+            })
+          }
+          else if(elemento.id=='05-07'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-06`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-03`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":(Valor1-15)*(Valor2/30),
+              "TipoNumero":((Valor1-15)*(Valor2/30))<0 ? 1 : 2
+            })
+          }
+        }
+        // Proveedores
+        if(catalogo.id=='06'){
+          if(elemento.id=='06-02'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-02`]?.[0]?.Valor,
+              "TipoNumero":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-02`]?.[0]?.Valor<0 ? 1 : 2
+            })
+         }
+
+         else if(elemento.id=='06-03'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":0
+              ,
+              "TipoNumero":
+              (0
+              )<0 ? 1 : 2
+            })
+          }
+         else if(elemento.id=='06-04'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-01`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-02`]?.[0]?.Valor+
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-03`]?.[0]?.Valor
+              ,
+              "TipoNumero":
+              (
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-01`]?.[0]?.Valor +
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-02`]?.[0]?.Valor+
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-03`]?.[0]?.Valor
+              )<0 ? 1 : 2
+            })
+          }
+
+         else if(elemento.id=='06-05'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-04`]?.[0]?.Valor -
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-01`]?.[0]?.Valor,
+              "TipoNumero":(
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-04`]?.[0]?.Valor -
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-01`]?.[0]?.Valor)<0 ? 1 : 2
+            })
+          }
+
+          else if(elemento.id=='06-06'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-04`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-03`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":(Valor2*-1) == 0   ? 0 :(Valor1/(Valor2*-1))*30,
+              "TipoNumero":((Valor2*-1) == 0   ? 0 :(Valor1/(Valor2*-1))*30)<0 ? 1 : 2
+            })
+          }
+          else if(elemento.id=='06-07'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-06`]?.[0]?.Valor
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-03`]?.[0]?.Valor
+            this.DatosElementos[`${key}`].push({              
+              "Valor":(Valor1-30)*(Valor2/30),
+              "TipoNumero":((Valor1-30)*(Valor2/30))<0 ? 1 : 2
+            })
+          }
+        }
+
+        // Afectación al flujo de efectivo
+        if(catalogo.id=='07'){
+          if(elemento.id=='07-01'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-05`]?.[0]?.Valor || 0
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-05`]?.[0]?.Valor || 0
+            let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-05`]?.[0]?.Valor || 0
+            this.DatosElementos[`${key}`].push({              
+              "Valor":((Valor1+Valor2)*-1)+Valor3,
+              "TipoNumero":(((Valor1+Valor2)*-1)+Valor3)<0 ? 1 : 2
+            })
+         }
+        else if(elemento.id=='07-02' || elemento.id=='07-08'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-01`]?.[0]?.Valor || 0
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor1<0? (Valor2+ (Valor1*-1)):Valor2,
+              "TipoNumero":(Valor1<0? (Valor2+ (Valor1*-1)):Valor2)<0 ? 1 : 2
+            })
+         }
+
+        else if(elemento.id=='07-03'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0,
+            "TipoNumero":(this.DatosElementos[`${cab.Anio}-${cab.NumMes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0)<0 ? 1 : 2
+          })
+        }
+        else if(elemento.id=='07-04'){
+            let Valor1= 0
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-02`]?.[0]?.Valor || 0
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor1==0? 0 : Valor2/Valor1,
+              "TipoNumero":(Valor1==0? 0 : Valor2/Valor1)<0 ? 1 : 2
+            })
+        }
+        else if(elemento.id=='07-05'){
+            let Valor1= 0
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-03`]?.[0]?.Valor || 0
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor1==0? 0 : Valor2/Valor1,
+              "TipoNumero":(Valor1==0? 0 : Valor2/Valor1)<0 ? 1 : 2
+            })
+        }
+        else if(elemento.id=='07-06'){
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-07`]?.[0]?.Valor || 0
+            let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-07`]?.[0]?.Valor || 0
+            let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-07`]?.[0]?.Valor || 0
+            this.DatosElementos[`${key}`].push({              
+              "Valor":Valor1+Valor2+Valor3,
+              "TipoNumero":(Valor1+Valor2+Valor3)<0 ? 1 : 2
+            })
+        }
+        else if(elemento.id=='07-07'){
+          let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-06`]?.[0]?.Valor || 0
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+          this.DatosElementos[`${key}`].push({              
+            "Valor":Valor1<0? (Valor2+ (Valor1*-1)):Valor2,
+            "TipoNumero":(Valor1<0? (Valor2+ (Valor1*-1)):Valor2)<0 ? 1 : 2
+          })
+       }
+       else if(elemento.id=='07-09'){
+        let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-07`]?.[0]?.Valor || 0
+        let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+        this.DatosElementos[`${key}`].push({              
+          "Valor":Valor1==0? 0 : Valor2/Valor1,
+          "TipoNumero":(Valor1==0? 0 : Valor2/Valor1)<0 ? 1 : 2
+        })
+      }
+       else if(elemento.id=='07-10'){
+        let Valor1= 0
+        let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-08`]?.[0]?.Valor || 0
+        this.DatosElementos[`${key}`].push({              
+          "Valor":Valor1==0? 0 : Valor2/Valor1,
+          "TipoNumero":(Valor1==0? 0 : Valor2/Valor1)<0 ? 1 : 2
+        })
+      }
+
+        }
+        // Activo Fijo
+        if(catalogo.id=='08'){
+          if(elemento.id=='08-04'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-01`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-02`]?.[0]?.Valor+
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-03`]?.[0]?.Valor
+              ,
+              "TipoNumero":
+              (
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-01`]?.[0]?.Valor +
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-02`]?.[0]?.Valor+
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-03`]?.[0]?.Valor
+              )<0 ? 1 : 2
+            })
+          }
+        }
+        // Otros pasivos de Corto Plazo
+        if(catalogo.id=='09'){
+          if(elemento.id=='09-02'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-02`]?.[0]?.Valor || 0
+              ,
+              "TipoNumero":
+              (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-02`]?.[0]?.Valor || 0
+              )<0 ? 1 : 2
+            })
+          }
+         else if(elemento.id=='09-04'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-09-01`]?.[0]?.Valor +
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-09-02`]?.[0]?.Valor+
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-09-03`]?.[0]?.Valor
+            ,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-09-01`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-09-02`]?.[0]?.Valor+
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-09-03`]?.[0]?.Valor
+            )<0 ? 1 : 2
+          })
+          }
+        }
+
+        // Pasivos de Largo Plazo
+        if(catalogo.id=='10'){
+          if(elemento.id=='10-04'){
+            this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-01`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-02`]?.[0]?.Valor +
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-03`]?.[0]?.Valor
+              ,
+              "TipoNumero":
+              (
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-01`]?.[0]?.Valor +
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-02`]?.[0]?.Valor+
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-03`]?.[0]?.Valor
+              )<0 ? 1 : 2
+            })
+        }
+       }
+        // Comparativas
+      if(catalogo.id=='11'){
+        if(elemento.id=='11-01'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-VmmQpdpunMTqkoSjhzzj`]?.[0]?.Valor
+            ,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-VmmQpdpunMTqkoSjhzzj`]?.[0]?.Valor
+            )<0 ? 1 : 2
+          })
+        }
+      else if(elemento.id=='11-02'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-15`]?.[0]?.Valor
+            ,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-15`]?.[0]?.Valor
+            )<0 ? 1 : 2
+          })
+        }
+      else if(elemento.id=='11-03'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-05`]?.[0]?.Valor
+            ,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-05`]?.[0]?.Valor
+            )<0 ? 1 : 2
+          })
+        }
+      else if(elemento.id=='11-04'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-05`]?.[0]?.Valor
+            ,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-05`]?.[0]?.Valor
+            )<0 ? 1 : 2
+          })
+        }
+      else if(elemento.id=='11-05'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-04`]?.[0]?.Valor -
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-01`]?.[0]?.Valor 
+            ,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-04`]?.[0]?.Valor -
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-01`]?.[0]?.Valor 
+            )<0 ? 1 : 2
+          })
+      }
+
+      else if(elemento.id=='11-06'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-05`]?.[0]?.Valor
+            ,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-05`]?.[0]?.Valor
+            )<0 ? 1 : 2
+          })
+      }
+      else if(elemento.id=='11-07'){
+        this.DatosElementos[`${key}`].push({              
+          "Valor":
+          this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-04`]?.[0]?.Valor -
+          this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-01`]?.[0]?.Valor 
+          ,
+          "TipoNumero":
+          (
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-04`]?.[0]?.Valor -
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-01`]?.[0]?.Valor 
+          )<0 ? 1 : 2
+        })
+    }
+
+
+      }
+      // Eficiencia y control
+      if(catalogo.id=='12'){
+        if(elemento.id=='12-01'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor * -1
+            ,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor * -1
+            )<0 ? 1 : 2
+        })
+       }
+      else if(elemento.id=='12-02'){
+          this.DatosElementos[`${key}`].push({              
+            "Valor":
+            this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-02`]?.[0]?.Valor
+            ,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-02`]?.[0]?.Valor
+            )<0 ? 1 : 2
+        })
+       }
+      else if(elemento.id=='12-03'){
+          let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-01`]?.[0]?.Valor
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-02`]?.[0]?.Valor
+          this.DatosElementos[`${key}`].push({              
+            "Valor":(Valor1/30)==0 ? 0 : Valor2 / (Valor1/30),
+            "TipoNumero":((Valor1/30)==0 ? 0 : Valor2 / (Valor1/30))<0 ? 1 : 2
+          })
+       }
+
+      else if(elemento.id=='12-04'){
+        this.DatosElementos[`${key}`].push({              
+          "Valor":
+          0
+          ,
+          "TipoNumero":
+          (
+           0
+          )<0 ? 1 : 2
+        })
+      }
+    else if(elemento.id=='12-05'){
+        this.DatosElementos[`${key}`].push({              
+          "Valor":
+          1-this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-11`]?.[0]?.Valor
+          ,
+          "TipoNumero":
+          (
+          1-this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-11`]?.[0]?.Valor
+          )<0 ? 1 : 2
+      })
+     }
+    else if(elemento.id=='12-06'){
+        this.DatosElementos[`${key}`].push({              
+          "Valor":
+          0
+          ,
+          "TipoNumero":
+          (
+          0
+          )<0 ? 1 : 2
+      })
+     }
+    else if(elemento.id=='12-07'){
+        this.DatosElementos[`${key}`].push({              
+          "Valor":
+          this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor*-1
+          ,
+          "TipoNumero":
+          (
+          this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor*-1
+          )<0 ? 1 : 2
+      })
+     }
+    else if(elemento.id=='12-08'){
+        this.DatosElementos[`${key}`].push({              
+          "Valor":
+          this.DatosElementos[`${cab.Anio}-${cab.NumMes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor*-1
+          ,
+          "TipoNumero":
+          (
+          this.DatosElementos[`${cab.Anio}-${cab.NumMes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor*-1
+          )<0 ? 1 : 2
+      })
+     }
+
+    else if(elemento.id=='12-09'){
+      let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor
+      let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor
+      this.DatosElementos[`${key}`].push({              
+        "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)*-1),
+        "TipoNumero":((Valor2)==0 ? 0 : ((Valor1/Valor2)*-1))<0 ? 1 : 2
+      })
+    }
+    else if(elemento.id=='12-10'){
+      this.DatosElementos[`${key}`].push({              
+      "Valor":
+      0 
+      ,
+      "TipoNumero":
+      (
+        0
+      )<0 ? 1 : 2
+    })
+    }
+
+    else if(elemento.id=='12-11'){
+     let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-03`]?.[0]?.Valor
+      let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor
+      this.DatosElementos[`${key}`].push({              
+      "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)),
+      "TipoNumero":((Valor2)==0 ? 0 : ((Valor1/Valor2)))<0 ? 1 : 2
+      })
+    }
+    else if(elemento.id=='12-12'){
+      let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-09`]?.[0]?.Valor
+      let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor
+      this.DatosElementos[`${key}`].push({              
+      "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)),
+      "TipoNumero":((Valor2)==0 ? 0 : ((Valor1/Valor2)))<0 ? 1 : 2
+    })
+   }
+    else if(elemento.id=='12-13'){
+      let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-15`]?.[0]?.Valor
+      let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor
+      this.DatosElementos[`${key}`].push({              
+      "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)),
+      "TipoNumero":((Valor2)==0 ? 0 : ((Valor1/Valor2)))<0 ? 1 : 2
+    })
+   }
+
+    else if(elemento.id=='12-14'){
+      let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-17`]?.[0]?.Valor
+      let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor
+      this.DatosElementos[`${key}`].push({              
+      "Valor":(Valor2)==0 ? 0 : (((Valor1)/Valor2)),
+      "TipoNumero":((Valor2)==0 ? 0 : (((Valor1)/Valor2)))<0 ? 1 : 2
+    })
+   }
+    else if(elemento.id=='12-15'){
+      let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-05`]?.[0]?.Valor
+      let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor
+      this.DatosElementos[`${key}`].push({              
+      "Valor":(Valor2)==0 ? 0 : (((Valor1*-1)/Valor2)),
+      "TipoNumero":((Valor2)==0 ? 0 : (((Valor1*-1)/Valor2)))<0 ? 1 : 2
+    })
+   }
+    else if(elemento.id=='12-16'){
+      let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor
+      let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-11`]?.[0]?.Valor
+      this.DatosElementos[`${key}`].push({              
+      "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)*-1),
+      "TipoNumero":(((Valor1/Valor2)*-1))<0 ? 1 : 2
+    })
+   }
+    else if(elemento.id=='12-17'){
+      this.DatosElementos[`${key}`].push({              
+      "Valor":(this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-16`]?.[0]?.Valor || 0) *4.33,
+      "TipoNumero":((this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-16`]?.[0]?.Valor || 0) *4.33)<0 ? 1 : 2
+    })
+   }
+      
+
+}
        }
 
 
