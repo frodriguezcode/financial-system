@@ -522,10 +522,12 @@ getCategorias(){
           CategoriasByFather = this.Categorias.filter(cat =>
             ids.includes(cat.id)
           );
-  
-      
+          
+
           CategoriasByFather.forEach(element => {
             if (!idsAgregados.has(element.id)) {
+
+          
   
               CategoriasData.push({
                 "Nombre": element.Nombre,
@@ -537,6 +539,47 @@ getCategorias(){
                 "Orden": CategoriasData.length + 1,
                 "Editable": false,
               });
+
+              
+              if(element.Orden==3){
+
+                CategoriasData.push({
+                  "Nombre": "% de los ingresos para operar",
+                  "id": "03-03",
+                  "Moneda":false,
+                  "Simbolo":1,
+                  "Tipo":'Padre',
+                  "idPadre":'03',
+                  "idAbuelo": categ.id,
+                  "Orden": CategoriasData.length + 1,
+                  "Editable": false,
+                }); 
+
+                CategoriasData.push({
+                  "Nombre": "(-) Pago a proveedores",
+                  "id": "03-05",
+                  "Moneda":true,
+                  "Simbolo":2,
+                  "Tipo":'Padre',
+                  "idPadre":'03',
+                  "idAbuelo": categ.id,
+                  "Orden": CategoriasData.length + 1,
+                  "Editable": true,
+                });
+                CategoriasData.push({
+                  "Nombre": "% de los ingresos para pagar a proveedores",
+                  "id": "03-06",
+                  "Moneda":true,
+                  "Simbolo":1,
+                  "Tipo":'Padre',
+                  "idPadre":'03',
+                  "idAbuelo": categ.id,
+                  "Orden": CategoriasData.length + 1,
+                  "Editable": false,
+                });
+
+       
+              }
               idsAgregados.add(element.id);
             }
           });
@@ -2250,7 +2293,8 @@ construirData(){
           })
         }
         else if(elemento.id=='07-04'){
-            let Valor1= 0
+
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
             let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-02`]?.[0]?.Valor || 0
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor1==0? 0 : Valor2/Valor1,
@@ -2258,7 +2302,7 @@ construirData(){
             })
         }
         else if(elemento.id=='07-05'){
-            let Valor1= 0
+            let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
             let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-03`]?.[0]?.Valor || 0
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor1==0? 0 : Valor2/Valor1,
@@ -2276,7 +2320,7 @@ construirData(){
         }
         else if(elemento.id=='07-07'){
           let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-06`]?.[0]?.Valor || 0
-          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
           this.DatosElementos[`${key}`].push({              
             "Valor":Valor1<0? (Valor2+ (Valor1*-1)):Valor2,
             "TipoNumero":(Valor1<0? (Valor2+ (Valor1*-1)):Valor2)<0 ? 1 : 2
@@ -2291,7 +2335,7 @@ construirData(){
         })
       }
        else if(elemento.id=='07-10'){
-        let Valor1= 0
+        let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
         let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-07-08`]?.[0]?.Valor || 0
         this.DatosElementos[`${key}`].push({              
           "Valor":Valor1==0? 0 : Valor2/Valor1,

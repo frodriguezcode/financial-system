@@ -315,12 +315,45 @@
                 "Editable": false
             },
             {
+                "Nombre": "% de los ingresos para operar",
+                "id": "03-03",
+                "Moneda": false,
+                "Simbolo": 1,
+                "Tipo": "Padre",
+                "idPadre": "03",
+                "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
+                "Orden": 5,
+                "Editable": false
+            },
+            {
+                "Nombre": "(-) Pago a proveedores",
+                "id": "03-05",
+                "Moneda": true,
+                "Simbolo": 2,
+                "Tipo": "Padre",
+                "idPadre": "03",
+                "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
+                "Orden": 6,
+                "Editable": true
+            },
+            {
+                "Nombre": "% de los ingresos para pagar a proveedores",
+                "id": "03-06",
+                "Moneda": true,
+                "Simbolo": 1,
+                "Tipo": "Padre",
+                "idPadre": "03",
+                "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
+                "Orden": 7,
+                "Editable": false
+            },
+            {
                 "Nombre": "2. Flujo de efectivo de Inversión",
                 "id": "GMzSuF04XQBsPmAkIB2C",
                 "Moneda": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
-                "Orden": 5,
+                "Orden": 8,
                 "Editable": false
             },
             {
@@ -330,7 +363,7 @@
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "GMzSuF04XQBsPmAkIB2C",
-                "Orden": 6,
+                "Orden": 9,
                 "Editable": false
             },
             {
@@ -340,7 +373,7 @@
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "GMzSuF04XQBsPmAkIB2C",
-                "Orden": 7,
+                "Orden": 10,
                 "Editable": false
             },
             {
@@ -349,7 +382,7 @@
                 "Moneda": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
-                "Orden": 8,
+                "Orden": 11,
                 "Editable": false
             },
             {
@@ -359,7 +392,7 @@
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "psmpY6iyDJNkW7AKFXgK",
-                "Orden": 9,
+                "Orden": 12,
                 "Editable": false
             },
             {
@@ -369,7 +402,7 @@
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "psmpY6iyDJNkW7AKFXgK",
-                "Orden": 10,
+                "Orden": 13,
                 "Editable": false
             },
             {
@@ -378,15 +411,15 @@
                 "Moneda": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
-                "Orden": 11,
+                "Orden": 14,
                 "Editable": false
             },
             {
                 "Nombre": "Efectivo Final",
-                "id": "03-12",
+                "id": "03-15",
                 "idPadre": "03",
                 "Moneda": true,
-                "Orden": 12,
+                "Orden": 15,
                 "Editable": false
             }
         ]
@@ -543,6 +576,7 @@
                 "Nombre": "(+) Compras",
                 "id": "06-02",
                 "Moneda": true,
+                "Simbolo": 1,
                 "idPadre": "06",
                 "Orden": 2,
                 "Editable": false
@@ -552,6 +586,7 @@
                 "id": "06-03",
                 "Moneda": true,
                 "idPadre": "06",
+                "Simbolo": 2,
                 "Orden": 3,
                 "Editable": false
             },
@@ -882,6 +917,7 @@
                 "Moneda": true,
                 "idPadre": "12",
                 "Orden": 1,
+                "OrdenData": 1,
                 "Editable": false
             },
             {
@@ -890,6 +926,7 @@
                 "Moneda": true,
                 "idPadre": "12",
                 "Orden": 2,
+                "OrdenData": 2,
                 "Editable": false
             },
             {
@@ -898,6 +935,7 @@
                 "Moneda": false,
                 "idPadre": "12",
                 "Orden": 3,
+                "OrdenData": 3,
                 "Editable": false
             },
             {
@@ -906,6 +944,7 @@
                 "Moneda": true,
                 "idPadre": "12",
                 "Orden": 4,
+                "OrdenData": 4,
                 "Editable": false
             },
             {
@@ -914,6 +953,7 @@
                 "Moneda": false,
                 "idPadre": "12",
                 "Orden": 5,
+                "OrdenData": 11,
                 "Editable": false
             },
             {
@@ -921,6 +961,7 @@
                 "id": "12-06",
                 "idPadre": "12",
                 "Moneda": false,
+                "OrdenData": 6,
                 "Orden": 6,
                 "Editable": false
             },
@@ -928,6 +969,7 @@
                 "Nombre": "Gastos de operación totales ($)",
                 "id": "12-07",
                 "Moneda": true,
+                "OrdenData": 7,
                 "idPadre": "12",
                 "Orden": 7,
                 "Editable": false
@@ -938,6 +980,7 @@
                 "Moneda": true,
                 "idPadre": "12",
                 "Orden": 8,
+                "OrdenData": 8,
                 "Editable": false
             },
             {
@@ -946,6 +989,7 @@
                 "Moneda": false,
                 "idPadre": "12",
                 "Orden": 9,
+                "OrdenData": 9,
                 "Editable": false
             },
             {
@@ -953,6 +997,7 @@
                 "id": "12-10",
                 "idPadre": "12",
                 "Orden": 10,
+                "OrdenData": 10,
                 "Editable": false
             },
             {
@@ -960,6 +1005,7 @@
                 "id": "12-11",
                 "idPadre": "12",
                 "Orden": 11,
+                "OrdenData": 5,
                 "Moneda": false,
                 "Editable": false
             },
@@ -968,6 +1014,7 @@
                 "id": "12-12",
                 "idPadre": "12",
                 "Orden": 12,
+                "OrdenData": 12,
                 "Moneda": false,
                 "Editable": false
             },
@@ -976,6 +1023,7 @@
                 "id": "12-13",
                 "idPadre": "12",
                 "Orden": 13,
+                "OrdenData": 13,
                 "Moneda": false,
                 "Editable": false
             },
@@ -984,6 +1032,7 @@
                 "id": "12-14",
                 "idPadre": "12",
                 "Orden": 14,
+                "OrdenData": 14,
                 "Moneda": false,
                 "Editable": false
             },
@@ -992,6 +1041,7 @@
                 "id": "12-15",
                 "idPadre": "12",
                 "Orden": 15,
+                "OrdenData": 15,
                 "Moneda": false,
                 "Editable": false
             },
@@ -1001,6 +1051,7 @@
                 "idPadre": "12",
                 "Moneda": true,
                 "Orden": 16,
+                "OrdenData": 16,
                 "Editable": false
             },
             {
@@ -1008,6 +1059,7 @@
                 "id": "12-17",
                 "idPadre": "12",
                 "Orden": 17,
+                "OrdenData": 17,
                 "Moneda": true,
                 "Editable": false
             }

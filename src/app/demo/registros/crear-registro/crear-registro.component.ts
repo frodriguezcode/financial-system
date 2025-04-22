@@ -1215,9 +1215,9 @@ getItemsByCategory(idCategoria:string){
 
 obtenerCategorias(){
   this.conS.obtenerCategoriasFlujos().subscribe(resp=>{
-    this.Categorias=resp.filter((data:any)=>data.Tipo!=3)
+    this.Categorias=resp.filter((data:any)=>data.Tipo!=3 && data.Mostrar==true)
   
-    this.CategoriasTodas=resp
+    this.CategoriasTodas=resp.filter((re:any)=>re.Mostrar==true)
     this.Categorias.forEach((element)=>{
       let _GroupItems= {
         label:element.Nombre,
