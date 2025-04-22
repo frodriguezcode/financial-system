@@ -8,6 +8,21 @@
 // Agregar (-) Pago a proveedores a Cuentas Padre
 // % de los ingresos para operar
 // % de los ingresos para pagar a proveedores
+
+
+// Apuntes de 2025-04-21
+// No crear mas cuentas bajo el padre Egresos de Operacion, solamente Pago a Proveedores y Costos de la Operación
+// Pago a Proveedores tendrá los hijos fijos: Facturas vencidas en meses anteriores, facturas vencidas en el mes en curso y facturas con vencimiento en meses futuros
+// Costos de la operación tendrá hijos dinámicos: Creados por el usuario.
+
+// Modulo de Registro mostrar columna de nietos solamente si se elige el Padre Egresos de Operación
+
+// Store Manager Recapt:
+// Costos de la operación: Sumatoria de las cuentas bajo este padre
+//% de los ingresos para operar : Division del cos
+// Pago a proveedores: Sumatoria de las cuentas bajo este padre
+
+// Todo será visible y calculado.
 [
     {
         "Nombre": "Mercadotecnia",
