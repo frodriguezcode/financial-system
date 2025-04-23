@@ -35,7 +35,13 @@
         appendTo="body"
         />
 
-        <div class="mt-2" style="background-color: white;">
+        <div *ngIf="cargando==true" class="d-flex justify-content-center">
+          <div class="spinner-grow text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <div *ngIf="cargando==false" class="mt-2" style="background-color: white;">
           <p-table 
           [value]="ItemsGroup" 
           sortField="representative.name" 
@@ -225,7 +231,7 @@
 
       <p-table 
         [value]="item.Children" 
-        [tableStyle]="{'min-width': '100%'}"
+        [tableStyle]="{'min-width': '50%'}"
         
         [responsiveLayout]="'scroll'">
         
@@ -233,8 +239,7 @@
           <tr>
             <th class="text-center">Orden</th>
             <th class="text-center">Nombre</th>
-            <th *ngIf="item.Dinamica==true" class="text-center">Editar</th>
-            <th *ngIf="item.Dinamica==true" class="text-center">Guardar</th>
+            <th *ngIf="item.Dinamica==true" class="text-center">Guardar/Editar</th>
             <!-- otras columnas si quieres -->
           </tr>
         </ng-template>
@@ -243,24 +248,23 @@
             <td class="text-center">{{ child.Orden }}</td>
             <td *ngIf="child.Editando==true" class="text-center">
               <div class="input-group input-group-sm mb-3">
-              <input [(ngModel)]="child.Nombre" type="text" class="form-control">
-            </div>
+                <input [(ngModel)]="child.Alias" type="text" class="form-control fixed-width-input text-center">
+              </div>
             </td>
             <td *ngIf="child.Editando==false" class="text-center">{{ child.Nombre }}</td>
             <td class="text-center"> 
               <button
-              *ngIf="item.Dinamica==true"
-              (click)="guardarCuentaHijo(child)"
+              *ngIf="item.Dinamica==true && child.Editando==false"
+              (click)="child.Editando=true"
               type="button"
-              class="btn btn-success"> <i class="pi pi-save"></i></button>
-            </td>
-            <td class="text-center"> 
+              class="btn btn-primary text-center"> <i class="pi pi-pencil"></i></button>
               <button
-              *ngIf="item.Dinamica==true"
+              *ngIf="item.Dinamica==true && child.Editando==true"
               (click)="guardarCuentaHijo(child)"
               type="button"
-              class="btn btn-success"> <i class="pi pi-save"></i></button>
+              class="btn btn-success text-center"> <i class="pi pi-save"></i></button>
             </td>
+       
             <!-- otras columnas si necesitas -->
           </tr>
         </ng-template>

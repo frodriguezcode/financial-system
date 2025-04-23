@@ -78,6 +78,7 @@ export default class ItemsComponent  implements OnInit{
   selectedTab: string = 'sucursales';
   claseTabla:string='p-datatable-sm'
   visible: boolean = false;
+  cargando: boolean = true;
   idItems=[]
   ngOnInit(): void {
     this.todasSucursales=true
@@ -232,7 +233,7 @@ borrarCuenta(idCuenta:string){
       }
       this.ItemsGroup.push(_Item)
     });
- console.log('ItemsGroup',this.ItemsGroup)
+ this.cargando=false
   }
   descargarExcel(){
     const headerRow: any[] = [];
@@ -591,10 +592,17 @@ borrarCuenta(idCuenta:string){
     })
   }
 
+
   agregarHijo(item:any){
+    console.log('item',item)
+    const texto = item.name 
+    const patron = /^(\d+(?:\.\d+)*)/;
+    const resultado = texto.match(patron);
     item.Children.push( {
       "Nombre":"",
+      "Activo":true,
       "Alias":"",
+      "Prefijo":resultado[0],
       "Editando":true,
       "ItemId":item.id,
       "ItemName":item.name,
@@ -604,18 +612,17 @@ borrarCuenta(idCuenta:string){
   }
 
   guardarCuentaHijo(child:any){
-    const texto = child.ItemName;
-    const patron = /^(\d+(?:\.\d+)*)/; // Expresión regular para capturar números con puntos
-    const resultado = texto.match(patron);
-
+    console.log('child',child)
     const ItemsBack = [...this.ItemsBack]
     let ItemEncontrado=ItemsBack.filter((it:any)=>it.id==child.ItemId)
-
+    console.log('ItemEncontrado',ItemEncontrado)
     if(ItemEncontrado.length>0){
       ItemEncontrado[0].CuentasHijos.push( 
         {
-        "Nombre":`${resultado[0]} ${child.Nombre}`,
-        "Alias":child.Nombre,
+        "Nombre":`${child.Prefijo}.${child.Orden} ${child.Alias}`,
+        "Alias":child.Alias,
+        "ItemId":child.ItemId,
+        "Prefijo":child.Prefijo,
         "Editando":false,
         "id":child.id,
         "Orden":child.Orden,
@@ -623,6 +630,14 @@ borrarCuenta(idCuenta:string){
       )
 
       ItemEncontrado[0].CuentasHijos=ItemEncontrado[0].CuentasHijos.filter((it:any)=>it.Editando!=true)
+        this.getItemsGroup()
+        this.ItemsGroup=  this.ItemsGroup.map(item => 
+            item.id === child.ItemId ? { ...item, expanded: true } : item
+          );
+      
+
+
+
       this.conS.ActualizarItem(ItemEncontrado[0]).then(resp=>{
         this.toastr.success('Cuenta  Creada', '¡Exito!');
       })
