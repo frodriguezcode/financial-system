@@ -49,6 +49,7 @@ export default class ItemsComponent  implements OnInit{
     private authS:AuthService,
     private toastr: ToastrService,private renderer: Renderer2) {}
   Items:any=[]
+  expandedChildrenRows: any[] = [];
   ItemsGroup:any=[]
   ItemsBack:any=[]
   Usuarios:any=[]
@@ -186,24 +187,44 @@ borrarCuenta(idCuenta:string){
     _Items=this.Items.filter((i:any)=>i.idEmpresa==this.usuario.idEmpresa)
 
     _Items.forEach((item:any) => {
+
+      
+    const SucursalesIds = 
+     item.Sucursales==undefined ? item.idSucursales
+     : item.Sucursales.map(sucursal => sucursal.id)
+
+    const userIds = 
+     item.Usuarios==undefined ? item.idUsuarios
+     : item.Usuarios.map(usuarios => usuarios.id)
+
+    const ProyectosIds = 
+     item.Proyectos==undefined ? item.idProyectos
+     : item.Proyectos.map(proyecto => proyecto.id)
+
+
+
+
       let _Item ={
         "id":item.id,
         "name":item.Nombre,
         "alias":item.Alias,
         "Orden":item.Orden,
         "Activo":item.Activo,
+        "Dinamica":item.Dinamica == undefined? false :item.Dinamica, 
         "animation":item.animation,
         "Editando":item.Editando,
         "Empresa":this.getNombreEmpresa(item.idEmpresa),
         "idEmpresa":item.idEmpresa,
         "TipoRubro":item.TipoRubro,
-        "Sucursales":item.Sucursales,
-        "NombreSucursales":this.getNameSucursales(item.Sucursales),
-        "NombreProyectos":this.getNameProyectos(item.Proyectos),
-        "NombresUsuarios":this.getNameUsuario(item.Usuarios),
-        "Proyectos":item.Proyectos,
-        "Usuarios":item.Usuarios,
+        expanded: false,
+        "Sucursales":item.Sucursales == undefined ? [] : item.Sucursales,
+        "NombreSucursales":this.getNameSucursales(SucursalesIds),
+        "NombreProyectos":this.getNameProyectos(ProyectosIds,item.idEmpresa),
+        "NombresUsuarios":this.getNameUsuario(userIds),
+        "Proyectos":item.Proyectos == undefined ? [] : item.Proyectos,
+        "Usuarios":item.Usuarios == undefined ? [] : item.Sucursales,
         "idCategoria":item.idCategoria,
+        "Children":item.CuentasHijos==undefined ? [] : item.CuentasHijos,
         "representative": {
           name: this.getNombreCategoria(item.idCategoria),
           image: 'https://firebasestorage.googleapis.com/v0/b/sistemafinanciero-924ff.appspot.com/o/account.png?alt=media&token=a93e4ac2-7102-4920-aaed-13d0a1c3fd43'
@@ -211,7 +232,7 @@ borrarCuenta(idCuenta:string){
       }
       this.ItemsGroup.push(_Item)
     });
- 
+ console.log('ItemsGroup',this.ItemsGroup)
   }
   descargarExcel(){
     const headerRow: any[] = [];
@@ -342,7 +363,7 @@ borrarCuenta(idCuenta:string){
     let Sucursales=[]
     if (sucursales.length>0){
       sucursales.forEach((suc:any) => {
-        Sucursales.push(' ' + this.getNameSucursal(suc.id,''))
+        Sucursales.push(' ' + this.getNameSucursal(suc,''))
       })
     }
     else {
@@ -352,16 +373,18 @@ borrarCuenta(idCuenta:string){
   }
 
   getNameUsuario(Usuarios:any){
-
     if(Usuarios==undefined || Usuarios.length==0){
       return []
     }
     else {
       
       let NombresUsuarios:any=[]
-      Usuarios.forEach(usuario => {
-        let Usuario = this.Usuarios.filter((user: any) => user.id==usuario.id)
-        NombresUsuarios.push(' ' +Usuario[0].Nombres)
+      Usuarios.forEach(usuario => {       
+        let Usuario = this.Usuarios.filter((user: any) => user.id==usuario)
+
+          NombresUsuarios.push(' ' + Usuario[0].Nombres)
+
+        
       });
     
           return NombresUsuarios
@@ -374,7 +397,7 @@ borrarCuenta(idCuenta:string){
       return this.getNombreEmpresa(idEmpresa)
     }
     else {
-      let Proyecto = this.Proyectos.filter((proy: any) => proy.id==idProyecto)
+      let Proyecto = this.Proyectos.filter((proy: any) => proy==idProyecto)
       if(Proyecto.length>0){
         return ' ' + Proyecto[0].Nombre
       }
@@ -383,12 +406,12 @@ borrarCuenta(idCuenta:string){
       }
     }
   }
-  getNameProyectos(proyectos:any){
+  getNameProyectos(proyectos:any,idEmpresa:any){
     let Proyectos=[]
     if (proyectos.length>0){
       
       proyectos.forEach((proy:any) => {
-        Proyectos.push(this.getNameProyecto(proy.id,proy.idEmpresa))
+        Proyectos.push(this.getNameProyecto(proy,idEmpresa))
       })
     }
     else {
@@ -396,12 +419,12 @@ borrarCuenta(idCuenta:string){
     }
     return Proyectos
   }
-  getNameUsuarios(usuarios:any){
+  getNameUsuarios(usuarios:any,idEmpresa:any){
     let Usuarios=[]
     if (usuarios.length>0){
       
       usuarios.forEach((proy:any) => {
-        Usuarios.push(this.getNameProyecto(proy.id,proy.idEmpresa))
+        Usuarios.push(this.getNameProyecto(proy,idEmpresa))
       })
     }
     else {
@@ -567,15 +590,56 @@ borrarCuenta(idCuenta:string){
       this.obtenerProyectos()
     })
   }
+
+  agregarHijo(item:any){
+    item.Children.push( {
+      "Nombre":"",
+      "Alias":"",
+      "Editando":true,
+      "ItemId":item.id,
+      "ItemName":item.name,
+      "id":`${item.idCategoria}_1`,
+      "Orden":item.Children.length + 1,
+      })
+  }
+
+  guardarCuentaHijo(child:any){
+    const texto = child.ItemName;
+    const patron = /^(\d+(?:\.\d+)*)/; // Expresión regular para capturar números con puntos
+    const resultado = texto.match(patron);
+
+    const ItemsBack = [...this.ItemsBack]
+    let ItemEncontrado=ItemsBack.filter((it:any)=>it.id==child.ItemId)
+
+    if(ItemEncontrado.length>0){
+      ItemEncontrado[0].CuentasHijos.push( 
+        {
+        "Nombre":`${resultado[0]} ${child.Nombre}`,
+        "Alias":child.Nombre,
+        "Editando":false,
+        "id":child.id,
+        "Orden":child.Orden,
+        }
+      )
+
+      ItemEncontrado[0].CuentasHijos=ItemEncontrado[0].CuentasHijos.filter((it:any)=>it.Editando!=true)
+      this.conS.ActualizarItem(ItemEncontrado[0]).then(resp=>{
+        this.toastr.success('Cuenta  Creada', '¡Exito!');
+      })
+    
+    }
+  }
+
+
   obtenerItems(){
-   this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
+    let Subscribe:Subscription
+    Subscribe= this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
       // resp.forEach((item:any)=>{
       //   this.conS.ActualizarItem(item).then(resp=>{
       //     console.log('Actualizado')
       //   })
       // })
-
-
+      Subscribe.unsubscribe()
       if(resp.length>0){
         this.ItemsBack=resp.sort((a:any, b:any) => a.Orden - b.Orden)
         this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))+1
@@ -583,7 +647,170 @@ borrarCuenta(idCuenta:string){
     
 
         this.Items.map((item:any)=>item.animation='')
+        console.log('Items',this.Items)
+        let CuentasPagosProveedoresRubro1=resp
+        .filter((cuenta:any)=>cuenta.Nombre=='1.2.1 Pago a Proveedores' && cuenta.TipoRubro==1)
+        let CuentasPagosProveedoresRubro2=resp
+        .filter((cuenta:any)=>cuenta.Nombre=='1.2.1 Pago a Proveedores' && cuenta.TipoRubro==2)
+
+        let CuentasCostosOperacionRubro1=resp
+        .filter((cuenta:any)=>cuenta.Nombre=='1.2.2 Costos de la Operación' && cuenta.TipoRubro==1)
+        let CuentasCostosOperacionRubro2=resp
+        .filter((cuenta:any)=>cuenta.Nombre=='1.2.2 Costos de la Operación' && cuenta.TipoRubro==2)
         
+
+        if(CuentasPagosProveedoresRubro1.length==0){
+          const userIds = this.Usuarios.map(user => user.id);
+          const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
+          let CuentaPagoProveedores={
+          "idUsuarios":userIds,
+          "idSucursales":SucursalesIds,
+          "idProyectos":[],
+          "Activo":true,
+          "Editando":false,
+          "Alias":"Pago a proveedores",
+          "animation":"",
+          "Dinamica":false,
+          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+          "idEmpresa":this.usuario.idEmpresa,
+          "idMatriz":this.usuario.idMatriz,
+          "userIds":userIds,
+          "Orden":1,
+          "TipoRubro":1,
+          "OrdenReal":2,
+          "CuentasHijos":[
+            {
+              "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
+              "id":"KtA2Cxpd79TJrW9afqR9_1",
+              "Orden":1,
+              "Editando":false,
+            },
+            {
+              "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
+              "id":"KtA2Cxpd79TJrW9afqR9_2",
+              "Orden":2,
+              "Editando":false,
+            },
+            {
+              "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
+              "id":"KtA2Cxpd79TJrW9afqR9_3",
+              "Orden":3,
+              "Editando":false,
+            },
+          ],
+          "Tipo":2,
+          "Nombre":"1.2.1 Pago a Proveedores",
+          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+
+          }
+
+          this.conS.crearItem(CuentaPagoProveedores).then(resp=>{})
+        }
+        if(CuentasPagosProveedoresRubro2.length==0){
+          const userIds = this.Usuarios.map(user => user.id);
+          const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
+
+          let CuentaPagoProveedores={
+          "idUsuarios":userIds,
+          "idSucursales":[],
+          "idProyectos":ProyectosIds,
+          "Activo":true,
+          "Editando":false,
+          "Dinamica":false,
+          "Alias":"Pago a proveedores",
+          "animation":"",
+          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+          "idEmpresa":this.usuario.idEmpresa,
+          "idMatriz":this.usuario.idMatriz,
+          "userIds":userIds,
+          "Orden":2,
+          "TipoRubro":2,
+          "CuentasHijos":[
+            {
+              "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
+              "id":"KtA2Cxpd79TJrW9afqR9_1",
+              "Orden":1,
+              "Editando":false,
+            },
+            {
+              "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
+              "id":"KtA2Cxpd79TJrW9afqR9_2",
+              "Orden":2,
+              "Editando":false,
+            },
+            {
+              "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
+              "id":"KtA2Cxpd79TJrW9afqR9_3",
+              "Orden":3,
+              "Editando":false,
+            },
+          ],
+          "OrdenReal":2,
+          "Tipo":2,
+          "Nombre":"1.2.1 Pago a Proveedores",
+          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+          }
+          this.conS.crearItem(CuentaPagoProveedores).then(resp=>{})
+        }
+
+
+        if(CuentasCostosOperacionRubro1.length==0){
+          const userIds = this.Usuarios.map(user => user.id);
+          const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
+
+          let CuentaCostoOperacion={
+          "idUsuarios":userIds,
+          "idSucursales":SucursalesIds,
+          "idProyectos":[],
+          "Activo":true,
+          "Editando":false,
+          "Alias":"Costos de la Operación",
+          "animation":"",
+          "Dinamica":true,
+          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+          "idEmpresa":this.usuario.idEmpresa,
+          "idMatriz":this.usuario.idMatriz,
+          "userIds":userIds,
+          "Orden":1,
+          "TipoRubro":1,
+          "OrdenReal":2,
+          "CuentasHijos":[],
+          "Tipo":2,
+          "Nombre":"1.2.2 Costos de la Operación",
+          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+
+          }
+          this.conS.crearItem(CuentaCostoOperacion).then(resp=>{})
+        }
+        if(CuentasCostosOperacionRubro2.length==0){
+          const userIds = this.Usuarios.map(user => user.id);
+          const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
+
+          let CuentaCostoOperacion={
+          "idUsuarios":userIds,
+          "idSucursales":[],
+          "idProyectos":ProyectosIds,
+          "Activo":true,
+          "Editando":false,
+          "Alias":"Costos de la Operación",
+          "animation":"",
+          "Dinamica":true,
+          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+          "idEmpresa":this.usuario.idEmpresa,
+          "idMatriz":this.usuario.idMatriz,
+          "userIds":userIds,
+          "Orden":2,
+          "TipoRubro":2,
+          "OrdenReal":2,
+          "CuentasHijos":[],
+          "Tipo":2,
+          "Nombre":"1.2.2 Costos de la Operación",
+          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+
+          }
+          this.conS.crearItem(CuentaCostoOperacion).then(resp=>{})
+        }
+
       
     
 

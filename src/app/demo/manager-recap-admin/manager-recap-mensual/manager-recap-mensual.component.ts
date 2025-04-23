@@ -541,45 +541,7 @@ getCategorias(){
               });
 
               
-              if(element.Orden==3){
-
-                CategoriasData.push({
-                  "Nombre": "% de los ingresos para operar",
-                  "id": "03-03",
-                  "Moneda":false,
-                  "Simbolo":1,
-                  "Tipo":'Padre',
-                  "idPadre":'03',
-                  "idAbuelo": categ.id,
-                  "Orden": CategoriasData.length + 1,
-                  "Editable": false,
-                }); 
-
-                CategoriasData.push({
-                  "Nombre": "(-) Pago a proveedores",
-                  "id": "03-05",
-                  "Moneda":true,
-                  "Simbolo":2,
-                  "Tipo":'Padre',
-                  "idPadre":'03',
-                  "idAbuelo": categ.id,
-                  "Orden": CategoriasData.length + 1,
-                  "Editable": true,
-                });
-                CategoriasData.push({
-                  "Nombre": "% de los ingresos para pagar a proveedores",
-                  "id": "03-06",
-                  "Moneda":true,
-                  "Simbolo":1,
-                  "Tipo":'Padre',
-                  "idPadre":'03',
-                  "idAbuelo": categ.id,
-                  "Orden": CategoriasData.length + 1,
-                  "Editable": false,
-                });
-
-       
-              }
+          
               idsAgregados.add(element.id);
             }
           });

@@ -51,8 +51,6 @@
                   <tr>
                     <th class="text-center">Orden</th>
                     <th class="text-center">Nombre</th>
-                   <!-- <th class="text-center">Categoría</th> -->
-                   <!-- <th class="text-center">Empresa</th> -->
                    <th *ngIf="this.TipoRubro==1" class="text-center">Sucursales</th>
                    <th *ngIf="this.TipoRubro==2" class="text-center">Proyectos</th>
                    <th  class="text-center">Usuarios</th>
@@ -93,138 +91,185 @@
               </ng-template>
               <ng-template pTemplate="rowexpansion" let-item >
              
-                  <tr [ngClass]="item.animation" >
-              
-                 
-                   <td  class="text-center">
-                    
-                     {{item.Orden}}
-                  
-                
+
+                <ng-container 
+                *ngIf="item.idCategoria!='KtA2Cxpd79TJrW9afqR9'">
+                <tr [ngClass]="item.animation" >               
+                 <td  class="text-center">                 
+                   {{item.Orden}}                
                  </td>
-  
-                      <td
-                     
-                      class="text-start">
-                       <ng-container *ngIf="!item.Editando; else editarItem">
-                         {{item.name}}
-                       </ng-container>
-                       <ng-template #editarItem>
-                         <textarea 
-                         (keyup.enter)="actualizarItem(item)"
-                         [(ngModel)]="item.alias" style="min-width: 300px;" class="form-control text-center col-12"></textarea>
-                       </ng-template>
-                         
-                      </td>
-  
-            
-                      <!-- <td class="text-center">
-                       <ng-container *ngIf="!item.Editando; else editarCategoria">
-                         {{getNombreCategoria(item.idCategoria)}}
-                       </ng-container>
-                       <ng-template #editarCategoria>
-                         <select [(ngModel)]="item.idCategoria" id="inputState" style="min-width: 250px;" class="form-select">
-                           <option value="0">Seleccione una categoría</option>
-                           <option value="{{categoria.id}}" *ngFor="let categoria of Categorias">{{categoria.Nombre}}
-                           </option>
-                         </select>
-                       </ng-template>
-                      </td> -->
-  <!--      
-                      <td class="text-center">
-                       <ng-container *ngIf="!item.Editando; else editarEmpresa">
-                         {{item.Empresa}}
-                       </ng-container>
-                       <ng-template #editarEmpresa>
-                         <select [(ngModel)]="item.idEmpresa" id="inputState" style="min-width: 250px;" class="form-select">
-                           <option value="0">Seleccione una empresa</option>
-                           <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
-                         </select>
-                       </ng-template>
-                     </td> -->
-                      <td *ngIf="this.TipoRubro==1" class="text-center">
-                       <ng-container *ngIf="!item.Editando; else editarSucursales">
-                         {{item.NombreSucursales}}
-                       </ng-container>
-                       <ng-template #editarSucursales>
-                    
-                         <p-multiSelect 
-                          [options]="Sucursales" 
-                          [(ngModel)]="item.Sucursales" 
-                          [maxSelectedLabels]="1" 
-                          [selectedItemsLabel]="getSelectedSucursalesLabelList(item.Sucursales)"
-                          optionLabel="Nombre" 
-                          appendTo="body"
-                          placeholder="Seleccione las Sucursales" />
-                       </ng-template>
-                     </td>
-                      <td *ngIf="this.TipoRubro==2"  class="text-center">
-                       <ng-container *ngIf="!item.Editando; else editarProyectos">
-                         {{item.NombreProyectos}}
-                       </ng-container>
-                       <ng-template #editarProyectos>
-                    
-                         <p-multiSelect 
-                          [options]="Proyectos" 
-                          [(ngModel)]="item.Proyectos" 
-                          [maxSelectedLabels]="1" 
-                          appendTo="body"
-                          [selectedItemsLabel]="getSelecteProyectosLabelList(item.Proyectos)"
-                          optionLabel="NombreSucursal" 
-                          placeholder="Seleccione los proyectos" />
-                       </ng-template>
-                     </td>
-                      <td  class="text-center">
-                       <ng-container *ngIf="!item.Editando; else editarUsuarios">
-                         {{item.NombresUsuarios}}
-                       </ng-container>
-                       <ng-template #editarUsuarios>
-                    
-                         <p-multiSelect 
-                          [options]="Usuarios" 
-                          [(ngModel)]="item.Usuarios" 
-                          [maxSelectedLabels]="1" 
-                          appendTo="body"
-                          [selectedItemsLabel]="getSelecteUsuariosLabelList(item.Usuarios)"
-                          optionLabel="Nombres" 
-                          placeholder="Seleccione usuarios" />
-                       </ng-template>
-                     </td>
-       
-                    <td  class="text-center">
-                    <button (click)="moveUp(item)" [disabled]="item.Orden==1" type="button" class="btn btn-success text-center">
-                      <i class="fa-solid fa-circle-arrow-up"></i>
-                    </button>
-                    </td>
-                    <td  class="text-center">
-                    <button (click)="moveDown(item)" [disabled]="item.Orden==getLengItem(item.idCategoria)" type="button" class="btn btn-danger text-center">
-                      <i class="fa-solid fa-circle-down"></i>
-                    </button>
-                    </td>
-  
-                    <td *ngIf="!item.Editando" class="text-center">
-                    <button (click)="toggleEdicion(item)" type="button" class="btn btn-secondary text-center">
-                      <i class="fa-regular fa-pen-to-square"></i>
-                    </button>
-                    </td>
-                    <td *ngIf="item.Editando" class="text-center">
+                <td
+                    class="text-start">
+                     <ng-container *ngIf="!item.Editando; else editarItem">
+                       {{item.name}}
+                     </ng-container>
+                     <ng-template #editarItem>
+                       <textarea 
+                       (keyup.enter)="actualizarItem(item)"
+                       [(ngModel)]="item.alias" style="min-width: 300px;" class="form-control text-center col-12"></textarea>
+                     </ng-template>
+                       
+                </td>
+                    <td *ngIf="this.TipoRubro==1" class="text-center">
+                     <ng-container *ngIf="!item.Editando; else editarSucursales">
+                       {{item.NombreSucursales}}
+                     </ng-container>
+                     <ng-template #editarSucursales>
                   
-                     <button (click)="actualizarItem(item)" type="button" class="btn btn-info text-center">
-                       <i class="fa solid fa-check"></i>
-                     </button>
+                       <p-multiSelect 
+                        [options]="Sucursales" 
+                        [(ngModel)]="item.Sucursales" 
+                        [maxSelectedLabels]="1" 
+                        [selectedItemsLabel]="getSelectedSucursalesLabelList(item.Sucursales)"
+                        optionLabel="Nombre" 
+                        appendTo="body"
+                        placeholder="Seleccione las Sucursales" />
+                     </ng-template>
                    </td>
-                   <td class="text-center" *ngIf="item.Activo"><button (click)="ActualizarItemEstado(item,false)"
-                       type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button>
+                    <td *ngIf="this.TipoRubro==2"  class="text-center">
+                     <ng-container *ngIf="!item.Editando; else editarProyectos">
+                       {{item.NombreProyectos}}
+                     </ng-container>
+                     <ng-template #editarProyectos>
+                  
+                       <p-multiSelect 
+                        [options]="Proyectos" 
+                        [(ngModel)]="item.Proyectos" 
+                        [maxSelectedLabels]="1" 
+                        appendTo="body"
+                        [selectedItemsLabel]="getSelecteProyectosLabelList(item.Proyectos)"
+                        optionLabel="NombreSucursal" 
+                        placeholder="Seleccione los proyectos" />
+                     </ng-template>
                    </td>
-                   <td class="text-center" *ngIf="!item.Activo"><button (click)="ActualizarItemEstado(item,true)"
-                       type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button>
+                    <td  class="text-center">
+                     <ng-container *ngIf="!item.Editando; else editarUsuarios">
+                       {{item.NombresUsuarios}}
+                     </ng-container>
+                     <ng-template #editarUsuarios>
+                  
+                       <p-multiSelect 
+                        [options]="Usuarios" 
+                        [(ngModel)]="item.Usuarios" 
+                        [maxSelectedLabels]="1" 
+                        appendTo="body"
+                        [selectedItemsLabel]="getSelecteUsuariosLabelList(item.Usuarios)"
+                        optionLabel="Nombres" 
+                        placeholder="Seleccione usuarios" />
+                     </ng-template>
                    </td>
-                   <td class="text-center" ><button (click)="borrarCuenta(item.id)"
-                       type="button" class="btn btn-warning"><i class="fa-solid fa-trash"></i></button>
-                   </td>
-                     
-                    
-                  </tr>
+     
+                  <td  class="text-center">
+                  <button (click)="moveUp(item)" [disabled]="item.Orden==1" type="button" class="btn btn-success text-center">
+                    <i class="fa-solid fa-circle-arrow-up"></i>
+                  </button>
+                  </td>
+                  <td  class="text-center">
+                  <button (click)="moveDown(item)" [disabled]="item.Orden==getLengItem(item.idCategoria)" type="button" class="btn btn-danger text-center">
+                    <i class="fa-solid fa-circle-down"></i>
+                  </button>
+                  </td>
+
+                  <td *ngIf="!item.Editando" class="text-center">
+                  <button (click)="toggleEdicion(item)" type="button" class="btn btn-secondary text-center">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                  </td>
+                  <td *ngIf="item.Editando" class="text-center">
+                
+                   <button (click)="actualizarItem(item)" type="button" class="btn btn-info text-center">
+                     <i class="fa solid fa-check"></i>
+                   </button>
+                 </td>
+                 <td class="text-center" *ngIf="item.Activo"><button (click)="ActualizarItemEstado(item,false)"
+                     type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button>
+                 </td>
+                 <td class="text-center" *ngIf="!item.Activo"><button (click)="ActualizarItemEstado(item,true)"
+                     type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button>
+                 </td>
+                 <td class="text-center" ><button (click)="borrarCuenta(item.id)"
+                     type="button" class="btn btn-warning"><i class="fa-solid fa-trash"></i></button>
+                 </td>
+                   
+                  
+                </tr>
+
+                </ng-container>
+
+                <ng-container 
+                *ngIf="item.idCategoria=='KtA2Cxpd79TJrW9afqR9'">
+                <tr>
+    <td class="text-center">
+      <button 
+      type="button" 
+      pButton 
+      pRipple 
+      (click)="item.expanded = !item.expanded"
+      class="p-button-text p-button-rounded p-button-plain mr-2" 
+      [icon]="item.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+    </button>
+    </td>
+    <td class="text-start">
+      {{ item.name }}
+    </td>
+
+
+    <!-- otras columnas... -->
+  </tr>
+
+  <!-- Fila secundaria visible solo si está expandido -->
+  <tr *ngIf="item.expanded">
+    <td colspan="10" class="p-0"> <!-- Ajusta colspan según tus columnas -->
+      <button *ngIf="item.Dinamica==true" type="button"
+       class="btn btn-success m-2" (click)="agregarHijo(item)">Agregar cuenta</button>
+
+      <p-table 
+        [value]="item.Children" 
+        [tableStyle]="{'min-width': '100%'}"
+        
+        [responsiveLayout]="'scroll'">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-center">Orden</th>
+            <th class="text-center">Nombre</th>
+            <th *ngIf="item.Dinamica==true" class="text-center">Editar</th>
+            <th *ngIf="item.Dinamica==true" class="text-center">Guardar</th>
+            <!-- otras columnas si quieres -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-child>
+          <tr class="text-center">
+            <td class="text-center">{{ child.Orden }}</td>
+            <td *ngIf="child.Editando==true" class="text-center">
+              <div class="input-group input-group-sm mb-3">
+              <input [(ngModel)]="child.Nombre" type="text" class="form-control">
+            </div>
+            </td>
+            <td *ngIf="child.Editando==false" class="text-center">{{ child.Nombre }}</td>
+            <td class="text-center"> 
+              <button
+              *ngIf="item.Dinamica==true"
+              (click)="guardarCuentaHijo(child)"
+              type="button"
+              class="btn btn-success"> <i class="pi pi-save"></i></button>
+            </td>
+            <td class="text-center"> 
+              <button
+              *ngIf="item.Dinamica==true"
+              (click)="guardarCuentaHijo(child)"
+              type="button"
+              class="btn btn-success"> <i class="pi pi-save"></i></button>
+            </td>
+            <!-- otras columnas si necesitas -->
+          </tr>
+        </ng-template>
+      </p-table>
+    </td>
+  </tr>
+
+                </ng-container>
+
   
              
               </ng-template>
