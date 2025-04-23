@@ -196,18 +196,18 @@
 
                 </ng-container>
 
-                <ng-container 
-                *ngIf="item.idCategoria=='KtA2Cxpd79TJrW9afqR9'">
-                <tr>
-    <td class="text-center">
-      <button 
-      type="button" 
-      pButton 
-      pRipple 
-      (click)="item.expanded = !item.expanded"
-      class="p-button-text p-button-rounded p-button-plain mr-2" 
-      [icon]="item.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
-    </button>
+    <ng-container 
+    *ngIf="item.idCategoria=='KtA2Cxpd79TJrW9afqR9'">
+    <tr style="background-color: rgb(249, 249, 250);">
+      <td class="text-center">
+        <button 
+        type="button" 
+        pButton 
+        pRipple 
+        (click)="item.expanded = !item.expanded"
+        class="p-button-text p-button-rounded p-button-plain mr-2" 
+        [icon]="item.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+      </button>
     </td>
     <td class="text-start">
       {{ item.name }}
