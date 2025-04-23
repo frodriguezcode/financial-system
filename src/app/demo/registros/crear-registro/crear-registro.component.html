@@ -363,6 +363,7 @@
           </th>
           <th style="text-transform: uppercase; font-size: 13px;">Tipo de Flujo</th>
           <th style="text-transform: uppercase; font-size: 13px;">Cuenta Contable</th>
+          <th *ngIf="MostraSubCuentas==true" style="text-transform: uppercase; font-size: 13px;">Sub Cuenta Contable</th>
           <th style="text-transform: uppercase; font-size: 13px;">Importe</th>
           <th style="text-transform: uppercase; font-size: 13px;">Tipo de Operación</th>
           <th style="text-transform: uppercase; font-size: 13px;">
@@ -481,7 +482,7 @@
           <td class="text-center">
             <p-dropdown
               [options]="this.getCategoriasByTipo(registros.idTipo)"
-              (onChange)="renderizarBarra()"
+              (onChange)="renderizarBarra();getCategoria(registros.idCategoria)"
               [(ngModel)]="registros.idCategoria"
               [style]="{ width: '300px' }"
               [panelStyle]="{ width: '300px' }"
@@ -500,6 +501,7 @@
               </ng-template>
             </p-dropdown>
           </td>
+  
 
           <td class="text-center">
             <p
@@ -521,7 +523,7 @@
             </p>
             <p-dropdown
         
-            (onChange)="renderizarBarra()"
+            (onChange)="renderizarBarra();getCuentaSeleccionada(registros.NombreElemento)"
               [options]="getCuentabyCategoria(registros.idCategoria)"
               [(ngModel)]="registros.NombreElemento"
               name="registros.Elemento"
@@ -532,8 +534,7 @@
               [disabled]="
                 this.Items.length == 0 ||
                 registros.idCategoria == '' ||
-                getCuentabyCategoria(registros.idCategoria).length == 0
-              "
+                getCuentabyCategoria(registros.idCategoria).length == 0"
               [showClear]="false"
               placeholder="Cuentas Contables"
               appendTo="body"
@@ -541,6 +542,30 @@
               <ng-template pTemplate="selectedItem" let-selectedItem>
                 <div class="flex align-items-lg-start gap-2">
                   <div class="seleccion-item">{{ selectedItem.label }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </td>
+
+          <td *ngIf="MostraSubCuentas==true" class="text-center">
+            <p-dropdown
+              [options]="CuentasHijos"
+              (onChange)="renderizarBarra()"
+              [(ngModel)]="registros.idCuentaHijo"
+              [style]="{ width: '300px' }"
+              [panelStyle]="{ width: '300px' }"
+              name="ItemSeleccionados"
+              optionLabel="Nombre"
+              [filter]="true"
+              filterBy="Nombre"
+              [showClear]="false"
+              [disabled]="CuentasHijos.length==0"
+              placeholder="Categorías"
+              appendTo="body"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedItem>
+                <div class="flex align-items-lg-start">
+                  <div class="seleccion-item">{{ selectedItem.Nombre }}</div>
                 </div>
               </ng-template>
             </p-dropdown>

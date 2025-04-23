@@ -240,6 +240,7 @@
             <th class="text-center">Orden</th>
             <th class="text-center">Nombre</th>
             <th *ngIf="item.Dinamica==true" class="text-center">Guardar/Editar</th>
+            <th *ngIf="item.Dinamica==true" class="text-center">Activar/Desactivar</th>
             <!-- otras columnas si quieres -->
           </tr>
         </ng-template>
@@ -264,15 +265,24 @@
               type="button"
               class="btn btn-success text-center"> <i class="pi pi-save"></i></button>
             </td>
-       
+            <td *ngIf="item.Dinamica==true && child.Activo==false" class="text-center">
+              <button type="button" (click)="actualizarEstadoHijo(child,true)" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button>
+            </td>
+            <td *ngIf="item.Dinamica==true && child.Activo==true" class="text-center">
+              <button type="button" (click)="actualizarEstadoHijo(child,false)" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i>
+              </button>
+            </td>
+            
+            
             <!-- otras columnas si necesitas -->
           </tr>
         </ng-template>
       </p-table>
+      <p style="margin-left:40px" > <strong>Cuentas: {{item.Children.length}}</strong></p>
     </td>
   </tr>
 
-                </ng-container>
+</ng-container>
 
   
              

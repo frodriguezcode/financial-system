@@ -124,7 +124,6 @@ private offcanvasService = inject(NgbOffcanvas);
   idTipoRegistro:number=1
   claseTabla:string='p-datatable-sm'
   // *Registros desde la promesa
-  inputVal = ''; // Initialize inputVal to be empty
   FechaDesde:FormControl=new FormControl('')
   FechaHasta:FormControl=new FormControl('')
 
@@ -147,7 +146,6 @@ private offcanvasService = inject(NgbOffcanvas);
   usuario:any
   idItem:any=''
   Roles: any=[];
-  Departamentos: string[] = [];
   ItemsCategGroup:any= [];
   ItemsCategGroupBack:any= [];
   TiposOperacion:any= [];
@@ -158,7 +156,9 @@ private offcanvasService = inject(NgbOffcanvas);
   SucursaleSeleccionada: any;
   CuentasContables:any=[]
   SeleccionarTodo:boolean=false
+  MostraSubCuentas:boolean=false
   Empresas:any
+  CuentasHijos:any=[]
   Flujos: any = [
     {id: "1", name: "Banco"},
     {id: "2", name: "Efectivo"},
@@ -937,6 +937,18 @@ switchTipoRegistro(idTipo: number) {
   }, 150);
 }
 
+getCategoria(idCategoria:any){
+  console.log('idCategoria',idCategoria)
+
+  if(idCategoria.id=='KtA2Cxpd79TJrW9afqR9'){
+    this.MostraSubCuentas=true
+  }
+  else {
+    this.MostraSubCuentas=false
+  }
+
+}
+
 renderizarBarra(){
   setTimeout(() => {
     this.syncScroll();
@@ -1244,6 +1256,7 @@ this.ItemsBack.filter((item:any)=>item.idCategoria==Categoria.id
     "id":cuenta.id,
     "idCategoria":cuenta.idCategoria,
     "label":cuenta.Nombre,
+    "CuentasHijos":cuenta.CuentasHijos==undefined ? [] : cuenta.CuentasHijos
   })
   
 });
@@ -1251,9 +1264,14 @@ return cuentaContable
 
 }
 
-getElementoRegistro(Elemento:any){
+getCuentaSeleccionada(cuenta:any){
 
+  const ItemsBack = [...this.ItemsBack]
+  let ItemEncontrado=ItemsBack.filter((it:any)=>it.Nombre==cuenta && it.TipoRubro==this.idTipoRegistro )
+  console.log('ItemEncontrado',ItemEncontrado)
+  this.CuentasHijos=ItemEncontrado[0].CuentasHijos
 }
+
 
 getMonthName(Fecha:string){
   return Number((Fecha.substring(5)).substring(0,2))

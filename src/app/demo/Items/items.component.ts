@@ -612,7 +612,6 @@ borrarCuenta(idCuenta:string){
   }
 
   guardarCuentaHijo(child:any){
-    console.log('child',child)
     const ItemsBack = [...this.ItemsBack]
     let ItemEncontrado=ItemsBack.filter((it:any)=>it.id==child.ItemId)
     console.log('ItemEncontrado',ItemEncontrado)
@@ -623,6 +622,7 @@ borrarCuenta(idCuenta:string){
         "Alias":child.Alias,
         "ItemId":child.ItemId,
         "Prefijo":child.Prefijo,
+        "Activo":true,
         "Editando":false,
         "id":child.id,
         "Orden":child.Orden,
@@ -636,13 +636,23 @@ borrarCuenta(idCuenta:string){
           );
       
 
-
+        console.log('ItemEncontrado[0]',ItemEncontrado[0])
 
       this.conS.ActualizarItem(ItemEncontrado[0]).then(resp=>{
-        this.toastr.success('Cuenta  Creada', '¡Exito!');
+        this.toastr.success('Cuenta  actualizada', '¡Exito!');
       })
     
     }
+  }
+
+  actualizarEstadoHijo(child:any,Estado:any){
+
+    child.Activo=Estado
+    const ItemsBack = [...this.ItemsBack]
+    let ItemEncontrado=ItemsBack.filter((it:any)=>it.id==child.ItemId)
+    this.conS.ActualizarItem(ItemEncontrado[0]).then(resp=>{
+      this.toastr.success('Cuenta  actualizada', '¡Exito!');
+    })
   }
 
 
@@ -941,6 +951,10 @@ removeAnimation(element: HTMLElement | null, animationClass: string) {
     }
 
     return total;
+}
+
+calcularSubItems(hijos:any){
+console.log('hijos',hijos)
 }
   obtenerEmpresas(){
     this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe(resp=>{
