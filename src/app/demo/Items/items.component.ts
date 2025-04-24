@@ -154,6 +154,7 @@ borrarCuenta(idCuenta:string){
   obtenerProyectos(){
     this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
     this.Proyectos=resp
+    
       this.obtenerItems()
     this.Proyectos.map((proyect:any)=>proyect.NombreSucursal= proyect.Nombre + " - " + this.getNameSucursal(proyect.idSucursal,proyect.idEmpresa) )
     this.cargarFormulario()
@@ -233,6 +234,9 @@ borrarCuenta(idCuenta:string){
       }
       this.ItemsGroup.push(_Item)
     });
+    this.ItemsGroup=this.ItemsGroup.sort((a, b) => a.Orden - b.Orden);
+
+    console.log('ItemsGroup',this.ItemsGroup)
  this.cargando=false
   }
   descargarExcel(){
@@ -668,177 +672,187 @@ borrarCuenta(idCuenta:string){
       //     console.log('Actualizado')
       //   })
       // })
+    
       Subscribe.unsubscribe()
-      if(resp.length>0){
-        this.ItemsBack=resp.sort((a:any, b:any) => a.Orden - b.Orden)
+      let CuentasPagosProveedoresRubro1=resp
+      .filter((cuenta:any)=>cuenta.Nombre=='1.2.1 Pago a Proveedores' && cuenta.TipoRubro==1)
+      let CuentasPagosProveedoresRubro2=resp
+      .filter((cuenta:any)=>cuenta.Nombre=='1.2.1 Pago a Proveedores' && cuenta.TipoRubro==2)
+
+      let CuentasCostosOperacionRubro1=resp
+      .filter((cuenta:any)=>cuenta.Nombre=='1.2.2 Costos de la Operación' && cuenta.TipoRubro==1)
+      let CuentasCostosOperacionRubro2=resp
+      .filter((cuenta:any)=>cuenta.Nombre=='1.2.2 Costos de la Operación' && cuenta.TipoRubro==2)
+      this.ItemsBack=resp.sort((a:any, b:any) => a.Orden - b.Orden)
+
+      if(CuentasPagosProveedoresRubro1.length==0){
+        const userIds = this.Usuarios.map(user => user.id);
+        const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
+        let CuentaPagoProveedores={
+        "idUsuarios":userIds,
+        "idSucursales":SucursalesIds,
+        "idProyectos":[],
+        "Activo":true,
+        "Editando":false,
+        "Alias":"Pago a proveedores",
+        "animation":"",
+        "Dinamica":false,
+        "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+        "idEmpresa":this.usuario.idEmpresa,
+        "idMatriz":this.usuario.idMatriz,
+        "userIds":userIds,
+        "Orden":1,
+        "TipoRubro":1,
+        "OrdenReal":2,
+        "CuentasHijos":[
+          {
+            "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
+            "id":"KtA2Cxpd79TJrW9afqR9_1",
+            "Orden":1,
+            "Editando":false,
+          },
+          {
+            "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
+            "id":"KtA2Cxpd79TJrW9afqR9_2",
+            "Orden":2,
+            "Editando":false,
+          },
+          {
+            "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
+            "id":"KtA2Cxpd79TJrW9afqR9_3",
+            "Orden":3,
+            "Editando":false,
+          },
+        ],
+        "Tipo":2,
+        "Nombre":"1.2.1 Pago a Proveedores",
+        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+
+        }
+
+        this.conS.crearItem(CuentaPagoProveedores).then(resp=>{
+           this.ItemsBack.push(CuentaPagoProveedores)
+        })
+      }
+      if(CuentasPagosProveedoresRubro2.length==0){
+        const userIds = this.Usuarios.map(user => user.id);
+        const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
+
+        let CuentaPagoProveedores={
+        "idUsuarios":userIds,
+        "idSucursales":[],
+        "idProyectos":ProyectosIds,
+        "Activo":true,
+        "Editando":false,
+        "Dinamica":false,
+        "Alias":"Pago a proveedores",
+        "animation":"",
+        "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+        "idEmpresa":this.usuario.idEmpresa,
+        "idMatriz":this.usuario.idMatriz,
+        "userIds":userIds,
+        "Orden":2,
+        "TipoRubro":2,
+        "CuentasHijos":[
+          {
+            "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
+            "id":"KtA2Cxpd79TJrW9afqR9_1",
+            "Orden":1,
+            "Editando":false,
+          },
+          {
+            "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
+            "id":"KtA2Cxpd79TJrW9afqR9_2",
+            "Orden":2,
+            "Editando":false,
+          },
+          {
+            "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
+            "id":"KtA2Cxpd79TJrW9afqR9_3",
+            "Orden":3,
+            "Editando":false,
+          },
+        ],
+        "OrdenReal":2,
+        "Tipo":2,
+        "Nombre":"1.2.1 Pago a Proveedores",
+        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+        }
+       
+        this.conS.crearItem(CuentaPagoProveedores).then(resp=>{
+          this.ItemsBack.push(CuentaPagoProveedores)
+        })
+      }
+
+
+      if(CuentasCostosOperacionRubro1.length==0){
+        const userIds = this.Usuarios.map(user => user.id);
+        const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
+
+        let CuentaCostoOperacion={
+        "idUsuarios":userIds,
+        "idSucursales":SucursalesIds,
+        "idProyectos":[],
+        "Activo":true,
+        "Editando":false,
+        "Alias":"Costos de la Operación",
+        "animation":"",
+        "Dinamica":true,
+        "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+        "idEmpresa":this.usuario.idEmpresa,
+        "idMatriz":this.usuario.idMatriz,
+        "userIds":userIds,
+        "Orden":1,
+        "TipoRubro":1,
+        "OrdenReal":2,
+        "CuentasHijos":[],
+        "Tipo":2,
+        "Nombre":"1.2.2 Costos de la Operación",
+        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+
+        }
+        this.conS.crearItem(CuentaCostoOperacion).then(resp=>{
+          this.ItemsBack.push(CuentaCostoOperacion)
+        })
+      }
+      if(CuentasCostosOperacionRubro2.length==0){
+        const userIds = this.Usuarios.map(user => user.id);
+        const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
+
+        let CuentaCostoOperacion={
+        "idUsuarios":userIds,
+        "idSucursales":[],
+        "idProyectos":ProyectosIds,
+        "Activo":true,
+        "Editando":false,
+        "Alias":"Costos de la Operación",
+        "animation":"",
+        "Dinamica":true,
+        "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+        "idEmpresa":this.usuario.idEmpresa,
+        "idMatriz":this.usuario.idMatriz,
+        "userIds":userIds,
+        "Orden":2,
+        "TipoRubro":2,
+        "OrdenReal":2,
+        "CuentasHijos":[],
+        "Tipo":2,
+        "Nombre":"1.2.2 Costos de la Operación",
+        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+
+        }
+        this.conS.crearItem(CuentaCostoOperacion).then(resp=>{
+          this.ItemsBack.push(CuentaCostoOperacion)
+        })
+      }
+      if(this.ItemsBack.length>0){
+        this.ItemsBack=this.ItemsBack.sort((a, b) => a.Orden - b.Orden);
         this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))+1
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro)
     
 
         this.Items.map((item:any)=>item.animation='')
         console.log('Items',this.Items)
-        let CuentasPagosProveedoresRubro1=resp
-        .filter((cuenta:any)=>cuenta.Nombre=='1.2.1 Pago a Proveedores' && cuenta.TipoRubro==1)
-        let CuentasPagosProveedoresRubro2=resp
-        .filter((cuenta:any)=>cuenta.Nombre=='1.2.1 Pago a Proveedores' && cuenta.TipoRubro==2)
-
-        let CuentasCostosOperacionRubro1=resp
-        .filter((cuenta:any)=>cuenta.Nombre=='1.2.2 Costos de la Operación' && cuenta.TipoRubro==1)
-        let CuentasCostosOperacionRubro2=resp
-        .filter((cuenta:any)=>cuenta.Nombre=='1.2.2 Costos de la Operación' && cuenta.TipoRubro==2)
-        
-
-        if(CuentasPagosProveedoresRubro1.length==0){
-          const userIds = this.Usuarios.map(user => user.id);
-          const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
-          let CuentaPagoProveedores={
-          "idUsuarios":userIds,
-          "idSucursales":SucursalesIds,
-          "idProyectos":[],
-          "Activo":true,
-          "Editando":false,
-          "Alias":"Pago a proveedores",
-          "animation":"",
-          "Dinamica":false,
-          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
-          "idEmpresa":this.usuario.idEmpresa,
-          "idMatriz":this.usuario.idMatriz,
-          "userIds":userIds,
-          "Orden":1,
-          "TipoRubro":1,
-          "OrdenReal":2,
-          "CuentasHijos":[
-            {
-              "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
-              "id":"KtA2Cxpd79TJrW9afqR9_1",
-              "Orden":1,
-              "Editando":false,
-            },
-            {
-              "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
-              "id":"KtA2Cxpd79TJrW9afqR9_2",
-              "Orden":2,
-              "Editando":false,
-            },
-            {
-              "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
-              "id":"KtA2Cxpd79TJrW9afqR9_3",
-              "Orden":3,
-              "Editando":false,
-            },
-          ],
-          "Tipo":2,
-          "Nombre":"1.2.1 Pago a Proveedores",
-          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-
-          }
-
-          this.conS.crearItem(CuentaPagoProveedores).then(resp=>{})
-        }
-        if(CuentasPagosProveedoresRubro2.length==0){
-          const userIds = this.Usuarios.map(user => user.id);
-          const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
-
-          let CuentaPagoProveedores={
-          "idUsuarios":userIds,
-          "idSucursales":[],
-          "idProyectos":ProyectosIds,
-          "Activo":true,
-          "Editando":false,
-          "Dinamica":false,
-          "Alias":"Pago a proveedores",
-          "animation":"",
-          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
-          "idEmpresa":this.usuario.idEmpresa,
-          "idMatriz":this.usuario.idMatriz,
-          "userIds":userIds,
-          "Orden":2,
-          "TipoRubro":2,
-          "CuentasHijos":[
-            {
-              "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
-              "id":"KtA2Cxpd79TJrW9afqR9_1",
-              "Orden":1,
-              "Editando":false,
-            },
-            {
-              "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
-              "id":"KtA2Cxpd79TJrW9afqR9_2",
-              "Orden":2,
-              "Editando":false,
-            },
-            {
-              "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
-              "id":"KtA2Cxpd79TJrW9afqR9_3",
-              "Orden":3,
-              "Editando":false,
-            },
-          ],
-          "OrdenReal":2,
-          "Tipo":2,
-          "Nombre":"1.2.1 Pago a Proveedores",
-          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-          }
-          this.conS.crearItem(CuentaPagoProveedores).then(resp=>{})
-        }
-
-
-        if(CuentasCostosOperacionRubro1.length==0){
-          const userIds = this.Usuarios.map(user => user.id);
-          const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
-
-          let CuentaCostoOperacion={
-          "idUsuarios":userIds,
-          "idSucursales":SucursalesIds,
-          "idProyectos":[],
-          "Activo":true,
-          "Editando":false,
-          "Alias":"Costos de la Operación",
-          "animation":"",
-          "Dinamica":true,
-          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
-          "idEmpresa":this.usuario.idEmpresa,
-          "idMatriz":this.usuario.idMatriz,
-          "userIds":userIds,
-          "Orden":1,
-          "TipoRubro":1,
-          "OrdenReal":2,
-          "CuentasHijos":[],
-          "Tipo":2,
-          "Nombre":"1.2.2 Costos de la Operación",
-          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-
-          }
-          this.conS.crearItem(CuentaCostoOperacion).then(resp=>{})
-        }
-        if(CuentasCostosOperacionRubro2.length==0){
-          const userIds = this.Usuarios.map(user => user.id);
-          const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
-
-          let CuentaCostoOperacion={
-          "idUsuarios":userIds,
-          "idSucursales":[],
-          "idProyectos":ProyectosIds,
-          "Activo":true,
-          "Editando":false,
-          "Alias":"Costos de la Operación",
-          "animation":"",
-          "Dinamica":true,
-          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
-          "idEmpresa":this.usuario.idEmpresa,
-          "idMatriz":this.usuario.idMatriz,
-          "userIds":userIds,
-          "Orden":2,
-          "TipoRubro":2,
-          "OrdenReal":2,
-          "CuentasHijos":[],
-          "Tipo":2,
-          "Nombre":"1.2.2 Costos de la Operación",
-          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-
-          }
-          this.conS.crearItem(CuentaCostoOperacion).then(resp=>{})
-        }
 
       
     
