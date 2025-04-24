@@ -221,3 +221,10 @@ th:nth-child(9) {
 tfoot tr {
   background: white;
 }
+
+::ng-deep .p-treeselect-label-empty::after {
+  content: "Tu mensaje personalizado";
+  color: #6c757d; /* Color del placeholder */
+  position: absolute;
+  left: 0;
+}

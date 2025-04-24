@@ -37,6 +37,7 @@ import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 import TiposOperacionComponent from '../../tipos-operacion/tipos-operacion.component';
 import { Subscription } from 'rxjs';
+import { TreeSelectModule } from 'primeng/treeselect';
 
 @Component({
   selector: 'app-crear',
@@ -72,7 +73,8 @@ import { Subscription } from 'rxjs';
     CurrencySymbolPipe,
     TabViewModule,
     ButtonModule,
-    MultiSelectModule
+    MultiSelectModule,
+    TreeSelectModule
    ],
   templateUrl: './crear-registro.component.html',
   styleUrls: ['./crear-registro.component.scss'],
@@ -83,7 +85,7 @@ export default class CrearRegistroComponent implements OnInit,AfterViewInit  {
 private offcanvasService = inject(NgbOffcanvas);
 @ViewChild('scrollTop') scrollTop!: ElementRef;
 @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-
+expandedKeys: { [key: string]: boolean } = {};
   // NEW: bottom scrollbar
   @ViewChild('scrollBottom') scrollBottom!: ElementRef;
 
@@ -94,11 +96,11 @@ private offcanvasService = inject(NgbOffcanvas);
     private authS:AuthService,
     private firestore: AngularFirestore
   ){}
-
+  emptyMessage='Selecicone una cuenta'
   page = 1;
 	pageSize = 10;
 	collectionSize = 0;
-
+  selectedNodes: any;
   // isDragging = false;
   // startX = 0;
   // scrollLeft = 0;
@@ -722,6 +724,7 @@ obtenerRegistros(){
                    "AnioRegistro":element.AnioRegistro,
                    "NumTransaction":element.NumTransaction,
                    "Cuenta":element.Cuenta,
+                   "CuentaSeleccionada":[],
                    "Editando":element.Editando,
                    "Elemento":element.Elemento,
                    "FechaRegistro":element.FechaRegistro,
@@ -937,17 +940,7 @@ switchTipoRegistro(idTipo: number) {
   }, 150);
 }
 
-getCategoria(idCategoria:any){
-  console.log('idCategoria',idCategoria)
 
-  if(idCategoria.id=='KtA2Cxpd79TJrW9afqR9'){
-    this.MostraSubCuentas=true
-  }
-  else {
-    this.MostraSubCuentas=false
-  }
-
-}
 
 renderizarBarra(){
   setTimeout(() => {
@@ -1050,8 +1043,7 @@ else {
   //     timer: 1500
   //   });
   // }
-  console.log('Registro',Registro)
-   if(Registro.Elemento=="" || Registro.Elemento==undefined){
+   if(Registro.CuentaSeleccionada=="" || Registro.CuentaSeleccionada==undefined){
       Swal.fire({
         position: "center",
         icon: "warning",
@@ -1097,6 +1089,7 @@ else {
   //   }
   
     else {
+      console.log('Registro',Registro)
       let _categoriaEncontrada:any=[]
       let _MesRegistro:any=[]
       _MesRegistro=this.MesesTodos.filter((mes:any)=>mes.id==this.getMonthName(Registro.FechaRegistro))
@@ -1129,11 +1122,13 @@ else {
       this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor=Registro.Valor
       this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor2=Registro.Valor
    
-      this.conS.ActualizarRegistro(Registro).then(resp=>{
-            this.toastr.success('Guardado', '¡Exito!');
-            this.calcularImporteTotal(this.Registros)
-            this.calcularImporteSubTotal(this.Registros)
-        })
+     
+
+      // this.conS.ActualizarRegistro(Registro).then(resp=>{
+      //       this.toastr.success('Guardado', '¡Exito!');
+      //       this.calcularImporteTotal(this.Registros)
+      //       this.calcularImporteSubTotal(this.Registros)
+      //   })
   
     
 
@@ -1243,6 +1238,26 @@ obtenerCategorias(){
   })
 }
 
+
+getHijosByCuenta(CuentasHijos:any,OrdenPadre:any,idCategoria:any,idCuentaPadre:any){
+  let _CuentasHijos:any=[]
+  CuentasHijos.forEach(element => {
+    _CuentasHijos.push({
+      key: `${OrdenPadre}-${element.Orden}`,
+      label: element.Nombre,
+      leaf: true,
+      Tipo:'Hijo',
+      idCategoria: idCategoria,
+      id: element.id,
+      ItemId: idCuentaPadre,
+      data: 'Work Folder',
+      icon: 'pi pi-fw pi-cog',
+    })
+  });
+
+  return _CuentasHijos
+
+}
 getCuentabyCategoria(Categoria:any){
 
 let cuentaContable:any=[]
@@ -1253,13 +1268,22 @@ this.ItemsBack.filter((item:any)=>item.idCategoria==Categoria.id
 
 ).forEach((cuenta:any) => {
   cuentaContable.push({
-    "id":cuenta.id,
-    "idCategoria":cuenta.idCategoria,
-    "label":cuenta.Nombre,
-    "CuentasHijos":cuenta.CuentasHijos==undefined ? [] : cuenta.CuentasHijos
+    key: `${cuenta.Orden}`,
+    label: cuenta.Nombre,
+    Tipo:'Padre',
+    ItemId: cuenta.id,
+    idCategoria:cuenta.idCategoria,
+    data: 'Documents Folder',
+    icon: 'pi pi-fw pi-inbox',
+    expanded: true,
+    children:cuenta.CuentasHijos==undefined ? [] : 
+    this.getHijosByCuenta(cuenta.CuentasHijos,cuenta.Orden,cuenta.idCategoria,cuenta.id)
+
   })
   
 });
+
+
 return cuentaContable
 
 }
@@ -1501,6 +1525,7 @@ cargarFormulario(){
     idMatriz: new FormControl(this.usuario.idMatriz), 
     idCategoria: new FormControl(''), 
     TipoOperacion: new FormControl(''), 
+    CuentaSeleccionada: new FormControl(''),
     NombreElemento:new FormControl('NombreElemento'),
     NumCuenta:new FormControl('NumCuenta'),
     Comentarios:new FormControl(''),
