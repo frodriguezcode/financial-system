@@ -225,7 +225,7 @@ borrarCuenta(idCuenta:string){
         "Proyectos":item.Proyectos == undefined ? [] : item.Proyectos,
         "Usuarios":item.Usuarios == undefined ? [] : item.Sucursales,
         "idCategoria":item.idCategoria,
-        "Children":item.CuentasHijos==undefined ? [] : item.CuentasHijos,
+        "Children":item.CuentasHijos==undefined ? [] : item.CuentasHijos.sort((a:any, b:any) => a.Orden - b.Orden),
         "representative": {
           name: this.getNombreCategoria(item.idCategoria),
           image: 'https://firebasestorage.googleapis.com/v0/b/sistemafinanciero-924ff.appspot.com/o/account.png?alt=media&token=a93e4ac2-7102-4920-aaed-13d0a1c3fd43'
@@ -631,12 +631,16 @@ borrarCuenta(idCuenta:string){
 
       ItemEncontrado[0].CuentasHijos=ItemEncontrado[0].CuentasHijos.filter((it:any)=>it.Editando!=true)
         this.getItemsGroup()
-        this.ItemsGroup=  this.ItemsGroup.map(item => 
+        this.ItemsGroup=  
+        
+        this.ItemsGroup
+        .sort((a:any, b:any) => a.Orden - b.Orden)
+        .map(item => 
             item.id === child.ItemId ? { ...item, expanded: true } : item
           );
       
 
-        console.log('ItemEncontrado[0]',ItemEncontrado[0])
+        console.log('ItemsGroup',this.ItemsGroup)
 
       this.conS.ActualizarItem(ItemEncontrado[0]).then(resp=>{
         this.toastr.success('Cuenta  actualizada', '¡Exito!');
