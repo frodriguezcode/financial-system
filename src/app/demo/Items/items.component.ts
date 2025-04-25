@@ -180,7 +180,15 @@ borrarCuenta(idCuenta:string){
   }
 
   getidCategoria(event:any){
-    this.CategoriasBack=this.Categorias.filter((cat:any)=>cat.Tipo==event.target.value)
+    console.log('event.target.value',event.target.value)
+    if(event.target.value==2){
+
+      this.CategoriasBack=this.Categorias.filter((cat:any)=>cat.Tipo==event.target.value && cat.id!='KtA2Cxpd79TJrW9afqR9')
+    }
+    else {
+
+      this.CategoriasBack=this.Categorias.filter((cat:any)=>cat.Tipo==event.target.value)
+    }
   }
 
   getItemsGroup(){
@@ -202,10 +210,6 @@ borrarCuenta(idCuenta:string){
     const ProyectosIds = 
      item.Proyectos==undefined ? item.idProyectos
      : item.Proyectos.map(proyecto => proyecto.id)
-
-
-
-
       let _Item ={
         "id":item.id,
         "name":item.Nombre,
@@ -219,12 +223,12 @@ borrarCuenta(idCuenta:string){
         "idEmpresa":item.idEmpresa,
         "TipoRubro":item.TipoRubro,
         expanded: false,
-        "Sucursales":item.Sucursales == undefined ? [] : item.Sucursales,
+        "Sucursales":this.getSucursalesItem(item.idSucursales),
         "NombreSucursales":this.getNameSucursales(SucursalesIds),
         "NombreProyectos":this.getNameProyectos(ProyectosIds,item.idEmpresa),
         "NombresUsuarios":this.getNameUsuario(userIds),
-        "Proyectos":item.Proyectos == undefined ? [] : item.Proyectos,
-        "Usuarios":item.Usuarios == undefined ? [] : item.Sucursales,
+        "Proyectos":this.getProyectosItem(item.idProyectos),
+        "Usuarios":this.getUsuariosItem(item.idUsuarios),
         "idCategoria":item.idCategoria,
         "Children":item.CuentasHijos==undefined ? [] : item.CuentasHijos.sort((a:any, b:any) => a.Orden - b.Orden),
         "representative": {
@@ -238,6 +242,28 @@ borrarCuenta(idCuenta:string){
 
     console.log('ItemsGroup',this.ItemsGroup)
  this.cargando=false
+  }
+
+  getSucursalesItem(idSucursales:any){
+   let Sucursales= this.Sucursales.filter(sucursal =>
+      idSucursales.includes(sucursal.id)
+    )
+
+    return Sucursales
+  }
+  getProyectosItem(idProyectos:any){
+   let Proyectos= this.Proyectos.filter(proyecto =>
+    idProyectos.includes(proyecto.id)
+    )
+
+    return Proyectos
+  }
+  getUsuariosItem(idUsuarios:any){
+   let Usuarios= this.Usuarios.filter(user =>
+    idUsuarios.includes(user.id)
+    )
+
+    return Usuarios
   }
   descargarExcel(){
     const headerRow: any[] = [];
@@ -533,7 +559,6 @@ borrarCuenta(idCuenta:string){
   } 
 
   filtrarCuentasBySucursal(){
-
     if(this.TipoRubro==1){
       if( this.SucursalesSeleccionadas.length==0){
         this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==this.TipoRubro
@@ -550,8 +575,8 @@ borrarCuenta(idCuenta:string){
         (this.CategoriasSeleccionadas.length === 0 || 
           this.CategoriasSeleccionadas.some((catego: any) => catego.id == item.idCategoria)
         ) &&
-          item.Sucursales.some(sucursal =>
-          this.SucursalesSeleccionadas.some(seleccionada => seleccionada.id === sucursal.id)
+        this.SucursalesSeleccionadas.filter(sucursal =>
+          item.idSucursales.includes(sucursal.id)
         )
       
       )
@@ -578,8 +603,8 @@ borrarCuenta(idCuenta:string){
           this.CategoriasSeleccionadas.some((catego: any) => catego.id == item.idCategoria)
         )
         &&
-        item.Proyectos.some(proyecto =>
-        this.ProyectosSeleccionado.some(seleccionada => seleccionada.id === proyecto.id)
+        this.ProyectoSeleccionado.filter(proyecto =>
+          item.idProyectos.includes(proyecto.id)
         )
       
       )
@@ -685,166 +710,175 @@ borrarCuenta(idCuenta:string){
       .filter((cuenta:any)=>cuenta.Nombre=='1.2.2 Costos de la Operación' && cuenta.TipoRubro==2)
       this.ItemsBack=resp.sort((a:any, b:any) => a.Orden - b.Orden)
 
-      if(CuentasPagosProveedoresRubro1.length==0){
-        const userIds = this.Usuarios.map(user => user.id);
-        const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
-        let CuentaPagoProveedores={
-        "idUsuarios":userIds,
-        "idSucursales":SucursalesIds,
-        "idProyectos":[],
-        "Activo":true,
-        "Editando":false,
-        "Alias":"Pago a proveedores",
-        "animation":"",
-        "Dinamica":false,
-        "idCategoria":"KtA2Cxpd79TJrW9afqR9",
-        "idEmpresa":this.usuario.idEmpresa,
-        "idMatriz":this.usuario.idMatriz,
-        "userIds":userIds,
-        "Orden":1,
-        "TipoRubro":1,
-        "OrdenReal":2,
-        "CuentasHijos":[
-          {
-            "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
-            "id":"KtA2Cxpd79TJrW9afqR9_1",
-            "Orden":1,
-            "Editando":false,
-          },
-          {
-            "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
-            "id":"KtA2Cxpd79TJrW9afqR9_2",
-            "Orden":2,
-            "Editando":false,
-          },
-          {
-            "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
-            "id":"KtA2Cxpd79TJrW9afqR9_3",
-            "Orden":3,
-            "Editando":false,
-          },
-        ],
-        "Tipo":2,
-        "Nombre":"1.2.1 Pago a Proveedores",
-        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-
-        }
-
-        this.conS.crearItem(CuentaPagoProveedores).then(resp=>{
-           this.ItemsBack.push(CuentaPagoProveedores)
-        })
-      }
-      if(CuentasPagosProveedoresRubro2.length==0){
-        const userIds = this.Usuarios.map(user => user.id);
-        const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
-
-        let CuentaPagoProveedores={
-        "idUsuarios":userIds,
-        "idSucursales":[],
-        "idProyectos":ProyectosIds,
-        "Activo":true,
-        "Editando":false,
-        "Dinamica":false,
-        "Alias":"Pago a proveedores",
-        "animation":"",
-        "idCategoria":"KtA2Cxpd79TJrW9afqR9",
-        "idEmpresa":this.usuario.idEmpresa,
-        "idMatriz":this.usuario.idMatriz,
-        "userIds":userIds,
-        "Orden":2,
-        "TipoRubro":2,
-        "CuentasHijos":[
-          {
-            "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
-            "id":"KtA2Cxpd79TJrW9afqR9_1",
-            "Orden":1,
-            "Editando":false,
-          },
-          {
-            "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
-            "id":"KtA2Cxpd79TJrW9afqR9_2",
-            "Orden":2,
-            "Editando":false,
-          },
-          {
-            "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
-            "id":"KtA2Cxpd79TJrW9afqR9_3",
-            "Orden":3,
-            "Editando":false,
-          },
-        ],
-        "OrdenReal":2,
-        "Tipo":2,
-        "Nombre":"1.2.1 Pago a Proveedores",
-        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-        }
-       
-        this.conS.crearItem(CuentaPagoProveedores).then(resp=>{
+      try{
+        if(CuentasPagosProveedoresRubro1.length==0){
+          const userIds = this.Usuarios.map(user => user.id);
+          const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
+          let CuentaPagoProveedores={
+          "idUsuarios":userIds,
+          "idSucursales":SucursalesIds,
+          "idProyectos":[],
+          "Activo":true,
+          "Editando":false,
+          "Alias":"Pago a proveedores",
+          "animation":"",
+          "Dinamica":false,
+          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+          "idEmpresa":this.usuario.idEmpresa,
+          "idMatriz":this.usuario.idMatriz,
+          "userIds":userIds,
+          "Orden":1,
+          "TipoRubro":1,
+          "OrdenReal":2,
+          "CuentasHijos":[
+            {
+              "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
+              "id":"KtA2Cxpd79TJrW9afqR9_1",
+              "Orden":1,
+              "Editando":false,
+            },
+            {
+              "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
+              "id":"KtA2Cxpd79TJrW9afqR9_2",
+              "Orden":2,
+              "Editando":false,
+            },
+            {
+              "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
+              "id":"KtA2Cxpd79TJrW9afqR9_3",
+              "Orden":3,
+              "Editando":false,
+            },
+          ],
+          "Tipo":2,
+          "Nombre":"1.2.1 Pago a Proveedores",
+          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+  
+          }
+  
           this.ItemsBack.push(CuentaPagoProveedores)
-        })
-      }
-
-
-      if(CuentasCostosOperacionRubro1.length==0){
-        const userIds = this.Usuarios.map(user => user.id);
-        const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
-
-        let CuentaCostoOperacion={
-        "idUsuarios":userIds,
-        "idSucursales":SucursalesIds,
-        "idProyectos":[],
-        "Activo":true,
-        "Editando":false,
-        "Alias":"Costos de la Operación",
-        "animation":"",
-        "Dinamica":true,
-        "idCategoria":"KtA2Cxpd79TJrW9afqR9",
-        "idEmpresa":this.usuario.idEmpresa,
-        "idMatriz":this.usuario.idMatriz,
-        "userIds":userIds,
-        "Orden":1,
-        "TipoRubro":1,
-        "OrdenReal":2,
-        "CuentasHijos":[],
-        "Tipo":2,
-        "Nombre":"1.2.2 Costos de la Operación",
-        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-
+          this.conS.crearItem(CuentaPagoProveedores).then(resp=>{
+          })
         }
-        this.conS.crearItem(CuentaCostoOperacion).then(resp=>{
-          this.ItemsBack.push(CuentaCostoOperacion)
-        })
-      }
-      if(CuentasCostosOperacionRubro2.length==0){
-        const userIds = this.Usuarios.map(user => user.id);
-        const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
-
-        let CuentaCostoOperacion={
-        "idUsuarios":userIds,
-        "idSucursales":[],
-        "idProyectos":ProyectosIds,
-        "Activo":true,
-        "Editando":false,
-        "Alias":"Costos de la Operación",
-        "animation":"",
-        "Dinamica":true,
-        "idCategoria":"KtA2Cxpd79TJrW9afqR9",
-        "idEmpresa":this.usuario.idEmpresa,
-        "idMatriz":this.usuario.idMatriz,
-        "userIds":userIds,
-        "Orden":2,
-        "TipoRubro":2,
-        "OrdenReal":2,
-        "CuentasHijos":[],
-        "Tipo":2,
-        "Nombre":"1.2.2 Costos de la Operación",
-        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-
+        if(CuentasPagosProveedoresRubro2.length==0){
+          const userIds = this.Usuarios.map(user => user.id);
+          const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
+  
+          let CuentaPagoProveedores={
+          "idUsuarios":userIds,
+          "idSucursales":[],
+          "idProyectos":ProyectosIds,
+          "Activo":true,
+          "Editando":false,
+          "Dinamica":false,
+          "Alias":"Pago a proveedores",
+          "animation":"",
+          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+          "idEmpresa":this.usuario.idEmpresa,
+          "idMatriz":this.usuario.idMatriz,
+          "userIds":userIds,
+          "Orden":1,
+          "TipoRubro":2,
+          "CuentasHijos":[
+            {
+              "Nombre":"1.2.1.1 Facturas vencidas en meses anteriores",
+              "id":"KtA2Cxpd79TJrW9afqR9_1",
+              "Orden":1,
+              "Editando":false,
+            },
+            {
+              "Nombre":"1.2.1.2 Facturas vencidas en el mes en curso",
+              "id":"KtA2Cxpd79TJrW9afqR9_2",
+              "Orden":2,
+              "Editando":false,
+            },
+            {
+              "Nombre":"1.2.1.3 Facturas con vencimiento en meses futuros",
+              "id":"KtA2Cxpd79TJrW9afqR9_3",
+              "Orden":3,
+              "Editando":false,
+            },
+          ],
+          "OrdenReal":2,
+          "Tipo":2,
+          "Nombre":"1.2.1 Pago a Proveedores",
+          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+          }
+         
+          this.ItemsBack.push(CuentaPagoProveedores)
+          this.conS.crearItem(CuentaPagoProveedores).then(resp=>{
+          })
         }
-        this.conS.crearItem(CuentaCostoOperacion).then(resp=>{
+  
+  
+        if(CuentasCostosOperacionRubro1.length==0){
+          const userIds = this.Usuarios.map(user => user.id);
+          const SucursalesIds = this.Sucursales.map(sucursal => sucursal.id)
+  
+          let CuentaCostoOperacion={
+          "idUsuarios":userIds,
+          "idSucursales":SucursalesIds,
+          "idProyectos":[],
+          "Activo":true,
+          "Editando":false,
+          "Alias":"Costos de la Operación",
+          "animation":"",
+          "Dinamica":true,
+          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+          "idEmpresa":this.usuario.idEmpresa,
+          "idMatriz":this.usuario.idMatriz,
+          "userIds":userIds,
+          "Orden":2,
+          "TipoRubro":1,
+          "OrdenReal":2,
+          "CuentasHijos":[],
+          "Tipo":2,
+          "Nombre":"1.2.2 Costos de la Operación",
+          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+  
+          }
           this.ItemsBack.push(CuentaCostoOperacion)
-        })
+          this.conS.crearItem(CuentaCostoOperacion).then(resp=>{
+          })
+        }
+        if(CuentasCostosOperacionRubro2.length==0){
+          const userIds = this.Usuarios.map(user => user.id);
+          const ProyectosIds = this.Proyectos.map(proyect => proyect.id);
+  
+          let CuentaCostoOperacion={
+          "idUsuarios":userIds,
+          "idSucursales":[],
+          "idProyectos":ProyectosIds,
+          "Activo":true,
+          "Editando":false,
+          "Alias":"Costos de la Operación",
+          "animation":"",
+          "Dinamica":true,
+          "idCategoria":"KtA2Cxpd79TJrW9afqR9",
+          "idEmpresa":this.usuario.idEmpresa,
+          "idMatriz":this.usuario.idMatriz,
+          "userIds":userIds,
+          "Orden":2,
+          "TipoRubro":2,
+          "OrdenReal":2,
+          "CuentasHijos":[],
+          "Tipo":2,
+          "Nombre":"1.2.2 Costos de la Operación",
+          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+  
+          }
+          this.ItemsBack.push(CuentaCostoOperacion)
+          this.conS.crearItem(CuentaCostoOperacion).then(resp=>{
+          })
+        }
+  
       }
+
+      catch(error){
+
+      }
+
+
       if(this.ItemsBack.length>0){
         this.ItemsBack=this.ItemsBack.sort((a, b) => a.Orden - b.Orden);
         this.MaxOrden=Math.max(...this.ItemsBack.map(obj => obj.Orden))+1
@@ -852,16 +886,18 @@ borrarCuenta(idCuenta:string){
     
 
         this.Items.map((item:any)=>item.animation='')
-        console.log('Items',this.Items)
+  
 
       
     
 
       }
+
       else {
         this.MaxOrden=1
       
       }
+      console.log('Items',this.ItemsBack)
       this.getItemsGroup()
 
     })
@@ -870,14 +906,14 @@ borrarCuenta(idCuenta:string){
 
   sortItemsByOrder(_Items:any): void {
     _Items.forEach((updatedItem: any) => {
-      const index = this.Items.findIndex((it: any) => it.id === updatedItem.id);
+      const index = this.ItemsBack.findIndex((it: any) => it.id === updatedItem.id);
       if (index !== -1) {
         this.Items[index] = updatedItem; // Reemplazamos el item modificado
       }
     });
     this.Items.sort((a, b) => a.Orden - b.Orden);
 
-    this.getItemsGroup()
+   // this.getItemsGroup()
   }
 getLengItem(idCategoria:string){
   let _Items:any=[]
@@ -885,7 +921,7 @@ getLengItem(idCategoria:string){
   return _Items.length
 }
 moveDown(item: any): void {
-  let _Items: any[] = this.Items.filter(it => it.idCategoria === item.idCategoria);
+  let _Items: any[] = this.ItemsBack.filter(it => it.idCategoria === item.idCategoria);
   const index = _Items.findIndex(i => i.id === item.id);
   if (index < _Items.length - 1) {
     const currentOrder = _Items[index].Orden;
@@ -902,9 +938,12 @@ moveDown(item: any): void {
 
     // _Items[index].animation = 'animate__animated animate__bounceInDown';
     // _Items[index + 1].animation = 'animate__animated animate__bounceInUp';
-    this.sortItemsByOrder(_Items);
+   // this.sortItemsByOrder(_Items);  
+    this.ItemsBack[index] = _Items[index];
+    this.ItemsBack[index + 1] = _Items[index + 1];
 
 
+    this.getItemsGroup()
 
     this.conS.ActualizarItem(_Items[index]).then(() => {
 
@@ -916,7 +955,7 @@ moveDown(item: any): void {
 }
 
 moveUp(item: any): void {
-  let _Items: any[] = this.Items.filter(it => it.idCategoria === item.idCategoria);
+  let _Items: any[] = this.ItemsBack.filter(it => it.idCategoria === item.idCategoria);
   const index = _Items.findIndex(i => i.id === item.id);
   if (index > 0) {
     const currentOrder = _Items[index].Orden;
@@ -932,8 +971,12 @@ moveUp(item: any): void {
     _Items[index - 1].Orden = currentOrder;
     _Items[index - 1].Nombre = this.getIdCategoria(_Items[index - 1].idCategoria) + '.' + currentOrder + ' ' + _Items[index - 1].Alias;
 
-    this.sortItemsByOrder(_Items);
+    //this.sortItemsByOrder(_Items);
 
+    this.ItemsBack[index] = _Items[index];
+    this.ItemsBack[index - 1] = _Items[index - 1];
+
+    this.getItemsGroup()
     this.conS.ActualizarItem(_Items[index]).then(() => {
     
     });
@@ -1048,15 +1091,44 @@ console.log('hijos',hijos)
       else if(ItemForm.Proyectos.length>0){
         ItemForm.Sucursales=[]
       }
+
+
       ItemForm.idUsuarios=[]
       ItemForm.Usuarios.forEach(user => {
         ItemForm.idUsuarios.push(user.id)
       });
   
       ItemForm.Alias=ItemForm.Nombre 
-      ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
-        ItemForm.idMatriz=this.usuario.idMatriz
-        this.conS.crearItem(ItemForm).then(resp=>{
+      //ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
+      ItemForm.idMatriz=this.usuario.idMatriz
+
+      const ProyectosIds = ItemForm.Proyectos.map(proyect => proyect.id);
+      const userIds = ItemForm.Usuarios.map(user => user.id);
+      const SucursalesIds = ItemForm.Sucursales.map(sucursal => sucursal.id)
+
+
+      let CuentaContable={
+        "idUsuarios":userIds,
+        "idSucursales":SucursalesIds,
+        "idProyectos":ProyectosIds,
+        "Activo":true,
+        "Editando":false,
+        "Alias":ItemForm.Nombre,
+        "animation":"",
+        "Dinamica":true,
+        "idCategoria":ItemForm.idCategoria,
+        "idEmpresa":this.usuario.idEmpresa,
+        "idMatriz":this.usuario.idMatriz,
+        "Orden":this.getOrdenItem(ItemForm.idCategoria),
+        "TipoRubro":this.TipoRubro,
+        "OrdenReal":this.MaxOrden,
+        "CuentasHijos":[],
+        "Tipo":"",
+        "Nombre":this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre,
+        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+}
+
+        this.conS.crearItem(CuentaContable).then(resp=>{
           let SucursalesSeleccionadas:any=ItemForm.Sucursales
           let ProyectosSeleccionados:any=ItemForm.Proyectos
           let idCategoria:any=ItemForm.idCategoria
@@ -1066,7 +1138,8 @@ console.log('hijos',hijos)
           this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
           this.ItemForm.get('Usuarios').setValue(this.UsuariosSeleccionados);
           this.ItemForm.get('idCategoria').setValue(idCategoria);
-          this.obtenerItems()
+          this.ItemsBack.push(CuentaContable)
+          this.getItemsGroup()
         })
 
     }
@@ -1128,29 +1201,50 @@ getIdCategoria(idCategoria:string){
 
 
   actualizarItem(item:any){
-    let _Item= this.Items;
+    let _Item= this.ItemsBack;
     const itemEncontrado = _Item.filter((it:any) => it.id == item.id);
     const numeros = item.name.match(/^\d+(\.\d+)*/)
-    itemEncontrado[0].Nombre='',
-    itemEncontrado[0].Nombre=numeros[0] + ' '+ item.alias,
-    itemEncontrado[0].Alias= item.alias,
-    itemEncontrado[0].idCategoria=item.idCategoria
-    //itemEncontrado[0].idSucursal=item.idSucursal
-    itemEncontrado[0].idEmpresa=item.idEmpresa
-    itemEncontrado[0].Editando = !item.Editando;
-    itemEncontrado[0].Sucursales = item.Sucursales;
-    itemEncontrado[0].Proyectos =item.Proyectos;
-    itemEncontrado[0].Usuarios =item.Usuarios;
+    const ProyectosIds = item.Proyectos.map(proyect => proyect.id);
+    const userIds = item.Usuarios.map(user => user.id);
+    const SucursalesIds = item.Sucursales.map(sucursal => sucursal.id)
+    itemEncontrado[0].Nombre=numeros[0] + ' '+ item.alias
+    itemEncontrado[0].Alias=item.alias
+    itemEncontrado[0].idSucursales=SucursalesIds
+    itemEncontrado[0].idProyectos=ProyectosIds
+    itemEncontrado[0].idUsuarios=userIds
 
-    itemEncontrado[0].idUsuarios=[]
-    itemEncontrado[0].Usuarios.forEach(user => {
-      itemEncontrado[0].idUsuarios.push(user.id)
-    });
+    console.log('itemEncontrado[0]',itemEncontrado[0])
 
-    this.conS.ActualizarItem(itemEncontrado[0]).then(resp=>{
-      this.getItemsGroup()
-      this.toastr.success('Item  editado', '¡Exito!');
-    })
+    const index = this.ItemsBack.findIndex((item:any) =>
+      item.id === itemEncontrado[0].id
+      );
+      console.log('index',index)
+       if (index !== -1) {
+    
+        this.ItemsBack[index] = itemEncontrado[0];
+       } 
+      
+       this.conS.ActualizarItem(itemEncontrado[0]).then(resp=>{
+         this.getItemsGroup()
+         this.toastr.success('Item  editado', '¡Exito!');
+       })
+
+    // const numeros = item.name.match(/^\d+(\.\d+)*/)
+    // itemEncontrado[0].Nombre='',
+    // itemEncontrado[0].Nombre=numeros[0] + ' '+ item.alias,
+    // itemEncontrado[0].Alias= item.alias,
+    // itemEncontrado[0].idCategoria=item.idCategoria
+    // itemEncontrado[0].idEmpresa=item.idEmpresa
+    // itemEncontrado[0].Editando = !item.Editando;
+    // itemEncontrado[0].Sucursales = item.Sucursales;
+    // itemEncontrado[0].Proyectos =item.Proyectos;
+    // itemEncontrado[0].Usuarios =item.Usuarios;
+
+    // itemEncontrado[0].idUsuarios=[]
+    // itemEncontrado[0].Usuarios.forEach(user => {
+    //   itemEncontrado[0].idUsuarios.push(user.id)
+    // });
+
   }
 
   ActualizarItemEstado(Item:any,Estado:boolean){

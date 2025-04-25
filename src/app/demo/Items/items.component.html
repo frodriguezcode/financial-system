@@ -126,7 +126,7 @@
                         [options]="Sucursales" 
                         [(ngModel)]="item.Sucursales" 
                         [maxSelectedLabels]="1" 
-                        [selectedItemsLabel]="getSelectedSucursalesLabelList(item.Sucursales)"
+                        [selectedItemsLabel]="getSelectedSucursalesLabelList(item.idSucursales)"
                         optionLabel="Nombre" 
                         appendTo="body"
                         placeholder="Seleccione las Sucursales" />
@@ -143,7 +143,7 @@
                         [(ngModel)]="item.Proyectos" 
                         [maxSelectedLabels]="1" 
                         appendTo="body"
-                        [selectedItemsLabel]="getSelecteProyectosLabelList(item.Proyectos)"
+                        [selectedItemsLabel]="getSelecteProyectosLabelList(item.idProyectos)"
                         optionLabel="NombreSucursal" 
                         placeholder="Seleccione los proyectos" />
                      </ng-template>
@@ -159,7 +159,7 @@
                         [(ngModel)]="item.Usuarios" 
                         [maxSelectedLabels]="1" 
                         appendTo="body"
-                        [selectedItemsLabel]="getSelecteUsuariosLabelList(item.Usuarios)"
+                        [selectedItemsLabel]="getSelecteUsuariosLabelList(item.idUsuarios)"
                         optionLabel="Nombres" 
                         placeholder="Seleccione usuarios" />
                      </ng-template>
