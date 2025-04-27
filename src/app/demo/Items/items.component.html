@@ -59,7 +59,6 @@
                     <th class="text-center">Nombre</th>
                    <th *ngIf="this.TipoRubro==1" class="text-center">Sucursales</th>
                    <th *ngIf="this.TipoRubro==2" class="text-center">Proyectos</th>
-                   <th  class="text-center">Usuarios</th>
                    <th class="text-center">Subir</th>
                    <th class="text-center">Bajar</th>
                    <th class="text-center">Editar</th>
@@ -148,22 +147,7 @@
                         placeholder="Seleccione los proyectos" />
                      </ng-template>
                    </td>
-                    <td  class="text-center">
-                     <ng-container *ngIf="!item.Editando; else editarUsuarios">
-                       {{item.NombresUsuarios}}
-                     </ng-container>
-                     <ng-template #editarUsuarios>
-                  
-                       <p-multiSelect 
-                        [options]="Usuarios" 
-                        [(ngModel)]="item.Usuarios" 
-                        [maxSelectedLabels]="1" 
-                        appendTo="body"
-                        [selectedItemsLabel]="getSelecteUsuariosLabelList(item.idUsuarios)"
-                        optionLabel="Nombres" 
-                        placeholder="Seleccione usuarios" />
-                     </ng-template>
-                   </td>
+    
      
                   <td  class="text-center">
                   <button (click)="moveUp(item)" [disabled]="item.Orden==1" type="button" class="btn btn-success text-center">
@@ -541,7 +525,7 @@
         header="Crear nueva cuenta" 
         [modal]="true" 
         [(visible)]="visible" 
-        [style]="{ width: '50rem' }" 
+        [style]="{ width: '30rem' }" 
         [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
         [maximizable]="true">
         <div class="col-md-12 col-lg-12 col-12">
@@ -558,7 +542,7 @@
                       </span>
                     </div>
              <div class="row">
-               <div *ngIf="TipoRubro==1" class="col-12 col-md-6 col-lg-6">
+               <div *ngIf="TipoRubro==1" class="col-12 col-md-12 col-lg-12">
                  <label for="exampleInputPassword1">Sucursal</label>
                  <br>
                  <p-multiSelect 
@@ -567,13 +551,15 @@
                  optionLabel="Nombre" 
                  [maxSelectedLabels]="1" 
                  [selectedItemsLabel]="getSelecteSucursalesLabelCrear()"
+                 [style]="{'width':'420px'}"
+                 [panelStyle]="{'width':'420px'}"
                  placeholder="Seleccione una sucursal"
                  class="multiselect-fijo"
                  />
                  
                </div>
 
-               <div *ngIf="TipoRubro==2" class="col-12 col-md-6 col-lg-6">
+               <div *ngIf="TipoRubro==2" class="col-12 col-md-12 col-lg-12">
                  <label for="exampleInputPassword1">Proyecto</label>
                  <br>
                  <p-multiSelect
@@ -583,24 +569,8 @@
                  [selectedItemsLabel]="getSelecteProyectosLabelCrear()"
                  optionLabel="Nombre" 
                  placeholder="Seleccione un proyecto"
-                 [style]="{'width':'300px'}"
-                 [panelStyle]="{'width':'350px'}"
-                 />
-                 
-               </div>
-
-               <div  class="col-12 col-md-6 col-lg-6">
-                 <label for="exampleInputPassword1">Usuarios</label>
-                 <br>
-                 <p-multiSelect
-                 [options]="Usuarios" 
-                 formControlName="Usuarios"
-                 [maxSelectedLabels]="1" 
-                 [selectedItemsLabel]="getSelecteUsuariosLabelCrear()"
-                 optionLabel="Nombres" 
-                 placeholder="Seleccione los usuarios"
-                 [style]="{'width':'300px'}"
-                 [panelStyle]="{'width':'350px'}"
+                 [style]="{'width':'420px'}"
+                 [panelStyle]="{'width':'420px'}"
                  />
                  
                </div>
@@ -626,7 +596,9 @@
                           </div>
                           <div class="col-12 col-md-12 col-lg-12">
                             <label for="exampleInputPassword1">Categoria</label>
-                            <select formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
+                            <select
+                            [disabled]="TipoCategoria == 0"
+                            formControlName="idCategoria" class="form-control" id="exampleFormControlSelect1">
                               <option value="0" >Escoja una categoría</option>
                               <option value="{{categoria.id}}" *ngFor="let categoria of CategoriasBack">{{categoria.Nombre}}</option>
                             </select>

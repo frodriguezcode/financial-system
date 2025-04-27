@@ -228,3 +228,9 @@ tfoot tr {
   position: absolute;
   left: 0;
 }
+
+::ng-deep .p-treeselect-panel {
+  max-height: 320px; /* altura máxima que quieres */
+  width: 400px; /* o lo que necesites */
+  overflow: auto; /* que salga scroll si se pasa */
+}

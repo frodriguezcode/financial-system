@@ -79,6 +79,7 @@ export default class ItemsComponent  implements OnInit{
   claseTabla:string='p-datatable-sm'
   visible: boolean = false;
   cargando: boolean = true;
+  TipoCategoria:any=0
   idItems=[]
   ngOnInit(): void {
     this.todasSucursales=true
@@ -180,7 +181,6 @@ borrarCuenta(idCuenta:string){
   }
 
   getidCategoria(event:any){
-    console.log('event.target.value',event.target.value)
     if(event.target.value==2){
 
       this.CategoriasBack=this.Categorias.filter((cat:any)=>cat.Tipo==event.target.value && cat.id!='KtA2Cxpd79TJrW9afqR9')
@@ -189,6 +189,7 @@ borrarCuenta(idCuenta:string){
 
       this.CategoriasBack=this.Categorias.filter((cat:any)=>cat.Tipo==event.target.value)
     }
+    this.ItemForm.get("idCategoria").enable()
   }
 
   getItemsGroup(){
@@ -228,7 +229,6 @@ borrarCuenta(idCuenta:string){
         "NombreProyectos":this.getNameProyectos(ProyectosIds,item.idEmpresa),
         "NombresUsuarios":this.getNameUsuario(userIds),
         "Proyectos":this.getProyectosItem(item.idProyectos),
-        "Usuarios":this.getUsuariosItem(item.idUsuarios),
         "idCategoria":item.idCategoria,
         "Children":item.CuentasHijos==undefined ? [] : item.CuentasHijos.sort((a:any, b:any) => a.Orden - b.Orden),
         "representative": {
@@ -258,13 +258,7 @@ borrarCuenta(idCuenta:string){
 
     return Proyectos
   }
-  getUsuariosItem(idUsuarios:any){
-   let Usuarios= this.Usuarios.filter(user =>
-    idUsuarios.includes(user.id)
-    )
 
-    return Usuarios
-  }
   descargarExcel(){
     const headerRow: any[] = [];
     let Data: any[] = [];
@@ -495,7 +489,7 @@ borrarCuenta(idCuenta:string){
       idCategoria: new FormControl('',[Validators.required]), 
 
      })
-    
+     this.ItemForm.get("idCategoria").disable()
   }
 
   verificarSelect(idSucursal){
@@ -643,7 +637,6 @@ borrarCuenta(idCuenta:string){
   guardarCuentaHijo(child:any){
     const ItemsBack = [...this.ItemsBack]
     let ItemEncontrado=ItemsBack.filter((it:any)=>it.id==child.ItemId)
-    console.log('ItemEncontrado',ItemEncontrado)
     if(ItemEncontrado.length>0){
       ItemEncontrado[0].CuentasHijos.push( 
         {
@@ -667,10 +660,6 @@ borrarCuenta(idCuenta:string){
         .map(item => 
             item.id === child.ItemId ? { ...item, expanded: true } : item
           );
-      
-
-        console.log('ItemsGroup',this.ItemsGroup)
-
       this.conS.ActualizarItem(ItemEncontrado[0]).then(resp=>{
         this.toastr.success('Cuenta  actualizada', '¡Exito!');
       })
@@ -1047,100 +1036,108 @@ console.log('hijos',hijos)
   }
 
   crearItem(){
-    let ItemForm:any
-    ItemForm=this.ItemForm.value
-    ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
+
+    try{
+      let ItemForm:any
+      ItemForm=this.ItemForm.value
+      ItemForm.Tipo=this.getTipo(ItemForm.idCategoria)
+      
+      ItemForm.TipoRubro=this.TipoRubro
+      ItemForm.Orden=this.getOrdenItem(ItemForm.idCategoria)
+      ItemForm.OrdenReal=this.MaxOrden
+  
+      if(this.TipoRubro==1 && ItemForm.Sucursales.length==0 ){
+            Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Debe seleccionar una o varias sucursales",
+            showConfirmButton: false,
+            timer: 1500
+          });
+      }
+     else if(this.TipoRubro==2 && ItemForm.Proyectos.length==0 ){
+            Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Debe seleccionar una o varios proyectos",
+            showConfirmButton: false,
+            timer: 1500
+          });
+      }
+     else if(ItemForm.Usuarios.length==0 ){
+            Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Debe asignar esta cuenta a 1 o varios usuarios",
+            showConfirmButton: false,
+            timer: 1500
+          });
+      }
+  
+      else {
+        if(ItemForm.Sucursales.length>0){
+          ItemForm.Proyectos=[]
+        }
     
-    ItemForm.TipoRubro=this.TipoRubro
-    ItemForm.Orden=this.getOrdenItem(ItemForm.idCategoria)
-    ItemForm.OrdenReal=this.MaxOrden
-
-    if(this.TipoRubro==1 && ItemForm.Sucursales.length==0 ){
-          Swal.fire({
-          position: "center",
-          icon: "warning",
-          title: "Debe seleccionar una o varias sucursales",
-          showConfirmButton: false,
-          timer: 1500
-        });
-    }
-   else if(this.TipoRubro==2 && ItemForm.Proyectos.length==0 ){
-          Swal.fire({
-          position: "center",
-          icon: "warning",
-          title: "Debe seleccionar una o varios proyectos",
-          showConfirmButton: false,
-          timer: 1500
-        });
-    }
-   else if(ItemForm.Usuarios.length==0 ){
-          Swal.fire({
-          position: "center",
-          icon: "warning",
-          title: "Debe asignar esta cuenta a 1 o varios usuarios",
-          showConfirmButton: false,
-          timer: 1500
-        });
-    }
-
-    else {
-      if(ItemForm.Sucursales.length>0){
-        ItemForm.Proyectos=[]
-      }
+        else if(ItemForm.Proyectos.length>0){
+          ItemForm.Sucursales=[]
+        }
   
-      else if(ItemForm.Proyectos.length>0){
-        ItemForm.Sucursales=[]
-      }
-
-
-      ItemForm.idUsuarios=[]
-      ItemForm.Usuarios.forEach(user => {
-        ItemForm.idUsuarios.push(user.id)
-      });
   
-      ItemForm.Alias=ItemForm.Nombre 
-      //ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
-      ItemForm.idMatriz=this.usuario.idMatriz
-
-      const ProyectosIds = ItemForm.Proyectos.map(proyect => proyect.id);
-      const userIds = ItemForm.Usuarios.map(user => user.id);
-      const SucursalesIds = ItemForm.Sucursales.map(sucursal => sucursal.id)
-
-
-      let CuentaContable={
-        "idUsuarios":userIds,
-        "idSucursales":SucursalesIds,
-        "idProyectos":ProyectosIds,
-        "Activo":true,
-        "Editando":false,
-        "Alias":ItemForm.Nombre,
-        "animation":"",
-        "Dinamica":true,
-        "idCategoria":ItemForm.idCategoria,
-        "idEmpresa":this.usuario.idEmpresa,
-        "idMatriz":this.usuario.idMatriz,
-        "Orden":this.getOrdenItem(ItemForm.idCategoria),
-        "TipoRubro":this.TipoRubro,
-        "OrdenReal":this.MaxOrden,
-        "CuentasHijos":[],
-        "Tipo":"",
-        "Nombre":this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre,
-        "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
-}
-
-        this.conS.crearItem(CuentaContable).then(resp=>{
-          let SucursalesSeleccionadas:any=ItemForm.Sucursales
-          let ProyectosSeleccionados:any=ItemForm.Proyectos
-          let idCategoria:any=ItemForm.idCategoria
-          this.toastr.success('Cuenta  Creada', '¡Exito!');
-          this.ItemForm.get('Nombre').setValue('');
-          this.ItemForm.get('Sucursales').setValue(SucursalesSeleccionadas);
-          this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
-          this.ItemForm.get('Usuarios').setValue(this.UsuariosSeleccionados);
-          this.ItemForm.get('idCategoria').setValue(idCategoria);
-          this.ItemsBack.push(CuentaContable)
-          this.getItemsGroup()
-        })
+        ItemForm.idUsuarios=[]
+        ItemForm.Usuarios.forEach(user => {
+          ItemForm.idUsuarios.push(user.id)
+        });
+    
+        ItemForm.Alias=ItemForm.Nombre 
+        //ItemForm.Nombre= this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre 
+        ItemForm.idMatriz=this.usuario.idMatriz
+  
+        const ProyectosIds = ItemForm.Proyectos.map(proyect => proyect.id);
+        const SucursalesIds = ItemForm.Sucursales.map(sucursal => sucursal.id)
+  
+  
+        let CuentaContable={
+          "idSucursales":SucursalesIds,
+          "idProyectos":ProyectosIds,
+          "Activo":true,
+          "Editando":false,
+          "Alias":ItemForm.Nombre,
+          "animation":"",
+          "Dinamica":true,
+          "idCategoria":ItemForm.idCategoria,
+          "idEmpresa":this.usuario.idEmpresa,
+          "idMatriz":this.usuario.idMatriz,
+          "Orden":this.getOrdenItem(ItemForm.idCategoria),
+          "TipoRubro":this.TipoRubro,
+          "OrdenReal":this.MaxOrden,
+          "CuentasHijos":[],
+          "Tipo":"",
+          "Nombre":this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre,
+          "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
+  }
+        this.Items.push(CuentaContable)
+        this.ItemsBack.push(CuentaContable)
+        this.getItemsGroup()
+  
+          this.conS.crearItem(CuentaContable).then(resp=>{
+            let SucursalesSeleccionadas:any=ItemForm.Sucursales
+            let ProyectosSeleccionados:any=ItemForm.Proyectos
+            let idCategoria:any=ItemForm.idCategoria
+            this.toastr.success('Cuenta  Creada', '¡Exito!');
+            this.ItemForm.get('Nombre').setValue('');
+            this.ItemForm.get('Sucursales').setValue(SucursalesSeleccionadas);
+            this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
+            this.ItemForm.get('Usuarios').setValue(this.UsuariosSeleccionados);
+            this.ItemForm.get('idCategoria').setValue(idCategoria);
+            
+     
+          })
+  
+      }
+      
+    }
+    catch(error){
 
     }
 
@@ -1205,15 +1202,11 @@ getIdCategoria(idCategoria:string){
     const itemEncontrado = _Item.filter((it:any) => it.id == item.id);
     const numeros = item.name.match(/^\d+(\.\d+)*/)
     const ProyectosIds = item.Proyectos.map(proyect => proyect.id);
-    const userIds = item.Usuarios.map(user => user.id);
     const SucursalesIds = item.Sucursales.map(sucursal => sucursal.id)
     itemEncontrado[0].Nombre=numeros[0] + ' '+ item.alias
     itemEncontrado[0].Alias=item.alias
     itemEncontrado[0].idSucursales=SucursalesIds
     itemEncontrado[0].idProyectos=ProyectosIds
-    itemEncontrado[0].idUsuarios=userIds
-
-    console.log('itemEncontrado[0]',itemEncontrado[0])
 
     const index = this.ItemsBack.findIndex((item:any) =>
       item.id === itemEncontrado[0].id
