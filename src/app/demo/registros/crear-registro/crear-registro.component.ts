@@ -716,49 +716,40 @@ obtenerRegistros(){
     Subscribe=  this.conS.obtenerRegistrosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
       Subscribe.unsubscribe()
                this.registrosBackUp=[]
-               resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
-                 let _Registro={
-                   "Activo":element.Activo,
-                   "Animation":'animate__animated animate__flipInX',
-                   "ActivarAnimation":false,
-                   "AnioRegistro":element.AnioRegistro,
-                   "NumTransaction":element.NumTransaction,
-                   "Cuenta":element.Cuenta,
-                   "CuentaSeleccionada":[],
-                   "Editando":element.Editando,
-                   "Elemento":element.Elemento,
-                   "FechaRegistro":element.FechaRegistro,
-                   "MesRegistro":element.MesRegistro,
-                   "Nuevo":element.Nuevo,
-                   "NumMes":element.NumMes,
-                   "NumSemana":element.NumSemana,
-                   "Orden":element.Orden,
-                   "Semana":element.Semana,
-                   "Valor":element.Valor,
-                   "Valor2":element.Valor,
-                   "TipoOperacion":element.TipoOperacion || '',
-                   "Tipo":element.Tipo || '',
-                   "TipoRegistro":element.TipoRegistro,
-                   "id":element.id,
-                   "idCategoria":element.idCategoria,
-                   "idEmpresa":element.idEmpresa,
-                   "idFlujo":element.idFlujo,
-                   "idTipo":element.idTipo,
-                   "idMatriz":element.idMatriz,
-                   "idSocioNegocio":element.idSocioNegocio,
-                   "idSucursal":element.idSucursal,
-                   "idProyecto":element.idProyecto || '',
-                   "Sucursal":element.Sucursal || '',
-                   "Proyecto":element.Proyecto || '',
-                   "NombreElemento":element.Elemento.label || '',
-                   "NumCuenta":element.Cuenta.Cuenta || '',
-                   "CategoriaNombre":element.idCategoria.Nombre || '',
-                   "SocioNegocio":element.idSocioNegocio.Nombre || '',
-                   "Comentarios":element.Comentarios || '',
+               this.registrosBackUp= resp.sort((a:any, b:any) => b.Orden - a.Orden)
+              //  resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+              //    let _Registro={
+              //      "Activo":element.Activo,
+              //      "Animation":'animate__animated animate__flipInX',
+              //      "ActivarAnimation":false,
+              //      "AnioRegistro":element.AnioRegistro,
+              //      "Cuenta":element.Cuenta,
+              //      "CuentaSeleccionada":[],
+              //      "Editando":element.Editando,
+              //      "FechaRegistro":element.FechaRegistro,
+              //      "MesRegistro":element.MesRegistro,
+              //      "NumMes":element.NumMes,
+              //      "Orden":element.Orden,
+              //      "Valor":element.Valor,
+              //      "TipoOperacion":element.TipoOperacion || '',
+              //      "Tipo":element.Tipo || '',
+              //      "TipoRegistro":element.TipoRegistro,
+              //      "id":element.id,
+              //      "idAbuelo":element.idFlujo,
+              //      "idPadre":element.idCategoria,
+              //      "idNieto":element.idNieto,
+              //      "idEmpresa":element.idEmpresa,
+              //      "idTipo":element.idTipo,
+              //      "idMatriz":element.idMatriz,
+              //      "idSocioNegocio":element.idSocioNegocio,
+              //      "idSucursal":element.idSucursal,
+              //      "idProyecto":element.idProyecto || '',
+              //      "NumCuenta":element.Cuenta.Cuenta || '',
+              //      "Comentarios":element.Comentarios || '',
            
-                 }
-                 this.registrosBackUp.push(_Registro)
-               })
+              //    }
+              //    this.registrosBackUp.push(_Registro)
+              //  })
                this.refreshRegistros([],false)
 
                setTimeout(() => {
@@ -772,48 +763,40 @@ obtenerRegistros(){
     Subscribe= this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
     Subscribe.unsubscribe()
     this.registrosBackUp=[]
-    resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
-      let _Registro={
-        "Activo":element.Activo,
-        "Animation":'animate__animated animate__flipInX',
-        "ActivarAnimation":false,
-        "AnioRegistro":element.AnioRegistro,
-        "NumTransaction":element.NumTransaction,
-        "Cuenta":element.Cuenta,
-        "Editando":element.Editando,
-        "Elemento":element.Elemento,
-        "FechaRegistro":element.FechaRegistro,
-        "MesRegistro":element.MesRegistro,
-        "Nuevo":element.Nuevo,
-        "NumMes":element.NumMes,
-        "NumSemana":element.NumSemana,
-        "Orden":element.Orden,
-        "Semana":element.Semana,
-        "Valor":element.Valor,
-        "Valor2":element.Valor,
-        "Tipo":element.Tipo || '',
-        "TipoOperacion":element.TipoOperacion || '',
-        "TipoRegistro":element.TipoRegistro,
-        "id":element.id,
-        "idCategoria":element.idCategoria,
-        "idEmpresa":element.idEmpresa,
-        "idFlujo":element.idFlujo,
-        "idTipo":element.idTipo,
-        "idMatriz":element.idMatriz,
-        "idSocioNegocio":element.idSocioNegocio,
-        "idSucursal":element.idSucursal,
-        "idProyecto":element.idProyecto || '',
-        "Sucursal":element.Sucursal || '',
-        "Proyecto":element.Proyecto || '',
-        "NombreElemento":element.Elemento.label || '',
-        "NumCuenta":element.Cuenta.Cuenta || '',
-        "CategoriaNombre":element.idCategoria.Nombre || '',
-        "SocioNegocio":element.idSocioNegocio.Nombre || '',
-        "Comentarios":element.Comentarios || '',
-  
-      }
-      this.registrosBackUp.push(_Registro)
-    })
+    this.registrosBackUp= resp.sort((a:any, b:any) => b.Orden - a.Orden)
+    // resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+    //              let _Registro={
+    //                "Activo":element.Activo,
+    //                "Animation":'animate__animated animate__flipInX',
+    //                "ActivarAnimation":false,
+    //                "AnioRegistro":element.AnioRegistro,
+    //                "Cuenta":element.Cuenta,
+    //                "CuentaSeleccionada":[],
+    //                "Editando":element.Editando,
+    //                "FechaRegistro":element.FechaRegistro,
+    //                "MesRegistro":element.MesRegistro,
+    //                "NumMes":element.NumMes,
+    //                "Orden":element.Orden,
+    //                "Valor":element.Valor,
+    //                "TipoOperacion":element.TipoOperacion || '',
+    //                "Tipo":element.Tipo || '',
+    //                "TipoRegistro":element.TipoRegistro,
+    //                "id":element.id,
+    //                "idAbuelo":element.idFlujo,
+    //                "idPadre":element.idCategoria,
+    //                "idNieto":element.idNieto,
+    //                "idEmpresa":element.idEmpresa,
+    //                "idTipo":element.idTipo,
+    //                "idMatriz":element.idMatriz,
+    //                "idSocioNegocio":element.idSocioNegocio,
+    //                "idSucursal":element.idSucursal,
+    //                "idProyecto":element.idProyecto || '',
+    //                "NumCuenta":element.Cuenta.Cuenta || '',
+    //                "Comentarios":element.Comentarios || '',
+           
+    //              }
+    //   this.registrosBackUp.push(_Registro)
+    // })
     this.refreshRegistros([],false)
 
     setTimeout(() => {
@@ -829,6 +812,10 @@ obtenerRegistros(){
 }
 
 refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
+
+
+
+
   if(RegistrosFiltrados.length==0 && Filtro==false){
     this.Registros = [];
     
@@ -873,6 +860,7 @@ refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
         (this.page - 1) * this.pageSize,
         (this.page - 1) * this.pageSize + this.pageSize
       );
+      console.log('Registros',this.Registros)
     // Actualiza otros cálculos
     
   }
@@ -1010,18 +998,85 @@ validateInput(value: string): boolean {
   const regex = /^(?=.*[a-zA-Z])(?=.*[0-9])/;
   return regex.test(value);
 }
-salvarRegistro(Registro:any,Valor:any){
 
-  Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
-if(this.validateInput(this.quitarSimbolo(Valor))==true){
-  Swal.fire({
-    position: "center",
-    icon: "warning",
-    title: "El valor no debe contener letras ni simbolos",
-    showConfirmButton: false,
-    timer: 1500
-  });
+formatearNumero(input: HTMLInputElement,Tipo:any) {
+
+  let valor :any
+  let Simbolo=Tipo==1 ? '$ ' : '-$ '
+  if(Tipo==2 ){
+
+    valor = input.value.replace(/[\s\-$]/g, '')
+    }
+  else {
+    valor = input.value.replace(/[\s$]/g, '')
+      
+  }
+
+  if (!isNaN(+valor)) {
+    input.value =
+     `${Simbolo} ${Number(valor).toLocaleString('en-US')}`
+  }
 }
+salvarRegistro(Registro:any,Valor:any){
+  console.log('Registro',Registro)
+
+
+  let ValorRegistro:any=0
+
+  if( Registro.idTipo==2){
+    ValorRegistro= Number(Valor.replace(/[\s$,\-]/g, ''))<0 ?  Number(Valor.replace(/[\s$,\-]/g, ''))*-1 : Number(Valor.replace(/[\s$,\-]/g, ''))
+  }
+  else {
+    ValorRegistro=Number(Valor.replace(/[\s$,\-]/g, ''))
+  }
+
+
+   if(Registro.CuentaSeleccionada.Tipo=='Padre' && Registro.CuentaSeleccionada.children.length>0){
+   Swal.fire({
+     position: "center",
+     icon: "warning",
+     title: "Debe seleccionar una sub-cuenta",
+     showConfirmButton: false,
+     timer: 1500
+   });
+   }
+
+   else {
+     if(Registro.CuentaSeleccionada.Tipo=='Hijo'){
+       Registro.idPadre=Registro.CuentaSeleccionada.idPadre
+       Registro.idAbuelo=Registro.CuentaSeleccionada.idAbuelo
+       Registro.idNieto=Registro.CuentaSeleccionada.id
+       Registro.idHijo=Registro.CuentaSeleccionada.ItemId
+     }
+   
+    else if(Registro.CuentaSeleccionada.Tipo=='Padre' && Registro.CuentaSeleccionada.children.length==0){
+       Registro.idPadre=Registro.CuentaSeleccionada.idPadre
+       Registro.idAbuelo=Registro.CuentaSeleccionada.idAbuelo
+       Registro.idHijo=Registro.CuentaSeleccionada.ItemId
+       Registro.idNieto=""
+     }
+
+   
+     Registro.NumCuenta=Registro.Cuenta.Cuenta
+     Registro.Valor=ValorRegistro
+     Registro.idSocioNegocio=Registro.idSocioNegocio.id
+     console.log('RegistroFormat',Registro)
+     console.log('ValorRegistro',ValorRegistro)
+   
+   
+
+   }
+
+  // Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
+// if(this.validateInput(this.quitarSimbolo(Valor))==true){
+//   Swal.fire({
+//     position: "center",
+//     icon: "warning",
+//     title: "El valor no debe contener letras ni simbolos",
+//     showConfirmButton: false,
+//     timer: 1500
+//   });
+// }
 // else if (Number(this.quitarSimbolo(Valor))>=0 && Registro.Tipo==2  ){
 //   console.log('valor',Number(this.quitarSimbolo(Valor)))
 //   Swal.fire({
@@ -1032,7 +1087,7 @@ if(this.validateInput(this.quitarSimbolo(Valor))==true){
 //     timer: 1500
 //   })
 // }
-else {
+//else {
   // if(this.validarEgreso(Registro.idTipo,Number(this.quitarSimbolo(Valor)),Registro.Orden)==false){
   //   console.log('Registro',Number(this.quitarSimbolo(Valor)))
   //   Swal.fire({
@@ -1043,98 +1098,79 @@ else {
   //     timer: 1500
   //   });
   // }
-   if(Registro.CuentaSeleccionada=="" || Registro.CuentaSeleccionada==undefined){
-      Swal.fire({
-        position: "center",
-        icon: "warning",
-        title: "Debe elegir una cuenta contable",
-        showConfirmButton: false,
-        timer: 1500
-      });
-  
-    }
-  else  if(this.quitarSimbolo(Valor)==""  || Number(this.quitarSimbolo(Valor))==0 )
-    
-    { 
-      Swal.fire({
-        position: "center",
-        icon: "warning",
-        title: "Debe colocar un valor",
-        showConfirmButton: false,
-        timer: 1500
-      });
-  
-    }
-  
-  // else  if(Registro.idFlujo==""){
-  //     Swal.fire({
-  //       position: "center",
-  //       icon: "warning",
-  //       title: "Debe elegir un flujo (caja o banco)",
-  //       showConfirmButton: false,
-  //       timer: 1500
-  //     });
-  
-  //   }
-  
-  //  else if(Registro.idFlujo.id=="1" && Registro.Cuenta==""){
-  //     Swal.fire({
-  //       position: "center",
-  //       icon: "warning",
-  //       title: "Debe colocar una cuenta de banco",
-  //       showConfirmButton: false,
-  //       timer: 1500
-  //     });
-  
-  //   }
-  
-    else {
-      console.log('Registro',Registro)
-      let _categoriaEncontrada:any=[]
-      let _MesRegistro:any=[]
-      _MesRegistro=this.MesesTodos.filter((mes:any)=>mes.id==this.getMonthName(Registro.FechaRegistro))
-      _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
-      Registro.idCategoria=_categoriaEncontrada
-      Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
-      Registro.Semana=this.getWeek(Registro.FechaRegistro)
-      Registro.NumSemana=this.getWeek(Registro.FechaRegistro)
-      Registro.MesRegistro=_MesRegistro[0].Mes
-      Registro.NumMes=_MesRegistro[0].id
-      Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
-      Registro.idUsuario=this.usuario.id
-      Registro.idProyecto=this.getIdProyecto(Registro.Proyecto)
-      Registro.idSucursal=this.getIdSucursal(Registro.Sucursal)
 
-      if(Registro.Tipo==1 && Number(  this.quitarSimbolo(Valor))<0){
-        Registro.Valor=Number(  this.quitarSimbolo(Valor))*-1
-        Registro.Valor2=Number(  this.quitarSimbolo(Valor))*-1
-      }
-      else if (Registro.Tipo==2 && Number(  this.quitarSimbolo(Valor))>=0)
-      {
-        Registro.Valor=Number(  this.quitarSimbolo(Valor))*-1
-        Registro.Valor2=Number(  this.quitarSimbolo(Valor))*-1
-      }
-      else {
-        Registro.Valor=Number(  this.quitarSimbolo(Valor))
-        Registro.Valor2=Number(  this.quitarSimbolo(Valor))
-      }
-      Registro.Usuario=this.usuario.Usuario
-      this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor=Registro.Valor
-      this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor2=Registro.Valor
+
+  //  if(Registro.CuentaSeleccionada=="" || Registro.CuentaSeleccionada==undefined){
+  //     Swal.fire({
+  //       position: "center",
+  //       icon: "warning",
+  //       title: "Debe elegir una cuenta contable",
+  //       showConfirmButton: false,
+  //       timer: 1500
+  //     });
+  
+  //   }
+  // else  if(this.quitarSimbolo(Valor)==""  || Number(this.quitarSimbolo(Valor))==0 )
+    
+  //   { 
+  //     Swal.fire({
+  //       position: "center",
+  //       icon: "warning",
+  //       title: "Debe colocar un valor",
+  //       showConfirmButton: false,
+  //       timer: 1500
+  //     });
+  
+  //   }
+  
+  
+  //   else {
+  //     console.log('Registro',Registro)
+  //     let _categoriaEncontrada:any=[]
+  //     let _MesRegistro:any=[]
+  //     _MesRegistro=this.MesesTodos.filter((mes:any)=>mes.id==this.getMonthName(Registro.FechaRegistro))
+  //     _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
+  //     Registro.idCategoria=_categoriaEncontrada
+  //     Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
+  //     Registro.Semana=this.getWeek(Registro.FechaRegistro)
+  //     Registro.NumSemana=this.getWeek(Registro.FechaRegistro)
+  //     Registro.MesRegistro=_MesRegistro[0].Mes
+  //     Registro.NumMes=_MesRegistro[0].id
+  //     Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
+  //     Registro.idUsuario=this.usuario.id
+  //     Registro.idProyecto=this.getIdProyecto(Registro.Proyecto)
+  //     Registro.idSucursal=this.getIdSucursal(Registro.Sucursal)
+
+  //     if(Registro.Tipo==1 && Number(  this.quitarSimbolo(Valor))<0){
+  //       Registro.Valor=Number(  this.quitarSimbolo(Valor))*-1
+  //       Registro.Valor2=Number(  this.quitarSimbolo(Valor))*-1
+  //     }
+  //     else if (Registro.Tipo==2 && Number(  this.quitarSimbolo(Valor))>=0)
+  //     {
+  //       Registro.Valor=Number(  this.quitarSimbolo(Valor))*-1
+  //       Registro.Valor2=Number(  this.quitarSimbolo(Valor))*-1
+  //     }
+  //     else {
+  //       Registro.Valor=Number(  this.quitarSimbolo(Valor))
+  //       Registro.Valor2=Number(  this.quitarSimbolo(Valor))
+  //     }
+  //     Registro.Usuario=this.usuario.Usuario
+  //     this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor=Registro.Valor
+  //     this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor2=Registro.Valor
    
      
 
-      // this.conS.ActualizarRegistro(Registro).then(resp=>{
-      //       this.toastr.success('Guardado', '¡Exito!');
-      //       this.calcularImporteTotal(this.Registros)
-      //       this.calcularImporteSubTotal(this.Registros)
-      //   })
+  //     // this.conS.ActualizarRegistro(Registro).then(resp=>{
+  //     //       this.toastr.success('Guardado', '¡Exito!');
+  //     //       this.calcularImporteTotal(this.Registros)
+  //     //       this.calcularImporteSubTotal(this.Registros)
+  //     //   })
   
     
 
-  }
+  // }
 
-}
+//}
 }
 
 getIdProyecto(proyectoNombre){
@@ -1239,7 +1275,7 @@ obtenerCategorias(){
 }
 
 
-getHijosByCuenta(CuentasHijos:any,OrdenPadre:any,idCategoria:any,idCuentaPadre:any){
+getHijosByCuenta(CuentasHijos:any,OrdenPadre:any,idPadre:any,idCuentaPadre:any,idAbuelo:any){
   let _CuentasHijos:any=[]
   CuentasHijos.forEach(element => {
     _CuentasHijos.push({
@@ -1247,7 +1283,8 @@ getHijosByCuenta(CuentasHijos:any,OrdenPadre:any,idCategoria:any,idCuentaPadre:a
       label: element.Nombre,
       leaf: true,
       Tipo:'Hijo',
-      idCategoria: idCategoria,
+      idPadre: idPadre,
+      idAbuelo: idAbuelo,
       id: element.id,
       ItemId: idCuentaPadre,
       data: 'Work Folder',
@@ -1262,9 +1299,9 @@ getCuentabyCategoria(Categoria:any){
 
 let cuentaContable:any=[]
 
-this.ItemsBack.filter((item:any)=>item.idCategoria==Categoria.id
+this.ItemsBack.filter((item:any)=> (item.idPadre==Categoria.id || item.idPadre==Categoria)
 && item.TipoRubro==this.idTipoRegistro
-&& item.idUsuarios.some((user) => user == this.usuario.id)
+
 
 ).forEach((cuenta:any) => {
   cuentaContable.push({
@@ -1272,12 +1309,13 @@ this.ItemsBack.filter((item:any)=>item.idCategoria==Categoria.id
     label: cuenta.Nombre,
     Tipo:'Padre',
     ItemId: cuenta.id,
-    idCategoria:cuenta.idCategoria,
+    idPadre:cuenta.idPadre,
+    idAbuelo:cuenta.idAbuelo,
     data: 'Documents Folder',
     icon: 'pi pi-fw pi-inbox',
     expanded: true,
     children:cuenta.CuentasHijos==undefined ? [] : 
-    this.getHijosByCuenta(cuenta.CuentasHijos,cuenta.Orden,cuenta.idCategoria,cuenta.id)
+    this.getHijosByCuenta(cuenta.CuentasHijos,cuenta.Orden,cuenta.idPadre,cuenta.id,cuenta.idAbuelo)
 
   })
   
@@ -1507,14 +1545,10 @@ getNombreSucursal(idSucursal:any){
 cargarFormulario(){
   let _Fecha:any=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
   this.registroForm = new FormGroup({
-    Elemento: new FormControl('',[Validators.required]), 
     Cuenta: new FormControl('',[Validators.required]), 
     Valor: new FormControl(0,[Validators.required]), 
-    idFlujo: new FormControl('',[Validators.required]), 
     NumMes: new FormControl(this.getMonthName(_Fecha)), 
-    NumSemana: new FormControl(this.getWeekNumber()), 
     AnioRegistro: new FormControl(new Date().getFullYear()), 
-    Semana: new FormControl("Semana" + ' ' + this.getWeekNumber()), 
     MesRegistro:new FormControl(this.MesesTodos[this.getMonthName(_Fecha)].Mes),
     Activo: new FormControl(true), 
     Nuevo: new FormControl(true), 
@@ -1523,14 +1557,13 @@ cargarFormulario(){
     idSocioNegocio: new FormControl(''), 
     idEmpresa: new FormControl(this.usuario.idEmpresa), 
     idMatriz: new FormControl(this.usuario.idMatriz), 
-    idCategoria: new FormControl(''), 
+    idPadre: new FormControl('',[Validators.required]), 
+    idAbuelo: new FormControl('',[Validators.required]), 
+    idNieto: new FormControl('',[Validators.required]), 
     TipoOperacion: new FormControl(''), 
     CuentaSeleccionada: new FormControl(''),
-    NombreElemento:new FormControl('NombreElemento'),
     NumCuenta:new FormControl('NumCuenta'),
     Comentarios:new FormControl(''),
-    CategoriaNombre:new FormControl('CategoriaNombre'),
-    SocioNegocio:new FormControl('SocioNegocio'),
     idSucursal: new FormControl(""), 
     FechaRegistro: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
@@ -1567,14 +1600,6 @@ this.registroForm.value.TipoRegistro=this.idTipoRegistro;
 
 this.registroForm.value.idSucursal=this.SucursaleSeleccionada==undefined ? "":this.SucursaleSeleccionada.id;
 this.registroForm.value.idProyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.id;
-this.registroForm.value.NumTransaction='000-'+ Number(this.registrosBackUp.length+1)
-if(this.idTipoRegistro==1){
-
-  this.registroForm.value.Sucursal=this.getNombreSucursal(this.registroForm.value.idSucursal);
-}
-else {
-  this.registroForm.value.Proyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.NombreSucursal;
-}
 this.registroForm.value.Seleccionado=false
 
 const coleccionRef = this.firestore.collection('Registro');
@@ -1594,48 +1619,49 @@ let _Registro={
   "Cuenta":this.registroForm.value.Cuenta,
   "Editando":this.registroForm.value.Editando,
   "Seleccionado":false,
-  "Elemento":this.registroForm.value.Elemento,
   "FechaRegistro":this.registroForm.value.FechaRegistro,
   "MesRegistro":this.registroForm.value.MesRegistro,
-  "Nuevo":this.registroForm.value.Nuevo,
   "NumMes":this.registroForm.value.NumMes,
-  "NumSemana":this.registroForm.value.NumSemana,
   "Orden":  this.OrdenMax+1 ,
-  "NumTransaction":'000-'+ this.OrdenMax+1 ,
-  "Semana":this.registroForm.value.Semana,
   "Valor":this.registroForm.value.Valor,
-  "Valor2":this.registroForm.value.Valor,
   "TipoOperacion":this.registroForm.value.TipoOperacion || '',
   "Tipo":this.registroForm.value.Tipo || '',
   "TipoRegistro":this.idTipoRegistro,
   "id":nuevoId,
-  "idCategoria":this.registroForm.value.idCategoria,
+  "idAbuelo":this.registroForm.value.idPadre,
+  "idPadre":this.getIdAbuelo(this.registroForm.value.idPadre),
+  "idNieto":"",
   "idEmpresa":this.registroForm.value.idEmpresa,
-  "idFlujo":this.registroForm.value.idFlujo,
   "idTipo":idTipo,
   "idMatriz":this.registroForm.value.idMatriz,
   "idSocioNegocio":this.registroForm.value.idSocioNegocio,
   "idSucursal":this.registroForm.value.idSucursal,
-  "idProyecto":this.registroForm.value.idProyecto || '',
-  "Sucursal":this.registroForm.value.Sucursal || '',
-  "Proyecto":this.registroForm.value.Proyecto || '',
-  "NombreElemento":this.registroForm.value.Elemento.label || '',
+  "idProyecto":this.registroForm.value.idProyecto ||'',
   "NumCuenta":this.registroForm.value.Cuenta.Cuenta || '',
-  "CategoriaNombre":this.registroForm.value.idCategoria.Nombre || '',
-  "SocioNegocio":this.registroForm.value.idSocioNegocio.Nombre || '',
   "Comentarios":this.registroForm.value.Comentarios || '',
-
 }
+console.log('_Registro',_Registro)
 
 this.registrosBackUp.push(_Registro)
 this.refreshRegistros([],false)
-//this.registroForm.value.id=nuevoId
+this.registroForm.value.id=nuevoId
+this.cargarFormulario()
 this.conS.crearRegistro(_Registro).then(id => {
-
-//this.cargarFormulario()
+this.renderizarBarra()
 }).catch(error => {
   console.error('Error al crear el registro:', error);
 });
+
+}
+
+getIdAbuelo(idPadre:string){
+  let Padre=this.Categorias.find((cat:any)=>cat.id==idPadre)
+  if(Padre){
+    return Padre.idAbuelo
+  }
+  else {
+    return ""
+  }
 
 }
 

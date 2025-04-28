@@ -98,7 +98,7 @@
              
 
                 <ng-container 
-                *ngIf="item.idCategoria!='KtA2Cxpd79TJrW9afqR9'">
+                *ngIf="(item.idCategoria!='KtA2Cxpd79TJrW9afqR9') && item.Tipo==1">
                 <tr [ngClass]="item.animation" >               
                  <td  class="text-center">                 
                    {{item.Orden}}                
@@ -184,10 +184,10 @@
                   
                 </tr>
 
-                </ng-container>
+   </ng-container>
 
     <ng-container 
-    *ngIf="item.idCategoria=='KtA2Cxpd79TJrW9afqR9'">
+    *ngIf="(item.idCategoria=='KtA2Cxpd79TJrW9afqR9'  || item.idCategoria=='od11V2OHVgaLG1RiXMiz') && item.Tipo==2">
     <tr style="background-color: rgb(249, 249, 250);">
       <td class="text-center">
         <button 

@@ -428,10 +428,10 @@
               [style]="{ width: '300px' }"
               [panelStyle]="{ width: '300px' }"
               [options]="Sucursales"
-              [(ngModel)]="registros.Sucursal"
+              [(ngModel)]="registros.idSucursal"
               name="SucursalesSeleccionadas"
               optionLabel="Nombre"
-              optionValue="Nombre"
+              optionValue="id"
               [filter]="true"
               filterBy="Sucursal"
               [showClear]="false"
@@ -450,7 +450,7 @@
             <p-dropdown
               (onChange)="renderizarBarra()"
               [options]="Proyectos"
-              [(ngModel)]="registros.Proyecto"
+              [(ngModel)]="registros.idProyecto"
               [style]="{ width: '300px' }"
               [panelStyle]="{ width: '300px' }"
               name="ProyectosSeleccionados"
@@ -482,7 +482,7 @@
             <p-dropdown
               [options]="this.getCategoriasByTipo(registros.idTipo)"
               (onChange)="renderizarBarra()"
-              [(ngModel)]="registros.idCategoria"
+              [(ngModel)]="registros.idPadre"
               [style]="{ width: '300px' }"
               [panelStyle]="{ width: '300px' }"
               name="ItemSeleccionados"
@@ -511,8 +511,8 @@
                   [filter]="true"                   
                   [filterInputAutoFocus]="true"
                   [(ngModel)]="registros.CuentaSeleccionada" 
-                  [disabled]="getCuentabyCategoria(registros.idCategoria).length==0"
-                  [options]="getCuentabyCategoria(registros.idCategoria)" 
+                  [disabled]="getCuentabyCategoria(registros.idPadre).length==0"
+                  [options]="getCuentabyCategoria(registros.idPadre)" 
                   [emptyMessage]="emptyMessage"
                   placeholder="Seleccione una cuenta" />
           
@@ -570,11 +570,11 @@
               [disabled]="
                 this.Items.length == 0 ||
                 registros.idCategoria == '' ||
-                getCuentabyCategoria(registros.idCategoria).length == 0
+                getCuentabyCategoria(registros.idPadre).length == 0
               "
               (input)="
-                validarEgreso(registros.idTipo, registros.Valor, registros.Orden);
-                onInput($event)
+                
+                formatearNumero(Valor,registros.idTipo)
               "
               style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
               [ngModel]="registros.Valor | currencySymbol"
@@ -654,8 +654,8 @@
               [disabled]="
                 isNegativo == false ||
                 this.Items.length == 0 ||
-                registros.idCategoria == '' ||
-                getCuentabyCategoria(registros.idCategoria).length == 0
+                registros.idPadre == '' ||
+                getCuentabyCategoria(registros.idPadre).length == 0
               "
               (click)="salvarRegistro(registros, Valor.value)"
               class="btn btn-success"
