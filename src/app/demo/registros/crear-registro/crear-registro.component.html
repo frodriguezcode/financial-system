@@ -485,8 +485,9 @@
               [(ngModel)]="registros.idPadre"
               [style]="{ width: '300px' }"
               [panelStyle]="{ width: '300px' }"
-              name="ItemSeleccionados"
+              name="Nombre"
               optionLabel="Nombre"
+              optionValue="id"
               [filter]="true"
               filterBy="Nombre"
               [showClear]="false"
@@ -500,9 +501,8 @@
               </ng-template>
             </p-dropdown>
           </td>
-  
+          <!-- Franklin revisar esta parte -->
           <td class="text-center">
- 
               <p-treeSelect 
                   class="md:w-20rem w-full" 
                   containerStyleClass="w-full" 

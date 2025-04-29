@@ -750,7 +750,7 @@ obtenerRegistros(){
               //    }
               //    this.registrosBackUp.push(_Registro)
               //  })
-               this.refreshRegistros([],false)
+               this.refreshRegistros(this.registrosBackUp,false)
 
                setTimeout(() => {
                 this.syncScroll();
@@ -860,7 +860,7 @@ refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
         (this.page - 1) * this.pageSize,
         (this.page - 1) * this.pageSize + this.pageSize
       );
-      console.log('Registros',this.Registros)
+     
     // Actualiza otros cálculos
     
   }
@@ -870,12 +870,13 @@ refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
 
     // Ordena y aplica paginación
     this.Registros = RegistrosFiltrados
-      .sort((a: any, b: any) => b.Orden - a.Orden)
-      .map((registro, i) => ({ id: i + 1, ...registro }))
-      .slice(
-        (this.page - 1) * this.pageSize,
-        (this.page - 1) * this.pageSize + this.pageSize
-      );
+    .sort((a: any, b: any) => b.Orden - a.Orden)
+    .map((registro, i) => ({ id: i + 1, ...registro }))
+    .slice(
+      (this.page - 1) * this.pageSize,
+      (this.page - 1) * this.pageSize + this.pageSize
+    );
+    console.log('Registros',this.Registros)
   }
 
   this.calcularImporteSubTotal(this.Registros);
@@ -1017,14 +1018,14 @@ formatearNumero(input: HTMLInputElement,Tipo:any) {
      `${Simbolo} ${Number(valor).toLocaleString('en-US')}`
   }
 }
+
+
 salvarRegistro(Registro:any,Valor:any){
-  console.log('Registro',Registro)
-
-
+ 
   let ValorRegistro:any=0
 
   if( Registro.idTipo==2){
-    ValorRegistro= Number(Valor.replace(/[\s$,\-]/g, ''))<0 ?  Number(Valor.replace(/[\s$,\-]/g, ''))*-1 : Number(Valor.replace(/[\s$,\-]/g, ''))
+    ValorRegistro= Number(Valor.replace(/[\s$,\-]/g, ''))<0 ?  Number(Valor.replace(/[\s$,\-]/g, '')) : Number(Valor.replace(/[\s$,\-]/g, ''))*-1
   }
   else {
     ValorRegistro=Number(Valor.replace(/[\s$,\-]/g, ''))
@@ -1059,118 +1060,31 @@ salvarRegistro(Registro:any,Valor:any){
    
      Registro.NumCuenta=Registro.Cuenta.Cuenta
      Registro.Valor=ValorRegistro
-     Registro.idSocioNegocio=Registro.idSocioNegocio.id
-     console.log('RegistroFormat',Registro)
-     console.log('ValorRegistro',ValorRegistro)
-   
-   
+
+     delete Registro.CuentaSeleccionada.parent
+
+     const index = this.registrosBackUp.findIndex((reg:any) =>
+      reg.id ===  Registro.id
+      );
+  
+       if (index !== -1) {
+      // Si existe, actualizar
+       this.registrosBackUp[index] = Registro;
+       } 
+       else {
+      // Si no existe, agregar
+         this.registrosBackUp.push(Registro);
+       }  
+   this.Registros=this.registrosBackUp
+  this.conS.updateRegistro(Registro).then(resp=>{
+            this.toastr.success('Guardado', '¡Exito!');
+            this.calcularImporteTotal(this.Registros)
+            this.calcularImporteSubTotal(this.Registros)
+  })
 
    }
 
-  // Registro.Elemento=this.getCuentabyCategoria(Registro.idCategoria).filter((reg:any)=>reg.label==Registro.NombreElemento)[0]
-// if(this.validateInput(this.quitarSimbolo(Valor))==true){
-//   Swal.fire({
-//     position: "center",
-//     icon: "warning",
-//     title: "El valor no debe contener letras ni simbolos",
-//     showConfirmButton: false,
-//     timer: 1500
-//   });
-// }
-// else if (Number(this.quitarSimbolo(Valor))>=0 && Registro.Tipo==2  ){
-//   console.log('valor',Number(this.quitarSimbolo(Valor)))
-//   Swal.fire({
-//     position: "center",
-//     icon: "warning",
-//     title: "El valor debe ser negativo",
-//     showConfirmButton: false,
-//     timer: 1500
-//   })
-// }
-//else {
-  // if(this.validarEgreso(Registro.idTipo,Number(this.quitarSimbolo(Valor)),Registro.Orden)==false){
-  //   console.log('Registro',Number(this.quitarSimbolo(Valor)))
-  //   Swal.fire({
-  //     position: "center",
-  //     icon: "warning",
-  //     title: "El valor debe ser negativo",
-  //     showConfirmButton: false,
-  //     timer: 1500
-  //   });
-  // }
 
-
-  //  if(Registro.CuentaSeleccionada=="" || Registro.CuentaSeleccionada==undefined){
-  //     Swal.fire({
-  //       position: "center",
-  //       icon: "warning",
-  //       title: "Debe elegir una cuenta contable",
-  //       showConfirmButton: false,
-  //       timer: 1500
-  //     });
-  
-  //   }
-  // else  if(this.quitarSimbolo(Valor)==""  || Number(this.quitarSimbolo(Valor))==0 )
-    
-  //   { 
-  //     Swal.fire({
-  //       position: "center",
-  //       icon: "warning",
-  //       title: "Debe colocar un valor",
-  //       showConfirmButton: false,
-  //       timer: 1500
-  //     });
-  
-  //   }
-  
-  
-  //   else {
-  //     console.log('Registro',Registro)
-  //     let _categoriaEncontrada:any=[]
-  //     let _MesRegistro:any=[]
-  //     _MesRegistro=this.MesesTodos.filter((mes:any)=>mes.id==this.getMonthName(Registro.FechaRegistro))
-  //     _categoriaEncontrada=this.Categorias.find(cat=> cat.id==Registro.Elemento.idCategoria)
-  //     Registro.idCategoria=_categoriaEncontrada
-  //     Registro.Tipo=this.getTipo(Registro.Elemento.idCategoria)
-  //     Registro.Semana=this.getWeek(Registro.FechaRegistro)
-  //     Registro.NumSemana=this.getWeek(Registro.FechaRegistro)
-  //     Registro.MesRegistro=_MesRegistro[0].Mes
-  //     Registro.NumMes=_MesRegistro[0].id
-  //     Registro.AnioRegistro=new Date(Registro.FechaRegistro).getFullYear()
-  //     Registro.idUsuario=this.usuario.id
-  //     Registro.idProyecto=this.getIdProyecto(Registro.Proyecto)
-  //     Registro.idSucursal=this.getIdSucursal(Registro.Sucursal)
-
-  //     if(Registro.Tipo==1 && Number(  this.quitarSimbolo(Valor))<0){
-  //       Registro.Valor=Number(  this.quitarSimbolo(Valor))*-1
-  //       Registro.Valor2=Number(  this.quitarSimbolo(Valor))*-1
-  //     }
-  //     else if (Registro.Tipo==2 && Number(  this.quitarSimbolo(Valor))>=0)
-  //     {
-  //       Registro.Valor=Number(  this.quitarSimbolo(Valor))*-1
-  //       Registro.Valor2=Number(  this.quitarSimbolo(Valor))*-1
-  //     }
-  //     else {
-  //       Registro.Valor=Number(  this.quitarSimbolo(Valor))
-  //       Registro.Valor2=Number(  this.quitarSimbolo(Valor))
-  //     }
-  //     Registro.Usuario=this.usuario.Usuario
-  //     this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor=Registro.Valor
-  //     this.Registros.filter((reg:any)=>reg.id==Registro.id)[0].Valor2=Registro.Valor
-   
-     
-
-  //     // this.conS.ActualizarRegistro(Registro).then(resp=>{
-  //     //       this.toastr.success('Guardado', '¡Exito!');
-  //     //       this.calcularImporteTotal(this.Registros)
-  //     //       this.calcularImporteSubTotal(this.Registros)
-  //     //   })
-  
-    
-
-  // }
-
-//}
 }
 
 getIdProyecto(proyectoNombre){
@@ -1295,8 +1209,10 @@ getHijosByCuenta(CuentasHijos:any,OrdenPadre:any,idPadre:any,idCuentaPadre:any,i
   return _CuentasHijos
 
 }
-getCuentabyCategoria(Categoria:any){
 
+
+// Trabajar para lograr desplegar el treeSelect
+getCuentabyCategoria(Categoria:any){
 let cuentaContable:any=[]
 
 this.ItemsBack.filter((item:any)=> (item.idPadre==Categoria.id || item.idPadre==Categoria)
@@ -1304,6 +1220,7 @@ this.ItemsBack.filter((item:any)=> (item.idPadre==Categoria.id || item.idPadre==
 
 
 ).forEach((cuenta:any) => {
+
   cuentaContable.push({
     key: `${cuenta.Orden}`,
     label: cuenta.Nombre,
@@ -1729,18 +1646,6 @@ getSelectedItemsLabel(): string {
   const count = this.CategoriasSeleccionadas ? this.CategoriasSeleccionadas.length : 0;
   
   return count >= 2 ? `${count} categorías seleccionadas` : null;
-}
-ActualizarRegistro(){
-  this.conS.ActualizarRegistro(this.EditRegistroForm.value).then(resp=>{
-    this.visibleEditar=false
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "Registro actualizado",
-      showConfirmButton: false,
-      timer: 1500
-    });
-  })
 }
 
 DesactivarRegistro(idRegistro:any){

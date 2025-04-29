@@ -242,7 +242,8 @@
               *ngIf="item.Dinamica==true && child.Editando==false"
               (click)="child.Editando=true"
               type="button"
-              class="btn btn-primary text-center"> <i class="pi pi-pencil"></i></button>
+              class="btn btn-primary text-center"> <i class="pi pi-pencil"></i>
+             </button>
               <button
               *ngIf="item.Dinamica==true && child.Editando==true"
               (click)="guardarCuentaHijo(child)"

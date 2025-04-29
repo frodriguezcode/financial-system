@@ -632,13 +632,17 @@ borrarCuenta(idCuenta:string){
   }
 
   guardarCuentaHijo(child:any){
+
     const ItemsBack = [...this.ItemsBack]
     let ItemEncontrado=ItemsBack.filter((it:any)=>it.id==child.ItemId)
+    console.log(' child', child)
+    console.log(' ItemEncontrado[0]', ItemEncontrado[0])
     if(ItemEncontrado.length>0){
       ItemEncontrado[0].CuentasHijos.push( 
         {
         "Nombre":`${child.Prefijo}.${child.Orden} ${child.Alias}`,
         "Alias":child.Alias,
+        "ItemId":child.ItemId,
         "idPadre":child.idPadre,
         "idAbuelo":this.getIdAbuelo(child.idPadre),
         "Prefijo":child.Prefijo,
@@ -649,7 +653,9 @@ borrarCuenta(idCuenta:string){
         }
       )
       ItemEncontrado[0].CuentasHijos=ItemEncontrado[0].CuentasHijos.filter((it:any)=>it.Editando!=true)
-        this.getItemsGroup()
+        
+      
+      this.getItemsGroup()
         this.ItemsGroup=  
         
         this.ItemsGroup
@@ -657,6 +663,7 @@ borrarCuenta(idCuenta:string){
         .map(item => 
             item.id === child.ItemId ? { ...item, expanded: true } : item
           );
+ 
       this.conS.ActualizarItem(ItemEncontrado[0]).then(resp=>{
         this.toastr.success('Cuenta  actualizada', '¡Exito!');
       })

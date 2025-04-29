@@ -645,7 +645,8 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
     }
 
 
-    ActualizarRegistro(Registro: any) {
+ 
+    updateRegistro(Registro: any) {
       return this.afs
         .collection('Registro')
         .doc(Registro.id)
