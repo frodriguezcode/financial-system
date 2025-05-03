@@ -17,7 +17,7 @@ ngOnInit() {
         this.CategoriasTodas = resp.filter((re: any) => re.Mostrar == true);
         
         // Luego cargas los Items
-        this.conS.obtenerItems().subscribe(items => {
+        this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(items => {
           this.ItemsBack = items;
           // Cuando todo esté cargado, resolver la promesa
           resolve();
@@ -29,7 +29,7 @@ ngOnInit() {
 
   //!EN EL HTML
 
-  /*
+  
   <p-treeSelect
   class="md:w-20rem w-full"
   containerStyleClass="w-full"
@@ -46,7 +46,7 @@ ngOnInit() {
   placeholder="Seleccione una cuenta">
 </p-treeSelect>
 
-  */
+
 
 
 expandirNodo(event: any) {

@@ -503,7 +503,7 @@
           </td>
           <!-- Franklin revisar esta parte -->
           <td class="text-center">
-              <p-treeSelect 
+              <!-- <p-treeSelect 
                   class="md:w-20rem w-full" 
                   containerStyleClass="w-full" 
                   appendTo="body"  
@@ -514,7 +514,27 @@
                   [disabled]="getCuentabyCategoria(registros.idPadre).length==0"
                   [options]="getCuentabyCategoria(registros.idPadre)" 
                   [emptyMessage]="emptyMessage"
-                  placeholder="Seleccione una cuenta" />
+                  placeholder="Seleccione una cuenta" /> -->
+
+
+                  <p-treeSelect
+                  class="md:w-20rem w-full"
+                  containerStyleClass="w-full"
+                  appendTo="body"
+                  (onChange)="renderizarBarra()"
+                  (onNodeExpand)="expandirNodo($event)"
+                  (onNodeCollapse)="onNodeCollapse($event)"
+                  (onNodeSelect)="onNodeSelect($event)"
+                  [filter]="true"
+                  [filterInputAutoFocus]="true"
+                  [(ngModel)]="registros.CuentaSeleccionada"
+                  [options]="getCuentabyCategoria(registros.idPadre, registros.idTipo || getTipoFromCategoria(registros.idPadre))"
+                  [selectionMode]="'single'"
+                  [propagateSelectionDown]="false"
+                  [propagateSelectionUp]="false"
+                  emptyMessage="Sin opciones disponibles"
+                  placeholder="Seleccione una cuenta">
+                </p-treeSelect>
           
 
           </td>

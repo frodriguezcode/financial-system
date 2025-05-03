@@ -1,5 +1,5 @@
 // angular import
-import { AfterViewInit, Component, ElementRef, Injectable, Input, OnInit, TemplateRef, ViewChild, importProvidersFrom, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Injectable, Input, OnInit, TemplateRef, ViewChild, importProvidersFrom, inject, ChangeDetectorRef  } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 // project import
@@ -94,7 +94,8 @@ expandedKeys: { [key: string]: boolean } = {};
     private messageService: MessageService,
     private toastr: ToastrService,
     private authS:AuthService,
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private cdr: ChangeDetectorRef,
   ){}
   emptyMessage='Selecicone una cuenta'
   page = 1;
@@ -170,6 +171,10 @@ cargando:boolean=true
   Fecha:any= new Date();
   ImporteTotal:number=0
   ImporteSubTotal:number=0
+
+  opcionesCuentas: any[] = [];
+
+  // expandedKeys: { [key: string]: boolean } = {};
 
 ngOnInit(): void {
 
@@ -257,14 +262,252 @@ ngOnInit(): void {
 
   });
 
-
+  this.cargarDatosFirebase().then(() => {
+    setTimeout(() => {
+      if (this.ItemsBack && this.ItemsBack.length > 0) {
+        // Inicializar con tipo basado en el primer registro o predeterminado a 1 (ingreso)
+        const tipoDefault = this.Registros.length > 0 ? this.Registros[0].idTipo : 1;
+        this.cargarOpcionesCuentas(tipoDefault);
+      }
+    }, 100);
+  });
       
 }
 
+
+
 ngAfterViewInit() {
   this.syncScroll();
+  setTimeout(() => {
+    if (this.ItemsBack && this.ItemsBack.length > 0) {
+      this.cargarOpcionesCuentas();
+    } else {
+      console.warn('ItemsBack no está disponible todavía');
+    }
+  }, 100);
 }
 
+
+expandirNodo(event: any) {
+  // Verify that we have a valid event
+  if (!event || !event.node) return;
+  
+  console.log('Expandiendo nodo:', event.node.label);
+  
+  // Update our tracking object
+  this.expandedKeys[event.node.key] = true;
+  
+  // Explicitly set the expanded state on the node
+  event.node.expanded = true;
+  
+  // Force change detection
+  this.cdr.detectChanges();
+  
+  // Stop propagation to prevent selection conflicts
+  if (event.originalEvent) {
+    event.originalEvent.stopPropagation();
+  }
+}
+
+onNodeCollapse(event: any) {
+  if (!event || !event.node) return;
+  
+  console.log('Colapsando nodo:', event.node.label);
+  
+  // Update our tracking
+  this.expandedKeys[event.node.key] = false;
+  
+  // Set collapsed state
+  event.node.expanded = false;
+  
+  // Force UI update
+  this.cdr.detectChanges();
+  
+  // Prevent event conflicts
+  if (event.originalEvent) {
+    event.originalEvent.stopPropagation();
+  }
+}
+
+onNodeSelect(event: any) {
+  console.log('Nodo seleccionado:', event.node.label);
+  
+  // If the node has children, don't allow selection
+  if (event.node && event.node.children && event.node.children.length > 0) {
+    // Cancel the selection by settings CuentaSeleccionada to null after a timeout
+    setTimeout(() => {
+      if (this.registros && this.registros.CuentaSeleccionada === event.node) {
+        this.registros.CuentaSeleccionada = null;
+      }
+      
+      // Toggle expansion instead
+      this.expandedKeys[event.node.key] = !this.expandedKeys[event.node.key];
+      event.node.expanded = !event.node.expanded;
+      
+      // Update the UI
+      this.cdr.detectChanges();
+    });
+    
+    // Prevent default behavior
+    if (event.originalEvent) {
+      event.originalEvent.stopPropagation();
+      event.originalEvent.preventDefault();
+    }
+  }
+}
+
+  // Método que simula la carga de datos desde Firebase
+  cargarDatosFirebase() {
+    return new Promise<void>((resolve) => {
+      // Aquí iría tu lógica para obtener los datos de Firebase
+      // Por ejemplo:
+      this.conS.obtenerCategoriasFlujos().subscribe(resp => {
+        this.Categorias = resp.filter((data: any) => data.Tipo != 3 && data.Mostrar == true);
+        this.CategoriasTodas = resp.filter((re: any) => re.Mostrar == true);
+        
+        // Luego cargas los Items
+        this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(items => {
+          this.ItemsBack = items;
+          // Cuando todo esté cargado, resolver la promesa
+          resolve();
+        });
+      });
+    });
+  }
+
+
+  getTipoFromCategoria(idCategoria: any): number {
+    if (!idCategoria) return 1; // default a ingreso si no hay categoría
+    
+    // Buscar la categoría en las categorías disponibles
+    const categoria = this.Categorias.find(cat => cat.id === idCategoria);
+    
+    // Si la encontramos, devolver su tipo (1-ingreso, 2-egreso)
+    if (categoria) {
+      return categoria.Tipo;
+    }
+    
+    // Si no la encontramos, revisar si es un string que contiene algo como "Ingreso" o "Egreso"
+    if (typeof idCategoria === 'string') {
+      if (idCategoria.toLowerCase().includes('ingreso')) return 1;
+      if (idCategoria.toLowerCase().includes('egreso')) return 2;
+    }
+    
+    return 1; // default a ingreso
+  }
+
+
+
+// Modificación a cargarOpcionesCuentas()
+cargarOpcionesCuentas(idTipo: number = 1) {
+  // Verificar que tengamos datos para trabajar
+  if (!this.ItemsBack || this.ItemsBack.length === 0) {
+    console.warn('ItemsBack no está disponible');
+    return;
+  }
+  
+  // Si no hay idPadre, podemos usar el primer idCategoria disponible como fallback
+  if (!this.registros.idPadre && this.Categorias && this.Categorias.length > 0) {
+    this.registros.idPadre = this.Categorias[0].id;
+    console.log('Usando idPadre por defecto:', this.registros.idPadre);
+  }
+  
+  // Si aún no hay idPadre, no podemos continuar
+  if (!this.registros.idPadre) {
+    console.warn('idPadre no está definido y no hay categorías para usar como fallback');
+    return;
+  }
+  
+  const cuentasContables = this.getCuentabyCategoria(this.registros.idPadre, idTipo);
+  console.log('Cuentas obtenidas para tipo ' + idTipo + ':', cuentasContables);
+  
+  // Solo asignar si hay resultados
+  if (cuentasContables && cuentasContables.length > 0) {
+    this.opcionesCuentas = cuentasContables;
+  } else {
+    console.warn('No se encontraron cuentas para la categoría:', this.registros.idPadre);
+  }
+}
+
+getCuentabyCategoria(Categoria: any, idTipo: number = 1) {
+  let cuentaContable: any = [];
+  
+  // If no category, return empty array
+  if (!Categoria) return [];
+  
+  // Filter the items by type
+  const itemsFiltrados = this.ItemsBack.filter((item: any) => 
+    (item.idPadre == Categoria?.id || item.idPadre == Categoria) && 
+    item.TipoRubro == this.idTipoRegistro &&
+    (item.Tipo == idTipo || item.idTipo == idTipo)
+  );
+  
+  // Process the items for the TreeSelect
+  itemsFiltrados.forEach((cuenta: any) => {
+    const tieneHijos = cuenta.CuentasHijos && Array.isArray(cuenta.CuentasHijos) && cuenta.CuentasHijos.length > 0;
+    const nodeKey = cuenta.id?.toString() || Math.random().toString();
+    
+    const nodoPadre = {
+      key: nodeKey,
+      label: cuenta.Nombre,
+      data: cuenta.id,
+      Tipo: 'Padre',
+      ItemId: cuenta.id,
+      idPadre: cuenta.idPadre,
+      idAbuelo: cuenta.idAbuelo,
+      icon: 'pi pi-folder',
+      expandedIcon: 'pi pi-folder-open',
+      collapsedIcon: 'pi pi-folder',
+      expanded: this.expandedKeys[nodeKey] === true,
+      selectable: !tieneHijos,
+      children: []
+    };
+    
+    // Process children if they exist
+    if (tieneHijos) {
+      cuenta.CuentasHijos.forEach((hijo: any) => {
+        const hijoKey = `${nodeKey}-${hijo.id?.toString() || Math.random().toString()}`;
+        const tieneNietos = hijo.CuentasHijos && Array.isArray(hijo.CuentasHijos) && hijo.CuentasHijos.length > 0;
+        
+        const nodoHijo = {
+          key: hijoKey,
+          label: hijo.Nombre,
+          data: hijo.id,
+          Tipo: 'Hijo',
+          idPadre: hijo.idPadre || cuenta.id,
+          idAbuelo: hijo.idAbuelo || cuenta.idPadre,
+          icon: tieneNietos ? 'pi pi-folder' : 'pi pi-file',
+          expanded: this.expandedKeys[hijoKey] === true,
+          selectable: !tieneNietos,
+          children: []
+        };
+        
+        // Process grandchildren if they exist
+        if (tieneNietos) {
+          hijo.CuentasHijos.forEach((nieto: any) => {
+            const nietoKey = `${hijoKey}-${nieto.id?.toString() || Math.random().toString()}`;
+            nodoHijo.children.push({
+              key: nietoKey,
+              label: nieto.Nombre,
+              data: nieto.id,
+              Tipo: 'Nieto',
+              idPadre: nieto.idPadre || hijo.id,
+              idAbuelo: nieto.idAbuelo || hijo.idPadre,
+              icon: 'pi pi-file',
+              selectable: true
+            });
+          });
+        }
+        
+        nodoPadre.children.push(nodoHijo);
+      });
+    }
+    
+    cuentaContable.push(nodoPadre);
+  });
+  
+  return cuentaContable;
+}
 
 // SYNC top, container, bottom scrollbars
 syncScroll() {
@@ -1212,36 +1455,36 @@ getHijosByCuenta(CuentasHijos:any,OrdenPadre:any,idPadre:any,idCuentaPadre:any,i
 
 
 // Trabajar para lograr desplegar el treeSelect
-getCuentabyCategoria(Categoria:any){
-let cuentaContable:any=[]
+// getCuentabyCategoria(Categoria:any){
+// let cuentaContable:any=[]
 
-this.ItemsBack.filter((item:any)=> (item.idPadre==Categoria.id || item.idPadre==Categoria)
-&& item.TipoRubro==this.idTipoRegistro
+// this.ItemsBack.filter((item:any)=> (item.idPadre==Categoria.id || item.idPadre==Categoria)
+// && item.TipoRubro==this.idTipoRegistro
 
 
-).forEach((cuenta:any) => {
+// ).forEach((cuenta:any) => {
 
-  cuentaContable.push({
-    key: `${cuenta.Orden}`,
-    label: cuenta.Nombre,
-    Tipo:'Padre',
-    ItemId: cuenta.id,
-    idPadre:cuenta.idPadre,
-    idAbuelo:cuenta.idAbuelo,
-    data: 'Documents Folder',
-    icon: 'pi pi-fw pi-inbox',
-    expanded: true,
-    children:cuenta.CuentasHijos==undefined ? [] : 
-    this.getHijosByCuenta(cuenta.CuentasHijos,cuenta.Orden,cuenta.idPadre,cuenta.id,cuenta.idAbuelo)
+//   cuentaContable.push({
+//     key: `${cuenta.Orden}`,
+//     label: cuenta.Nombre,
+//     Tipo:'Padre',
+//     ItemId: cuenta.id,
+//     idPadre:cuenta.idPadre,
+//     idAbuelo:cuenta.idAbuelo,
+//     data: 'Documents Folder',
+//     icon: 'pi pi-fw pi-inbox',
+//     expanded: true,
+//     children:cuenta.CuentasHijos==undefined ? [] : 
+//     this.getHijosByCuenta(cuenta.CuentasHijos,cuenta.Orden,cuenta.idPadre,cuenta.id,cuenta.idAbuelo)
 
-  })
+//   })
   
-});
+// });
 
+// console.log('formato:',cuentaContable);
+// return cuentaContable
 
-return cuentaContable
-
-}
+// }
 
 getCuentaSeleccionada(cuenta:any){
 

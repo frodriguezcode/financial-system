@@ -1,5 +1,6 @@
 @import 'primeicons/primeicons.css';
 
+/* General styling */
 .seleccion-item {
   max-width: 10rem;
   min-width: 10rem;
@@ -8,18 +9,24 @@
   font-weight: bold;
 }
 
+.textoInputNegativo {
+  color: red;
+}
+
+.textoInputPositivo {
+  color: black;
+}
+
+.space {
+  margin-right: 8px;
+}
+
+/* Layout styles */
 .departamento-socio {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
-}
-
-.textoInputNegativo {
-  color: red;
-}
-.textoInputPositivo {
-  color: black;
 }
 
 .radio-departamentos {
@@ -43,50 +50,26 @@
   width: 100%;
 }
 
-.Egreso {
-  background-color: rgba(255, 83, 112, 0.1);
-}
-.Ingreso {
-  background-color: rgba(0, 157, 178, 0.1);
-}
-
 .boton-guardar {
   position: relative;
   margin-bottom: 0;
 }
-.space {
-  margin-right: 8px;
+
+/* Row styling */
+.Egreso {
+  background-color: rgba(255, 83, 112, 0.1);
 }
 
-// ~Responsive
-@media (max-width: 640px) {
-  .departamento-socio {
-    flex-direction: column;
-    margin-top: 8px;
-  }
-  .radio-departamentos {
-    width: 100%;
-  }
+.Ingreso {
+  background-color: rgba(0, 157, 178, 0.1);
 }
 
-.table-container {
-  height: 600px;
-  min-width: 50rem;
-  overflow-y: auto;
-}
-
-.p-datatable-scrollable > .p-datatable-wrapper {
-  position: relative;
-}
-
-.p-datatable > .p-datatable-wrapper {
-  overflow: none !important;
-}
-
+/* Animation */
 .animate__animated.animate__bounceIn {
   --animate-duration: 1.5s;
 }
 
+/* Alert styles */
 .custom-alert {
   display: flex;
   position: absolute;
@@ -97,12 +80,19 @@
   border-radius: 6px;
 }
 
-/* Fija el ancho del multiSelect */
+/* MultiSelect styles */
 .fixed-multiselect .ui-multiselect-label-container {
-  width: 200px; /* Ajusta el tamaño deseado */
+  width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Table styles */
+.table-container {
+  height: 600px;
+  min-width: 50rem;
+  overflow-y: auto;
 }
 
 .table-100 th,
@@ -114,21 +104,27 @@
 }
 
 .table-responsive {
-  // cursor: grab;
-  overflow-x: auto; /* Habilitar el scroll horizontal */
+  overflow-x: auto;
 }
 
-// .table-responsive:active {
-//   cursor: grabbing;
-// }
+td:nth-child(9),
+th:nth-child(9) {
+  width: 150px;
+  text-align: center;
+}
 
-/* Primera columna fija */
+tfoot tr {
+  background: white;
+}
+
+/* Fixed columns */
 tbody td:first-child {
   position: sticky;
-  left: 0; /* Fija la primera columna al inicio */
-  background-color: white; /* Fondo blanco para evitar superposición visual */
-  z-index: 1025; /* Más alto que las celdas normales y encabezado */
+  left: 0;
+  background-color: white;
+  z-index: 1025;
 }
+
 thead th:first-child {
   position: sticky;
   left: 0;
@@ -136,13 +132,13 @@ thead th:first-child {
   z-index: 1025;
 }
 
-/* Segunda columna fija */
 tbody td:nth-child(2) {
   position: sticky;
-  left: 48px; /* Ajusta según el ancho de la primera columna */
+  left: 48px;
   background-color: white;
   z-index: 1025;
 }
+
 thead th:nth-child(2) {
   position: sticky;
   left: 48px;
@@ -154,83 +150,144 @@ thead th {
   border-bottom: 2px solid #dee2e6;
 }
 
-.ui-dropdown-panel {
-  background-color: white !important;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 9999 !important;
-}
-
-/* Scroll containers */
+/* Scroll container styles */
 .table-scroll-wrapper {
   position: relative;
 }
 
-/* TOP SCROLLBAR */
-.table-scroll-top {
-  overflow-x: auto;
-  height: 16px; /* Altura para mostrar la barra superior */
-}
-
-/* BOTTOM SCROLLBAR (NEW) */
+.table-scroll-top,
 .table-scroll-bottom {
   overflow-x: auto;
   height: 16px;
 }
 
-
-/* Quita las medias queries con width:300%/600%. */
 .table-scroll-top div,
 .table-scroll-bottom div {
   height: 1px;
-  width: auto; /* O 100% */
+  width: auto;
   display: inline-block;
 }
 
 .table-scroll-container {
   overflow-x: auto;
-  max-height: 800px; /* Ajusta según tu diseño */
+  max-height: 800px;
 }
 
-
-/* Fuerza la tabla a ocupar el ancho real de su contenido */
 .table-scroll-container table {
-  width: max-content;   /* se ajusta al contenido */
-  white-space: nowrap;  /* evita que las celdas hagan wrap */
+  width: max-content;
+  white-space: nowrap;
 }
 
-
-/* Oculta la barra de desplazamiento real del .table-scroll-container */
 .table-scroll-container::-webkit-scrollbar {
   display: none;
-}
-
-.p-dropdown-panel {
-  z-index: 1000 !important;
 }
 
 .importe {
   margin-left: 400px;
 }
 
-td:nth-child(9),
-th:nth-child(9) {
-  width: 150px; /* Ajusta según necesites */
-  text-align: center;
+/* PrimeNG DataTable overrides */
+.p-datatable-scrollable > .p-datatable-wrapper {
+  position: relative;
 }
 
-tfoot tr {
-  background: white;
+.p-datatable > .p-datatable-wrapper {
+  overflow: none !important;
 }
 
-::ng-deep .p-treeselect-label-empty::after {
-  content: "Tu mensaje personalizado";
-  color: #6c757d; /* Color del placeholder */
-  position: absolute;
-  left: 0;
+/* PrimeNG Dropdown overrides */
+.p-dropdown-panel,
+.ui-dropdown-panel {
+  background-color: white !important;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999 !important;
 }
 
-::ng-deep .p-treeselect-panel {
-  max-height: 320px; /* altura máxima que quieres */
-  width: 400px; /* o lo que necesites */
-  overflow: auto; /* que salga scroll si se pasa */
+/* PrimeNG TreeSelect overrides */
+:host ::ng-deep .p-treeselect {
+  width: 100%;
+}
+
+:host ::ng-deep .p-treeselect-panel {
+  min-width: 350px;
+  max-width: 500px;
+  z-index: 9999 !important;
+}
+
+:host ::ng-deep .p-treeselect-items-wrapper {
+  max-height: 300px !important;
+  overflow-y: auto !important;
+}
+
+/* TreeNode styles */
+:host ::ng-deep .p-treenode {
+  cursor: pointer;
+}
+
+:host ::ng-deep .p-treenode-children {
+  padding-left: 1.5rem !important;
+  overflow: visible !important;
+}
+
+:host ::ng-deep .p-treenode-icon {
+  margin-right: 0.5rem !important;
+}
+
+:host ::ng-deep .p-treenode-label {
+  padding: 0.375rem 0.5rem !important;
+  flex: 1 !important;
+}
+
+:host ::ng-deep .p-treenode[aria-expanded="true"] > .p-treenode-content {
+  background-color: #e9ecef;
+  font-weight: bold;
+}
+
+/* TreeNode content styles */
+:host ::ng-deep .p-treenode-content {
+  padding: 0.5rem 0.25rem !important;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  pointer-events: auto !important;
+}
+
+:host ::ng-deep .p-treenode-content:hover {
+  background-color: #f8f9fa !important;
+}
+
+/* Toggle Button styles */
+:host ::ng-deep .p-tree-toggler,
+:host ::ng-deep .p-treenode-toggler {
+  z-index: 100 !important;
+  position: relative !important;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  margin-right: 0.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+:host ::ng-deep .p-tree-toggler:hover,
+:host ::ng-deep .p-treenode-toggler:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+:host ::ng-deep .p-tree-toggler-icon {
+  font-size: 1rem !important;
+  cursor: pointer;
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .departamento-socio {
+    flex-direction: column;
+    margin-top: 8px;
+  }
+  
+  .radio-departamentos {
+    width: 100%;
+  }
 }
