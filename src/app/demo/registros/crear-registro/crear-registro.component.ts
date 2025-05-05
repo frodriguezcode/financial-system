@@ -174,6 +174,8 @@ cargando:boolean=true
 
   opcionesCuentas: any[] = [];
 
+  
+
   // expandedKeys: { [key: string]: boolean } = {};
 
 ngOnInit(): void {
@@ -435,13 +437,21 @@ getCuentabyCategoria(Categoria: any, idTipo: number = 1) {
   // If no category, return empty array
   if (!Categoria) return [];
   
+ /* this.ItemsBack.filter((item: any) =>
+    (item.idPadre == Categoria?.id || item.idPadre == Categoria) &&
+    item.TipoRubro == this.idTipoRegistro &&
+    (item.Tipo == idTipo || item.idTipo == idTipo)  // This extra condition is causing the problem
+  );*/ 
+
+
   // Filter the items by type
   const itemsFiltrados = this.ItemsBack.filter((item: any) => 
     (item.idPadre == Categoria?.id || item.idPadre == Categoria) && 
-    item.TipoRubro == this.idTipoRegistro &&
-    (item.Tipo == idTipo || item.idTipo == idTipo)
+    item.TipoRubro == this.idTipoRegistro
   );
   
+
+
   // Process the items for the TreeSelect
   itemsFiltrados.forEach((cuenta: any) => {
     const tieneHijos = cuenta.CuentasHijos && Array.isArray(cuenta.CuentasHijos) && cuenta.CuentasHijos.length > 0;
@@ -1263,71 +1273,84 @@ formatearNumero(input: HTMLInputElement,Tipo:any) {
 }
 
 
-salvarRegistro(Registro:any,Valor:any){
- 
-  let ValorRegistro:any=0
 
-  if( Registro.idTipo==2){
-    ValorRegistro= Number(Valor.replace(/[\s$,\-]/g, ''))<0 ?  Number(Valor.replace(/[\s$,\-]/g, '')) : Number(Valor.replace(/[\s$,\-]/g, ''))*-1
-  }
-  else {
-    ValorRegistro=Number(Valor.replace(/[\s$,\-]/g, ''))
-  }
-
-
-   if(Registro.CuentaSeleccionada.Tipo=='Padre' && Registro.CuentaSeleccionada.children.length>0){
-   Swal.fire({
-     position: "center",
-     icon: "warning",
-     title: "Debe seleccionar una sub-cuenta",
-     showConfirmButton: false,
-     timer: 1500
-   });
-   }
-
-   else {
-     if(Registro.CuentaSeleccionada.Tipo=='Hijo'){
-       Registro.idPadre=Registro.CuentaSeleccionada.idPadre
-       Registro.idAbuelo=Registro.CuentaSeleccionada.idAbuelo
-       Registro.idNieto=Registro.CuentaSeleccionada.id
-       Registro.idHijo=Registro.CuentaSeleccionada.ItemId
-     }
-   
-    else if(Registro.CuentaSeleccionada.Tipo=='Padre' && Registro.CuentaSeleccionada.children.length==0){
-       Registro.idPadre=Registro.CuentaSeleccionada.idPadre
-       Registro.idAbuelo=Registro.CuentaSeleccionada.idAbuelo
-       Registro.idHijo=Registro.CuentaSeleccionada.ItemId
-       Registro.idNieto=""
-     }
-
-   
-     Registro.NumCuenta=Registro.Cuenta.Cuenta
-     Registro.Valor=ValorRegistro
-
-     delete Registro.CuentaSeleccionada.parent
-
-     const index = this.registrosBackUp.findIndex((reg:any) =>
-      reg.id ===  Registro.id
-      );
+salvarRegistro(Registro: any, Valor: any) {
+  let ValorRegistro: any = 0
   
-       if (index !== -1) {
-      // Si existe, actualizar
-       this.registrosBackUp[index] = Registro;
-       } 
-       else {
-      // Si no existe, agregar
-         this.registrosBackUp.push(Registro);
-       }  
-   this.Registros=this.registrosBackUp
-  this.conS.updateRegistro(Registro).then(resp=>{
-            this.toastr.success('Guardado', '¡Exito!');
-            this.calcularImporteTotal(this.Registros)
-            this.calcularImporteSubTotal(this.Registros)
-  })
-
-   }
-
-
+  // Process the value correctly based on record type
+  if (Registro.idTipo == 2) {
+    ValorRegistro = Number(Valor.replace(/[\s$,\-]/g, '')) < 0 ? 
+      Number(Valor.replace(/[\s$,\-]/g, '')) : 
+      Number(Valor.replace(/[\s$,\-]/g, '')) * -1
+  } else {
+    ValorRegistro = Number(Valor.replace(/[\s$,\-]/g, ''))
+  }
+  
+  // Validate account selection
+  if (Registro.CuentaSeleccionada.Tipo == 'Padre' && Registro.CuentaSeleccionada.children.length > 0) {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Debe seleccionar una sub-cuenta",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  } else {
+    // Prepare record data based on selected account type
+    if (Registro.CuentaSeleccionada.Tipo == 'Hijo') {
+      Registro.idPadre = Registro.CuentaSeleccionada.idPadre
+      Registro.idAbuelo = Registro.CuentaSeleccionada.idAbuelo
+      Registro.idNieto = Registro.CuentaSeleccionada.id || null // Use null instead of undefined
+      Registro.idHijo = Registro.CuentaSeleccionada.ItemId || null
+    } else if (Registro.CuentaSeleccionada.Tipo == 'Padre' && Registro.CuentaSeleccionada.children.length == 0) {
+      Registro.idPadre = Registro.CuentaSeleccionada.idPadre
+      Registro.idAbuelo = Registro.CuentaSeleccionada.idAbuelo
+      Registro.idHijo = Registro.CuentaSeleccionada.ItemId || null
+      Registro.idNieto = null // Use null instead of empty string
+    }
+    
+    // Set other required fields
+    Registro.NumCuenta = Registro.Cuenta?.Cuenta || null
+    Registro.Valor = ValorRegistro
+    
+    // Remove unnecessary properties before saving
+    if (Registro.CuentaSeleccionada) {
+      delete Registro.CuentaSeleccionada.parent
+    }
+    
+    // Prepare a clean object for Firebase update
+    const registroToUpdate = { ...Registro };
+    
+    // Ensure all fields have valid values for Firebase
+    // Remove any undefined values that Firebase doesn't accept
+    Object.keys(registroToUpdate).forEach(key => {
+      if (registroToUpdate[key] === undefined) {
+        registroToUpdate[key] = null; // Convert undefined to null
+      }
+    });
+    
+    // Update local array
+    const index = this.registrosBackUp.findIndex((reg: any) => reg.id === Registro.id);
+    if (index !== -1) {
+      // If exists, update
+      this.registrosBackUp[index] = registroToUpdate;
+    } else {
+      // If doesn't exist, add
+      this.registrosBackUp.push(registroToUpdate);
+    }
+    
+    this.Registros = this.registrosBackUp;
+    
+    // Save to Firebase with the cleaned object
+    this.conS.updateRegistro(registroToUpdate).then(resp => {
+      this.toastr.success('Guardado', '¡Exito!');
+      this.calcularImporteTotal(this.Registros);
+      this.calcularImporteSubTotal(this.Registros);
+    }).catch(error => {
+      console.error('Error al guardar:', error);
+      this.toastr.error('Error al guardar el registro', 'Error');
+    });
+  }
 }
 
 getIdProyecto(proyectoNombre){
