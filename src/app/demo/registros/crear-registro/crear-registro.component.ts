@@ -116,7 +116,6 @@ expandedKeys: { [key: string]: boolean } = {};
   visibleTipoOperacion: boolean = false;
   submitted: boolean = false;
   isNegativo: boolean = true;
-  registros: any=[];
   registrosSeleccionados: any=[];
   registrosBackUp: any=[];
   FiltrosSideBar: boolean = false;
@@ -155,8 +154,8 @@ expandedKeys: { [key: string]: boolean } = {};
   OrdenMax: number = 0;
   Sucursales: any=[];
   Proyectos: any=[];
-  ProyectoSeleccionado: any;
-  SucursaleSeleccionada: any;
+  ProyectoSeleccionado: any=[];
+  SucursaleSeleccionada: any=[];
   CuentasContables:any=[]
   SeleccionarTodo:boolean=false
   MostraSubCuentas:boolean=false
@@ -282,7 +281,7 @@ ngAfterViewInit() {
   this.syncScroll();
   setTimeout(() => {
     if (this.ItemsBack && this.ItemsBack.length > 0) {
-      this.cargarOpcionesCuentas();
+      //this.cargarOpcionesCuentas();
     } else {
       console.warn('ItemsBack no está disponible todavía');
     }
@@ -338,8 +337,8 @@ onNodeSelect(event: any) {
   if (event.node && event.node.children && event.node.children.length > 0) {
     // Cancel the selection by settings CuentaSeleccionada to null after a timeout
     setTimeout(() => {
-      if (this.registros && this.registros.CuentaSeleccionada === event.node) {
-        this.registros.CuentaSeleccionada = null;
+      if (this.Registros && this.Registros.CuentaSeleccionada === event.node) {
+        this.Registros.CuentaSeleccionada = null;
       }
       
       // Toggle expansion instead
@@ -370,6 +369,7 @@ onNodeSelect(event: any) {
         // Luego cargas los Items
         this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(items => {
           this.ItemsBack = items;
+          this.obtenerRegistros()
           // Cuando todo esté cargado, resolver la promesa
           resolve();
         });
@@ -409,25 +409,25 @@ cargarOpcionesCuentas(idTipo: number = 1) {
   }
   
   // Si no hay idPadre, podemos usar el primer idCategoria disponible como fallback
-  if (!this.registros.idPadre && this.Categorias && this.Categorias.length > 0) {
-    this.registros.idPadre = this.Categorias[0].id;
-    console.log('Usando idPadre por defecto:', this.registros.idPadre);
+  if (!this.Registros.idPadre && this.Categorias && this.Categorias.length > 0) {
+    this.Registros.idPadre = this.Categorias[0].id;
+    console.log('Usando idPadre por defecto:', this.Registros.idPadre);
   }
   
   // Si aún no hay idPadre, no podemos continuar
-  if (!this.registros.idPadre) {
+  if (!this.Registros.idPadre) {
     console.warn('idPadre no está definido y no hay categorías para usar como fallback');
     return;
   }
   
-  const cuentasContables = this.getCuentabyCategoria(this.registros.idPadre, idTipo);
+  const cuentasContables = this.getCuentabyCategoria(this.Registros.idPadre, idTipo);
   console.log('Cuentas obtenidas para tipo ' + idTipo + ':', cuentasContables);
   
   // Solo asignar si hay resultados
   if (cuentasContables && cuentasContables.length > 0) {
     this.opcionesCuentas = cuentasContables;
   } else {
-    console.warn('No se encontraron cuentas para la categoría:', this.registros.idPadre);
+    console.warn('No se encontraron cuentas para la categoría:', this.Registros.idPadre);
   }
 }
 
@@ -484,6 +484,7 @@ getCuentabyCategoria(Categoria: any, idTipo: number = 1) {
           label: hijo.Nombre,
           data: hijo.id,
           Tipo: 'Hijo',
+          ItemId: cuenta.id,
           idPadre: hijo.idPadre || cuenta.id,
           idAbuelo: hijo.idAbuelo || cuenta.idPadre,
           icon: tieneNietos ? 'pi pi-folder' : 'pi pi-check-square',
@@ -655,7 +656,7 @@ borrarRegistros(){
       //this.Registros=this.Registros.filter((reg:any)=>reg.id!=element.id && reg.TipoRegistro==this.idTipoRegistro).sort((a:any, b:any) => b.Orden - a.Orden)
       this.registrosSeleccionados=this.registrosSeleccionados.filter((reg:any)=>reg.id!=element.id)
       this.registrosBackUp=this.registrosBackUp.filter((reg:any)=>reg.id!=element.id)
-      this.refreshRegistros([],false)
+      this.refreshRegistros()
       if(this.registrosSeleccionados.length==0){
         this.SeleccionarTodo=false
         this.toastr.success('', `${Contador} registros borrados`,{
@@ -741,7 +742,7 @@ obtenerProyectos(){
       "idMatriz":"DeCofZ7At1eUwsRo9hPs",
       "idUsuario":"YpLYlsIffwelfqtCkSP9"
     });
-    this.obtenerRegistros()
+
   
     })
     
@@ -932,7 +933,7 @@ const registrosFiltrados = this.registrosBackUp.filter(registro => {
 if(this.FechaDesde.value==''|| this.FechaHasta.value==''){
   let _RegistrosFiltrados:any=[]
   _RegistrosFiltrados=registrosFiltrados.filter((reg:any)=>reg.TipoRegistro==this.idTipoRegistro)
-  this.refreshRegistros(_RegistrosFiltrados,true)
+  this.refreshRegistros()
 
 }
 else {
@@ -942,7 +943,7 @@ else {
   
 )
 
-this.refreshRegistros(_RegistrosFiltrados,true)
+this.refreshRegistros()
 this.FiltrosSideBar=false
 
 }
@@ -958,9 +959,9 @@ restablecer(){
   this.FechaDesde.setValue('')
   this.FechaHasta.setValue('')
   this.CategoriasSeleccionadas=[]
-  this.SucursaleSeleccionada= {};
-  this.ProyectoSeleccionado= {};
-  this.refreshRegistros([],false)
+  this.SucursaleSeleccionada=[];
+  this.ProyectoSeleccionado=[];
+  this.refreshRegistros()
 
 }
 obtenerRegistros(){
@@ -1003,7 +1004,7 @@ obtenerRegistros(){
               //    }
               //    this.registrosBackUp.push(_Registro)
               //  })
-               this.refreshRegistros(this.registrosBackUp,false)
+               this.refreshRegistros()
 
                setTimeout(() => {
                 this.syncScroll();
@@ -1050,7 +1051,7 @@ obtenerRegistros(){
     //              }
     //   this.registrosBackUp.push(_Registro)
     // })
-    this.refreshRegistros([],false)
+    this.refreshRegistros()
 
     setTimeout(() => {
       this.syncScroll();
@@ -1064,61 +1065,52 @@ obtenerRegistros(){
  
 }
 
-refreshRegistros(RegistrosFiltrados: any, Filtro: boolean) {
+refreshRegistros() {
   // First clear the current array
   this.Registros = [];
   
   let registrosFiltrados = [];
-  
-  // Always filter by current tipo registro, regardless of whether filtered records were passed
-  if (RegistrosFiltrados.length === 0 && Filtro === false) {
-    // Only show records matching the current idTipoRegistro
-    registrosFiltrados = this.registrosBackUp.filter(
-      (reg: any) => reg.TipoRegistro === this.idTipoRegistro
-    );
-    
-    // Apply additional filters if needed
-    if (this.idTipoRegistro === 1 && this.SucursaleSeleccionada !== undefined && 
-        Object.keys(this.SucursaleSeleccionada).length > 0) {
-      registrosFiltrados = registrosFiltrados.filter(
-        (reg: any) => reg.idSucursal === this.SucursaleSeleccionada.id
-      );
-    } else if (this.idTipoRegistro === 2 && this.ProyectoSeleccionado !== undefined && 
-              Object.keys(this.ProyectoSeleccionado).length > 0) {
-      registrosFiltrados = registrosFiltrados.filter(
-        (reg: any) => reg.idProyecto === this.ProyectoSeleccionado.id
-      );
-    }
-    
-    // Update collection size
-    this.collectionSize = registrosFiltrados.length;
-    
-    // Sort and apply pagination
-    this.Registros = registrosFiltrados
-      .sort((a: any, b: any) => b.Orden - a.Orden)
-      .slice(
-        (this.page - 1) * this.pageSize,
-        (this.page - 1) * this.pageSize + this.pageSize
-      );
-  } else {
-    // If filtered records were passed, ensure they also match current idTipoRegistro
-    registrosFiltrados = RegistrosFiltrados.filter(
-      (reg: any) => reg.TipoRegistro === this.idTipoRegistro
-    );
-    
-    this.collectionSize = registrosFiltrados.length;
-    
-    // Sort and apply pagination
-    this.Registros = registrosFiltrados
-      .sort((a: any, b: any) => b.Orden - a.Orden)
-      .slice(
-        (this.page - 1) * this.pageSize,
-        (this.page - 1) * this.pageSize + this.pageSize
-      );
+
+  let Sucursales:any=[]
+  let Proyectos:any=[]
+  let Categorias:any=[]
+
+ this.CategoriasSeleccionadas.forEach(categ => {
+  Categorias.push(categ.id)
+ });
+ this.SucursaleSeleccionada.forEach(suc => {
+  Sucursales.push(suc.id)
+ });
+ this.ProyectoSeleccionado.forEach(proyect => {
+  Proyectos.push(proyect.id)
+ });
+
+
+ let Criterios={
+  "idPadre":Categorias,
+  "idProyecto":Proyectos,
+  "idSucursal":Sucursales,
+  "TipoRegistro":this.idTipoRegistro,
+ }
+
+ if(this.FechaDesde.value != '' && this.FechaHasta.value != ''){
+   registrosFiltrados=this.conS.filtradoDinamico(Criterios,this.registrosBackUp)
+   .filter((reg:any)=>reg.FechaRegistro>=this.FechaDesde.value && reg.FechaRegistro<=this.FechaHasta.value )
+   console.log('registrosFiltrados',registrosFiltrados)
   }
-  
-  // Calculate totals and update other properties
-  this.calcularImporteSubTotal(this.Registros);
+ else {
+  registrosFiltrados=this.conS.filtradoDinamico(Criterios,this.registrosBackUp)
+ }
+this.collectionSize = registrosFiltrados.length;
+
+    
+    this.Registros = registrosFiltrados
+      .sort((a: any, b: any) => b.Orden - a.Orden)
+      .slice(
+        (this.page - 1) * this.pageSize,
+        (this.page - 1) * this.pageSize + this.pageSize
+      );
+   this.calcularImporteSubTotal(this.Registros);
   this.calcularImporteTotal(this.Registros);
   
   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
@@ -1127,6 +1119,57 @@ refreshRegistros(RegistrosFiltrados: any, Filtro: boolean) {
   
   this.cargarFormulario();
   this.cargando = false;
+
+  // -----------------------
+  // if (RegistrosFiltrados.length === 0 && Filtro === false) {
+  //   registrosFiltrados = this.registrosBackUp.filter(
+  //     (reg: any) => reg.TipoRegistro === this.idTipoRegistro
+  //   );
+    
+  //   if (this.idTipoRegistro === 1 && this.SucursaleSeleccionada !== undefined && 
+  //       Object.keys(this.SucursaleSeleccionada).length > 0) {
+  //     registrosFiltrados = registrosFiltrados.filter(
+  //       (reg: any) => reg.idSucursal === this.SucursaleSeleccionada.id
+  //     );
+  //   } else if (this.idTipoRegistro === 2 && this.ProyectoSeleccionado !== undefined && 
+  //             Object.keys(this.ProyectoSeleccionado).length > 0) {
+  //     registrosFiltrados = registrosFiltrados.filter(
+  //       (reg: any) => reg.idProyecto === this.ProyectoSeleccionado.id
+  //     );
+  //   }
+    
+  //   this.collectionSize = registrosFiltrados.length;
+    
+  //   this.Registros = registrosFiltrados
+  //     .sort((a: any, b: any) => b.Orden - a.Orden)
+  //     .slice(
+  //       (this.page - 1) * this.pageSize,
+  //       (this.page - 1) * this.pageSize + this.pageSize
+  //     );
+  // } else {
+  //   registrosFiltrados = RegistrosFiltrados.filter(
+  //     (reg: any) => reg.TipoRegistro === this.idTipoRegistro
+  //   );
+    
+  //   this.collectionSize = registrosFiltrados.length;
+    
+  //   this.Registros = registrosFiltrados
+  //     .sort((a: any, b: any) => b.Orden - a.Orden)
+  //     .slice(
+  //       (this.page - 1) * this.pageSize,
+  //       (this.page - 1) * this.pageSize + this.pageSize
+  //     );
+  // }
+  
+  // this.calcularImporteSubTotal(this.Registros);
+  // this.calcularImporteTotal(this.Registros);
+  
+  // this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
+  //   return Math.max(maxOrden, objeto.Orden);
+  // }, 0);
+  
+  // this.cargarFormulario();
+  // this.cargando = false;
 }
 switchTipoRegistro(idTipo: number) {
   this.cargando = true;
@@ -1285,17 +1328,16 @@ salvarRegistro(Registro: any, Valor: any) {
     if (Registro.CuentaSeleccionada.Tipo == 'Hijo') {
       Registro.idPadre = Registro.CuentaSeleccionada.idPadre
       Registro.idAbuelo = Registro.CuentaSeleccionada.idAbuelo
-      Registro.idNieto = Registro.CuentaSeleccionada.id || null // Use null instead of undefined
-      Registro.idHijo = Registro.CuentaSeleccionada.ItemId || null
+      Registro.idNieto = Registro.CuentaSeleccionada.data || "" // Use null instead of undefined
+      Registro.idHijo = Registro.CuentaSeleccionada.ItemId || ""
     } else if (Registro.CuentaSeleccionada.Tipo == 'Padre' && Registro.CuentaSeleccionada.children.length == 0) {
       Registro.idPadre = Registro.CuentaSeleccionada.idPadre
       Registro.idAbuelo = Registro.CuentaSeleccionada.idAbuelo
-      Registro.idHijo = Registro.CuentaSeleccionada.ItemId || null
-      Registro.idNieto = null // Use null instead of empty string
+      Registro.idHijo = Registro.CuentaSeleccionada.ItemId || ""
     }
     
     // Set other required fields
-    Registro.NumCuenta = Registro.Cuenta?.Cuenta || null
+    Registro.NumCuenta = Registro.Cuenta?.Cuenta || ""
     Registro.Valor = ValorRegistro
     
     // Remove unnecessary properties before saving
@@ -1324,14 +1366,14 @@ salvarRegistro(Registro: any, Valor: any) {
       this.registrosBackUp.push(registroToUpdate);
     }
     
-    this.Registros = this.registrosBackUp;
+    //this.Registros = this.registrosBackUp;
     
     // Save to Firebase with the cleaned object
     this.conS.updateRegistro(registroToUpdate).then(resp => {
       this.toastr.success('Guardado', '¡Exito!');
       this.calcularImporteTotal(this.Registros);
       this.calcularImporteSubTotal(this.Registros);
-      this.refreshRegistros([], false);
+      this.refreshRegistros();
     }).catch(error => {
       console.error('Error al guardar:', error);
       this.toastr.error('Error al guardar el registro', 'Error');
@@ -1770,8 +1812,8 @@ guardarRegistro(idTipo:number){
 this.registroForm.value.idTipo=idTipo;
 this.registroForm.value.TipoRegistro=this.idTipoRegistro;
 
-this.registroForm.value.idSucursal=this.SucursaleSeleccionada==undefined ? "":this.SucursaleSeleccionada.id;
-this.registroForm.value.idProyecto=this.ProyectoSeleccionado==undefined ? "":this.ProyectoSeleccionado.id;
+this.registroForm.value.idSucursal=this.SucursaleSeleccionada.length==0 ? "":this.SucursaleSeleccionada.id;
+this.registroForm.value.idProyecto=this.ProyectoSeleccionado.length==0 ? "":this.ProyectoSeleccionado.id;
 this.registroForm.value.Seleccionado=false
 
 const coleccionRef = this.firestore.collection('Registro');
@@ -1818,7 +1860,9 @@ this.registrosBackUp.push(_Registro)
 
 this.registroForm.value.id=nuevoId
 this.cargarFormulario()
+this.refreshRegistros()
 this.conS.crearRegistro(_Registro).then(id => {
+
 this.renderizarBarra()
 }).catch(error => {
   console.error('Error al crear el registro:', error);
@@ -1887,7 +1931,7 @@ async copiarRegistro(registro: any) {
 
     // 8) Actualiza la lista local y refresca la vista
     this.registrosBackUp.push(RegistroCopiado);
-    this.refreshRegistros([], false);
+    this.refreshRegistros();
 
   } catch (error) {
     console.error('Error al copiar registro:', error);

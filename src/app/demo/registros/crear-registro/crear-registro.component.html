@@ -174,10 +174,10 @@
       <div *ngIf="idTipoRegistro == 1" class="col-12" style="z-index: 2000; top: 0">
         <label for="formGroupExampleInput" class="form-label">Buscar por sucursal</label>
         <br />
-        <p-dropdown
-          [style]="{ width: '280px' }"
-          [panelStyle]="{ width: '280px' }"
-          (onChange)="filtrarByCategoria()"
+        <p-multiSelect
+          [style]="{ width: '350px' }"
+          [panelStyle]="{ width: '350px' }"
+          (onChange)="refreshRegistros()"
           [options]="Sucursales"
           [(ngModel)]="SucursaleSeleccionada"
           optionLabel="Nombre"
@@ -188,10 +188,10 @@
       <div *ngIf="idTipoRegistro == 2" class="col-12" style="z-index: 2000; top: 0">
         <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
         <br />
-        <p-dropdown
-          [style]="{ width: '280px' }"
-          [panelStyle]="{ width: '280px' }"
-          (onChange)="filtrarByCategoria()"
+        <p-multiSelect
+          [style]="{ width: '350px' }"
+          [panelStyle]="{ width: '350px' }"
+          (onChange)="refreshRegistros()"
           [options]="Proyectos"
           [(ngModel)]="ProyectoSeleccionado"
           optionLabel="NombreSucursal"
@@ -203,9 +203,9 @@
         <label for="formGroupExampleInput" class="form-label">Buscar por categoría</label>
         <br />
         <p-multiSelect
-          [style]="{ width: '280px' }"
-          [panelStyle]="{ width: '295px' }"
-          (onChange)="filtrarByCategoria()"
+          [style]="{ width: '350px' }"
+          [panelStyle]="{ width: '350px' }"
+          (onChange)="refreshRegistros()"
           [options]="Categorias"
           [(ngModel)]="CategoriasSeleccionadas"
           optionLabel="Nombre"
@@ -244,7 +244,7 @@
         <button
           type="button"
           class="btn btn-success shadow-4 mx-auto"
-          (click)="buscarByFecha()"
+          (click)="refreshRegistros()"
           [disabled]="this.FechaDesde.value == '' || this.FechaHasta.value == ''"
           >Buscar <i class="fa-solid fa-magnifying-glass"></i>
         </button>
@@ -740,10 +740,10 @@
 <!--? Tabla de registro y sus elementos -->
 
 <div class="d-flex justify-content-between p-2">
-  <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize" (pageChange)="refreshRegistros([], false)">
+  <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize" (pageChange)="refreshRegistros()">
   </ngb-pagination>
 
-  <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshRegistros([], false)">
+  <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshRegistros()">
     <option [ngValue]="5">5 por página</option>
     <option [ngValue]="10">10 por página</option>
     <option [ngValue]="15">15 por página</option>
