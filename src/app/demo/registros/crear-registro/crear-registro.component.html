@@ -1,99 +1,125 @@
+<div style="margin-top: -10px">
+  <button type="button" (click)="openEnd(content)" class="btn btn-primary mb-4 shadow-4 m-1 float-end"
+    >Filtros <i class="fa-solid fa-filter"></i
+  ></button>
+  <button type="button" (click)="openEnd(contentOpciones)" class="btn btn-danger mb-4 shadow-4 m-1 float-end"
+    >Opciones <i class="fa-solid fa-table-list"></i
+  ></button>
 
-<div style="margin-top: -10px;">
-
-  <button type="button" (click)="openEnd(content)" class="btn btn-primary mb-4 shadow-4 m-1 float-end ">Filtros <i class="fa-solid fa-filter"></i></button>
-  <button type="button" (click)="openEnd(contentOpciones)" class="btn btn-danger mb-4 shadow-4 m-1 float-end ">Opciones <i class="fa-solid fa-table-list"></i></button>
-
-  <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning mb-4 shadow-4 m-1 float-end">Proyectos
-     <i class="fa-solid fa-diagram-project"></i>
+  <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning mb-4 shadow-4 m-1 float-end"
+    >Proyectos
+    <i class="fa-solid fa-diagram-project"></i>
   </button>
-    <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info  mb-4 shadow-4 m-1 float-end">General
-       <i class="fa-solid fa-building"></i>
-    </button>
-
-
+  <button type="button" (click)="switchTipoRegistro(1)" class="btn btn-info mb-4 shadow-4 m-1 float-end"
+    >General
+    <i class="fa-solid fa-building"></i>
+  </button>
 
   <div class="row align-items-center g-2">
+    <div class="col-auto">
+      <div class="mb-3">
+        <br />
+        <button
+          type="button"
+          [disabled]="this.registrosSeleccionados.length == 0"
+          (click)="borrarRegistros()"
+          class="btn btn-success shadow-4 mx-auto"
+          ngbTooltip="Borrar"
+          >Borrar Registro <i class="fa-solid fa-trash"></i
+        ></button>
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="mb-3">
+        <br />
+        <button type="button" (click)="crearRegistro(1)" class="btn btn-info shadow-4 mx-auto" ngbTooltip="Crear ingreso"
+          >Ingreso <i class="fa-solid fa-plus"></i
+        ></button>
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="mb-3">
+        <br />
+        <button type="button" (click)="crearRegistro(2)" class="btn btn-danger shadow-4 mx-auto" ngbTooltip="Crear egreso"
+          >Egreso <i class="fa-solid fa-minus"></i
+        ></button>
+      </div>
+    </div>
 
     <div class="col-auto">
       <div class="mb-3">
-        <br>
-        <button type="button"
-        [disabled]="this.registrosSeleccionados.length==0"
-        (click)="borrarRegistros()" class="btn btn-success shadow-4 mx-auto" ngbTooltip="Borrar">Borrar Registro
-           <i class="fa-solid fa-trash"></i ></button>
+        <br />
+        <button
+          type="button"
+          [disabled]="this.Registros.length == 0"
+          (click)="descargarRegistros()"
+          class="btn btn-primary shadow-4 mx-auto"
+          ngbTooltip="Descargar Registros"
+          >Exportar <i class="fa-solid fa-file-excel"></i
+        ></button>
       </div>
     </div>
-    <div class="col-auto">
-      <div class="mb-3">
-        <br>
-        <button type="button" (click)="crearRegistro(1)" class="btn btn-info shadow-4 mx-auto" ngbTooltip="Crear ingreso">Ingreso <i class="fa-solid fa-plus"></i></button>
-      </div>
   </div>
-  <div class="col-auto">
-    <div class="mb-3">
-      <br>
-      <button type="button" (click)="crearRegistro(2)" class="btn btn-danger shadow-4 mx-auto" ngbTooltip="Crear egreso">Egreso <i class="fa-solid fa-minus"></i ></button>
-    </div>
-  </div>
-  
-    <div class="col-auto">
-      <div class="mb-3">
-        <br>
-        <button type="button"
-        [disabled]="this.Registros.length==0"
-        (click)="descargarRegistros()" class="btn btn-primary shadow-4 mx-auto" ngbTooltip="Descargar Registros">Exportar
-        <i class="fa-solid fa-file-excel"></i></button>
-  
-      </div>
-    </div>
-  
-  </div>
-
 </div>
 
 <ng-template #contentOpciones let-offcanvas>
-	<div class="offcanvas-header">
-		<h4 class="offcanvas-title">Opciones</h4>
-		<button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
-	</div>
-	<div class="offcanvas-body">
-	  <div class="row">
+  <div class="offcanvas-header">
+    <h4 class="offcanvas-title">Opciones</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="row">
       <div class="col-12">
-        <button type="button" (click)="crearCuenta();offcanvas.dismiss('Cross click')" class="btn btn-success  shadow-4" ngbTooltip="Click para crear registro"
+        <button
+          type="button"
+          (click)="crearCuenta(); offcanvas.dismiss('Cross click')"
+          class="btn btn-success shadow-4"
+          ngbTooltip="Click para crear registro"
           >Cuenta Bancaria <i class="fa-solid fa-plus"></i
-        ></button></div>
-        <div class="col-12">
-          <button type="button" (click)="crearElemento();offcanvas.dismiss('Cross click')" class="btn btn-success  shadow-4 m-1" ngbTooltip="Click para crear registro"
-            >Cuenta Contable <i class="fa-solid fa-plus"></i
-          ></button>
-        </div>
-        <div class="col-12">
-          <button type="button" (click)="crearSocioNegocio();offcanvas.dismiss('Cross click')" class="btn btn-success  shadow-4 m-1" ngbTooltip="Click para crear registro"
-            >Socio de Negocio <i class="fa-solid fa-plus"></i
-          ></button>
-        </div>
-  
-        <div class="col-12">
-          <button type="button" (click)="crearTipoOperacion();offcanvas.dismiss('Cross click')" class="btn btn-success  shadow-4 m-1" ngbTooltip="Click para crear registro"
-            >Tipo Operación <i class="fa-solid fa-plus"></i
-          ></button>
-        </div>
-        <h5>Tipos de registro</h5>
-        <div class="col-12">
-          <button type="button" (click)="switchTipoRegistro(1);offcanvas.dismiss('Cross click')" class="btn btn-info  shadow-4 m-1">General
-             <i class="fa-solid fa-building"></i></button>
-        </div>  
-        <div class="col-12">
-          <button type="button" (click)="switchTipoRegistro(2);offcanvas.dismiss('Cross click')" class="btn btn-warning  shadow-4 m-1">Proyectos
-             <i class="fa-solid fa-diagram-project"></i></button>
-  
-        </div> 
-  
-    </div>
-	</div>
-</ng-template>
+        ></button>
+      </div>
+      <div class="col-12">
+        <button
+          type="button"
+          (click)="crearElemento(); offcanvas.dismiss('Cross click')"
+          class="btn btn-success shadow-4 m-1"
+          ngbTooltip="Click para crear registro"
+          >Cuenta Contable <i class="fa-solid fa-plus"></i
+        ></button>
+      </div>
+      <div class="col-12">
+        <button
+          type="button"
+          (click)="crearSocioNegocio(); offcanvas.dismiss('Cross click')"
+          class="btn btn-success shadow-4 m-1"
+          ngbTooltip="Click para crear registro"
+          >Socio de Negocio <i class="fa-solid fa-plus"></i
+        ></button>
+      </div>
 
+      <div class="col-12">
+        <button
+          type="button"
+          (click)="crearTipoOperacion(); offcanvas.dismiss('Cross click')"
+          class="btn btn-success shadow-4 m-1"
+          ngbTooltip="Click para crear registro"
+          >Tipo Operación <i class="fa-solid fa-plus"></i
+        ></button>
+      </div>
+      <h5>Tipos de registro</h5>
+      <div class="col-12">
+        <button type="button" (click)="switchTipoRegistro(1); offcanvas.dismiss('Cross click')" class="btn btn-info shadow-4 m-1"
+          >General <i class="fa-solid fa-building"></i
+        ></button>
+      </div>
+      <div class="col-12">
+        <button type="button" (click)="switchTipoRegistro(2); offcanvas.dismiss('Cross click')" class="btn btn-warning shadow-4 m-1"
+          >Proyectos <i class="fa-solid fa-diagram-project"></i
+        ></button>
+      </div>
+    </div>
+  </div>
+</ng-template>
 
 <!-- <p-sidebar [(visible)]="OpcionesSideBar" position="right">
   <h5>Opciones</h5>
@@ -138,88 +164,99 @@
   <button type="button" (click)="switchTipoRegistro(2)" class="btn btn-warning m-1">Proyectos <i class="fa-solid fa-diagram-project"></i></button>
 </div> -->
 
-<ng-template #content let-offcanvas >
-	<div class="offcanvas-header">
-		<h4 class="offcanvas-title">Filtros</h4>
-		<button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
-	</div>
-	<div class="offcanvas-body">
+<ng-template #content let-offcanvas>
+  <div class="offcanvas-header">
+    <h4 class="offcanvas-title">Filtros</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+  </div>
+  <div class="offcanvas-body">
     <div class="row align-items-center g-2">
-      <div *ngIf="idTipoRegistro==1" class="col-12" style="z-index: 2000; top: 0;">
+      <div *ngIf="idTipoRegistro == 1" class="col-12" style="z-index: 2000; top: 0">
         <label for="formGroupExampleInput" class="form-label">Buscar por sucursal</label>
-        <br>
-        <p-dropdown 
-          [style]="{'width':'280px'}"
-          [panelStyle]="{'width':'280px'}"
+        <br />
+        <p-dropdown
+          [style]="{ width: '280px' }"
+          [panelStyle]="{ width: '280px' }"
           (onChange)="filtrarByCategoria()"
-          [options]="Sucursales" 
-          [(ngModel)]="SucursaleSeleccionada" 
-          optionLabel="Nombre" 
-          
-          placeholder="Seleccione una sucursal" />
+          [options]="Sucursales"
+          [(ngModel)]="SucursaleSeleccionada"
+          optionLabel="Nombre"
+          placeholder="Seleccione una sucursal"
+        />
       </div>
-      
-        <div *ngIf="idTipoRegistro==2" class="col-12" style="z-index: 2000; top: 0;">
-          <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
-          <br>
-          <p-dropdown 
-          [style]="{'width':'280px'}"
-          [panelStyle]="{'width':'280px'}"
-            (onChange)="filtrarByCategoria()"
-            [options]="Proyectos" 
-            [(ngModel)]="ProyectoSeleccionado" 
-            optionLabel="NombreSucursal" 
-            placeholder="Seleccione un proyecto" />
-        </div>
-        
-        <div class="col-12">
-          <label for="formGroupExampleInput" class="form-label">Buscar por categoría</label>
-          <br>
-          <p-multiSelect 
-          [style]="{'width':'280px'}"
-          [panelStyle]="{'width':'295px'}"
+
+      <div *ngIf="idTipoRegistro == 2" class="col-12" style="z-index: 2000; top: 0">
+        <label for="formGroupExampleInput" class="form-label">Buscar por proyecto</label>
+        <br />
+        <p-dropdown
+          [style]="{ width: '280px' }"
+          [panelStyle]="{ width: '280px' }"
           (onChange)="filtrarByCategoria()"
-          [options]="Categorias" 
-          [(ngModel)]="CategoriasSeleccionadas" 
-          optionLabel="Nombre" 
+          [options]="Proyectos"
+          [(ngModel)]="ProyectoSeleccionado"
+          optionLabel="NombreSucursal"
+          placeholder="Seleccione un proyecto"
+        />
+      </div>
+
+      <div class="col-12">
+        <label for="formGroupExampleInput" class="form-label">Buscar por categoría</label>
+        <br />
+        <p-multiSelect
+          [style]="{ width: '280px' }"
+          [panelStyle]="{ width: '295px' }"
+          (onChange)="filtrarByCategoria()"
+          [options]="Categorias"
+          [(ngModel)]="CategoriasSeleccionadas"
+          optionLabel="Nombre"
           placeholder="Seleccione una categoria"
           [selectedItemsLabel]="getSelectedItemsLabel()"
-          [maxSelectedLabels]="1" 
-        
-          [displaySelectedLabel]="true">
-      </p-multiSelect>
-        </div>
-      
-        <div class="col-12">
-            <label for="formGroupExampleInput" class="form-label">Fecha Inicio</label>
-            <input type="date" 
-            [formControl]="FechaDesde" 
-            style="height: 50px;"
-            class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder">
-        </div>
-      
-        <div class="col-12"> 
-            <label for="formGroupExampleInput" class="form-label">Fecha Final</label>
-            <input type="date" [formControl]="FechaHasta" 
-            style="height: 50px;"
-            class="form-control" id="formGroupExampleInput"
-             placeholder="Example input placeholder">
-        </div>
-        <div class="col-12">
-            <button type="button" class="btn btn-success  shadow-4 mx-auto"
-            (click)="buscarByFecha()"
-            [disabled]="(this.FechaDesde.value=='' || this.FechaHasta.value=='' )"
-            >Buscar <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-        </div>
-        <div class="col-12">
-            <button type="button" class="btn btn-primary shadow-4 mx-auto" 
-            (click)="restablecer()">Limpiar filtros <i class="fa-solid fa-rotate-right"></i></button>
-        </div>
+          [maxSelectedLabels]="1"
+          [displaySelectedLabel]="true"
+        >
+        </p-multiSelect>
       </div>
-	</div>
-</ng-template>
 
+      <div class="col-12">
+        <label for="formGroupExampleInput" class="form-label">Fecha Inicio</label>
+        <input
+          type="date"
+          [formControl]="FechaDesde"
+          style="height: 50px"
+          class="form-control"
+          id="formGroupExampleInput"
+          placeholder="Example input placeholder"
+        />
+      </div>
+
+      <div class="col-12">
+        <label for="formGroupExampleInput" class="form-label">Fecha Final</label>
+        <input
+          type="date"
+          [formControl]="FechaHasta"
+          style="height: 50px"
+          class="form-control"
+          id="formGroupExampleInput"
+          placeholder="Example input placeholder"
+        />
+      </div>
+      <div class="col-12">
+        <button
+          type="button"
+          class="btn btn-success shadow-4 mx-auto"
+          (click)="buscarByFecha()"
+          [disabled]="this.FechaDesde.value == '' || this.FechaHasta.value == ''"
+          >Buscar <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+      <div class="col-12">
+        <button type="button" class="btn btn-primary shadow-4 mx-auto" (click)="restablecer()"
+          >Limpiar filtros <i class="fa-solid fa-rotate-right"></i
+        ></button>
+      </div>
+    </div>
+  </div>
+</ng-template>
 
 <!-- 
 <p-sidebar appendTo="body" [(visible)]="FiltrosSideBar" position="right">
@@ -298,16 +335,12 @@
   </div>
 </p-sidebar> -->
 
-
-
-
-
-<div *ngIf="cargando"  class="text-center">
+<div *ngIf="cargando" class="text-center">
   <div class="spinner-border" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
 </div>
-<br>
+<br />
 
 <!--? Tabla de registro y sus elementos -->
 
@@ -321,7 +354,7 @@
   <!-- Contenedor de la tabla -->
   <div class="table-scroll-container" #scrollContainer>
     <table class="table">
-      <thead style="position: sticky; top: 0; background-color: #F8FAFB; z-index: 1000;">
+      <thead style="position: sticky; top: 0; background-color: #f8fafb; z-index: 1000">
         <tr class="text-center">
           <th scope="col">
             <div class="form-check">
@@ -335,48 +368,39 @@
               />
             </div>
           </th>
-          <ng-container style="margin-right: 100px;">
-            <th
-              class="text-center"
-              style="text-transform: uppercase; font-size: 13px; background-color: #F8FAFB"
-            >
+          <ng-container style="margin-right: 100px">
+            <th class="text-center" style="text-transform: uppercase; font-size: 13px; background-color: #f8fafb">
               <span>Copiar</span>
             </th>
           </ng-container>
           <!-- <th style="text-transform: uppercase;font-size: 13px;">Registro</th> -->
-          <th style="text-transform: uppercase; font-size: 13px;">Fecha</th>
-          <th style="text-transform: uppercase; font-size: 13px;">Orden</th>
-          <th
-            *ngIf="this.idTipoRegistro == 1"
-            style="text-transform: uppercase; font-size: 13px;"
-          >
-            Sucursal <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          <th style="text-transform: uppercase; font-size: 13px">Fecha</th>
+          <th style="text-transform: uppercase; font-size: 13px">Orden</th>
+          <th *ngIf="this.idTipoRegistro == 1" style="text-transform: uppercase; font-size: 13px">
+            Sucursal <span style="color: #0c8c86; font-weight: bold">(opcional)</span>
           </th>
-          <th
-            *ngIf="this.idTipoRegistro == 2"
-            style="text-transform: uppercase; font-size: 13px;"
-          >
-            Proyecto <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          <th *ngIf="this.idTipoRegistro == 2" style="text-transform: uppercase; font-size: 13px">
+            Proyecto <span style="color: #0c8c86; font-weight: bold">(opcional)</span>
           </th>
-          <th style="text-transform: uppercase; font-size: 13px;">
-            Concepto <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          <th style="text-transform: uppercase; font-size: 13px">
+            Concepto <span style="color: #0c8c86; font-weight: bold">(opcional)</span>
           </th>
-          <th style="text-transform: uppercase; font-size: 13px;">Tipo de Flujo</th>
-          <th style="text-transform: uppercase; font-size: 13px;">Cuenta Contable</th>
-          <th style="text-transform: uppercase; font-size: 13px;">Importe</th>
-          <th style="text-transform: uppercase; font-size: 13px;">Tipo de Operación</th>
-          <th style="text-transform: uppercase; font-size: 13px;">
-            Cuenta Bancaria <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          <th style="text-transform: uppercase; font-size: 13px">Tipo de Flujo</th>
+          <th style="text-transform: uppercase; font-size: 13px">Cuenta Contable</th>
+          <th style="text-transform: uppercase; font-size: 13px">Importe</th>
+          <th style="text-transform: uppercase; font-size: 13px">Tipo de Operación</th>
+          <th style="text-transform: uppercase; font-size: 13px">
+            Cuenta Bancaria <span style="color: #0c8c86; font-weight: bold">(opcional)</span>
           </th>
           <!-- <th style="text-transform: uppercase;font-size: 13px;">Flujo</th> -->
-          <th style="text-transform: uppercase; font-size: 13px;">
-            Socio Negocios <span style="color: #0c8c86; font-weight: bold;">(opcional)</span>
+          <th style="text-transform: uppercase; font-size: 13px">
+            Socio Negocios <span style="color: #0c8c86; font-weight: bold">(opcional)</span>
           </th>
-          <th style="text-transform: uppercase; font-size: 13px;">Guardar</th>
+          <th style="text-transform: uppercase; font-size: 13px">Guardar</th>
         </tr>
       </thead>
 
-      <tbody *ngIf="!cargando" style="z-index: 999; position: relative;">
+      <tbody *ngIf="!cargando" style="z-index: 999; position: relative">
         <tr
           *ngFor="let registros of Registros"
           [ngClass]="{
@@ -398,8 +422,8 @@
             </div>
           </td>
 
-          <ng-container style="margin-left: 100px;">
-            <td class="text-center" style="background-color: #F8FAFB">
+          <ng-container style="margin-left: 100px">
+            <td class="text-center" style="background-color: #f8fafb">
               <ng-container>
                 <button
                   type="button"
@@ -413,12 +437,7 @@
           </ng-container>
 
           <td class="text-center">
-            <input
-              style="min-height: 1rem"
-              type="date"
-              [(ngModel)]="registros.FechaRegistro"
-              class="form-control text-center col-4"
-            />
+            <input style="min-height: 1rem" type="date" [(ngModel)]="registros.FechaRegistro" class="form-control text-center col-4" />
           </td>
           <td class="text-center mt-2">{{ registros.Orden }}</td>
 
@@ -503,7 +522,7 @@
           </td>
           <!-- Franklin revisar esta parte -->
           <td class="text-center">
-              <!-- <p-treeSelect 
+            <!-- <p-treeSelect 
                   class="md:w-20rem w-full" 
                   containerStyleClass="w-full" 
                   appendTo="body"  
@@ -516,27 +535,28 @@
                   [emptyMessage]="emptyMessage"
                   placeholder="Seleccione una cuenta" /> -->
 
-
-                  <p-treeSelect
-                  class="md:w-20rem w-full"
-                  containerStyleClass="w-full"
-                  appendTo="body"
-                  (onChange)="renderizarBarra()"
-                  (onNodeExpand)="expandirNodo($event)"
-                  (onNodeCollapse)="onNodeCollapse($event)"
-                  (onNodeSelect)="onNodeSelect($event)"
-                  [filter]="true"
-                  [filterInputAutoFocus]="true"
-                  [(ngModel)]="registros.CuentaSeleccionada"
-                  [options]="getCuentabyCategoria(registros.idPadre, registros.idTipo || getTipoFromCategoria(registros.idPadre))"
-                  [selectionMode]="'single'"
-                  [propagateSelectionDown]="false"
-                  [propagateSelectionUp]="false"
-                  emptyMessage="Sin opciones disponibles"
-                  placeholder="Seleccione una cuenta">
-                </p-treeSelect>
-          
-
+            <p-treeSelect
+              class="md:w-20rem w-full"
+              containerStyleClass="w-full compact-tree"
+              appendTo="body"
+              [metaKeySelection]="false"
+              [propagateSelectionUp]="false"
+              [propagateSelectionDown]="false"
+              (onChange)="renderizarBarra()"
+              (onNodeExpand)="expandirNodo($event)"
+              (onNodeCollapse)="onNodeCollapse($event)"
+              (onNodeSelect)="onNodeSelect($event)"
+              [filter]="true"
+              [filterInputAutoFocus]="true"
+              [(ngModel)]="registros.CuentaSeleccionada"
+              [options]="getCuentabyCategoria(registros.idPadre, registros.idTipo || getTipoFromCategoria(registros.idPadre))"
+              [selectionMode]="'single'"
+              [propagateSelectionDown]="false"
+              [propagateSelectionUp]="false"
+              emptyMessage="Sin opciones disponibles"
+              placeholder="Seleccione una cuenta"
+            >
+            </p-treeSelect>
           </td>
           <!-- <td class="text-center">
             <p
@@ -581,21 +601,13 @@
             </p-dropdown>
           </td> -->
 
-
           <td class="text-center">
             <input
               [ngClass]="registros.idTipo == 1 ? 'textoInputPositivo' : 'textoInputNegativo'"
               (keyup.enter)="salvarRegistro(registros, Valor.value)"
               #Valor
-              [disabled]="
-                this.Items.length == 0 ||
-                registros.idCategoria == '' ||
-                getCuentabyCategoria(registros.idPadre).length == 0
-              "
-              (input)="
-                
-                formatearNumero(Valor,registros.idTipo)
-              "
+              [disabled]="this.Items.length == 0 || registros.idCategoria == '' || getCuentabyCategoria(registros.idPadre).length == 0"
+              (input)="formatearNumero(Valor, registros.idTipo)"
               style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
               [ngModel]="registros.Valor | currencySymbol"
               class="form-control text-center col-6"
@@ -692,16 +704,10 @@
           <td colspan="8" class="text-end"><strong>Sub-Total:</strong></td>
           <td class="text-center">
             <strong>
-              <p
-                style="text-transform: uppercase; font-size: 13px; font-weight: bold; color: red;"
-                *ngIf="ImporteSubTotal < 0"
-              >
+              <p style="text-transform: uppercase; font-size: 13px; font-weight: bold; color: red" *ngIf="ImporteSubTotal < 0">
                 <strong>{{ ' -$ ' + (ImporteSubTotal * -1 | number) }}</strong>
               </p>
-              <p
-                style="text-transform: uppercase; font-size: 13px; font-weight: bold;"
-                *ngIf="ImporteSubTotal >= 0"
-              >
+              <p style="text-transform: uppercase; font-size: 13px; font-weight: bold" *ngIf="ImporteSubTotal >= 0">
                 <strong>{{ ' $ ' + (ImporteSubTotal | number) }}</strong>
               </p>
             </strong>
@@ -711,16 +717,10 @@
           <td colspan="8" class="text-end"><strong>Total:</strong></td>
           <td class="text-center">
             <strong>
-              <p
-                style="text-transform: uppercase; font-size: 13px; font-weight: bold; color: red;"
-                *ngIf="ImporteTotal < 0"
-              >
+              <p style="text-transform: uppercase; font-size: 13px; font-weight: bold; color: red" *ngIf="ImporteTotal < 0">
                 <strong>{{ ' -$ ' + (ImporteTotal * -1 | number) }}</strong>
               </p>
-              <p
-                style="text-transform: uppercase; font-size: 13px; font-weight: bold;"
-                *ngIf="ImporteTotal >= 0"
-              >
+              <p style="text-transform: uppercase; font-size: 13px; font-weight: bold" *ngIf="ImporteTotal >= 0">
                 <strong>{{ ' $ ' + (ImporteTotal | number) }}</strong>
               </p>
             </strong>
@@ -737,34 +737,25 @@
 </div>
 <!--? Tabla de registro y sus elementos -->
 
-
 <!--? Tabla de registro y sus elementos -->
 
+<div class="d-flex justify-content-between p-2">
+  <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize" (pageChange)="refreshRegistros([], false)">
+  </ngb-pagination>
 
-
-  <div class="d-flex justify-content-between p-2">
-    <ngb-pagination
-      [collectionSize]="collectionSize"
-      [(page)]="page"
-      [pageSize]="pageSize"
-      (pageChange)="refreshRegistros([],false)"
-    >
-    </ngb-pagination>
-  
-    <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshRegistros([],false)">
-      <option [ngValue]="5">5 por página</option>
-      <option [ngValue]="10">10 por página</option>
-      <option [ngValue]="15">15 por página</option>
-      <option [ngValue]="20">20 por página</option>
-      <option [ngValue]="25">25 por página</option>
-      <option [ngValue]="30">30 por página</option>
-      <option [ngValue]="35">35 por página</option>
-      <option [ngValue]="40">40 por página</option>
-      <option [ngValue]="45">45 por página</option>
-      <option [ngValue]="50">50 por página</option>
-    </select>
-  </div>
-
+  <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshRegistros([], false)">
+    <option [ngValue]="5">5 por página</option>
+    <option [ngValue]="10">10 por página</option>
+    <option [ngValue]="15">15 por página</option>
+    <option [ngValue]="20">20 por página</option>
+    <option [ngValue]="25">25 por página</option>
+    <option [ngValue]="30">30 por página</option>
+    <option [ngValue]="35">35 por página</option>
+    <option [ngValue]="40">40 por página</option>
+    <option [ngValue]="45">45 por página</option>
+    <option [ngValue]="50">50 por página</option>
+  </select>
+</div>
 
 <!-- <div class="importe">
   <p style="text-transform: uppercase;font-size: 13px; font-weight: bold; color: red;"
@@ -788,10 +779,6 @@
   </div>
 </div> -->
 
-
-
-  
-
 <p-dialog
   header=""
   [(visible)]="visibleCuenta"
@@ -803,7 +790,7 @@
   [draggable]="true"
   [resizable]="true"
 >
-<app-bancos  *ngIf="visibleCuenta==true"></app-bancos>
+  <app-bancos *ngIf="visibleCuenta == true"></app-bancos>
 </p-dialog>
 <p-dialog
   header="Agregar Item"
@@ -815,9 +802,8 @@
   [draggable]="false"
   [resizable]="true"
   [maximizable]="true"
- 
 >
-<app-elemento *ngIf="visibleElemento==true"></app-elemento>
+  <app-elemento *ngIf="visibleElemento == true"></app-elemento>
 </p-dialog>
 <p-dialog
   header="Agregar Socio de Negocio"
@@ -830,7 +816,7 @@
   [resizable]="false"
   [maximizable]="true"
 >
-<app-socios *ngIf="visibleSocioNegocio==true"></app-socios>
+  <app-socios *ngIf="visibleSocioNegocio == true"></app-socios>
 </p-dialog>
 <p-dialog
   header="Agregar Tipo de Operación"
@@ -843,6 +829,5 @@
   [resizable]="false"
   [maximizable]="true"
 >
-<app-tipos-operacion *ngIf="visibleTipoOperacion==true"></app-tipos-operacion>
+  <app-tipos-operacion *ngIf="visibleTipoOperacion == true"></app-tipos-operacion>
 </p-dialog>
-

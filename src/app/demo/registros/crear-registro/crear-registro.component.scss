@@ -291,3 +291,26 @@ thead th {
     width: 100%;
   }
 }
+
+.p-treeselect-panel .p-treeselect-items-wrapper .p-tree {
+  padding-left: 0;
+}
+
+.p-treeselect-panel .p-treeselect-items-wrapper .p-treenode {
+  padding-left: 0.5rem; /* Adjust this value as needed */
+}
+
+/* Adjust spacing for the expand/collapse icon column */
+.p-tree-toggler {
+  margin-right: 0.25rem; /* Reduce space between toggle icon and node content */
+}
+
+/* If needed, fix icon container width */
+.p-treenode-icon {
+  width: 1rem; /* Make icon column narrower */
+}
+
+.compact-tree .p-treeselect-items-wrapper .p-tree {
+  padding: 0;
+}
+

@@ -447,7 +447,7 @@ getCuentabyCategoria(Categoria: any, idTipo: number = 1) {
   // Filter the items by type
   const itemsFiltrados = this.ItemsBack.filter((item: any) => 
     (item.idPadre == Categoria?.id || item.idPadre == Categoria) && 
-    item.TipoRubro == this.idTipoRegistro
+    item.TipoRubro == this.idTipoRegistro 
   );
   
 
@@ -486,7 +486,7 @@ getCuentabyCategoria(Categoria: any, idTipo: number = 1) {
           Tipo: 'Hijo',
           idPadre: hijo.idPadre || cuenta.id,
           idAbuelo: hijo.idAbuelo || cuenta.idPadre,
-          icon: tieneNietos ? 'pi pi-folder' : 'pi pi-file',
+          icon: tieneNietos ? 'pi pi-folder' : 'pi pi-check-square',
           expanded: this.expandedKeys[hijoKey] === true,
           selectable: !tieneNietos,
           children: []
@@ -1064,85 +1064,70 @@ obtenerRegistros(){
  
 }
 
-refreshRegistros(RegistrosFiltrados:any,Filtro:boolean) {
-
-
-
-
-  if(RegistrosFiltrados.length==0 && Filtro==false){
-    this.Registros = [];
-    
-    let registrosFiltrados = [];
+refreshRegistros(RegistrosFiltrados: any, Filtro: boolean) {
+  // First clear the current array
+  this.Registros = [];
   
-    if (this.idTipoRegistro == 1) {
-      if (this.SucursaleSeleccionada != undefined && Object.keys(this.SucursaleSeleccionada).length > 0) {
-        registrosFiltrados = this.registrosBackUp.filter(
-          (reg: any) => reg.TipoRegistro == this.idTipoRegistro && reg.idSucursal == this.SucursaleSeleccionada.id
-        );
-      } 
-      
-      else {
-        registrosFiltrados = this.registrosBackUp.filter(
-          (reg: any) => reg.TipoRegistro == this.idTipoRegistro
-        );
-      }
-
-    } 
+  let registrosFiltrados = [];
+  
+  // Always filter by current tipo registro, regardless of whether filtered records were passed
+  if (RegistrosFiltrados.length === 0 && Filtro === false) {
+    // Only show records matching the current idTipoRegistro
+    registrosFiltrados = this.registrosBackUp.filter(
+      (reg: any) => reg.TipoRegistro === this.idTipoRegistro
+    );
     
-    else {
-      if (this.ProyectoSeleccionado != undefined && Object.keys(this.ProyectoSeleccionado).length > 0) {
-        registrosFiltrados = this.registrosBackUp.filter(
-          (reg: any) => reg.TipoRegistro == this.idTipoRegistro && reg.idProyecto == this.ProyectoSeleccionado.id
-        );
-      } else {
-        registrosFiltrados = this.registrosBackUp.filter(
-          (reg: any) => reg.TipoRegistro == this.idTipoRegistro
-        );
-      }
+    // Apply additional filters if needed
+    if (this.idTipoRegistro === 1 && this.SucursaleSeleccionada !== undefined && 
+        Object.keys(this.SucursaleSeleccionada).length > 0) {
+      registrosFiltrados = registrosFiltrados.filter(
+        (reg: any) => reg.idSucursal === this.SucursaleSeleccionada.id
+      );
+    } else if (this.idTipoRegistro === 2 && this.ProyectoSeleccionado !== undefined && 
+              Object.keys(this.ProyectoSeleccionado).length > 0) {
+      registrosFiltrados = registrosFiltrados.filter(
+        (reg: any) => reg.idProyecto === this.ProyectoSeleccionado.id
+      );
     }
-
-
-    // Actualiza collectionSize con el número total de registros filtrados
+    
+    // Update collection size
     this.collectionSize = registrosFiltrados.length;
-  
-    // Ordena y aplica paginación
+    
+    // Sort and apply pagination
     this.Registros = registrosFiltrados
       .sort((a: any, b: any) => b.Orden - a.Orden)
-      // .map((registro, i) => ({ id: i + 1, ...registro }))
       .slice(
         (this.page - 1) * this.pageSize,
         (this.page - 1) * this.pageSize + this.pageSize
       );
-     
-    // Actualiza otros cálculos
-    
-  }
-
-  else {
-    this.collectionSize = RegistrosFiltrados.length;
-
-    // Ordena y aplica paginación
-    this.Registros = RegistrosFiltrados
-    .sort((a: any, b: any) => b.Orden - a.Orden)
-    .map((registro, i) => ({ id: i + 1, ...registro }))
-    .slice(
-      (this.page - 1) * this.pageSize,
-      (this.page - 1) * this.pageSize + this.pageSize
+  } else {
+    // If filtered records were passed, ensure they also match current idTipoRegistro
+    registrosFiltrados = RegistrosFiltrados.filter(
+      (reg: any) => reg.TipoRegistro === this.idTipoRegistro
     );
-    console.log('Registros',this.Registros)
+    
+    this.collectionSize = registrosFiltrados.length;
+    
+    // Sort and apply pagination
+    this.Registros = registrosFiltrados
+      .sort((a: any, b: any) => b.Orden - a.Orden)
+      .slice(
+        (this.page - 1) * this.pageSize,
+        (this.page - 1) * this.pageSize + this.pageSize
+      );
   }
-
+  
+  // Calculate totals and update other properties
   this.calcularImporteSubTotal(this.Registros);
   this.calcularImporteTotal(this.Registros);
-
+  
   this.OrdenMax = this.Registros.reduce((maxOrden, objeto) => {
     return Math.max(maxOrden, objeto.Orden);
   }, 0);
-
+  
   this.cargarFormulario();
   this.cargando = false;
 }
-
 switchTipoRegistro(idTipo: number) {
   this.cargando = true;
 
@@ -1346,11 +1331,14 @@ salvarRegistro(Registro: any, Valor: any) {
       this.toastr.success('Guardado', '¡Exito!');
       this.calcularImporteTotal(this.Registros);
       this.calcularImporteSubTotal(this.Registros);
+      this.refreshRegistros([], false);
     }).catch(error => {
       console.error('Error al guardar:', error);
       this.toastr.error('Error al guardar el registro', 'Error');
     });
   }
+
+
 }
 
 getIdProyecto(proyectoNombre){
@@ -1777,6 +1765,7 @@ hideDialog() {
   this.registroDialog = false;
   this.submitted = false;
 }
+
 guardarRegistro(idTipo:number){
 this.registroForm.value.idTipo=idTipo;
 this.registroForm.value.TipoRegistro=this.idTipoRegistro;
@@ -1826,7 +1815,7 @@ let _Registro={
 console.log('_Registro',_Registro)
 
 this.registrosBackUp.push(_Registro)
-this.refreshRegistros([],false)
+
 this.registroForm.value.id=nuevoId
 this.cargarFormulario()
 this.conS.crearRegistro(_Registro).then(id => {
@@ -1904,6 +1893,8 @@ async copiarRegistro(registro: any) {
     console.error('Error al copiar registro:', error);
     this.toastr.error('Error al copiar registro', 'Error');
   }
+
+ 
 }
 
 
