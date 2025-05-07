@@ -299,3 +299,12 @@ th.cabeceraConcepto {
 .row-categorias-padre td {
   background-color: #d2ebd9 !important;
 }
+
+/* Estilo para el botón de expansión */
+button[pButton] {
+  transition: transform 0.2s;
+}
+
+button[pButton].expanded {
+  transform: rotate(90deg);
+}

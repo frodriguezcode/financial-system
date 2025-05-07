@@ -244,18 +244,30 @@ appendTo="body"
     ========================== -->
     <ng-template pTemplate="rowexpansion" let-rowData>
       <tr class="children-items" *ngFor="let child of rowData.data.children">
-        <!-- Sticky first column for child rows as well (optional) -->
         <td 
-       
           style="
-      
             background-color: #fff;
             margin-left: 10px;
             white-space: nowrap;
+            position: sticky;
+            left: 0;
+            z-index: 1;
           "
           [style.width.px]="calcColumnWidthPx()"
         >
-          <span style="margin-left: 50px">{{ child.data.categoria }}</span>
+          <div style="display: flex; align-items: center;">
+            <!-- Botón de expansión si tiene hijos -->
+            <button 
+              *ngIf="child.data.children && child.data.children.length > 0"
+              type="button"
+              pButton
+              pRipple
+              style="width: 25px; height: 25px; font-size: 12px; padding: 2px; margin-right: 5px;"
+              (click)="toggleChildExpansion(child)"
+              [icon]="child.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            ></button>
+            <span style="margin-left: 30px">{{ child.data.categoria }}</span>
+          </div>
         </td>
         <td *ngFor="let cab of Cabecera">
           <ng-container *ngIf="cab.Tipo != 1">
@@ -268,6 +280,35 @@ appendTo="body"
           </ng-container>
         </td>
       </tr>
+      <ng-container *ngFor="let child of rowData.data.children">
+        <ng-container *ngIf="child.expanded && child.data.children">
+          <tr class="subchildren-items" *ngFor="let subchild of child.data.children">
+            <td 
+              style="
+                background-color: #f9f9f9;
+                white-space: nowrap;
+                position: sticky;
+                left: 0;
+                z-index: 1;
+              "
+              [style.width.px]="calcColumnWidthPx()"
+            >
+              <span style="margin-left: 80px">{{ subchild.data.categoria }}</span>
+            </td>
+            <td *ngFor="let cab of Cabecera">
+              <ng-container *ngIf="cab.Tipo != 1">
+                <ng-container *ngIf="cab.Tipo == 3">
+                  {{ "$ " + ((subchild.data.values[cab.Mes + '-' + cab.Anio] || 0) | number) }}
+                </ng-container>
+                <ng-container *ngIf="cab.Tipo == 4">
+                  {{ "$ " + ((subchild.data.values[cab.Anio] || 0) | number) }}
+                </ng-container>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+
     </ng-template>
   </p-table>
 </div>

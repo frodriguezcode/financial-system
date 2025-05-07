@@ -753,7 +753,7 @@ obtenerItems(){
     this.Items=[]
           this.Items=resp.filter((item:any)=>item.Activo==true);
           this.ItemsBack=resp.filter((item:any)=>item.Activo==true);;
-      
+          console.log('Items',this.Items)
          this.obtenerRegistros()
       })
 }
@@ -841,45 +841,40 @@ obtenerRegistros(){
   _subscribe=  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
     _subscribe.unsubscribe()
     this.Registros=[]  
-
+        console.log('resp',resp)
         resp.filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
           let _Registro={
             "Activo":element.Activo,
             "AnioRegistro":element.AnioRegistro,
+            "TipoCuentaSeleccionada":element.CuentaSeleccionada.Tipo,
             "Trimestre":this.setTrim(element.MesRegistro), 
             "Semestre":this.setSemestre(element.NumMes),
-            "Cuenta":element.Cuenta,
+            "Cuenta":element.Cuenta.Cuenta,
             "Editando":element.Editando,
-            "Elemento":element.Elemento,
             "FechaRegistro":element.FechaRegistro,
             "MesRegistro":element.MesRegistro,
-            "Nuevo":element.Nuevo,
             "NumMes":element.NumMes,
-            "NumSemana":element.NumSemana,
             "Orden":element.Orden,
-            "Semana":element.Semana,
             "Valor":element.Valor,
             "id":element.id,
+            "CuentasHijos":element.CuentasHijos || [] ,
             "Tipo":element.Tipo || '',
-            "idCategoria":element.idCategoria,
+            "idCategoria":element.idPadre,
             "idEmpresa":element.idEmpresa,
-            "idFlujo":element.idFlujo,
+            "idFlujo":element.idAbuelo,
             "idUsuario":element.idUsuario,
             "idMatriz":element.idMatriz,
-            "idSocioNegocio":element.idSocioNegocio,
+            "idSocioNegocio":element.idSocioNegocio.id,
             "idSucursal":element.idSucursal,
+            "idHijo":element.idHijo,
             "idProyecto":element.idProyecto,
-            "NombreElemento":element.Elemento.label || '',
-            "idElemento":element.Elemento.id || '',
-            "NumCuenta":element.Cuenta.Cuenta || '',
-            "CategoriaNombre":element.idCategoria.Nombre || '',
-            "SocioNegocio":element.idSocioNegocio.Nombre || '',
-    
+            "idSubCuentaContable":element.idNieto || '',
+            "NumCuenta":element.Cuenta.Cuenta || ''
           }
           this.Registros.push(_Registro)
           });
 
-
+          console.log('Registros',this.Registros)
          
           this.RegistrosBackUp=this.Registros
    
@@ -1209,7 +1204,7 @@ getValorCategoria(idCategoria:any,NumSemana:any,Mes:any,Anio:any){
 getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>registro
-  .idCategoria.id==idCategoria
+  .idCategoria==idCategoria
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
@@ -1496,22 +1491,25 @@ getValorItem(idElemento:any,NumSemana:any,Mes:any,Anio:any){
   }
 }
 getValorItemMensual(idElemento:any,Mes:any,Anio:any){
+
   let _Data: any=[];
   let Valor: number =0
   _Data=this.Registros.filter((registro:any)=>
-    registro.idElemento==idElemento 
+    registro.idHijo==idElemento 
     && registro.NumMes==Mes
     && registro.AnioRegistro==Anio
     )
-  
   if(_Data.length>0){
     _Data.forEach((element:any) => {
       Valor+=Number(element.Valor);
     });
+
+
     if(_Data[0].Tipo=='Egreso')
       {
         Valor=Valor*-1;
       }
+  
     return Number(Valor)
   }
   else {
@@ -1541,8 +1539,63 @@ getValorItemAnual(idElemento:any,Anio:any){
     return 0
   }
 }
+
+getValorSubItemMensual(idElemento:any,Mes:any,Anio:any){
+
+  let _Data: any=[];
+  let Valor: number =0
+  _Data=this.Registros.filter((registro:any)=>
+    registro.idSubCuentaContable==idElemento 
+    && registro.NumMes==Mes
+    && registro.AnioRegistro==Anio
+    && registro.TipoCuentaSeleccionada=="Hijo"
+    )
+  if(_Data.length>0){
+    _Data.forEach((element:any) => {
+      Valor+=Number(element.Valor);
+    });
+
+
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+  
+    return Number(Valor)
+  }
+  else {
+    return 0
+  }
+}
+getValorSubItemAnual(idElemento:any,Anio:any){
+
+  let _Data: any=[];
+  let Valor: number =0
+  _Data=this.Registros.filter((registro:any)=>
+    registro.idSubCuentaContable==idElemento 
+    && registro.AnioRegistro==Anio
+    && registro.TipoCuentaSeleccionada=="Hijo"
+    )
+  if(_Data.length>0){
+    _Data.forEach((element:any) => {
+      Valor+=Number(element.Valor);
+    });
+
+
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+  
+    return Number(Valor)
+  }
+  else {
+    return 0
+  }
+}
 getDataItemMensual(){
 this.DataItemsMensual=[]
+
 this.Items.forEach((item:any) => {
   this.Anios.forEach((anio:any) => {
     this.Meses.forEach((mes:any) => {
@@ -1562,7 +1615,9 @@ this.Items.forEach((item:any) => {
   
 });
 }
-
+toggleChildExpansion(child: any) {
+  child.expanded = !child.expanded;
+}
 getDataItemAnual(){
   this.DataItemsAnual=[]
   this.Items.forEach((item:any) => {
@@ -1594,11 +1649,11 @@ getDataItemAnual(){
       }
     };
     this.Anios.forEach((anio:any) => {
-      this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
-        
+      this.getMesesByAnio(anio.Anio).forEach((mes:any) => {       
                 let key = `${mes.NumMes}-${anio.Anio}`;
                 newRow.data.tipo=categ.Tipo
                 if(categ.Orden==0) {
+
                   this.RegistrosSaldosFinalesMensuales.push({
                     "key":key,
                     "Anio":anio.Anio,
@@ -1676,24 +1731,17 @@ getDataItemAnual(){
                 
         
                 }
-              
-
-
-      
     })
 
-      
-
-
-      // **AGREGAR ITEMS COMO HIJOS**
+  // **AGREGAR ITEMS COMO HIJOS**
   this.getItems(categ.id).forEach(item => {
-
     let newItem: any = {
       key: `${indexCategoria}-${indexItem}`,
       data: {
         id_item: item.id, // Nombre del item
         categoria: item.Nombre, // Nombre del item
-        values: {}
+        values: {},
+        children: []
       }
     };
     this.Cabecera.filter((cab: any) => cab.Tipo != 1).forEach(cab => {
@@ -1711,13 +1759,45 @@ getDataItemAnual(){
     
     
     });
+    var indexSubItem=0
+    if (item.CuentasHijos && item.CuentasHijos.length > 0) {
+      item.CuentasHijos.forEach((subItem: any) => {
+        indexSubItem += 1;
+        let newSubItem: any = {
+          key: `${indexCategoria}-${indexItem}-${indexSubItem}`,
+          data: {
+            id_subitem: subItem.id,
+            categoria: subItem.Nombre,
+            values: {}
+          }
+        };
+
+        // Procesar valores para el subitem
+        this.Cabecera.filter((cab: any) => cab.Tipo != 1).forEach(cab => {
+          let key = `${cab.Mes}-${cab.Anio}`;
+
+          if (cab.Tipo == 3) {
+            newSubItem.data.values[key] = this.getValorSubItemMensual(subItem.id, cab.NumMes, cab.Anio) || 0;
+          }
+          else if (cab.Tipo == 4) {
+            let keyAnio = `${cab.Anio}`;
+            newSubItem.data.values[keyAnio] = this.getValorSubItemAnual(subItem.id, cab.Anio) || 0;
+          }
+        });
+
+        newItem.data.children.push(newSubItem);
+      });
+    }
 
     newRow.data.children.push(newItem); // Agregar el item como hijo de la categoría
   });
+
+  
     
   
   this.DataTreeTable.push(newRow)
 });
+console.log('DataTreeTable',this.DataTreeTable)
   this.cargar=true
   }
 
@@ -1770,8 +1850,7 @@ getDataFlujoOperativo(NumSemana:any,Mes:any,Anio:any){
 getDataFlujoOperativoMensual(Mes:any,Anio:any){
     let _Data: any=[];
     _Data=this.Registros.filter((registro:any)=>
-    (registro.idCategoria.Orden==2
-    || registro.idCategoria.Orden==3)
+    (registro.idFlujo=='EESGPM4hWXvDlXSRnCwA')
     && registro.NumMes==Mes
     && registro.AnioRegistro==Anio
     )
@@ -1792,8 +1871,7 @@ getDataFlujoOperativoMensual(Mes:any,Anio:any){
 getDataFlujoOperativoAnual(Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==2
-  || registro.idCategoria.Orden==3)
+  (registro.idFlujo=='EESGPM4hWXvDlXSRnCwA')
   && registro.AnioRegistro==Anio
   )
 
@@ -1810,6 +1888,7 @@ getDataFlujoOperativoAnual(Anio:any){
     return 0
   }
 } 
+
 getDataFlujoInversion(NumSemana:any,Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
@@ -1835,8 +1914,7 @@ getDataFlujoInversion(NumSemana:any,Mes:any,Anio:any){
 getDataFlujoInversionMensual(Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==5
-  || registro.idCategoria.Orden==6)
+  (registro.idFlujo=='GMzSuF04XQBsPmAkIB2C')
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
@@ -1857,8 +1935,7 @@ getDataFlujoInversionMensual(Mes:any,Anio:any){
 getDataFlujoInversionAnual(Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==5
-  || registro.idCategoria.Orden==6)
+  (registro.idFlujo=='GMzSuF04XQBsPmAkIB2C')
   && registro.AnioRegistro==Anio
   )
 
@@ -1899,8 +1976,7 @@ getDataFlujoFinanciero(NumSemana:any,Mes:any,Anio:any){
 getDataFlujoFinancieroMensual(Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==9
-  || registro.idCategoria.Orden==8)
+  (registro.idFlujo=='psmpY6iyDJNkW7AKFXgK')
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
@@ -1921,8 +1997,7 @@ getDataFlujoFinancieroMensual(Mes:any,Anio:any){
 getDataFlujoFinancieroAnual(Anio:any){
   let _Data: any=[];
   _Data=this.Registros.filter((registro:any)=>
-  (registro.idCategoria.Orden==9
-  || registro.idCategoria.Orden==8)
+  (registro.idFlujo=='psmpY6iyDJNkW7AKFXgK')
   && registro.AnioRegistro==Anio
   )
 
@@ -2106,12 +2181,10 @@ construirCabecera(){
     this.conS.enviarRegistrosSemestrales(DataSemestral)
 
    }
-   getItems(idCategoria:any){
+getItems(idCategoria:any){
     let _Items:any=[]
 
-    _Items=this.Items.filter((item:any)=>item.idCategoria==idCategoria
-    && item.idUsuarios.some((user:any) => user == this.usuario.id)
-
+    _Items=this.Items.filter((item:any)=>item.idPadre==idCategoria
      )
     return _Items
     }

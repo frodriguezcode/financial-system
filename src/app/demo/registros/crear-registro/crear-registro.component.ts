@@ -1330,7 +1330,9 @@ salvarRegistro(Registro: any, Valor: any) {
       Registro.idAbuelo = Registro.CuentaSeleccionada.idAbuelo
       Registro.idNieto = Registro.CuentaSeleccionada.data || "" // Use null instead of undefined
       Registro.idHijo = Registro.CuentaSeleccionada.ItemId || ""
-    } else if (Registro.CuentaSeleccionada.Tipo == 'Padre' && Registro.CuentaSeleccionada.children.length == 0) {
+    } 
+    
+    else if (Registro.CuentaSeleccionada.Tipo == 'Padre' && Registro.CuentaSeleccionada.children.length == 0) {
       Registro.idPadre = Registro.CuentaSeleccionada.idPadre
       Registro.idAbuelo = Registro.CuentaSeleccionada.idAbuelo
       Registro.idHijo = Registro.CuentaSeleccionada.ItemId || ""
@@ -1339,7 +1341,8 @@ salvarRegistro(Registro: any, Valor: any) {
     // Set other required fields
     Registro.NumCuenta = Registro.Cuenta?.Cuenta || ""
     Registro.Valor = ValorRegistro
-    
+    Registro.idUsuario = this.usuario.id
+    Registro.Tipo= this.idTipoRegistro==1 ? 'Ingreso' : 'Egreso'
     // Remove unnecessary properties before saving
     if (Registro.CuentaSeleccionada) {
       delete Registro.CuentaSeleccionada.parent
