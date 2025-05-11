@@ -14,6 +14,22 @@ import { ButtonModule } from 'primeng/button';
 import { Subscription } from 'rxjs';
 import ConsolidadoMejoradoTrimesralComponent from './consolidado-mejorado-trimestral/consolidado-mejorado-trimestral';
 import ConsolidadoSemestralComponent from './consolidado-mejorado-semestral/consolidado-mejorado-semestral.component';
+
+interface TreeNodeData {
+  name: string;
+  size: string;
+  type: string;
+  valores: {
+    [clave: string]: number; // clave como "MM-YYYY" o "YYYY"
+  };
+}
+
+interface TreeNode {
+  data: TreeNodeData;
+  children?: TreeNode[];
+}
+
+
 @Component({
   selector: 'app-consolidado-mejorado',
   standalone: true,
@@ -23,6 +39,8 @@ import ConsolidadoSemestralComponent from './consolidado-mejorado-semestral/cons
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
 })
+
+
 export default class ConsolidadoMejoradoComponent implements OnInit {
   @ViewChild('dt') table: Table; 
   constructor(
@@ -99,6 +117,8 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   verMensual:boolean=true
   verTrimestral:boolean=false
   verSemestral:boolean=false
+
+  
 
   maxCategoryLength: number = 0;
   ngOnInit(): void {
@@ -1208,6 +1228,9 @@ getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
+  if(idCategoria=='od11V2OHVgaLG1RiXMiz'){
+    console.log('_Data',_Data)
+  }
   if(_Data.length>0){
     let Valor:number=0
     _Data.forEach((data:any) => {
@@ -1633,173 +1656,182 @@ getDataItemAnual(){
       }) 
   });
 
-  let indexCategoria:number=0
-  let indexItem:number=0
   this.DataTreeTable=[]
+  
   this.Categorias.forEach(categ => {
-    indexCategoria+=1
-    let newRow: any = {
-      key: `${indexCategoria}`,
-      data: {
-        id_categoria: categ.id, // O el campo relevante de Categorias
-        categoria: categ.Nombre, // O el campo relevante de Categorias
-        values: {}, // Aquí guardaremos los valores por mes-año
-        children: [],
-        tipo:0
-      }
-    };
-    this.Anios.forEach((anio:any) => {
-      this.getMesesByAnio(anio.Anio).forEach((mes:any) => {       
-                let key = `${mes.NumMes}-${anio.Anio}`;
-                newRow.data.tipo=categ.Tipo
-                if(categ.Orden==0) {
 
-                  this.RegistrosSaldosFinalesMensuales.push({
-                    "key":key,
-                    "Anio":anio.Anio,
-                    "Valor":this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
-                  })
-                  newRow.data.values[key] = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0;
-                 
-        
-                }
-                else if(categ.Orden==1) {
-                  newRow.data.values[key] = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio) || 0;
-                  
-        
-                }
-                else if(categ.Orden==4) {
-                  newRow.data.values[key] = this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio) || 0;
-        
-        
-                }
-                else if(categ.Orden==7) {
-                  newRow.data.values[key] = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio) || 0;
-        
-                }
-                else if(categ.Orden==10) {
-                  newRow.data.values[key] = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) || 0;
-        
-        
-                }
-                else if(categ.Orden==11) {
-              
-                  newRow.data.values[key] = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0;
-            
-        
-                }
-                else {
-                  newRow.data.values[key] = this.getValorCategoriaMensual(categ.id,mes.NumMes,anio.Anio) || 0;
-                
-        
-                }
+    this.DataTreeTable.push({
+      data: { 
+         name: categ.Nombre, 
+         size: '200mb', 
+         type: 'Folder',
+         valores: {},
+         idCategoria:categ.id,
+         orden:categ.Orden,
+         tipo: 
+         (categ.Orden == 1 || categ.Orden == 4 || categ.Orden == 7 || categ.Orden == 10 ) ?'Abuelo' :
+         (categ.Orden == 0 ) ?'Saldo Inicial' :
+         (categ.Orden == 11 ) ?'Saldo Final' 
+         :'Padre'
+         },
+      children:this.getItemsByCategoria(categ.id)
 
-              })
-        
-                let key = `${anio.Anio}`;
-                if(categ.Orden==0) {
-                  newRow.data.values[key] = this.obtenerValorSaldoInicialAnual(anio.Anio);
-                 
-        
-                }
-                else if(categ.Orden==1) {
-                  newRow.data.values[key] = this.getDataFlujoOperativoAnual(anio.Anio) || 0;
-             
-        
-                }
-                else if(categ.Orden==4) {
-                  newRow.data.values[key] = this.getDataFlujoInversionAnual(anio.Anio) || 0;
-        
-        
-                }
-                else if(categ.Orden==7) {
-                  newRow.data.values[key] = this.getDataFlujoFinancieroAnual(anio.Anio) || 0;
-        
-                }
-                else if(categ.Orden==10) {
-                  newRow.data.values[key] = this.getDataFlujoLibreAnual(anio.Anio) || 0;
-        
-        
-                }
-                else if(categ.Orden==11) {
-                  newRow.data.values[key] = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0;
-            
-        
-                }
-                else {
-                  newRow.data.values[key] = this.getValorCategoriaAnual(categ.id,anio.Anio) || 0;
-                
-        
-                }
     })
 
-  // **AGREGAR ITEMS COMO HIJOS**
-  this.getItems(categ.id).forEach(item => {
-    let newItem: any = {
-      key: `${indexCategoria}-${indexItem}`,
-      data: {
-        id_item: item.id, // Nombre del item
-        categoria: item.Nombre, // Nombre del item
-        values: {},
-        children: []
-      }
-    };
-    this.Cabecera.filter((cab: any) => cab.Tipo != 1).forEach(cab => {
-    indexItem+=1
-      let key = `${cab.Mes}-${cab.Anio}`;
-
-      if(cab.Tipo==3){
-        newItem.data.values[key] = this.getValorItemMensual(item.id, cab.NumMes, cab.Anio) || 0;
-      }
-     else if(cab.Tipo==4){
-      let keyAnio = `${cab.Anio}`;
-        newItem.data.values[keyAnio] = this.getValorItemAnual(item.id,cab.Anio) || 0;
-      }
 
     
     
-    });
-    var indexSubItem=0
-    if (item.CuentasHijos && item.CuentasHijos.length > 0) {
-      item.CuentasHijos.forEach((subItem: any) => {
-        indexSubItem += 1;
-        let newSubItem: any = {
-          key: `${indexCategoria}-${indexItem}-${indexSubItem}`,
-          data: {
-            id_subitem: subItem.id,
-            categoria: subItem.Nombre,
-            values: {}
-          }
-        };
-
-        // Procesar valores para el subitem
-        this.Cabecera.filter((cab: any) => cab.Tipo != 1).forEach(cab => {
-          let key = `${cab.Mes}-${cab.Anio}`;
-
-          if (cab.Tipo == 3) {
-            newSubItem.data.values[key] = this.getValorSubItemMensual(subItem.id, cab.NumMes, cab.Anio) || 0;
-          }
-          else if (cab.Tipo == 4) {
-            let keyAnio = `${cab.Anio}`;
-            newSubItem.data.values[keyAnio] = this.getValorSubItemAnual(subItem.id, cab.Anio) || 0;
-          }
-        });
-
-        newItem.data.children.push(newSubItem);
-      });
-    }
-
-    newRow.data.children.push(newItem); // Agregar el item como hijo de la categoría
-  });
-
+    
+    
+  })
+ 
+    
+this.construirValores()
   
-    
-  
-  this.DataTreeTable.push(newRow)
-});
-console.log('DataTreeTable',this.DataTreeTable)
+
+
+
   this.cargar=true
   }
+
+
+
+  getItemsByCategoria(idCategoria:string){
+    let Item=this.ItemsBack.filter((it:any)=>it.idPadre==idCategoria)
+    let ItemsEncontrados:any=[]
+    if(Item.length>0){
+      
+      Item.forEach((item:any)=>{
+        ItemsEncontrados.push({
+          name: item.Nombre, 
+          idItem: item.id,
+          size: '200mb', 
+          type: 'Folder',
+          orden:item.Orden,
+          tipo:'Hijo',
+          valores: {},
+          children: item.CuentasHijos === undefined ? [] : item.CuentasHijos.map(hijo => ({
+              ...hijo,
+              valores: {},
+              tipo:'Nieto',
+              Orden:hijo.Orden
+          }))
+      });
+      })
+      console.log('ItemsEncontrados',ItemsEncontrados)
+      return ItemsEncontrados
+    }
+    else {
+      return []
+    } 
+
+
+  }
+
+  construirValores(){
+   
+  this.DataTreeTable.forEach(dataTree => {
+    if (dataTree.data.valores !== undefined) {
+      dataTree.data.valores = {};
+    this.Anios.forEach(anio => {
+      let totalAnual = 0;
+      const claveAnual= `${dataTree.data.idCategoria}-${anio.Anio}`;
+        this.Meses.forEach(mes => {
+          const claveMensual = `${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`;
+          let key = `${mes.NumMes}-${anio.Anio}`;
+          if(dataTree.data.tipo=='Saldo Inicial'){
+            this.RegistrosSaldosFinalesMensuales.push({
+              "key":key,
+              "Anio":anio.Anio,
+              "Valor":this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
+            })
+
+            const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
+            dataTree.data.valores[claveMensual] = valor;
+            totalAnual += valor;
+          }
+        else if(dataTree.data.tipo=='Saldo Final'){
+            const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
+            dataTree.data.valores[claveMensual] = valor;
+            totalAnual += valor;
+          }
+
+          if(dataTree.data.tipo=='Abuelo'){
+            if(dataTree.data.orden==1){
+              const valor = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio) || 0;
+              dataTree.data.valores[claveMensual] = valor;
+              totalAnual += valor;
+            }
+          else if(dataTree.data.orden==4){
+              const valor = this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio) || 0;
+              dataTree.data.valores[claveMensual] = valor;
+              totalAnual += valor;
+            }
+          else if(dataTree.data.orden==7){
+              const valor = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio) || 0;
+              dataTree.data.valores[claveMensual] = valor;
+              totalAnual += valor;
+            }
+          else if(dataTree.data.orden==10){
+              const valor = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) || 0;
+              dataTree.data.valores[claveMensual] = valor;
+              totalAnual += valor;
+            }
+          }
+
+          if(dataTree.data.tipo=='Padre'){
+
+            const valor = this.getValorCategoriaMensual(dataTree.data.idCategoria,mes.NumMes,anio.Anio) || 0;
+            dataTree.data.valores[claveMensual] = valor;
+            totalAnual += valor;
+
+            
+            let claveAnualHijo: any
+            let claveAnualNieto: any
+            let totalAnualHijo:number=0
+           
+            dataTree.children.forEach(cuenta => {
+              const claveMensualHijo = `${cuenta.idItem}-${mes.NumMes}-${anio.Anio}`;
+              claveAnualHijo= `${cuenta.idItem}-${anio.Anio}`;
+              const valor = this.getValorItemMensual(cuenta.idItem, mes.NumMes, anio.Anio) || 0;
+              const valorAnual = this.getValorItemAnual(cuenta.idItem,anio.Anio) || 0;
+              cuenta.valores[claveMensualHijo] = valor;
+              cuenta.valores[claveAnualHijo] = valorAnual;
+
+
+              cuenta.children.forEach(subCuenta => {
+          
+                const claveMensualHijo = `${subCuenta.id}-${mes.NumMes}-${anio.Anio}`;
+                claveAnualNieto= `${subCuenta.id}-${anio.Anio}`;
+                const valorNieto = this.getValorSubItemMensual(subCuenta.id, mes.NumMes, anio.Anio) || 0;
+                const valorNietoAnual = this.getValorSubItemAnual(subCuenta.id, anio.Anio) || 0;
+                subCuenta.valores[claveMensualHijo] = valorNieto;
+                subCuenta.valores[claveAnualNieto] = valorNietoAnual; 
+                
+
+              });
+            });
+
+
+
+          }
+
+
+
+
+
+        });
+   
+          dataTree.data.valores[claveAnual] = totalAnual;
+
+        
+      });
+    }
+  }); 
+  
+  console.log('DataTreeTable',this.DataTreeTable)
+  }
+
 
 getDataItems(){
   this.DataItems=[]
