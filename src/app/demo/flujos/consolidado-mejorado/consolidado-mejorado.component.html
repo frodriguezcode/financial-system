@@ -105,15 +105,74 @@ appendTo="body"
 (click)="mostrarSemanas()" type="button" class="btn btn-warning m-1 mt-2">Semanal 
 </button> -->
 
-<div *ngIf="this.Cabecera.length<=1 && this.cargar==true"  class="alert alert-warning mt-2" role="alert">
+<div *ngIf="this.Cabecera.length<=1 && this.cargar==false"  class="alert alert-warning mt-2" role="alert">
   No tiene registros en esta empresa
 </div>
 
-<div *ngIf="this.cargar==false" class="d-flex justify-content-center">
+<div *ngIf="this.cargar==true" class="d-flex justify-content-center">
   <div class="spinner-border" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
 </div>
+
+  <p-treeTable 
+  [value]="DataTreeTable" 
+  [columns]="Cabecera" 
+  [scrollable]="true" 
+  scrollHeight="800px" 
+  [tableStyle]="{'min-width':'100%'}">
+      <ng-template pTemplate="header" let-columns>
+          <tr >
+              <th style="width: 400px;">Nombre</th>
+              <th class="text-center"  *ngFor="let col of columns">{{col.Nombre}}</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+          <tr 
+          [ngClass]="{
+                    'Abuelo': rowData.tipo=='Abuelo', 
+                    'Padre': rowData.tipo=='Padre', 
+                    'Hijo': rowData.tipo=='Hijo', 
+                    'Nieto': rowData.tipo=='Nieto', 
+                    'Saldos': rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'     
+                    }"
+          [ttRow]="rowNode">
+              <td style="width: 400px;" >
+                   <p-treeTableToggler [rowNode]="rowNode" />  
+                 
+                     {{rowData.Nombre}}
+  
+                    
+              </td>
+              <td class="text-center" *ngFor="let col of columns">
+                <ng-container *ngIf="col.Tipo==3">
+                  <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                    {{rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio] || 0}}
+                  </span>
+                  <span *ngIf="rowData.tipo=='Hijo'">
+                    {{rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio] || 0}}
+                  </span>
+                  <span *ngIf="rowData.tipo=='Nieto'">
+                    {{rowData.valores[rowData.id+ '-' + col.NumMes +'-'+col.Anio] || 0}}
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="col.Tipo==4">
+                  <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                    {{rowData.valores[rowData.idCategoria + '-'+col.Anio] || 0}}
+                  </span>
+                  <span *ngIf="rowData.tipo=='Hijo'">
+                    {{rowData.valores[rowData.idItem +'-'+col.Anio] || 0}}
+                  </span>
+                  <span *ngIf="rowData.tipo=='Nieto'">
+                    {{rowData.valores[rowData.id +'-'+col.Anio] || 0}}
+                  </span>
+                </ng-container>
+              </td>
+          </tr>
+      </ng-template>
+  </p-treeTable>
+
+
 
 
 <!-- <p-table *ngIf="cargar==true" [value]="DataTreeTable">

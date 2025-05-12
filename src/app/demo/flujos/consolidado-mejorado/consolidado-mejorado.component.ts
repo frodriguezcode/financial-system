@@ -16,7 +16,7 @@ import ConsolidadoMejoradoTrimesralComponent from './consolidado-mejorado-trimes
 import ConsolidadoSemestralComponent from './consolidado-mejorado-semestral/consolidado-mejorado-semestral.component';
 
 interface TreeNodeData {
-  name: string;
+  Nombre: string;
   size: string;
   type: string;
   valores: {
@@ -68,7 +68,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   Semestres:any=[]
   CabeceraBack:any=[]
   usuario:any
-  cargar:boolean=false
+  cargar:boolean=true
   MostrarTodasSemanas:boolean=false
   //Categorías
   DataCategorias:any=[]
@@ -773,7 +773,6 @@ obtenerItems(){
     this.Items=[]
           this.Items=resp.filter((item:any)=>item.Activo==true);
           this.ItemsBack=resp.filter((item:any)=>item.Activo==true);;
-          console.log('Items',this.Items)
          this.obtenerRegistros()
       })
 }
@@ -861,7 +860,6 @@ obtenerRegistros(){
   _subscribe=  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
     _subscribe.unsubscribe()
     this.Registros=[]  
-        console.log('resp',resp)
         resp.filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
           let _Registro={
             "Activo":element.Activo,
@@ -894,7 +892,6 @@ obtenerRegistros(){
           this.Registros.push(_Registro)
           });
 
-          console.log('Registros',this.Registros)
          
           this.RegistrosBackUp=this.Registros
    
@@ -1228,9 +1225,7 @@ getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
-  if(idCategoria=='od11V2OHVgaLG1RiXMiz'){
-    console.log('_Data',_Data)
-  }
+
   if(_Data.length>0){
     let Valor:number=0
     _Data.forEach((data:any) => {
@@ -1544,7 +1539,7 @@ getValorItemAnual(idElemento:any,Anio:any){
   let _Data: any=[];
   let Valor: number =0
   _Data=this.Registros.filter((registro:any)=>
-    registro.idElemento==idElemento 
+    registro.idHijo==idElemento
     && registro.AnioRegistro==Anio
     )
   
@@ -1662,7 +1657,7 @@ getDataItemAnual(){
 
     this.DataTreeTable.push({
       data: { 
-         name: categ.Nombre, 
+         Nombre: categ.Nombre, 
          size: '200mb', 
          type: 'Folder',
          valores: {},
@@ -1674,7 +1669,9 @@ getDataItemAnual(){
          (categ.Orden == 11 ) ?'Saldo Final' 
          :'Padre'
          },
-      children:this.getItemsByCategoria(categ.id)
+      children:
+      
+      this.getItemsByCategoria(categ.id)
 
     })
 
@@ -1691,7 +1688,6 @@ this.construirValores()
 
 
 
-  this.cargar=true
   }
 
 
@@ -1700,25 +1696,29 @@ this.construirValores()
     let Item=this.ItemsBack.filter((it:any)=>it.idPadre==idCategoria)
     let ItemsEncontrados:any=[]
     if(Item.length>0){
-      
+      let data:any
       Item.forEach((item:any)=>{
-        ItemsEncontrados.push({
-          name: item.Nombre, 
-          idItem: item.id,
-          size: '200mb', 
-          type: 'Folder',
-          orden:item.Orden,
-          tipo:'Hijo',
-          valores: {},
+        ItemsEncontrados.push(
+          {
+         data:{
+           Nombre: item.Nombre, 
+           idItem: item.id,
+           size: '200mb', 
+           type: 'Folder',
+           orden:item.Orden,
+           tipo:'Hijo',
+           valores: {},
+         },
           children: item.CuentasHijos === undefined ? [] : item.CuentasHijos.map(hijo => ({
-              ...hijo,
+            data:{
+            ...hijo,
               valores: {},
               tipo:'Nieto',
               Orden:hijo.Orden
+            }  
           }))
       });
       })
-      console.log('ItemsEncontrados',ItemsEncontrados)
       return ItemsEncontrados
     }
     else {
@@ -1743,10 +1743,10 @@ this.construirValores()
             this.RegistrosSaldosFinalesMensuales.push({
               "key":key,
               "Anio":anio.Anio,
-              "Valor":this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
+              "Valor":this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
             })
 
-            const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
+            const valor = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
             dataTree.data.valores[claveMensual] = valor;
             totalAnual += valor;
           }
@@ -1787,26 +1787,24 @@ this.construirValores()
 
             
             let claveAnualHijo: any
-            let claveAnualNieto: any
-            let totalAnualHijo:number=0
-           
+            let claveAnualNieto: any        
             dataTree.children.forEach(cuenta => {
-              const claveMensualHijo = `${cuenta.idItem}-${mes.NumMes}-${anio.Anio}`;
-              claveAnualHijo= `${cuenta.idItem}-${anio.Anio}`;
-              const valor = this.getValorItemMensual(cuenta.idItem, mes.NumMes, anio.Anio) || 0;
-              const valorAnual = this.getValorItemAnual(cuenta.idItem,anio.Anio) || 0;
-              cuenta.valores[claveMensualHijo] = valor;
-              cuenta.valores[claveAnualHijo] = valorAnual;
+              const claveMensualHijo = `${cuenta.data.idItem}-${mes.NumMes}-${anio.Anio}`;
+              claveAnualHijo= `${cuenta.data.idItem}-${anio.Anio}`;
+              const valor = this.getValorItemMensual(cuenta.data.idItem, mes.NumMes, anio.Anio) || 0;
+              const valorAnual = this.getValorItemAnual(cuenta.data.idItem,anio.Anio) || 0;
+              cuenta.data.valores[claveMensualHijo] = valor;
+              cuenta.data.valores[claveAnualHijo] = valorAnual;
 
 
               cuenta.children.forEach(subCuenta => {
           
-                const claveMensualHijo = `${subCuenta.id}-${mes.NumMes}-${anio.Anio}`;
-                claveAnualNieto= `${subCuenta.id}-${anio.Anio}`;
-                const valorNieto = this.getValorSubItemMensual(subCuenta.id, mes.NumMes, anio.Anio) || 0;
-                const valorNietoAnual = this.getValorSubItemAnual(subCuenta.id, anio.Anio) || 0;
-                subCuenta.valores[claveMensualHijo] = valorNieto;
-                subCuenta.valores[claveAnualNieto] = valorNietoAnual; 
+                const claveMensualHijo = `${subCuenta.data.id}-${mes.NumMes}-${anio.Anio}`;
+                claveAnualNieto= `${subCuenta.data.id}-${anio.Anio}`;
+                const valorNieto = this.getValorSubItemMensual(subCuenta.data.id, mes.NumMes, anio.Anio) || 0;
+                const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.id, anio.Anio) || 0;
+                subCuenta.data.valores[claveMensualHijo] = valorNieto;
+                subCuenta.data.valores[claveAnualNieto] = valorNietoAnual; 
                 
 
               });
@@ -1828,7 +1826,8 @@ this.construirValores()
       });
     }
   }); 
-  
+  this.cargar=false
+  console.log('Cabecera',this.Cabecera)
   console.log('DataTreeTable',this.DataTreeTable)
   }
 
@@ -2096,16 +2095,16 @@ construirCabecera(){
         // });
        // if(this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0){
           this.Cabecera.push({
-            "Nombre":"Total "+ mes.Mes + ' ' + anio.Anio,
+            "Nombre":mes.Mes + ' ' + anio.Anio,
             "Mes":mes.Mes,
             "NumMes":mes.NumMes,
             "Anio":anio.Anio,
             "Tipo":3,
-            "Mostrar":true,
-            "MostrarBoton":true,
-            "MostrarBotonSemanal":true,
-            "MostrarBotonMensual":true,
-            "MostrarSemanas":true,
+            // "Mostrar":true,
+            // "MostrarBoton":true,
+            // "MostrarBotonSemanal":true,
+            // "MostrarBotonMensual":true,
+            // "MostrarSemanas":true,
           })
 
       //  }
@@ -2116,8 +2115,8 @@ construirCabecera(){
         "NumMes":"",
         "Anio":anio.Anio,
         "Tipo":4,
-        "Mostrar":true,
-        "MostrarBoton":true
+        // "Mostrar":true,
+        // "MostrarBoton":true
       })
     });
 
