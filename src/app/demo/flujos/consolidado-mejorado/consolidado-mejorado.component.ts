@@ -1748,52 +1748,107 @@ this.construirValores()
 
             const valor = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
             const valorAnual = this.obtenerValorSaldoInicialAnual(anio.Anio) || 0
-            dataTree.data.valores[claveMensual] =  valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") ;
-            dataTree.data.valores[claveAnual] = valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") ;
+            dataTree.data.valores[claveMensual] = 
+            {
+             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "Color": valor<0 ? '#ff3200': '#000000',
+            }
+            dataTree.data.valores[claveAnual] = 
+             {
+             "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "Color": valorAnual<0 ? '#ff3200': '#000000',
+             }
            
           }
         else if(dataTree.data.tipo=='Saldo Final'){
             const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
             const valorAnual = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0
-            dataTree.data.valores[claveMensual] = valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") ;
-            dataTree.data.valores[claveAnual] = valorAnual<0 ? ('-$ '+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            dataTree.data.valores[claveMensual] = 
+              {
+             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "Color": valor<0 ? '#ff3200': '#000000',
+              }
+            dataTree.data.valores[claveAnual] = 
+            {
+            "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "Color": valorAnual<0 ? '#ff3200': '#000000',
+            }
            
           }
 
           if(dataTree.data.tipo=='Abuelo'){
             if(dataTree.data.orden==1){
               const valor = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio) || 0;
-              dataTree.data.valores[claveMensual] = valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              dataTree.data.valores[claveMensual] = 
+              {
+             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "Color": valor<0 ? '#ff3200': '#000000',
+              }
               totalAnual += valor;
-              dataTree.data.valores[claveAnual] = totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-              
+
+              dataTree.data.valores[claveAnual] =
+              {
+              "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "Color": totalAnual<0 ? '#ff3200': '#000000',
+              }                  
             }
           else if(dataTree.data.orden==4){
               const valor = this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio) || 0;
-              dataTree.data.valores[claveMensual] = valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              dataTree.data.valores[claveMensual] = 
+              {
+              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "Color": valor<0 ? '#ff3200': '#000000',
+              }
               totalAnual += valor;
-              dataTree.data.valores[claveAnual] = totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              dataTree.data.valores[claveAnual] =
+              {
+              "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "Color": totalAnual<0 ? '#ff3200': '#000000',
+              }  
             }
           else if(dataTree.data.orden==7){
               const valor = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio) || 0;
-              dataTree.data.valores[claveMensual] = valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              dataTree.data.valores[claveMensual] =
+              {
+              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "Color": valor<0 ? '#ff3200': '#000000',
+              }
               totalAnual += valor;
-              dataTree.data.valores[claveAnual] = totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              dataTree.data.valores[claveAnual] =
+              {
+              "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "Color": totalAnual<0 ? '#ff3200': '#000000',
+              }  
             }
           else if(dataTree.data.orden==10){
               const valor = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) || 0;
-              dataTree.data.valores[claveMensual] = valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              dataTree.data.valores[claveMensual] =
+              {
+              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "Color": valor<0 ? '#ff3200': '#000000',
+              }
               totalAnual += valor;
-              dataTree.data.valores[claveAnual] = totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              dataTree.data.valores[claveAnual] = 
+              {
+              "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "Color": totalAnual<0 ? '#ff3200': '#000000',
+              }  
             }
           }
 
           if(dataTree.data.tipo=='Padre'){
 
             const valor = this.getValorCategoriaMensual(dataTree.data.idCategoria,mes.NumMes,anio.Anio) || 0;
-            dataTree.data.valores[claveMensual] = valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            dataTree.data.valores[claveMensual] = {
+             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "Color": valor<0 ? '#ff3200': '#000000'
+            }
             totalAnual += valor;
-            dataTree.data.valores[claveAnual] = totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            dataTree.data.valores[claveAnual] = 
+            {
+            "Valor": totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "Color": totalAnual<0 ? '#ff3200': '#000000',
+            }  
             
             let claveAnualHijo: any
             let claveAnualNieto: any        
@@ -1802,18 +1857,35 @@ this.construirValores()
               claveAnualHijo= `${cuenta.data.idItem}-${anio.Anio}`;
               const valor = this.getValorItemMensual(cuenta.data.idItem, mes.NumMes, anio.Anio) || 0;
               const valorAnual = this.getValorItemAnual(cuenta.data.idItem,anio.Anio) || 0;
-              cuenta.data.valores[claveMensualHijo] = valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-              cuenta.data.valores[claveAnualHijo] = valorAnual<0 ? ('-$ '+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
+              cuenta.data.valores[claveMensualHijo] = 
+              {
+             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "Color": valor<0 ? '#ff3200': '#000000'
+              }
+              cuenta.data.valores[claveAnualHijo] =   
+              {
+             "Valor": valorAnual<0 ? ('-$ '+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "Color": valorAnual<0 ? '#ff3200': '#000000'
+              }
 
               cuenta.children.forEach(subCuenta => {
           
-                const claveMensualHijo = `${subCuenta.data.id}-${mes.NumMes}-${anio.Anio}`;
-                claveAnualNieto= `${subCuenta.data.id}-${anio.Anio}`;
-                const valorNieto = this.getValorSubItemMensual(subCuenta.data.id, mes.NumMes, anio.Anio) || 0;
-                const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.id, anio.Anio) || 0;
-                subCuenta.data.valores[claveMensualHijo] = valorNieto<0 ? ('-$ '+ (valorNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                subCuenta.data.valores[claveAnualNieto] = valorNietoAnual<0 ? ('-$ '+ (valorNietoAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNietoAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              const claveMensualHijo = `${subCuenta.data.id}-${mes.NumMes}-${anio.Anio}`;
+              claveAnualNieto= `${subCuenta.data.id}-${anio.Anio}`;
+              const valorNieto = this.getValorSubItemMensual(subCuenta.data.id, mes.NumMes, anio.Anio) || 0;
+              const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.id, anio.Anio) || 0;
+              subCuenta.data.valores[claveMensualHijo] =                 
+                {
+                "Valor": valorNieto<0 ? ('-$ '+ (valorNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "Color": valorNieto<0 ? '#ff3200': '#000000'
+                }
+
+              subCuenta.data.valores[claveAnualNieto] = 
+                {
+                "Valor": valorNietoAnual<0 ? ('-$ '+ (valorNietoAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNietoAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "Color": valorNietoAnual<0 ? '#ff3200': '#000000'
+                }
+
               });
             });
 

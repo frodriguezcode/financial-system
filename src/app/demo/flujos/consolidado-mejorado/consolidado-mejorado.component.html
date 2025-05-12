@@ -82,7 +82,7 @@ appendTo="body"
   <button  type="button"
   [disabled]="this.Cabecera.length<=1"
   (click)="descargarExcel()" class="btn btn-success m-1 mt-2">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
-  <button *ngIf="Expandir==false"
+  <!-- <button *ngIf="Expandir==false"
   [disabled]="this.Cabecera.length<=1"
   (click)="toggleAllRows()" type="button" class="btn btn-info m-1 mt-2">
   <span *ngIf="!ExpandirCuentas">
@@ -91,7 +91,7 @@ appendTo="body"
   <span *ngIf="ExpandirCuentas"> 
     Contraer <i class="fa-solid fa-minus"></i>
   </span>
-  </button>
+  </button> -->
 
 </div>
 
@@ -138,33 +138,42 @@ appendTo="body"
                     }"
           [ttRow]="rowNode">
               <td style="width: 400px;" >
-                   <p-treeTableToggler [rowNode]="rowNode" />  
-                 
-                     {{rowData.Nombre}}
-  
-                    
+                   <p-treeTableToggler [rowNode]="rowNode" />                
+                     {{rowData.Nombre}}        
               </td>
               <td class="text-center" *ngFor="let col of columns">
                 <ng-container *ngIf="col.Tipo==3">
                   <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
-                    {{rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio] || 0}}
+                    <span [style.color]="rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio].Color">
+                      {{rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio].Valor || 0}}
+                    </span>
                   </span>
                   <span *ngIf="rowData.tipo=='Hijo'">
-                    {{rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio] || 0}}
+                  <span [style.color]="rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio].Color">
+                    {{rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio].Valor || 0}}
+                  </span>  
                   </span>
-                  <span *ngIf="rowData.tipo=='Nieto'">
-                    {{rowData.valores[rowData.id+ '-' + col.NumMes +'-'+col.Anio] || 0}}
-                  </span>
+                <span *ngIf="rowData.tipo=='Nieto'">
+                  <span [style.color]="rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio].Color">
+                    {{rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio].Valor || 0}}
+                  </span> 
+                </span>
                 </ng-container>
                 <ng-container *ngIf="col.Tipo==4">
                   <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
-                    {{rowData.valores[rowData.idCategoria + '-'+col.Anio] || 0}}
+                    <span [style.color]="rowData.valores[rowData.idCategoria +'-'+ col.Anio].Color">
+                      {{rowData.valores[rowData.idCategoria + '-'+col.Anio].Valor || 0}}
+                    </span>
                   </span>
                   <span *ngIf="rowData.tipo=='Hijo'">
-                    {{rowData.valores[rowData.idItem +'-'+col.Anio] || 0}}
+                    <span [style.color]="rowData.valores[rowData.idItem +'-'+ col.Anio].Color">
+                      {{rowData.valores[rowData.idItem + '-'+col.Anio].Valor || 0}}
+                    </span>
                   </span>
                   <span *ngIf="rowData.tipo=='Nieto'">
-                    {{rowData.valores[rowData.id +'-'+col.Anio] || 0}}
+                    <span [style.color]="rowData.valores[rowData.id +'-'+ col.Anio].Color">
+                      {{rowData.valores[rowData.id + '-'+col.Anio].Valor || 0}}
+                    </span>
                   </span>
                 </ng-container>
               </td>
