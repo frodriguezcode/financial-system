@@ -120,11 +120,12 @@ appendTo="body"
   [columns]="Cabecera" 
   [scrollable]="true" 
   scrollHeight="800px" 
-  [tableStyle]="{'min-width':'100%'}">
+  [resizableColumns]="true"
+  [tableStyle]="{'min-width': (Cabecera.length * 150) + 'px'}">
       <ng-template pTemplate="header" let-columns>
           <tr >
-              <th style="width: 400px;">Nombre</th>
-              <th class="text-center"  *ngFor="let col of columns">{{col.Nombre}}</th>
+              <th style="width: 400px;position: sticky; left: 0; background: white; z-index: 1;">Nombre</th>
+              <th style="width: 200px" class="text-center"  *ngFor="let col of columns">{{col.Nombre}}</th>
           </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
@@ -137,11 +138,11 @@ appendTo="body"
                     'Saldos': rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'     
                     }"
           [ttRow]="rowNode">
-              <td style="width: 400px;" >
+              <td style="width: 400px; position: sticky; left: 0; background: inherit;">
                    <p-treeTableToggler [rowNode]="rowNode" />                
                      {{rowData.Nombre}}        
               </td>
-              <td class="text-center" *ngFor="let col of columns">
+              <td style="width: 200px" class="text-center" *ngFor="let col of columns">
                 <ng-container *ngIf="col.Tipo==3">
                   <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
                     <span [style.color]="rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio].Color">

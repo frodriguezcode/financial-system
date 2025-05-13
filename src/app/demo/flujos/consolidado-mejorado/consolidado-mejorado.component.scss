@@ -351,3 +351,26 @@ button[pButton].expanded {
   margin-left: 60px;
   color: black;
 }
+
+/* Asegura que el contenedor del TreeTable tenga overflow */
+.p-treetable .p-treetable-wrapper {
+  overflow: auto;
+}
+
+/* Estilos para las celdas fijas */
+.p-treetable .p-treetable-thead > tr > th:first-child,
+.p-treetable .p-treetable-tbody > tr > td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+/* Fondo para la cabecera fija */
+.p-treetable .p-treetable-thead > tr > th:first-child {
+  background: white;
+}
+
+/* Fondo heredado para las celdas del cuerpo */
+.p-treetable .p-treetable-tbody > tr > td:first-child {
+  background: inherit;
+}

@@ -122,6 +122,97 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   maxCategoryLength: number = 0;
   ngOnInit(): void {
+      this.Anios=[
+    {Anio:2023,
+    Mostrar: true
+    },
+    {Anio:2024,
+    Mostrar: true
+
+    },
+    {Anio:2025,
+    Mostrar: true
+
+    },
+  ]
+  this.Meses= [
+
+    {
+      Mes: 'Enero',
+      NumMes:1,
+      Trimestre:1,
+      Mostrar: true
+    },
+    {
+      Mes: 'Febrero',
+      NumMes:2,
+      Trimestre:1,
+      Mostrar: true
+    },
+    {
+      Mes: 'Marzo',
+      NumMes:3,
+      Trimestre:1,
+      Mostrar: true
+    },
+    {
+      Mes: 'Abril',
+      NumMes:4,
+      Trimestre:2,
+      Mostrar: true
+    },
+    {
+      Mes: 'Mayo',
+      NumMes:5,
+      Trimestre:2,
+      Mostrar: true
+    },
+    {
+      Mes: 'Junio',
+      NumMes:6,
+      Trimestre:2,
+      Mostrar: true
+    },
+    {
+      Mes: 'Julio',
+      NumMes:7,
+      Trimestre:3,
+      Mostrar: true
+    },
+    {
+      Mes: 'Agosto',
+      NumMes:8,
+      Trimestre:3,
+      Mostrar: true
+    },
+    {
+      Mes: 'Septiembre',
+      NumMes:9,
+      Trimestre:3,
+      Mostrar: true
+    },
+    {
+      Mes: 'Octubre',
+      NumMes:10,
+      Trimestre:4,
+      Mostrar: true
+    },
+    {
+      Mes: 'Noviembre',
+      NumMes:11,
+      Trimestre:4,
+      Mostrar: true
+    },
+    {
+      Mes: 'Diciembre',
+      NumMes:12,
+      Trimestre:4,
+      Mostrar: true
+    },
+  
+  ]
+  this.MesesBack=this.Meses
+  this.AniosBack=this.Anios
     this.conS.usuario$.subscribe(usuario => {
       if (usuario) {
       this.usuario=usuario
@@ -993,10 +1084,10 @@ obtenerRegistros(){
 
           const mesesActivos = obtenerMesesUnicos(this.Registros, this.SaldoInicial);
 
-          this.Meses=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
-          this.MesesBack=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
-          this.Anios=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
-          this.AniosBack=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
+          // this.Meses=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
+          // this.MesesBack=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
+          // this.Anios=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
+          // this.AniosBack=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
           this.Trimestres=obtenerTrimestresUnicos(this.Registros, this.SaldoInicial)
           this.Semestres=obtenerSemestresUnicos(this.Registros, this.SaldoInicial)
           // this.Anios.map((anio:any)=>{anio.Mostrar=true,anio.MostrarBoton=true})
@@ -2156,7 +2247,8 @@ construirCabecera(){
     //   "MostrarBoton":true
     // })
     this.Anios.forEach((anio:any) => {
-      this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
+      //this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
+      this.Meses.forEach((mes:any) => {
         // this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
         //   this.Cabecera.push({
         //     "Nombre":sem.Semana + ' '+ mes.Mes + ' ' + anio.Anio,
