@@ -29,6 +29,10 @@ interface TreeNode {
   children?: TreeNode[];
 }
 
+interface Column {
+    field: string;
+    header: string;
+}
 
 @Component({
   selector: 'app-consolidado-mejorado',
@@ -118,7 +122,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   verTrimestral:boolean=false
   verSemestral:boolean=false
 
-  
+  frozenCols!: Column[];
 
   maxCategoryLength: number = 0;
   ngOnInit(): void {
