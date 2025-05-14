@@ -155,8 +155,8 @@ construirCabecera(){
   let Anios:any=this.AniosSeleccionados.length>0?this.AniosSeleccionados : this.Anios
   let Meses:any=this.MesesSeleccionados.length>0?this.MesesSeleccionados : this.Meses
 
-  Anios.forEach((anio:any) => {
-    Meses.forEach((mes:any) => {
+  Anios.sort((a:any, b:any) => a.Anio - b.Anio).forEach((anio:any) => {
+    Meses.sort((a:any, b:any) => a.NumMes - b.NumMes).forEach((mes:any) => {
     this.Cabecera.push({
       "Nombre": mes.Mes + " " + anio.Anio,
       "Mes":mes.Mes,
@@ -231,6 +231,7 @@ getCategorias(){
         "id":'01-01',
         "idPadre":'01',
         "Moneda":false,
+        "Icono":"",
         "Simbolo":1,
         "Orden":1,
         "OrdenData":1,
@@ -240,6 +241,7 @@ getCategorias(){
         "Nombre":"(X) % de Conversión",
         "id":'01-02',
         "OrdenData":3,
+        "Icono":"%",
         "idPadre":'01',
         "Orden":2,
         "Editable":false,
@@ -249,6 +251,7 @@ getCategorias(){
         "id":'01-03',
         "OrdenData":2,
         "idPadre":'01',
+        "Icono":"",
         "Moneda":false,
         "Simbolo":1,
         "Orden":3,
@@ -259,6 +262,7 @@ getCategorias(){
         "id":'01-04',
         "OrdenData":4,
         "Moneda":false,
+        "Icono":"",
         "idPadre":'01',
         "Simbolo":1,
         "Orden":4,
@@ -267,6 +271,7 @@ getCategorias(){
         {
         "Nombre":"(=) Clientes Totales",
         "id":'01-05',
+        "Icono":"",
         "idPadre":'01',
         "OrdenData":5,
         "Moneda":false,
@@ -277,6 +282,7 @@ getCategorias(){
         "Nombre":"Transacciones Totales",
         "id":'01-06',
         "idPadre":'01',
+        "Icono":"",
         "OrdenData":6,
         "Simbolo":1,
         "Moneda":false,
@@ -286,6 +292,7 @@ getCategorias(){
         {
         "Nombre":"(X) Transacciones Promedio",
         "id":'01-07',
+        "Icono":"",
         "idPadre":'01',
         "OrdenData":7,
         "Moneda":false,
@@ -295,6 +302,7 @@ getCategorias(){
         {
         "Nombre":"(X) Monto Promedio de Venta",
         "id":'01-08',
+        "Icono":"$",
         "idPadre":'01',
         "Moneda":true,
         "Orden":8,
@@ -306,6 +314,7 @@ getCategorias(){
         "id":'01-09',
         "OrdenData":8,
         "idPadre":'01',
+        "Icono":"$",
         "Simbolo":1,
         "Orden":9,
         "Moneda":true,
@@ -324,6 +333,7 @@ getCategorias(){
       "Elementos":[
         {
         "Nombre":"Ventas",
+        "Icono":"$",
         "Moneda":true,
         "OrdenData":1,
         "id":'02-01',
@@ -335,6 +345,7 @@ getCategorias(){
         "Nombre":"(-) Costo de ventas",
         "id":'02-02',
         "Moneda":true,
+        "Icono":"-$",
         "idPadre":'02',
         "Simbolo":2,
         "Orden":2,
@@ -344,6 +355,7 @@ getCategorias(){
         {
         "Nombre":"(=) Utilidad Bruta",
         "id":'02-03',
+        "Icono":"$",
         "Moneda":true,
         "OrdenData":3,
         "idPadre":'02',
@@ -354,6 +366,7 @@ getCategorias(){
         "Nombre":"Margen Bruto",
         "id":'02-04',
         "Moneda":false,
+        "Icono":"%",
         "idPadre":'02',
         "Orden":4,
         "OrdenData":4,
@@ -363,6 +376,7 @@ getCategorias(){
         "Nombre":"(-) Gastos de Ventas y Mkt",
         "id":'02-05',
         "Moneda":true,
+        "Icono":"-$",
         "idPadre":'02',
         "Simbolo":2,
         "Orden":5,
@@ -373,6 +387,7 @@ getCategorias(){
         "Nombre":"(-) Gastos de Operación",
         "id":'02-06',
         "Moneda":true,
+        "Icono":"-$",
         "idPadre":'02',
         "Simbolo":2,
         "Orden":6,
@@ -382,6 +397,7 @@ getCategorias(){
         {
         "Nombre":"(-) Gastos de Administración",
         "id":'02-07',
+        "Icono":"-$",
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":2,
@@ -392,6 +408,7 @@ getCategorias(){
         {
         "Nombre":"Total gastos de operación",
         "id":'02-08',
+        "Icono":"-$",
         "Moneda":true,
         "idPadre":'02',
         "Orden":8,
@@ -403,6 +420,7 @@ getCategorias(){
         "id":'02-09',
         "Moneda":true,
         "idPadre":'02',
+        "Icono":"$",
         "Orden":9,
         "OrdenData":9,
         "Editable":false,
@@ -411,6 +429,7 @@ getCategorias(){
         "Nombre":"Margen de Operación",
         "id":'02-10',
         "Moneda":false,
+        "Icono":"%",
         "idPadre":'02',
         "Orden":10,
         "OrdenData":10,
@@ -419,6 +438,7 @@ getCategorias(){
         {
         "Nombre":"(-) Intereses",
         "id":'02-11',
+        "Icono":"-$",
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":2,
@@ -429,6 +449,7 @@ getCategorias(){
         {
         "Nombre":"(-) Impuestos",
         "id":'02-12',
+        "Icono":"-$",
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":2,
@@ -439,6 +460,7 @@ getCategorias(){
         {
         "Nombre":"(-) Depreciación",
         "id":'02-13',
+        "Icono":"-$",
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":2,
@@ -449,6 +471,7 @@ getCategorias(){
         {
         "Nombre":"(-) Amortización",
         "id":'02-14',
+        "Icono":"-$",
         "Moneda":true,
         "idPadre":'02',
         "Simbolo":2,
@@ -459,6 +482,7 @@ getCategorias(){
         {
         "Nombre":"(=) Utilidad Neta",
         "id":'02-15',
+        "Icono":"$",
         "Moneda":true,
         "idPadre":'02',
         "Orden":15,
@@ -469,6 +493,7 @@ getCategorias(){
         "Nombre":"Margen Neto",
         "id":'02-16',
         "idPadre":'02',
+        "Icono":"%",
         "Moneda":false,
         "Orden":16,
         "OrdenData":16,
@@ -478,6 +503,7 @@ getCategorias(){
         "Nombre":"Gasto en Gente",
         "id":'02-17',
         "Moneda":true,
+        "Icono":"$",
         "idPadre":'02',
         "Simbolo":1,
         "OrdenData":17,
@@ -540,6 +566,52 @@ getCategorias(){
                 "Editable": false,
               });
 
+              if(element.Orden==3){
+              CategoriasData.push({
+                "Nombre": '% de los ingresos para operar',
+                "id": `03-${CategoriasData.length + 1}`,
+                "Moneda":false,
+                "Tipo":'Padre',
+                "idPadre":'03',
+                "idAbuelo": categ.id,
+                "Orden": CategoriasData.length + 1,
+                "Editable": false,
+              });
+              CategoriasData.push({
+                "Nombre": '(-) Pago a proveedores',
+                "id": `03-${CategoriasData.length + 1}`,
+                "Moneda":true,
+                "Tipo":'Padre',
+                "idPadre":'03',
+                "idAbuelo": categ.id,
+                "Orden": CategoriasData.length + 1,
+                "Editable": false,
+              });
+              CategoriasData.push({
+                "Nombre": '% de los ingresos para pagar a proveedores',
+                "id": `03-${CategoriasData.length + 1}`,
+                "Moneda":false,
+                "Tipo":'Padre',
+                "idPadre":'03',
+                "idAbuelo": categ.id,
+                "Orden": CategoriasData.length + 1,
+                "Editable": false,
+              });
+              CategoriasData.push({
+                "Nombre": 'Factor de conversión a efectivo operativo',
+                "id": `03-${CategoriasData.length + 1}`,
+                "Moneda":false,
+                "Tipo":'Padre',
+                "idPadre":'03',
+                "idAbuelo": categ.id,
+                "Orden": CategoriasData.length + 1,
+                "Editable": false,
+              });
+
+              }
+
+
+
               
           
               idsAgregados.add(element.id);
@@ -553,6 +625,7 @@ getCategorias(){
         "Nombre": 'Efectivo Final',
         "id": `03-${CategoriasData.length + 1}`,
         "idPadre":'03',
+        "Icono":"$",
         "Moneda":true,
         "Orden": CategoriasData.length + 1,
         "Editable": false,
@@ -1427,38 +1500,32 @@ obtenerRegistrosStoreManagerRecapt(){
   Subscribe= this.conS.obtenerRegistrosStoreManagerRecapt(this.usuario.idEmpresa).subscribe((resp:any)=>{
     Subscribe.unsubscribe()
     this.Registros=resp[0]
+    console.log('resp[1]',resp[1])
     resp[1].filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
       let _Registro={
         "Activo":element.Activo,
         "AnioRegistro":element.AnioRegistro,
         "Trimestre":this.setTrim(element.MesRegistro), 
         "Semestre":this.setSemestre(element.NumMes),
-        "Cuenta":element.Cuenta,
+        "Cuenta":element.NumCuenta,
         "Editando":element.Editando,
-        "Elemento":element.Elemento,
+        "CuentaSeleccionada":element.CuentaSeleccionada,
         "FechaRegistro":element.FechaRegistro,
         "MesRegistro":element.MesRegistro,
-        "Nuevo":element.Nuevo,
         "NumMes":element.NumMes,
-        "NumSemana":element.NumSemana,
         "Orden":element.Orden,
-        "Semana":element.Semana,
         "Valor":element.Valor,
-        "id":element.id,
+        "idAbuelo":element.idAbuelo,
+        "idPadre":element.idPadre,
+        "idHijo":element.idHijo,
+        "idNieto":element.idNieto,
         "Tipo":element.Tipo || '',
-        "idCategoria":element.idCategoria,
         "idEmpresa":element.idEmpresa,
-        "idFlujo":element.idFlujo,
         "idUsuario":element.idUsuario,
         "idMatriz":element.idMatriz,
-        "idSocioNegocio":element.idSocioNegocio,
+        "idSocioNegocio":element.idSocioNegocio.id,
         "idSucursal":element.idSucursal,
         "idProyecto":element.idProyecto,
-        "NombreElemento":element.Elemento.label || '',
-        "idElemento":element.Elemento.id || '',
-        "NumCuenta":element.Cuenta.Cuenta || '',
-        "CategoriaNombre":element.idCategoria.Nombre || '',
-        "SocioNegocio":element.idSocioNegocio.Nombre || '',
 
       }
       this.RegistrosFlujoEfectivo.push(_Registro)
@@ -1500,33 +1567,31 @@ obtenerValorSaldoInicialMensual(NumMes:any,Anio:any){
   }
 }
 
+
 getDataFlujoOperativoMensual(Mes:any,Anio:any){
-  let _Data: any=[];
-  _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>
-  (registro.idCategoria.Orden==2
-  || registro.idCategoria.Orden==3)
-  && registro.NumMes==Mes
-  && registro.AnioRegistro==Anio
-  )
+    let _Data: any=[];
+    _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>
+    (registro.idAbuelo=='EESGPM4hWXvDlXSRnCwA')
+    && registro.NumMes==Mes
+    && registro.AnioRegistro==Anio
+    )
 
-  if(_Data.length>0){
-    let Valor:number=0
-    _Data.forEach((data:any) => {
-        Valor+=Number(data.Valor)
-    });
+    if(_Data.length>0){
+      let Valor:number=0
+      _Data.forEach((data:any) => {
+          Valor+=Number(data.Valor)
+      });
 
-    return Valor
-  }
-  else {
-    return 0
-  }
+      return Valor
+    }
+    else {
+      return 0
+    }
 } 
-
 getDataFlujoInversionMensual(Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>
-  (registro.idCategoria.Orden==5
-  || registro.idCategoria.Orden==6)
+  (registro.idAbuelo=='GMzSuF04XQBsPmAkIB2C')
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
@@ -1547,8 +1612,7 @@ getDataFlujoInversionMensual(Mes:any,Anio:any){
 getDataFlujoFinancieroMensual(Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>
-  (registro.idCategoria.Orden==9
-  || registro.idCategoria.Orden==8)
+  (registro.idAbuelo=='psmpY6iyDJNkW7AKFXgK')
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
@@ -1566,12 +1630,41 @@ getDataFlujoFinancieroMensual(Mes:any,Anio:any){
   }
 }
 
-
-
 getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
   let _Data: any=[];
   _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>registro
-  .idCategoria.id==idCategoria
+  .idPadre==idCategoria
+  && registro.NumMes==Mes
+  && registro.AnioRegistro==Anio
+  )
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+    if(_Data[0].Tipo=='Egreso')
+      {
+        Valor=Valor*-1;
+      }
+    return Valor
+  }
+  else {
+    return 0
+  }
+}
+
+getValorPagoProveedores(Mes:any,Anio:any){
+  let _Data: any=[];
+  _Data=this.RegistrosFlujoEfectivo.filter((registro:any)=>
+  (
+  registro.idNieto=='KtA2Cxpd79TJrW9afqR9_1' ||
+  registro.idNieto=='KtA2Cxpd79TJrW9afqR9_2' ||
+  registro.idNieto=='KtA2Cxpd79TJrW9afqR9_3' ||
+  registro.idNieto=='KtA2Cxpd79TJrW9afqR9_4' ||
+  registro.idNieto=='KtA2Cxpd79TJrW9afqR9_5' ||
+  registro.idNieto=='KtA2Cxpd79TJrW9afqR9_6' 
+  )
   && registro.NumMes==Mes
   && registro.AnioRegistro==Anio
   )
@@ -2056,7 +2149,42 @@ construirData(){
         //Padres
 
         else if(elemento.Tipo=='Padre'){
+
+        if(elemento.id=='03-5'){
+           this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor ==0 ?0:
+              (this.DatosElementos[`${cab.Anio}-${cab.NumMes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor /
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor)*100,
+              "TipoNumero":(
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor ==0 ?0:
+              (this.DatosElementos[`${cab.Anio}-${cab.NumMes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor /
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor)*100)<0 ? 1 : 2
+          })
+
+        }
+        else if(elemento.id=='03-6'){
           this.DatosElementos[`${key}`].push({              
+            "Valor":this.getValorPagoProveedores(cab.NumMes,cab.Anio),
+            "TipoNumero":(this.getValorPagoProveedores(cab.NumMes,cab.Anio))<0 ? 1 : 2
+          })
+
+        }
+
+        if(elemento.id=='03-7'){
+           this.DatosElementos[`${key}`].push({              
+              "Valor":
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor ==0 ?0:
+              (this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-6`]?.[0]?.Valor /
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor)*100,
+              "TipoNumero":(
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor ==0 ?0:
+              (this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-6`]?.[0]?.Valor /
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor)*100)<0 ? 1 : 2
+          })
+
+        }
+        this.DatosElementos[`${key}`].push({              
             "Valor":this.getValorCategoriaMensual(elemento.id,cab.NumMes,cab.Anio),
             "TipoNumero":(this.getValorCategoriaMensual(elemento.id,cab.NumMes,cab.Anio))<0 ? 1 : 2
           })

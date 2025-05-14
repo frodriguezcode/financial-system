@@ -331,9 +331,8 @@
             },
             {
                 "Nombre": "% de los ingresos para operar",
-                "id": "03-03",
+                "id": "03-5",
                 "Moneda": false,
-                "Simbolo": 1,
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
@@ -342,24 +341,32 @@
             },
             {
                 "Nombre": "(-) Pago a proveedores",
-                "id": "03-05",
+                "id": "03-6",
                 "Moneda": true,
-                "Simbolo": 2,
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
                 "Orden": 6,
-                "Editable": true
+                "Editable": false
             },
             {
                 "Nombre": "% de los ingresos para pagar a proveedores",
-                "id": "03-06",
-                "Moneda": true,
-                "Simbolo": 1,
+                "id": "03-7",
+                "Moneda": false,
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
                 "Orden": 7,
+                "Editable": false
+            },
+            {
+                "Nombre": "Factor de conversión a efectivo operativo",
+                "id": "03-8",
+                "Moneda": false,
+                "Tipo": "Padre",
+                "idPadre": "03",
+                "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
+                "Orden": 8,
                 "Editable": false
             },
             {
@@ -368,7 +375,7 @@
                 "Moneda": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
-                "Orden": 8,
+                "Orden": 9,
                 "Editable": false
             },
             {
@@ -378,7 +385,7 @@
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "GMzSuF04XQBsPmAkIB2C",
-                "Orden": 9,
+                "Orden": 10,
                 "Editable": false
             },
             {
@@ -388,7 +395,7 @@
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "GMzSuF04XQBsPmAkIB2C",
-                "Orden": 10,
+                "Orden": 11,
                 "Editable": false
             },
             {
@@ -397,7 +404,7 @@
                 "Moneda": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
-                "Orden": 11,
+                "Orden": 12,
                 "Editable": false
             },
             {
@@ -407,7 +414,7 @@
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "psmpY6iyDJNkW7AKFXgK",
-                "Orden": 12,
+                "Orden": 13,
                 "Editable": false
             },
             {
@@ -417,7 +424,7 @@
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "psmpY6iyDJNkW7AKFXgK",
-                "Orden": 13,
+                "Orden": 14,
                 "Editable": false
             },
             {
@@ -426,15 +433,15 @@
                 "Moneda": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
-                "Orden": 14,
+                "Orden": 15,
                 "Editable": false
             },
             {
                 "Nombre": "Efectivo Final",
-                "id": "03-15",
+                "id": "03-16",
                 "idPadre": "03",
                 "Moneda": true,
-                "Orden": 15,
+                "Orden": 16,
                 "Editable": false
             }
         ]

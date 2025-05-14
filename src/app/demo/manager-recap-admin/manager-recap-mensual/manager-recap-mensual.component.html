@@ -82,7 +82,20 @@
               <ng-container *ngIf="catalogo.Mostrar">
                 <tr   *ngFor="let element of catalogo.Elementos">
                   <!-- <td style="margin-right: -50px; background-color: rgb(245, 245, 245)" >{{ element.Nombre }}</td> -->
-                  <td style="margin-right: -50px; background-color:  rgb(245, 245, 245)" >{{ element.Nombre }}</td>
+                  <td style="margin-right: -50px; background-color:  rgb(245, 245, 245)" >
+                    <span
+                    [ngStyle]="{
+                    'background-color': 'rgb(245, 245, 245)',
+                    'margin-left': (
+                    element.id === '03-5' || 
+                    element.id === '03-6' || 
+                    element.id === '03-7' 
+                    ) ? '20px' : '0',
+                    'display': 'block' 
+                    }">
+                    {{ element.Nombre }}
+                    </span>
+                  </td>
                   <ng-container
                   
                   *ngFor="let cab of Cabecera">
