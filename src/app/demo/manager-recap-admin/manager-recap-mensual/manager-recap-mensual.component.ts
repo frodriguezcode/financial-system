@@ -1716,8 +1716,11 @@ construirData(){
         }
         if(elemento.Editable==true){
         if(elemento.id=='04-01'){
+          if(cab.NumMes==1){
+            let Valor=this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor ==undefined ? 
+              this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+              this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor
 
-            if(cab.NumMes==1){
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor ==undefined ? 
@@ -1731,11 +1734,19 @@ construirData(){
                   this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor
+                 ,
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor ==undefined ? false : true
               })
 
             }
             else {
+
+              let Valor=this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? 
+              this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor
+
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? 
@@ -1749,6 +1760,9 @@ construirData(){
                   this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor
+                 ,
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? false : true
               })
             }
@@ -1756,8 +1770,11 @@ construirData(){
 
         } 
         else if(elemento.id=='05-01'){
-
           if(cab.NumMes==1){
+            let Valor= 
+                  this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor ==undefined ? 
+                  this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                  this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor
             this.DatosElementos[`${key}`].push({ 
               "Valor":
               this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor ==undefined ? 
@@ -1771,11 +1788,18 @@ construirData(){
                 this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor
               )
               <0 ? 1 : 2,
+              "ValorMostrar":
+               Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
               "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor ==undefined ? false : true
             })
 
           }
           else {
+            let Valor= 
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor ==undefined ? 
+              this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor
+
             this.DatosElementos[`${key}`].push({ 
               "Valor":
               this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor ==undefined ? 
@@ -1789,6 +1813,8 @@ construirData(){
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor
               )
               <0 ? 1 : 2,
+              "ValorMostrar":
+               Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,              
               "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-05-04`]?.[0]?.Valor ==undefined ? false : true
             })
 
@@ -1798,6 +1824,11 @@ construirData(){
         else if(elemento.id=='06-01'){
 
             if(cab.NumMes==1){
+              let Valor=
+                this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor
+
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor ==undefined ? 
@@ -1811,11 +1842,18 @@ construirData(){
                   this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
             }
             else {
+              let Valor=
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor
+
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor ==undefined ? 
@@ -1829,6 +1867,8 @@ construirData(){
                   this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,              
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
@@ -1836,8 +1876,12 @@ construirData(){
   
         } 
         else if(elemento.id=='08-01'){
+          if(cab.NumMes==1){
+            let Valor=  
+                this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor
 
-            if(cab.NumMes==1){
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor ==undefined ? 
@@ -1851,11 +1895,18 @@ construirData(){
                   this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
-            }
-            else {
+          }
+          else {
+            let Valor=  
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor
+
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor ==undefined ? 
@@ -1869,15 +1920,20 @@ construirData(){
                   this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
-            }
+           }
   
         } 
         else if(elemento.id=='09-01'){
 
-            if(cab.NumMes==1){
+         if(cab.NumMes==1){
+              let Valor= this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor ==undefined ? 
@@ -1891,11 +1947,17 @@ construirData(){
                   this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,                
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
-            }
-            else {
+          }
+        else {
+              let Valor=this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor ==undefined ? 
+              this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor
+
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor ==undefined ? 
@@ -1909,6 +1971,8 @@ construirData(){
                   this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
@@ -1918,6 +1982,11 @@ construirData(){
         else if(elemento.id=='10-01'){
 
             if(cab.NumMes==1){
+              let Valor=
+                this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor
+
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor ==undefined ? 
@@ -1931,11 +2000,18 @@ construirData(){
                   this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
             }
             else {
+              let Valor=
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor ==undefined ? 
+                this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion) :
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor
+
               this.DatosElementos[`${key}`].push({ 
                 "Valor":
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor ==undefined ? 
@@ -1949,20 +2025,25 @@ construirData(){
                   this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor
                 )
                 <0 ? 1 : 2,
+                "ValorMostrar":
+                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
             }
   
         } 
-          else {
+        else {
+            let Valor=this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)
             this.DatosElementos[`${key}`].push({ 
               "Valor":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion),
               "TipoNumero":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)<0 ? 1 : 2,
+              "ValorMostrar":
+                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
               "Lectura":false
             })
 
-          }
+        }
         }
         else {
           //Mercadotecnia
@@ -1972,14 +2053,16 @@ construirData(){
             let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-01`]?.[0]?.Valor
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
-              "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
+              "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2,
+              "ValorMostrar":Valor2 == 0 ? 0 + '%' :((Valor1/Valor2)*100) + '%' 
             })
           }
          else if(elemento.id=='01-05'){
             let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-03`]?.[0]?.Valor
             let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-04`]?.[0]?.Valor
             this.DatosElementos[`${key}`].push({              
-              "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
+              "Valor":Valor2 == 0 ? 0 :Valor1+Valor2,
+              "ValorMostrar":Valor2 == 0 ? 0 :Valor1+Valor2 ,
               "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
             })
           }
