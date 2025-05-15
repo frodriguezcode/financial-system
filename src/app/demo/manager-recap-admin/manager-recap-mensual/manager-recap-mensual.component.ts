@@ -2621,13 +2621,15 @@ construirData(){
        }
 
       else if(elemento.id=='12-04'){
-        this.DatosElementos[`${key}`].push({              
+       let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-6`]?.[0]?.Valor
+        this.DatosElementos[`${key}`].push({ 
+                       
           "Valor":
-          0
+          Valor1*-1
           ,
           "TipoNumero":
           (
-           0
+           Valor1*-1
           )<0 ? 1 : 2
         })
       }
@@ -2645,11 +2647,11 @@ construirData(){
     else if(elemento.id=='12-06'){
         this.DatosElementos[`${key}`].push({              
           "Valor":
-          0
+          this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-7`]?.[0]?.Valor
           ,
           "TipoNumero":
           (
-          0
+          this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-7`]?.[0]?.Valor
           )<0 ? 1 : 2
       })
      }
@@ -2687,11 +2689,11 @@ construirData(){
     else if(elemento.id=='12-10'){
       this.DatosElementos[`${key}`].push({              
       "Valor":
-      0 
+      this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-5`]?.[0]?.Valor
       ,
       "TipoNumero":
       (
-        0
+       this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-5`]?.[0]?.Valor
       )<0 ? 1 : 2
     })
     }
@@ -2753,8 +2755,147 @@ construirData(){
    }
       
 
-}
        }
+      // Actividad y gestión
+      if(catalogo.id=='13'){
+        if(elemento.id=='13-01')
+        {
+            this.DatosElementos[`${key}`].push({              
+            "Valor": this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-06`]?.[0]?.Valor,
+            "TipoNumero":
+            (
+              this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-06`]?.[0]?.Valor
+            )<0 ? 1 : 2
+        })
+      }
+      else if(elemento.id=='13-02')
+        {
+              this.DatosElementos[`${key}`].push({              
+              "Valor": this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-06`]?.[0]?.Valor,
+              "TipoNumero":
+              (
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-06`]?.[0]?.Valor
+              )<0 ? 1 : 2
+          })
+        }
+      else if(elemento.id=='13-03')
+        {
+              this.DatosElementos[`${key}`].push({              
+              "Valor": this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-06`]?.[0]?.Valor,
+              "TipoNumero":
+              (
+                this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-06`]?.[0]?.Valor
+              )<0 ? 1 : 2
+          })
+        }
+      else if(elemento.id=='13-04')       
+        {
+          let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-13-01`]?.[0]?.Valor || 0
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-13-02`]?.[0]?.Valor || 0
+          let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-13-03`]?.[0]?.Valor || 0
+          this.DatosElementos[`${key}`].push({              
+          "Valor":Valor1 + Valor2 - Valor3,
+          "TipoNumero":
+          (
+          Valor1 + Valor2 - Valor3
+          )<0 ? 1 : 2
+          })
+        }
+      } 
+
+      // Retorno y rentabilidad
+      if(catalogo.id=='14'){
+        if(elemento.id=='14-01')
+        {
+          let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-15`]?.[0]?.Valor || 0
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-17`]?.[0]?.Valor || 0
+          this.DatosElementos[`${key}`].push({              
+          "Valor":Valor2==0? 0: Valor1/Valor2,
+          "TipoNumero":
+          (
+          Valor1==0? 0: Valor2/Valor1
+          )<0 ? 1 : 2
+        })
+       }
+
+      else if(elemento.id=='14-02')
+        {
+          let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-15`]?.[0]?.Valor || 0
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-05`]?.[0]?.Valor || 0
+          this.DatosElementos[`${key}`].push({              
+          "Valor":(Valor2*-1)==0? 0: Valor1/(Valor2*-1),
+          "TipoNumero":
+          (
+          (Valor2*-1)==0? 0: Valor1/(Valor2*-1)
+          )<0 ? 1 : 2
+        })
+       }
+      else if(elemento.id=='14-03')
+        {
+        {
+          let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-15`]?.[0]?.Valor || 0
+          let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-01`]?.[0]?.Valor || 0
+          let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-01`]?.[0]?.Valor || 0
+          this.DatosElementos[`${key}`].push({              
+          "Valor":(Valor2+Valor3)==0? 0: Valor1/(Valor2+Valor3),
+          "TipoNumero":
+          (
+          (Valor2+Valor3)==0? 0: Valor1/(Valor2+Valor3)
+          )<0 ? 1 : 2
+        })
+      }
+      }
+
+      }
+      // Liquidez y solvencia
+      if(catalogo.id=='15'){
+      if(elemento.id=='15-01')
+        { 
+        let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-07`]?.[0]?.Valor || 0
+        let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-07`]?.[0]?.Valor || 0
+        let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-07`]?.[0]?.Valor || 0
+        this.DatosElementos[`${key}`].push({              
+          "Valor":Valor1 + Valor2 + Valor3,
+          "TipoNumero":
+          (
+          Valor1 + Valor2 + Valor3
+          )<0 ? 1 : 2
+        })   
+
+      }
+    else if(elemento.id=='15-02')
+        { 
+        let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-04`]?.[0]?.Valor || 0
+        let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-04`]?.[0]?.Valor || 0
+        let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-04`]?.[0]?.Valor || 0
+        this.DatosElementos[`${key}`].push({              
+          "Valor":Valor3==0?0 :(Valor1 + Valor2) / Valor3,
+          "TipoNumero":
+          (
+          Valor3==0?0 :(Valor1 + Valor2) / Valor3
+          )<0 ? 1 : 2
+        })   
+
+      }
+    else if(elemento.id=='15-03')
+        { 
+        let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-04`]?.[0]?.Valor || 0
+        let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-04`]?.[0]?.Valor || 0
+        let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-04`]?.[0]?.Valor || 0
+        this.DatosElementos[`${key}`].push({              
+          "Valor":Valor1 + Valor2 - Valor3,
+          "TipoNumero":
+          (
+          Valor1 + Valor2 - Valor3
+          )<0 ? 1 : 2
+        })   
+
+      }
+
+      }
+     
+
+ }
 
 
 
