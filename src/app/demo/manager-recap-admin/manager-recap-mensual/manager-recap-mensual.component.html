@@ -106,7 +106,7 @@
                       && cab.Tipo!=1 
                       && element.Editable==false">
                       {{
-                      (DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor || 0) | number}}
+                      (DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
                     </td>
                     <td 
                       class="text-center"
@@ -121,7 +121,7 @@
                       #Valor
                       type="text" 
                       [readOnly]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true"
-                      [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor | number"
+                      [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar"
                       [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true?{'background-color': 'gray','color': 'white'} : {'background-color': 'white','color': 'black'}"
                       class="form-control text-center" 
                       >
@@ -129,7 +129,7 @@
                       *ngIf="element.Simbolo==2"
                       (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
                       #Valor
-                      [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Valor | number"
+                      [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar"
                       type="text" 
                       [readOnly]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true"
                       [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true?{'background-color': 'gray','color': 'red'} : {'background-color': 'white','color': 'red'}"
