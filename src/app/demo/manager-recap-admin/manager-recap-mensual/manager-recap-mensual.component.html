@@ -38,6 +38,12 @@
         <div class="scroll-inner" #scrollInner></div>
       </div>
 
+      <div *ngIf="cargando" class="d-flex justify-content-center">
+      <div class="spinner-grow text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+          </div>
+      </div>
+
       <div class="contenedor-main">
         <div *ngIf="!cargando" #containerTable class="container-table table-responsive">
           <!-- Scroll horizontal superior sincronizado -->
@@ -96,46 +102,62 @@
                     {{ element.Nombre }}
                     </span>
                   </td>
-                  <ng-container
-                  
-                  *ngFor="let cab of Cabecera">
-                    <td 
-                      class="text-center"
-                      [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}"
-                      *ngIf="cab.Mostrar==true 
-                      && cab.Tipo!=1 
-                      && element.Editable==false">
-                      {{
-                      (DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
-                    </td>
-                    <td 
-                      class="text-center"
-                      *ngIf="cab.Mostrar==true 
-                      && cab.Tipo!=1
-                      &&
-                      element.Editable==true">
-
-                      <input 
-                      *ngIf="element.Simbolo==1"
-                      (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
-                      #Valor
-                      type="text" 
-                      [readOnly]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true"
-                      [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar"
-                      [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true?{'background-color': 'gray','color': 'white'} : {'background-color': 'white','color': 'black'}"
-                      class="form-control text-center" 
-                      >
-                      <input 
-                      *ngIf="element.Simbolo==2"
-                      (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
-                      #Valor
-                      [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar"
-                      type="text" 
-                      [readOnly]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true"
-                      [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true?{'background-color': 'gray','color': 'red'} : {'background-color': 'white','color': 'red'}"
-                      class="form-control text-center" 
-                      >
-                    </td>
+                  <ng-container *ngFor="let cab of Cabecera">
+                      <ng-container *ngIf="cab.Tipo==2">
+                        <td 
+                          class="text-center"
+                          [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}"
+                          *ngIf="cab.Mostrar==true 
+                          && cab.Tipo!=1 
+                          && element.Editable==false">
+                          {{
+                          (DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
+                        </td>
+                        <td 
+                          class="text-center"
+                          *ngIf="cab.Mostrar==true 
+                          && cab.Tipo!=1
+                          &&
+                          element.Editable==true">
+    
+                          <input 
+                          *ngIf="element.Simbolo==1"
+                          (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
+                          #Valor
+                          type="text" 
+                          [readOnly]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true"
+                          [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar"
+                          [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true?{'background-color': 'gray','color': 'white'} : {'background-color': 'white','color': 'black'}"
+                          class="form-control text-center" 
+                          >
+                          <input 
+                          *ngIf="element.Simbolo==2"
+                          (keyup.enter)="guardarRegistro(element,Valor.value,cab)"
+                          #Valor
+                          [value]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar"
+                          type="text" 
+                          [readOnly]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true"
+                          [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.Lectura==true?{'background-color': 'gray','color': 'red'} : {'background-color': 'white','color': 'red'}"
+                          class="form-control text-center" 
+                          >
+                        </td>
+                      </ng-container>
+                      <ng-container *ngIf="cab.Tipo==3">
+                          <td 
+                          class="text-center"
+                          [ngStyle]="DatosElementosAcumulados[cab.Anio + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}">
+                          {{
+                          (DatosElementosAcumulados[cab.Anio + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
+                        </td>
+              
+                      </ng-container>
+                      <ng-container *ngIf="cab.Tipo==4">
+                        <td 
+                          class="text-center">
+                          20
+                        </td>
+              
+                      </ng-container>
                   </ng-container>
                 </tr>
 

@@ -19,6 +19,8 @@ import Swal from 'sweetalert2'
 export default class ManagerRecapMensualComponent implements OnInit {
   constructor(private conS:ConfigurationService,private datePipe: DatePipe,private toastr: ToastrService,){}
   DatosElementos:any=[]
+  DatosElementosAcumulados:any=[]
+  DatosElementosPromedios:any=[]
   Cabecera:any=[]
   Fecha:any= new Date();
   Categorias:any=[]
@@ -48,12 +50,9 @@ export default class ManagerRecapMensualComponent implements OnInit {
     })  
   this.Anios=[
     {Anio:2023,
-    Mostrar: true
-    },
+    Mostrar: true},
     {Anio:2024,
-    Mostrar: true
-
-    },
+    Mostrar: true},
     {Anio:2025,
     Mostrar: true
 
@@ -191,7 +190,7 @@ construirCabecera(){
   })
   this.construirData()
   this.sincronizarBarra()
-  console.log('Cabecera',this.Cabecera)
+
 }
 
 
@@ -1419,7 +1418,7 @@ getCategorias(){
 
     this.construirCabecera()
 
-    console.log('CatalogoElementos', this.CatalogoElementos)
+
 
 
     this.sincronizarBarra()
@@ -1428,6 +1427,9 @@ getCategorias(){
 
   })
 }
+
+
+
 
 sincronizarBarra(){
   setTimeout(() => {
@@ -1500,7 +1502,6 @@ obtenerRegistrosStoreManagerRecapt(){
   Subscribe= this.conS.obtenerRegistrosStoreManagerRecapt(this.usuario.idEmpresa).subscribe((resp:any)=>{
     Subscribe.unsubscribe()
     this.Registros=resp[0]
-    console.log('resp[1]',resp[1])
     resp[1].filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
       let _Registro={
         "Activo":element.Activo,
@@ -1531,10 +1532,7 @@ obtenerRegistrosStoreManagerRecapt(){
       this.RegistrosFlujoEfectivo.push(_Registro)
       });
 
-
-    console.log('RegistrosFlujoEfectivo',this.RegistrosFlujoEfectivo)
     this.RegistrosSaldosIniciales=resp[2]
-    console.log('RegistrosSaldosIniciales',this.RegistrosSaldosIniciales)
     this.getCategorias()
    
  
@@ -1693,14 +1691,13 @@ getDataFlujoLibreMensual(Mes:any,Anio:any){
 
 getValorSaldoFinal(Mes:any,Anio:any){
 
-  return  this.obtenerValorSaldoInicialMensual(Mes,Anio) + 
+  return  this.getSaldoInicialMensual(Mes,Anio) + 
   this.getDataFlujoLibreMensual(Mes,Anio)
+
 
 }
 construirData(){
   this.DatosElementos=[]
-
-
   this.CatalogoElementos.forEach((catalogo:any) => {
 
     this.Cabecera.filter((cabecera:any)=>cabecera.Tipo!=1).forEach((cab:any) => {
@@ -1711,9 +1708,14 @@ construirData(){
         let RegistrosBySeccion:any=[]
         RegistrosBySeccion=this.Registros.filter((reg:any)=>reg.idCatalogo==elemento.idPadre)
         const key = `${cab.Anio}-${cab.NumMes}-${elemento.id}`; 
+        const keyAnual = `${cab.Anio}-${cab.NumMes}-${elemento.id}`; 
         if (!this.DatosElementos[key]) {
           this.DatosElementos[key] =[];
         }
+        if (!this.DatosElementosAcumulados[keyAnual]) {
+          this.DatosElementosAcumulados[keyAnual] =[];
+        }
+
         if(elemento.Editable==true){
         if(elemento.id=='04-01'){
           if(cab.NumMes==1){
@@ -1735,7 +1737,7 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor
+                 Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
                  ,
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-04-04`]?.[0]?.Valor ==undefined ? false : true
               })
@@ -1761,7 +1763,7 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor
+                 Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
                  ,
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-04-04`]?.[0]?.Valor ==undefined ? false : true
               })
@@ -1789,7 +1791,7 @@ construirData(){
               )
               <0 ? 1 : 2,
               "ValorMostrar":
-               Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+               Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-05-04`]?.[0]?.Valor ==undefined ? false : true
             })
 
@@ -1843,7 +1845,7 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+                Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-06-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
@@ -1868,7 +1870,7 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,              
+                Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),              
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-06-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
@@ -1896,7 +1898,7 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+                 Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-08-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
@@ -1921,7 +1923,7 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+                 Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-08-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
@@ -1948,7 +1950,7 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,                
+                 Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),                
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-09-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
@@ -1972,7 +1974,7 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                 Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+                 Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-09-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
@@ -2001,7 +2003,7 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+                Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
                 "Lectura":this.DatosElementos[`${cab.Anio-1}-${12}-10-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
@@ -2026,20 +2028,33 @@ construirData(){
                 )
                 <0 ? 1 : 2,
                 "ValorMostrar":
-                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+                Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
                 "Lectura":this.DatosElementos[`${cab.Anio}-${cab.NumMes-1}-10-04`]?.[0]?.Valor ==undefined ? false : true
               })
   
             }
   
         } 
+
+        else if(elemento.id=='01-01' || elemento.id=='01-03' || elemento.id=='01-04' || elemento.id=='01-06')
+          {   
+
+            let Valor=this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)
+            this.DatosElementos[`${key}`].push({ 
+              "Valor":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion),
+              "TipoNumero":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)<0 ? 1 : 2,
+              "ValorMostrar":
+               (Number((Valor).toFixed(0))).toLocaleString('en-US'),
+              "Lectura":false
+            })
+        }
         else {
             let Valor=this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)
             this.DatosElementos[`${key}`].push({ 
               "Valor":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion),
               "TipoNumero":this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)<0 ? 1 : 2,
               "ValorMostrar":
-                Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "Lectura":false
             })
 
@@ -2054,7 +2069,7 @@ construirData(){
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
               "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2,
-              "ValorMostrar":Valor2 == 0 ? 0 + '%' :((Valor1/Valor2)*100) + '%' 
+              "ValorMostrar":Valor2 == 0 ? 0 + '%' :((Valor1/Valor2)*100).toFixed(0) + '%' 
             })
           }
          else if(elemento.id=='01-05'){
@@ -2082,7 +2097,7 @@ construirData(){
             let Valor=Valor2 == 0 || Valor3 == 0  ? 0 :(Valor1/Valor2)/Valor3
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor2 == 0 || Valor3 == 0  ? 0 :(Valor1/Valor2)/Valor3,
-              "ValorMostrar":Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(Valor2 == 0 || Valor3 == 0  ? 0 :(Valor1/Valor2)/Valor3)<0 ? 1 : 2
             })
           }
@@ -2094,7 +2109,7 @@ construirData(){
             let Valor=this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor
             this.DatosElementos[`${key}`].push({              
               "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-01-09`]?.[0]?.Valor<0 ? 1 : 2
             })
         }
@@ -2107,7 +2122,7 @@ construirData(){
               "Valor":
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor +
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-01`]?.[0]?.Valor 
                 +
@@ -2121,7 +2136,7 @@ construirData(){
           let Valor=Valor2 == 0 ? 0 :Valor1/Valor2
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
-              "ValorMostrar": (Valor)*100+'%',
+              "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
               "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
             })
         }
@@ -2137,7 +2152,7 @@ construirData(){
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-05`]?.[0]?.Valor +
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-06`]?.[0]?.Valor +
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-07`]?.[0]?.Valor,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":(
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-05`]?.[0]?.Valor +
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-06`]?.[0]?.Valor +
@@ -2154,7 +2169,7 @@ construirData(){
             "Valor":
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-03`]?.[0]?.Valor +
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":(
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-03`]?.[0]?.Valor +
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor)<0 ? 1 : 2
@@ -2167,7 +2182,7 @@ construirData(){
           let Valor=Valor2 == 0 ? 0 :Valor1/Valor2  
           this.DatosElementos[`${key}`].push({              
               "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
-              "ValorMostrar": (Valor)*100+'%',
+              "ValorMostrar": ((Valor)*100).toFixed(0)+'%',
               "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
             })
         }
@@ -2189,7 +2204,7 @@ construirData(){
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-12`]?.[0]?.Valor +
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-13`]?.[0]?.Valor + 
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-14`]?.[0]?.Valor,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":(
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-09`]?.[0]?.Valor +
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-10`]?.[0]?.Valor +
@@ -2207,7 +2222,7 @@ construirData(){
           let Valor=Valor2 == 0 ? 0 :Valor1/Valor2
           this.DatosElementos[`${key}`].push({              
               "Valor":Valor2 == 0 ? 0 :Valor1/Valor2,
-              "ValorMostrar": (Valor)*100+'%',
+              "ValorMostrar": ((Valor)*100).toFixed(0)+'%',
               "TipoNumero":(Valor2 == 0 ? 0 :Valor1/Valor2)<0 ? 1 : 2
             })
         }
@@ -2216,25 +2231,26 @@ construirData(){
         }
         //Flujo de Efectivo
         if(catalogo.id=='03'){
-          if(elemento.id=='03-01'){
-            let Valor=this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio)
+        if(elemento.id=='03-01'){
+          let keySaldosFinales = `${cab.NumMes}-${cab.NumMes,cab.Anio}`
+            let Valor=this.getSaldoInicialMensual(cab.NumMes,cab.Anio)
             this.DatosElementos[`${key}`].push({              
-              "Valor":this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio),
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
-              "TipoNumero":(this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
+              "Valor":this.getSaldoInicialMensual(cab.NumMes,cab.Anio),
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
+              "TipoNumero":(this.getSaldoInicialMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
             })
 
             this.RegistrosSaldosFinalesMensuales.push({
-              "key":key,
+              "key":keySaldosFinales,
               "Anio":cab.Anio,
               "Valor":this.getValorSaldoFinal(cab.NumMes,cab.Anio) || 0
             })
-          }
-        else if(elemento.id=='03-12'){
-          let Valor=this.obtenerValorSaldoInicialMensual(cab.NumMes,cab.Anio)
+        }
+        else if(elemento.id=='03-16'){
+          let Valor=this.getValorSaldoFinal(cab.NumMes,cab.Anio)
             this.DatosElementos[`${key}`].push({              
               "Valor":this.getValorSaldoFinal(cab.NumMes,cab.Anio),
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(this.getValorSaldoFinal(cab.NumMes,cab.Anio))<0 ? 1 : 2
             })
         }
@@ -2245,7 +2261,7 @@ construirData(){
           let Valor=this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio)
               this.DatosElementos[`${key}`].push({              
                 "Valor":this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio),
-                "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+                "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
                 "TipoNumero":(this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
               })
           }
@@ -2254,7 +2270,7 @@ construirData(){
         let Valor=this.getDataFlujoOperativoMensual(cab.NumMes,cab.Anio)
             this.DatosElementos[`${key}`].push({              
               "Valor":this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio),
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
             })
         }
@@ -2263,7 +2279,7 @@ construirData(){
           let Valor=this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio)
             this.DatosElementos[`${key}`].push({              
               "Valor":this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio),
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(this.getDataFlujoInversionMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
             })
         }
@@ -2271,7 +2287,7 @@ construirData(){
           let Valor=this.getDataFlujoLibreMensual(cab.NumMes,cab.Anio)
             this.DatosElementos[`${key}`].push({              
               "Valor":this.getDataFlujoLibreMensual(cab.NumMes,cab.Anio),
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(this.getDataFlujoLibreMensual(cab.NumMes,cab.Anio))<0 ? 1 : 2
             })
         }
@@ -2293,7 +2309,7 @@ construirData(){
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor ==0 ?0:
               (this.DatosElementos[`${cab.Anio}-${cab.NumMes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor /
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor)*100,
-              "ValorMostrar":(Valor)+'%',
+              "ValorMostrar":(Valor).toFixed(0)+'%',
               "TipoNumero":(
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor ==0 ?0:
               (this.DatosElementos[`${cab.Anio}-${cab.NumMes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor /
@@ -2305,7 +2321,7 @@ construirData(){
           let Valor =this.getValorPagoProveedores(cab.NumMes,cab.Anio)
           this.DatosElementos[`${key}`].push({              
             "Valor":this.getValorPagoProveedores(cab.NumMes,cab.Anio),
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":(this.getValorPagoProveedores(cab.NumMes,cab.Anio))<0 ? 1 : 2
           })
 
@@ -2322,7 +2338,7 @@ construirData(){
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor ==0 ?0:
               (this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-6`]?.[0]?.Valor /
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor)*100,
-              "ValorMostrar":(Valor)+'%',
+              "ValorMostrar":(Valor).toFixed(0)+'%',
               "TipoNumero":(
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor ==0 ?0:
               (this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-6`]?.[0]?.Valor /
@@ -2334,18 +2350,11 @@ construirData(){
           let Valor=this.getValorCategoriaMensual(elemento.id,cab.NumMes,cab.Anio)
           this.DatosElementos[`${key}`].push({              
               "Valor":this.getValorCategoriaMensual(elemento.id,cab.NumMes,cab.Anio),
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(this.getValorCategoriaMensual(elemento.id,cab.NumMes,cab.Anio))<0 ? 1 : 2
             })
         }
-
-
         } 
-
-
-
-
-    
 
         }
 
@@ -2361,7 +2370,7 @@ construirData(){
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-01`]?.[0]?.Valor +
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-02`]?.[0]?.Valor+
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-03`]?.[0]?.Valor,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-01`]?.[0]?.Valor +
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-02`]?.[0]?.Valor+
@@ -2377,7 +2386,7 @@ construirData(){
               "Valor":
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-04`]?.[0]?.Valor -
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-01`]?.[0]?.Valor,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-04`]?.[0]?.Valor -
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-01`]?.[0]?.Valor)<0 ? 1 : 2
@@ -2388,7 +2397,7 @@ construirData(){
             let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-02`]?.[0]?.Valor
             this.DatosElementos[`${key}`].push({              
               "Valor":(Valor2/30) == 0   ? 0 :(Valor1/(Valor2/30)),
-              "ValorMostrar":(Valor2/30) == 0   ? 0 :(Valor1/(Valor2/30)),
+              "ValorMostrar":(Valor2/30) == 0   ? 0 :(Valor1/(Valor2/30)).toFixed(0),
               "TipoNumero":(Valor2/30) == 0   ? 0 :(Valor1/(Valor2/30))<0 ? 1 : 2
             })
           }
@@ -2398,7 +2407,7 @@ construirData(){
             let Valor=(30-Valor1)*(Valor2/30)
             this.DatosElementos[`${key}`].push({              
               "Valor":(30-Valor1)*(Valor2/30),
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":((30-Valor1)*(Valor2/30))<0 ? 1 : 2
             })
           }
@@ -2410,7 +2419,7 @@ construirData(){
             let Valor=this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor
             this.DatosElementos[`${key}`].push({              
               "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor<0 ? 1 : 2
             })
           }
@@ -2427,7 +2436,7 @@ construirData(){
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-02`]?.[0]?.Valor+
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-03`]?.[0]?.Valor
               ,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":
               (
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-01`]?.[0]?.Valor +
@@ -2445,7 +2454,7 @@ construirData(){
               "Valor":
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-04`]?.[0]?.Valor -
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-01`]?.[0]?.Valor,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-04`]?.[0]?.Valor -
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-01`]?.[0]?.Valor)<0 ? 1 : 2
@@ -2467,7 +2476,7 @@ construirData(){
             let Valor=(Valor1-15)*(Valor2/30)
             this.DatosElementos[`${key}`].push({              
               "Valor":(Valor1-15)*(Valor2/30),
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":((Valor1-15)*(Valor2/30))<0 ? 1 : 2
             })
           }
@@ -2478,7 +2487,7 @@ construirData(){
             let Valor=this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-02`]?.[0]?.Valor
             this.DatosElementos[`${key}`].push({              
               "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-02`]?.[0]?.Valor,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-02`]?.[0]?.Valor<0 ? 1 : 2
             })
          }
@@ -2487,7 +2496,7 @@ construirData(){
           let Valor=this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-6`]?.[0]?.Valor
             this.DatosElementos[`${key}`].push({              
               "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-6`]?.[0]?.Valor,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-6`]?.[0]?.Valor<0 ? 1 : 2
             })
           }
@@ -2503,7 +2512,7 @@ construirData(){
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-02`]?.[0]?.Valor+
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-03`]?.[0]?.Valor
               ,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":
               (
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-01`]?.[0]?.Valor +
@@ -2521,7 +2530,7 @@ construirData(){
               "Valor":
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-04`]?.[0]?.Valor -
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-01`]?.[0]?.Valor,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-04`]?.[0]?.Valor -
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-01`]?.[0]?.Valor)<0 ? 1 : 2
@@ -2543,7 +2552,7 @@ construirData(){
             let Valor=(Valor1-30)*(Valor2/30)
             this.DatosElementos[`${key}`].push({              
               "Valor":(Valor1-30)*(Valor2/30),
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":((Valor1-30)*(Valor2/30))<0 ? 1 : 2
             })
           }
@@ -2558,7 +2567,7 @@ construirData(){
             let Valor=((Valor1+Valor2)*-1)+Valor3
             this.DatosElementos[`${key}`].push({              
               "Valor":((Valor1+Valor2)*-1)+Valor3,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(((Valor1+Valor2)*-1)+Valor3)<0 ? 1 : 2
             })
          }
@@ -2568,7 +2577,7 @@ construirData(){
             let Valor=Valor1<0? (Valor2+ (Valor1*-1)):Valor2
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor1<0? (Valor2+ (Valor1*-1)):Valor2,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(Valor1<0? (Valor2+ (Valor1*-1)):Valor2)<0 ? 1 : 2
             })
          }
@@ -2577,7 +2586,7 @@ construirData(){
           let Valor=this.DatosElementos[`${cab.Anio}-${cab.NumMes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
           this.DatosElementos[`${key}`].push({              
             "Valor":this.DatosElementos[`${cab.Anio}-${cab.NumMes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":(this.DatosElementos[`${cab.Anio}-${cab.NumMes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0)<0 ? 1 : 2
           })
         }
@@ -2588,7 +2597,7 @@ construirData(){
             let Valor=Valor1==0? 0 : Valor2/Valor1
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor,
-              "ValorMostrar":Valor*100 + '%',
+              "ValorMostrar":(Valor*100).toFixed(0) + '%',
               "TipoNumero":(Valor1==0? 0 : Valor2/Valor1)<0 ? 1 : 2
             })
         }
@@ -2598,7 +2607,7 @@ construirData(){
             let Valor=Valor1==0? 0 : Valor2/Valor1
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor1==0? 0 : Valor2/Valor1,
-              "ValorMostrar":(Valor*100) + '%',
+              "ValorMostrar":(Valor*100).toFixed(0) + '%',
               "TipoNumero":(Valor1==0? 0 : Valor2/Valor1)<0 ? 1 : 2
             })
         }
@@ -2609,7 +2618,7 @@ construirData(){
             let Valor=Valor1+Valor2+Valor3
             this.DatosElementos[`${key}`].push({              
               "Valor":Valor1+Valor2+Valor3,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":(Valor1+Valor2+Valor3)<0 ? 1 : 2
             })
         }
@@ -2619,7 +2628,7 @@ construirData(){
           let Valor=Valor1<0? (Valor2+ (Valor1*-1)):Valor2
           this.DatosElementos[`${key}`].push({              
             "Valor":Valor1<0? (Valor2+ (Valor1*-1)):Valor2,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":(Valor1<0? (Valor2+ (Valor1*-1)):Valor2)<0 ? 1 : 2
           })
        }
@@ -2629,7 +2638,7 @@ construirData(){
         let Valor=Valor1==0? 0 : Valor2/Valor1
         this.DatosElementos[`${key}`].push({              
           "Valor":Valor1==0? 0 : Valor2/Valor1,
-          "ValorMostrar":(Valor*100) + '%',
+          "ValorMostrar":((Valor)*100).toFixed(0) +'%',
           "TipoNumero":(Valor1==0? 0 : Valor2/Valor1)<0 ? 1 : 2
         })
       }
@@ -2639,7 +2648,7 @@ construirData(){
         let Valor=Valor1==0? 0 : Valor2/Valor1
         this.DatosElementos[`${key}`].push({              
           "Valor":Valor1==0? 0 : Valor2/Valor1,
-          "ValorMostrar":(Valor*100) + '%',
+          "ValorMostrar":((Valor)*100).toFixed(0) +'%',
           "TipoNumero":(Valor1==0? 0 : Valor2/Valor1)<0 ? 1 : 2
         })
       }
@@ -2659,7 +2668,7 @@ construirData(){
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-02`]?.[0]?.Valor+
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-03`]?.[0]?.Valor
               ,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":
               (
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-01`]?.[0]?.Valor +
@@ -2677,7 +2686,7 @@ construirData(){
               "Valor":
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-02`]?.[0]?.Valor || 0
               ,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":
               (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-02`]?.[0]?.Valor || 0
@@ -2696,7 +2705,7 @@ construirData(){
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-09-02`]?.[0]?.Valor+
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-09-03`]?.[0]?.Valor
             ,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-09-01`]?.[0]?.Valor +
@@ -2721,7 +2730,7 @@ construirData(){
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-02`]?.[0]?.Valor +
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-03`]?.[0]?.Valor
               ,
-              "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+              "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "TipoNumero":
               (
                 this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-01`]?.[0]?.Valor +
@@ -2739,7 +2748,7 @@ construirData(){
             "Valor":
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-VmmQpdpunMTqkoSjhzzj`]?.[0]?.Valor
             ,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-VmmQpdpunMTqkoSjhzzj`]?.[0]?.Valor
@@ -2752,7 +2761,7 @@ construirData(){
             "Valor":
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-15`]?.[0]?.Valor
             ,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-15`]?.[0]?.Valor
@@ -2764,7 +2773,7 @@ construirData(){
           this.DatosElementos[`${key}`].push({              
             "Valor":
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-05`]?.[0]?.Valor,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-05`]?.[0]?.Valor
@@ -2776,7 +2785,7 @@ construirData(){
           this.DatosElementos[`${key}`].push({              
             "Valor":
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-05`]?.[0]?.Valor,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-05`]?.[0]?.Valor
@@ -2792,7 +2801,7 @@ construirData(){
             "Valor":
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-04`]?.[0]?.Valor -
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-01`]?.[0]?.Valor,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-08-04`]?.[0]?.Valor -
@@ -2806,7 +2815,7 @@ construirData(){
           this.DatosElementos[`${key}`].push({              
             "Valor":
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-05`]?.[0]?.Valor,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-05`]?.[0]?.Valor
@@ -2822,7 +2831,7 @@ construirData(){
           "Valor":
           this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-04`]?.[0]?.Valor -
           this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-01`]?.[0]?.Valor,
-          "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+          "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
           "TipoNumero":
           (
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-10-04`]?.[0]?.Valor -
@@ -2840,7 +2849,7 @@ construirData(){
             "Valor":
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor * -1
             ,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-02`]?.[0]?.Valor * -1
@@ -2853,7 +2862,7 @@ construirData(){
             "Valor":
             this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-02`]?.[0]?.Valor
             ,
-            "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-02`]?.[0]?.Valor
@@ -2865,18 +2874,17 @@ construirData(){
           let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-02`]?.[0]?.Valor
           this.DatosElementos[`${key}`].push({              
             "Valor":(Valor1/30)==0 ? 0 : Valor2 / (Valor1/30),
-            "ValorMostrar":(Valor1/30)==0 ? 0 : Valor2 / (Valor1/30),
+            "ValorMostrar":(Valor1/30)==0 ? 0 : (Valor2 / (Valor1/30)).toFixed(0),
             "TipoNumero":((Valor1/30)==0 ? 0 : Valor2 / (Valor1/30))<0 ? 1 : 2
           })
        }
 
       else if(elemento.id=='12-04'){
        let Valor1= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-6`]?.[0]?.Valor
-        this.DatosElementos[`${key}`].push({ 
-                       
+        this.DatosElementos[`${key}`].push({                     
           "Valor":
           Valor1*-1,
-          "ValorMostrar": Valor1*-1<0 ? '-$ ' + Valor1*-1*-1 : '$ ' + Valor1*-1,
+          "ValorMostrar": Valor1*-1<0 ? ('-$ ' + (Number((Valor1*-1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor1*-1).toFixed(0))).toLocaleString('en-US'),
           "TipoNumero":
           (
            Valor1*-1
@@ -2889,7 +2897,7 @@ construirData(){
           "Valor":
           1-this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-11`]?.[0]?.Valor
           ,
-          "ValorMostrar":(Valor*100) + '%',
+          "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
           "TipoNumero":
           (
           1-this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-11`]?.[0]?.Valor
@@ -2902,7 +2910,7 @@ construirData(){
           "Valor":
           this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-7`]?.[0]?.Valor
           ,
-          "ValorMostrar":(Valor*100) + '%',
+          "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
           "TipoNumero":
           (
           this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-7`]?.[0]?.Valor
@@ -2915,7 +2923,7 @@ construirData(){
           "Valor":
           this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor*-1
           ,
-          "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+          "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
           "TipoNumero":
           (
           this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-08`]?.[0]?.Valor*-1
@@ -2928,7 +2936,7 @@ construirData(){
           "Valor":
           this.DatosElementos[`${cab.Anio}-${cab.NumMes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor*-1
           ,
-          "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+          "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
           "TipoNumero":
           (
           this.DatosElementos[`${cab.Anio}-${cab.NumMes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor*-1
@@ -2942,7 +2950,7 @@ construirData(){
       let Valor=(Valor2)==0 ? 0 : ((Valor1/Valor2)*-1)
       this.DatosElementos[`${key}`].push({              
         "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)*-1),
-        "ValorMostrar":(Valor*100)+'%',
+        "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
         "TipoNumero":((Valor2)==0 ? 0 : ((Valor1/Valor2)*-1))<0 ? 1 : 2
       })
     }
@@ -2952,7 +2960,7 @@ construirData(){
       "Valor":
       this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-5`]?.[0]?.Valor
       ,
-      "ValorMostrar":(Valor*100)+'%',
+      "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
       "TipoNumero":
       (
        this.DatosElementos[`${cab.Anio}-${cab.NumMes}-03-5`]?.[0]?.Valor
@@ -2966,7 +2974,7 @@ construirData(){
      let Valor=(Valor2)==0 ? 0 : ((Valor1/Valor2))
       this.DatosElementos[`${key}`].push({              
       "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)),
-      "ValorMostrar":(Valor*100)+'%',
+      "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
       "TipoNumero":((Valor2)==0 ? 0 : ((Valor1/Valor2)))<0 ? 1 : 2
       })
     }
@@ -2976,7 +2984,7 @@ construirData(){
       let Valor=(Valor2)==0 ? 0 : ((Valor1/Valor2))
       this.DatosElementos[`${key}`].push({              
       "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)),
-      "ValorMostrar":(Valor*100)+'%',
+      "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
       "TipoNumero":((Valor2)==0 ? 0 : ((Valor1/Valor2)))<0 ? 1 : 2
     })
    }
@@ -2986,7 +2994,7 @@ construirData(){
       let Valor=(Valor2)==0 ? 0 : (((Valor1)/Valor2))
       this.DatosElementos[`${key}`].push({              
       "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)),
-      "ValorMostrar":(Valor*100)+'%',
+      "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
       "TipoNumero":((Valor2)==0 ? 0 : ((Valor1/Valor2)))<0 ? 1 : 2
     })
    }
@@ -2997,7 +3005,7 @@ construirData(){
       let Valor=(Valor2)==0 ? 0 : (((Valor1)/Valor2))
       this.DatosElementos[`${key}`].push({              
       "Valor":(Valor2)==0 ? 0 : (((Valor1)/Valor2)),
-      "ValorMostrar":(Valor*100)+'%',
+      "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
       "TipoNumero":((Valor2)==0 ? 0 : (((Valor1)/Valor2)))<0 ? 1 : 2
     })
    }
@@ -3007,7 +3015,7 @@ construirData(){
       let Valor=(Valor2)==0 ? 0 : (((Valor1*-1)/Valor2))
       this.DatosElementos[`${key}`].push({              
       "Valor":(Valor2)==0 ? 0 : (((Valor1*-1)/Valor2)),
-      "ValorMostrar":(Valor*100)+'%',
+      "ValorMostrar": ((Valor)*100).toFixed(0) +'%',
       "TipoNumero":((Valor2)==0 ? 0 : (((Valor1*-1)/Valor2)))<0 ? 1 : 2
     })
    }
@@ -3017,7 +3025,7 @@ construirData(){
       let Valor=(Valor2)==0 ? 0 : ((Valor1/Valor2)*-1)
       this.DatosElementos[`${key}`].push({              
       "Valor":(Valor2)==0 ? 0 : ((Valor1/Valor2)*-1),
-      "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+      "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
       "TipoNumero":(((Valor1/Valor2)*-1))<0 ? 1 : 2
     })
    }
@@ -3025,7 +3033,7 @@ construirData(){
       let Valor=(this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-16`]?.[0]?.Valor || 0) *4.33
       this.DatosElementos[`${key}`].push({              
       "Valor":(this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-16`]?.[0]?.Valor || 0) *4.33,
-      "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+      "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
       "TipoNumero":((this.DatosElementos[`${cab.Anio}-${cab.NumMes}-12-16`]?.[0]?.Valor || 0) *4.33)<0 ? 1 : 2
     })
    }
@@ -3038,7 +3046,7 @@ construirData(){
         {
             this.DatosElementos[`${key}`].push({              
             "Valor": this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-06`]?.[0]?.Valor,
-            "ValorMostrar": this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-06`]?.[0]?.Valor,
+            "ValorMostrar": (this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-06`]?.[0]?.Valor).toFixed(0),
             "TipoNumero":
             (
               this.DatosElementos[`${cab.Anio}-${cab.NumMes}-04-06`]?.[0]?.Valor
@@ -3074,7 +3082,7 @@ construirData(){
           let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-13-03`]?.[0]?.Valor || 0
           this.DatosElementos[`${key}`].push({              
           "Valor":Valor1 + Valor2 - Valor3,
-          "ValorMostrar":Valor1 + Valor2 - Valor3,
+          "ValorMostrar":(Valor1 + Valor2 - Valor3).toFixed(0),
           "TipoNumero":
           (
           Valor1 + Valor2 - Valor3
@@ -3091,7 +3099,7 @@ construirData(){
           let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-17`]?.[0]?.Valor || 0
           this.DatosElementos[`${key}`].push({              
           "Valor":Valor2==0? 0: Valor1/Valor2,
-          "ValorMostrar":Valor2==0? 0: Valor1/Valor2,
+          "ValorMostrar":Valor2==0? 0: (Valor1/Valor2).toFixed(0),
           "TipoNumero":
           (
           Valor1==0? 0: Valor2/Valor1
@@ -3105,7 +3113,7 @@ construirData(){
           let Valor2= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-02-05`]?.[0]?.Valor || 0
           this.DatosElementos[`${key}`].push({              
           "Valor":(Valor2*-1)==0? 0: Valor1/(Valor2*-1),
-          "ValorMostrar":(Valor2*-1)==0? 0: Valor1/(Valor2*-1),
+          "ValorMostrar":(Valor2*-1)==0? 0: (Valor1/(Valor2*-1)).toFixed(0),
           "TipoNumero":
           (
           (Valor2*-1)==0? 0: Valor1/(Valor2*-1)
@@ -3120,7 +3128,7 @@ construirData(){
           let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-05-01`]?.[0]?.Valor || 0
           this.DatosElementos[`${key}`].push({              
           "Valor":(Valor2+Valor3)==0? 0: Valor1/(Valor2+Valor3),
-          "ValorMostrar":(Valor2+Valor3)==0? 0: Valor1/(Valor2+Valor3),
+          "ValorMostrar":(Valor2+Valor3)==0? 0: (Valor1/(Valor2+Valor3)).toFixed(0),
           "TipoNumero":
           (
           (Valor2+Valor3)==0? 0: Valor1/(Valor2+Valor3)
@@ -3140,7 +3148,7 @@ construirData(){
         let Valor=Valor1 + Valor2 + Valor3
         this.DatosElementos[`${key}`].push({              
           "Valor":Valor1 + Valor2 + Valor3,
-          "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+          "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
           "TipoNumero":
           (
           Valor1 + Valor2 + Valor3
@@ -3155,7 +3163,7 @@ construirData(){
         let Valor3= this.DatosElementos[`${cab.Anio}-${cab.NumMes}-06-04`]?.[0]?.Valor || 0
         this.DatosElementos[`${key}`].push({              
           "Valor":Valor3==0?0 :(Valor1 + Valor2) / Valor3,
-          "ValorMostrar":Valor3==0?0 :(Valor1 + Valor2) / Valor3,
+          "ValorMostrar":Valor3==0?0 :((Valor1 + Valor2) / Valor3).toFixed(0),
           "TipoNumero":
           (
           Valor3==0?0 :(Valor1 + Valor2) / Valor3
@@ -3171,7 +3179,7 @@ construirData(){
         let Valor=Valor1 + Valor2 - Valor3
         this.DatosElementos[`${key}`].push({              
           "Valor":Valor1 + Valor2 - Valor3,
-          "ValorMostrar": Valor<0 ? '-$ ' + Valor*-1 : '$ ' + Valor,
+          "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
           "TipoNumero":
           (
           Valor1 + Valor2 - Valor3
@@ -3181,12 +3189,7 @@ construirData(){
       }
 
       }
-     
-
  }
-
-
-
 
       })
 
@@ -3194,9 +3197,144 @@ construirData(){
     })
   
   })
-  this.cargando=false
-  console.log('DatosElementos',this.DatosElementos)
+ 
+  this.construirDataAcumulado()
 }
+
+construirDataAcumulado(){
+   this.DatosElementosAcumulados=[]
+   let Anios:any=this.AniosSeleccionados.length>0?this.AniosSeleccionados : this.Anios
+   let Meses:any=this.MesesSeleccionados.length>0?this.MesesSeleccionados : this.Meses
+this.CatalogoElementos.forEach((catalogo:any) => {
+
+  Anios.sort((a:any, b:any) => a.Anio - b.Anio).forEach((anio:any) => {
+    
+      const copiaCatalogoElementos = [...catalogo.Elementos]
+      .sort((a: any, b: any) => a.OrdenData - b.OrdenData);
+      copiaCatalogoElementos.forEach((elemento:any) => {
+
+    
+        const keyAnual = `${anio.Anio}-${elemento.id}`; 
+    
+        if (!this.DatosElementosAcumulados[keyAnual]) {
+          this.DatosElementosAcumulados[keyAnual] =[];
+        }
+
+        
+        if(catalogo.id=='01'){
+          let ValorElemento:number=0
+          Meses.sort((a:any, b:any) => a.NumMes - b.NumMes).forEach((mes:any) => {
+            const key = `${anio.Anio}-${mes.NumMes}-${elemento.id}`;
+            ValorElemento+=this.DatosElementos[key]?.[0]?.Valor
+          })
+          if(elemento.id=='01-08' || elemento.id=='01-09'){
+            this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":ValorElemento,
+            "TipoNumero":ValorElemento<0 ? 1 : 2,
+            "ValorMostrar": ValorElemento<0 ? ('-$ ' + (Number((ValorElemento * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((ValorElemento).toFixed(0))).toLocaleString('en-US')
+            })  
+          }
+
+         else if(elemento.id=='01-02'){
+            this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":ValorElemento,
+            "TipoNumero":ValorElemento<0 ? 1 : 2,
+            "ValorMostrar": ((ValorElemento)*100).toFixed(0) +'%'
+            })  
+          }
+         else {
+            this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":ValorElemento,
+            "TipoNumero":ValorElemento<0 ? 1 : 2,
+            "ValorMostrar": ValorElemento
+            })           
+         }
+
+
+        }
+      })
+
+    })
+
+})
+
+
+ this.cargando=false
+}
+
+
+getSaldoInicialMensual(Mes:any,Anio:any){
+
+  let _Data: any=[];
+  let _DataSaldoFinal: any=[];
+  _Data=this.RegistrosSaldosIniciales.filter((saldo:any)=>saldo
+  && saldo.NumMes==Mes
+  && saldo.AnioRegistro==Anio
+  )
+
+  _DataSaldoFinal=this.RegistrosSaldosIniciales.filter((saldo:any)=>saldo
+  && saldo.NumMes==Mes-1
+  && saldo.AnioRegistro==Anio
+  )
+
+
+  if(_Data.length>0){
+    let Valor:number=0
+    _Data.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+  else if(_DataSaldoFinal.length>0){
+    let Valor:number=0
+    _DataSaldoFinal.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
+
+
+  else {
+    let key=`${Mes-1}-${Anio}`
+    let keyEnero=`12-${Anio-1}`
+    let ValorSaldo:number=0
+
+    let RSFM=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key)
+    let RSFMEnero=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==keyEnero)
+    let RSFM2=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.Anio==Anio-1)
+
+    if(Mes==1){
+ 
+      if(RSFMEnero.length>0){
+        ValorSaldo=RSFMEnero[0].Valor
+
+      }
+      else {
+        ValorSaldo=0
+      }
+    }
+
+   else if(RSFM.length>0){
+      ValorSaldo=RSFM[0].Valor
+    }
+    else if(RSFM2.length>0) {
+      ValorSaldo=RSFM2[RSFM2.length-1].Valor
+    }
+    else {
+      ValorSaldo=0
+    }
+
+
+
+      return ValorSaldo
+
+
+  }
+}
+
+
 
 
 getValorElemento(idElemento:string,Anio:any,NumMes:any,Registros:any){
@@ -3256,8 +3394,7 @@ guardarRegistro(elemento:any,Valor:any,Cab:any){
       "Valor": ValorRegisro,    
       "idCatalogo": elemento.idPadre   
     }
-    console.log('elemento',elemento)
-    console.log('Registro',Registro)
+  
 
     // Buscar si ya existe en el arreglo
     const index = this.Registros.findIndex((reg:any) =>

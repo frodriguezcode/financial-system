@@ -1216,17 +1216,6 @@ getValorSaldoFinal(Mes:any,Anio:any){
 
 }
 getSaldoInicialMensual(Mes:any,Anio:any){
-  // let UltimaSemana:any=[]
-  // UltimaSemana= this.getSemanasByMesAnio(Anio,Mes).filter((sem:any)=>(sem.posicion==0 || sem.posicion==1))
-
-  // if(UltimaSemana.length>0){
-  //   return this.getValorSaldoInicial(UltimaSemana[0].NumSemana,UltimaSemana[0].Mes,UltimaSemana[0].Anio,UltimaSemana[0].posicion)
-
-  // }
-  // else {
-  //   return 0
-  // }
-
   let _Data: any=[];
   let _DataSaldoFinal: any=[];
   _Data=this.SaldoInicial.filter((saldo:any)=>saldo
@@ -1252,12 +1241,14 @@ getSaldoInicialMensual(Mes:any,Anio:any){
 
   else {
     let key=`${Mes-1}-${Anio}`
+    let keyEnero=`12-${Anio-1}`
     let ValorSaldo:number=0
 
     let RSFM=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key)
+    let RSFMEnero=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==keyEnero)
     let RSFM2=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.Anio==Anio-1)
 
-    if(RSFM.length>0){
+ if(RSFM.length>0){
       ValorSaldo=RSFM[0].Valor
     }
     else if(RSFM2.length>0) {
