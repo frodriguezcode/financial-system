@@ -3236,10 +3236,12 @@ this.CatalogoElementos.forEach((catalogo:any) => {
           }
 
          else if(elemento.id=='01-02'){
+          let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-01-01`]?.[0]?.Valor
+          let Valor2=this.DatosElementosAcumulados[`${anio.Anio}-01-03`]?.[0]?.Valor
             this.DatosElementosAcumulados[`${keyAnual}`].push({ 
-            "Valor":ValorElemento,
-            "TipoNumero":ValorElemento<0 ? 1 : 2,
-            "ValorMostrar": ((ValorElemento)*100).toFixed(0) +'%'
+            "Valor":Valor1==0 ? 0 : Valor2/Valor1 ,
+            "TipoNumero":(Valor1==0 ? 0 : Valor2/Valor1)<0 ? 1 : 2,
+            "ValorMostrar": ((Valor1==0 ? 0 : Valor2/Valor1)*100).toFixed(0) +'%'
             })  
           }
          else {
@@ -3252,6 +3254,70 @@ this.CatalogoElementos.forEach((catalogo:any) => {
 
 
         }
+        if(catalogo.id=='02'){
+          let ValorElemento:number=0
+          Meses.sort((a:any, b:any) => a.NumMes - b.NumMes).forEach((mes:any) => {
+            const key = `${anio.Anio}-${mes.NumMes}-${elemento.id}`;
+            ValorElemento+=this.DatosElementos[key]?.[0]?.Valor
+        })
+
+        if(elemento.id=='02-01' || 
+           elemento.id=='02-02' || 
+           elemento.id=='02-03' ||
+           elemento.id=='02-05' ||
+           elemento.id=='02-06' ||
+           elemento.id=='02-07' ||
+           elemento.id=='02-08' ||
+           elemento.id=='02-09' || 
+           elemento.id=='02-11' || 
+           elemento.id=='02-12' || 
+           elemento.id=='02-13' || 
+           elemento.id=='02-14' || 
+           elemento.id=='02-15' || 
+           elemento.id=='02-17' 
+           ){
+            this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":ValorElemento,
+            "TipoNumero":ValorElemento<0 ? 1 : 2,
+            "ValorMostrar": ValorElemento<0 ? ('-$ ' + (Number((ValorElemento * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((ValorElemento).toFixed(0))).toLocaleString('en-US')
+            }) 
+
+            }
+       else if( elemento.id=='02-04')
+          {
+          let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-02-01`]?.[0]?.Valor
+          let Valor2=this.DatosElementosAcumulados[`${anio.Anio}-02-03`]?.[0]?.Valor
+            this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":Valor1==0 ? 0 : Valor2/Valor1 ,
+            "TipoNumero":(Valor1==0 ? 0 : Valor2/Valor1)<0 ? 1 : 2,
+            "ValorMostrar": ((Valor1==0 ? 0 : Valor2/Valor1)*100).toFixed(0) +'%'
+            }) 
+
+          }
+       else if( elemento.id=='02-10')
+          {
+          let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-02-01`]?.[0]?.Valor
+          let Valor2=this.DatosElementosAcumulados[`${anio.Anio}-02-09`]?.[0]?.Valor
+            this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":Valor1==0 ? 0 : Valor2/Valor1 ,
+            "TipoNumero":(Valor1==0 ? 0 : Valor2/Valor1)<0 ? 1 : 2,
+            "ValorMostrar": ((Valor1==0 ? 0 : Valor2/Valor1)*100).toFixed(0) +'%'
+            }) 
+          }
+       else if( elemento.id=='02-16')
+          {
+          let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-02-01`]?.[0]?.Valor
+          let Valor2=this.DatosElementosAcumulados[`${anio.Anio}-02-15`]?.[0]?.Valor
+            this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":Valor1==0 ? 0 : Valor2/Valor1 ,
+            "TipoNumero":(Valor1==0 ? 0 : Valor2/Valor1)<0 ? 1 : 2,
+            "ValorMostrar": ((Valor1==0 ? 0 : Valor2/Valor1)*100).toFixed(0) +'%'
+            }) 
+          }
+
+        }  
+
+
       })
 
     })
