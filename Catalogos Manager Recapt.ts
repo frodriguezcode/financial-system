@@ -465,7 +465,7 @@
                 "Nombre": "(-) Cobros",
                 "id": "04-02",
                 "Moneda": true,
-                "Simbolo": 2,
+                "Simbolo": 1,
                 "idPadre": "04",
                 "Orden": 2,
                 "Editable": true
