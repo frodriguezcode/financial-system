@@ -3508,6 +3508,75 @@ this.CatalogoElementos.forEach((catalogo:any) => {
 
         }
         
+        if(catalogo.id=='05'){
+          if(elemento.id=='05-01'){
+            let Valor=this.DatosElementos[`${anio.Anio}-1-05-01`]?.[0]?.Valor
+            this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":Valor,
+            "TipoNumero":Valor<0 ? 1 : 2,
+            "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+            }) 
+          }
+
+          else if(
+          elemento.id=='05-02' || 
+          elemento.id=='05-03'){
+          let ValorElemento:number=0
+          Meses.sort((a:any, b:any) => a.NumMes - b.NumMes).forEach((mes:any) => {
+            const key = `${anio.Anio}-${mes.NumMes}-${elemento.id}`;
+            ValorElemento+=this.DatosElementos[key]?.[0]?.Valor
+          })
+            this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":ValorElemento,
+            "TipoNumero":ValorElemento<0 ? 1 : 2,
+            "ValorMostrar": ValorElemento<0 ? ('-$ ' + (Number((ValorElemento * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((ValorElemento).toFixed(0))).toLocaleString('en-US')
+            }) 
+          }
+
+          else if(elemento.id=='05-04'){
+          let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-05-01`]?.[0]?.Valor || 0
+          let Valor2= Math.abs(this.DatosElementosAcumulados[`${anio.Anio}-05-02`]?.[0]?.Valor)  || 0
+          let Valor3=this.DatosElementosAcumulados[`${anio.Anio}-05-03`]?.[0]?.Valor || 0
+
+          this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":(Valor3+Valor2)+Valor1,
+            "TipoNumero":((Valor3+Valor2)+Valor1)<0 ? 1 : 2,
+            "ValorMostrar": ((Valor3+Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3+Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3+Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
+            }) 
+
+          }
+          else if(elemento.id=='05-05'){
+          let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-05-01`]?.[0]?.Valor || 0
+          let Valor2=this.DatosElementosAcumulados[`${anio.Anio}-05-04`]?.[0]?.Valor || 0
+          this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":Valor2-Valor1,
+            "TipoNumero":(Valor2-Valor1)<0 ? 1 : 2,
+            "ValorMostrar": (Valor2-Valor1)<0 ? ('-$ ' + (Number(((Valor2-Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor2-Valor1)).toFixed(0))).toLocaleString('en-US')
+            }) 
+          }
+          else if(elemento.id=='05-06'){
+          let Valor2=Math.abs(this.DatosElementosAcumulados[`${anio.Anio}-05-03`]?.[0]?.Valor) || 0
+          let Valor3=this.DatosElementosAcumulados[`${anio.Anio}-05-04`]?.[0]?.Valor || 0
+          this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor": Valor2==0 ? 0 :  Number((Valor3/Valor2)*360),
+            "TipoNumero":( Valor2==0 ? 0 :  Number((Valor3/Valor2)*360))<0 ? 1 : 2,
+            "ValorMostrar": Valor2==0 ? 0 :  Number((Valor3/Valor2)*360).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }) 
+          }
+          else if(elemento.id=='05-07'){
+          let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-05-03`]?.[0]?.Valor || 0
+          let Valor2=Number(this.DatosElementosAcumulados[`${anio.Anio}-05-06`]?.[0]?.Valor.toFixed(0)) || 0
+          this.DatosElementosAcumulados[`${keyAnual}`].push({ 
+
+            "Valor":(Valor2-15) * (Valor1 / 360),
+            "TipoNumero":((Valor2-15) * (Valor1 / 360))<0 ? 1 : 2,
+            "ValorMostrar":((Valor2-15) * (Valor1 / 360))<0 ? ('-$ ' + (Number(((Valor2-15) * (Valor1 / 360) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor2-15) * (Valor1 / 360))).toLocaleString('en-US')
+           
+          }) 
+
+          }
+
+        }
         
 
 
