@@ -152,9 +152,11 @@
               
                       </ng-container>
                       <ng-container *ngIf="cab.Tipo==4">
-                        <td 
-                          class="text-center">
-                          20
+                          <td 
+                          class="text-center"
+                          [ngStyle]="DatosElementosPromedios[cab.Anio + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}">
+                          {{
+                          (DatosElementosPromedios[cab.Anio + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
                         </td>
               
                       </ng-container>
