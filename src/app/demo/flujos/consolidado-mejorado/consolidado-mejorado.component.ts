@@ -865,6 +865,7 @@ obtenerItems(){
   let _subscribe:Subscription
   _subscribe=  this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
     _subscribe.unsubscribe()
+    console.log('resp',resp)
     this.Items=[]
           this.Items=resp.filter((item:any)=>item.Activo==true);
           this.ItemsBack=resp.filter((item:any)=>item.Activo==true);;

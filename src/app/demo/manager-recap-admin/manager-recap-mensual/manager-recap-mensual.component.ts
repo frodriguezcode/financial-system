@@ -522,6 +522,7 @@ getCategorias(){
       "Nombre": 'Efectivo Inicial',
       "id": "03-01",
       "idPadre":'03',
+      "OrdenData":1,
       "Orden": CategoriasData.length + 1,
       "Editable": false,
     });
@@ -534,6 +535,12 @@ getCategorias(){
           "Moneda":true,
           "Tipo":'Abuelo',
           "idPadre":'03',
+          "OrdenData":
+          categ.Orden==1?7:
+          categ.Orden==4?11:
+          categ.Orden==7?14:
+          categ.Orden==6?10:
+          16,
           "Orden": CategoriasData.length + 1,
           "Editable": false,
         });
@@ -557,6 +564,12 @@ getCategorias(){
               CategoriasData.push({
                 "Nombre": element.Nombre,
                 "id": element.id,
+                "OrdenData":
+                element.Orden==2?2:
+                element.Orden==3?3:
+                element.Orden==5?9:
+                element.Orden==6?10:
+                element.Orden==8?12:13,
                 "Moneda":true,
                 "Tipo":'Padre',
                 "idPadre":'03',
@@ -570,6 +583,7 @@ getCategorias(){
                 "Nombre": '% de los ingresos para operar',
                 "id": `03-${CategoriasData.length + 1}`,
                 "Moneda":false,
+                "OrdenData":4,
                 "Tipo":'Padre',
                 "idPadre":'03',
                 "idAbuelo": categ.id,
@@ -581,6 +595,7 @@ getCategorias(){
                 "id": `03-${CategoriasData.length + 1}`,
                 "Moneda":true,
                 "Tipo":'Padre',
+                "OrdenData":5,
                 "idPadre":'03',
                 "idAbuelo": categ.id,
                 "Orden": CategoriasData.length + 1,
@@ -591,6 +606,7 @@ getCategorias(){
                 "id": `03-${CategoriasData.length + 1}`,
                 "Moneda":false,
                 "Tipo":'Padre',
+                "OrdenData":6,
                 "idPadre":'03',
                 "idAbuelo": categ.id,
                 "Orden": CategoriasData.length + 1,
@@ -600,6 +616,7 @@ getCategorias(){
                 "Nombre": 'Factor de conversión a efectivo operativo',
                 "id": `03-${CategoriasData.length + 1}`,
                 "Moneda":false,
+                "OrdenData":8,
                 "Tipo":'Padre',
                 "idPadre":'03',
                 "idAbuelo": categ.id,
@@ -625,6 +642,7 @@ getCategorias(){
         "id": `03-${CategoriasData.length + 1}`,
         "idPadre":'03',
         "Icono":"$",
+        "OrdenData":15,
         "Moneda":true,
         "Orden": CategoriasData.length + 1,
         "Editable": false,
@@ -636,6 +654,7 @@ getCategorias(){
         "id": `03-${CategoriasData.length + 1}`,
         "idPadre":'03',
         "Icono":"$",
+        "OrdenData":17,
         "Moneda":false,
         "Orden": CategoriasData.length + 1,
         "Editable": false,
@@ -647,6 +666,7 @@ getCategorias(){
       "Nombre":"Flujo de Efectivo",
       "id":'03',
       "Mostrar":true,
+      "OrdenData":16,
       "Orden":3,
       "Elementos":CategoriasData
       }
@@ -3540,16 +3560,35 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "Valor":Valor,
             "TipoNumero":Valor<0 ? 1 : 2,
             "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
-            }) 
+            })
+
+            //Promedio
+            let ValorPromedio=this.DatosElementosAcumulados[`${anio.Anio}-03-01`]?.[0]?.Valor
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            })  
+
         }
-       else if(elemento.id=='03-16'){
+        else if(elemento.id=='03-16'){
             let Valor=this.DatosElementos[`${anio.Anio}-12-03-01`]?.[0]?.Valor || 0
             this.DatosElementosAcumulados[`${keyAnual}`].push({ 
             "Valor":Valor,
             "TipoNumero":Valor<0 ? 1 : 2,
             "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
             }) 
-        }
+          //Promedio
+          let ValorPromedio=this.DatosElementosAcumulados[`${anio.Anio}-03-16`]?.[0]?.Valor
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          })        
+        
+          }
 
         else if(elemento.id=='03-17'){
           let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor
@@ -3562,6 +3601,15 @@ this.CatalogoElementos.forEach((catalogo:any) => {
           Valor1==0? 0: Valor2/Valor1
           )<0 ? 1 : 2
             })
+          //Promedio
+          let Valor1Prom= (this.DatosElementosPromedios[`${anio.Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0) 
+          let Valor2Prom= (this.DatosElementosPromedios[`${anio.Anio}-VmmQpdpunMTqkoSjhzzj`]?.[0]?.Valor || 0) 
+          let ValorPromedio=Valor1Prom==0 ? 0 : Valor2Prom/Valor1Prom
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+              "TipoNumero":ValorPromedio<0 ? 1 : 2,
+              "ValorMostrar": (ValorPromedio*100).toFixed(0)+'%'
+            })             
         }
         else if(
           elemento.id=='EESGPM4hWXvDlXSRnCwA' || 
@@ -3586,6 +3634,71 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":ValorElemento<0 ? 1 : 2,
             "ValorMostrar": ValorElemento<0 ? ('-$ ' + (Number((ValorElemento * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((ValorElemento).toFixed(0))).toLocaleString('en-US')
             }) 
+
+            //Promedios
+            if(
+            elemento.id=='od11V2OHVgaLG1RiXMiz' || 
+            elemento.id=='KtA2Cxpd79TJrW9afqR9' || 
+            elemento.id=='JeFc3TNWBgrgubNPmDYU' || 
+            elemento.id=='KNlKzH3EbD5QcXVAnbwe' || 
+            elemento.id=='jhtHzgzTXRPgCnWDqsUM' || 
+            elemento.id=='2sAJKELNPwwAuAbU6Vlw' || 
+            elemento.id=='VmmQpdpunMTqkoSjhzzj' ||  
+            elemento.id=='03-6'    
+            ){
+              let ValorPromedio=
+              (this.DatosElementosAcumulados[`${anio.Anio}-${elemento.id}`]?.[0]?.Valor || 0)/12
+              this.DatosElementosPromedios[`${keyAnual}`].push({ 
+              "Valor":ValorPromedio,
+              "TipoNumero":ValorPromedio<0 ? 1 : 2,
+              "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+              '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            })
+            }
+          else if(elemento.id=='EESGPM4hWXvDlXSRnCwA')
+          {
+            let Valor1= Number(this.DatosElementosPromedios[`${anio.Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor.toFixed(0) || 0) 
+            let Valor2= Number(this.DatosElementosPromedios[`${anio.Anio}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor.toFixed(0) || 0) 
+            let Valor3= Number(this.DatosElementosPromedios[`${anio.Anio}-03-6`]?.[0]?.Valor.toFixed(0) || 0) 
+            let ValorPromedio=
+            Valor1+Valor2+Valor3
+           
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            })    
+          }
+          else if(elemento.id=='GMzSuF04XQBsPmAkIB2C')
+          {
+            let Valor1= (this.DatosElementosPromedios[`${anio.Anio}-JeFc3TNWBgrgubNPmDYU`]?.[0]?.Valor || 0) 
+            let Valor2= (this.DatosElementosPromedios[`${anio.Anio}-KNlKzH3EbD5QcXVAnbwe`]?.[0]?.Valor || 0) 
+            let ValorPromedio=
+            Valor1+Valor2
+           
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            })    
+          }
+          else if(elemento.id=='psmpY6iyDJNkW7AKFXgK')
+          {
+            let Valor1= (this.DatosElementosPromedios[`${anio.Anio}-jhtHzgzTXRPgCnWDqsUM`]?.[0]?.Valor || 0) 
+            let Valor2= (this.DatosElementosPromedios[`${anio.Anio}-2sAJKELNPwwAuAbU6Vlw`]?.[0]?.Valor || 0) 
+            let ValorPromedio=
+            Valor1+Valor2
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            })    
+          }
+
+
           }
         if(elemento.id=='03-5'){
           let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor
@@ -3595,6 +3708,17 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":(Valor1==0 ? 0 : (Valor2/Valor1)*-1)<0 ? 1 : 2,
             "ValorMostrar": ((Valor1==0 ? 0 : (Valor2/Valor1)*-1)*100).toFixed(0) +'%'
           })  
+
+          //Promedio
+          let Valor1Prom= (this.DatosElementosPromedios[`${anio.Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0) 
+          let Valor2Prom= (this.DatosElementosPromedios[`${anio.Anio}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor || 0) 
+          let ValorPromedio=Valor1Prom==0 ? 0 : Valor2Prom/Valor1Prom
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+              "TipoNumero":ValorPromedio<0 ? 1 : 2,
+              "ValorMostrar": (ValorPromedio*100).toFixed(0)+'%'
+            })    
+          
         }
         if(elemento.id=='03-7'){
           let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor
@@ -3603,7 +3727,17 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "Valor":Valor1==0 ? 0 : (Valor2/Valor1)*-1 ,
             "TipoNumero":(Valor1==0 ? 0 : (Valor2/Valor1)*-1)<0 ? 1 : 2,
             "ValorMostrar": ((Valor1==0 ? 0 : (Valor2/Valor1)*-1)*100).toFixed(0) +'%'
-          })  
+          }) 
+          //Promedio
+          let Valor1Prom= (this.DatosElementosPromedios[`${anio.Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0) 
+          let Valor2Prom= (this.DatosElementosPromedios[`${anio.Anio}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0) 
+          let ValorPromedio=Valor1Prom==0 ? 0 : Valor2Prom/Valor1Prom
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+              "TipoNumero":ValorPromedio<0 ? 1 : 2,
+              "ValorMostrar": (ValorPromedio*100).toFixed(0)+'%'
+          })    
+          
         }
         if(elemento.id=='03-8'){
           let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor
@@ -3613,6 +3747,16 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":(Valor1==0 ? 0 : (Valor2/Valor1)*-1)<0 ? 1 : 2,
             "ValorMostrar": ((Valor1==0 ? 0 : (Valor2/Valor1)*-1)*100).toFixed(0) +'%'
           })  
+          //Promedio
+          let Valor1Prom= (this.DatosElementosPromedios[`${anio.Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0) 
+          let Valor2Prom= (this.DatosElementosPromedios[`${anio.Anio}-03-6`]?.[0]?.Valor || 0) 
+          let ValorPromedio=Valor1Prom==0 ? 0 : Valor2Prom/Valor1Prom
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+              "TipoNumero":ValorPromedio<0 ? 1 : 2,
+              "ValorMostrar": (ValorPromedio*100).toFixed(0)+'%'
+          }) 
+
         }
 
 
@@ -3626,6 +3770,17 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":Valor<0 ? 1 : 2,
             "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
             }) 
+
+              //Promedio
+              let ValorPromedio=this.DatosElementosAcumulados[`${anio.Anio}-04-01`]?.[0]?.Valor
+              this.DatosElementosPromedios[`${keyAnual}`].push({ 
+              "Valor":ValorPromedio,
+              "TipoNumero":ValorPromedio<0 ? 1 : 2,
+              "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+              '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+              }) 
+
+
           }
 
           else if(
@@ -3640,7 +3795,16 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "Valor":ValorElemento,
             "TipoNumero":ValorElemento<0 ? 1 : 2,
             "ValorMostrar": ValorElemento<0 ? ('-$ ' + (Number((ValorElemento * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((ValorElemento).toFixed(0))).toLocaleString('en-US')
-            }) 
+            })
+          //Promedio
+            let ValorPromedio=
+            (this.DatosElementosAcumulados[`${anio.Anio}-${elemento.id}`]?.[0]?.Valor || 0)/12
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            })  
           }
 
           else if(elemento.id=='04-04'){
@@ -3653,6 +3817,15 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":((Valor3-Valor2)+Valor1)<0 ? 1 : 2,
             "ValorMostrar": ((Valor3-Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3-Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3-Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
             }) 
+            //Promedio
+            let ValorPromedio=this.DatosElementosAcumulados[`${anio.Anio}-04-04`]?.[0]?.Valor
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            }) 
+
 
           }
           else if(elemento.id=='04-05'){
@@ -3663,6 +3836,18 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":(Valor2-Valor1)<0 ? 1 : 2,
             "ValorMostrar": (Valor2-Valor1)<0 ? ('-$ ' + (Number(((Valor2-Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor2-Valor1)).toFixed(0))).toLocaleString('en-US')
             }) 
+            //Promedio
+            let Valor1Prom=this.DatosElementosPromedios[`${anio.Anio}-04-01`]?.[0]?.Valor || 0
+            let Valor2Prom=this.DatosElementosPromedios[`${anio.Anio}-04-04`]?.[0]?.Valor || 0
+
+            let ValorPromedio=Valor2Prom-Valor1Prom
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            }) 
+
           }
           else if(elemento.id=='04-06'){
           let Valor2=this.DatosElementosAcumulados[`${anio.Anio}-04-02`]?.[0]?.Valor || 0
@@ -3672,19 +3857,38 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":( (Valor2/30)==0? 0 :  Valor3/ Number((Valor2/30).toFixed(2)))<0 ? 1 : 2,
             "ValorMostrar": ( (Valor2/30)==0 ? 0 :  Valor3/Number((Valor2/30).toFixed(2))).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }) 
+            //Promedio
+            let Valor1Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-04-01`]?.[0]?.Valor.toFixed(0)) || 0
+            let Valor2Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-04-02`]?.[0]?.Valor.toFixed(0)) || 0
+
+            let ValorPromedio=Valor1Prom==0 || Valor2Prom ==0 ?0 : 30/(Valor2Prom/Valor1Prom)
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            }) 
+
           }
           else if(elemento.id=='04-07'){
           let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-04-02`]?.[0]?.Valor || 0
-          let Valor2=Number(this.DatosElementosAcumulados[`${anio.Anio}-04-06`]?.[0]?.Valor.toFixed(0)) || 0
+          let Valor2=this.DatosElementosAcumulados[`${anio.Anio}-04-06`]?.[0]?.Valor || 0
           this.DatosElementosAcumulados[`${keyAnual}`].push({ 
-
             "Valor":(30-Valor2 ) * (Valor1 / 360),
             "TipoNumero":(30-Valor2 ) * (Valor1 / 360)<0 ? 1 : 2,
-            "ValorMostrar": (30-Valor2 ) * (Valor1 / 360)<0 ? ('-$ ' + (Number(((30-Valor2 ) * (Valor1 / 360) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((30-Valor2 ) * (Valor1 / 360)).toFixed(0))).toLocaleString('en-US')
-           
+            "ValorMostrar": (30-Valor2 ) * (Valor1 / 360)<0 ? ('-$ ' + (Number(((30-Valor2 ) * (Valor1 / 360) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((30-Valor2 ) * (Valor1 / 360)).toFixed(0))).toLocaleString('en-US')          
           }) 
+          //Promedio
+          let Valor1Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-04-02`]?.[0]?.Valor.toFixed(0)) || 0
+          let Valor2Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-04-06`]?.[0]?.Valor.toFixed(0)) || 0
 
-          }
+          let ValorPromedio=(30-Valor2Prom ) * (Valor1Prom / 30)
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          }) 
+        }
 
         }
         
@@ -3695,9 +3899,17 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "Valor":Valor,
             "TipoNumero":Valor<0 ? 1 : 2,
             "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
-            }) 
+            })
+            //Promedio
+            let ValorPromedio=this.DatosElementosAcumulados[`${anio.Anio}-05-01`]?.[0]?.Valor
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            })             
+            
           }
-
           else if(
           elemento.id=='05-02' || 
           elemento.id=='05-03'){
@@ -3711,8 +3923,16 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":ValorElemento<0 ? 1 : 2,
             "ValorMostrar": ValorElemento<0 ? ('-$ ' + (Number((ValorElemento * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((ValorElemento).toFixed(0))).toLocaleString('en-US')
             }) 
+          //Promedio
+            let ValorPromedio=
+            (this.DatosElementosAcumulados[`${anio.Anio}-${elemento.id}`]?.[0]?.Valor || 0)/12
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            })             
           }
-
           else if(elemento.id=='05-04'){
           let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-05-01`]?.[0]?.Valor || 0
           let Valor2= Math.abs(this.DatosElementosAcumulados[`${anio.Anio}-05-02`]?.[0]?.Valor)  || 0
@@ -3723,7 +3943,14 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":((Valor3+Valor2)+Valor1)<0 ? 1 : 2,
             "ValorMostrar": ((Valor3+Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3+Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3+Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
             }) 
-
+          //Promedio
+          let ValorPromedio=this.DatosElementosAcumulados[`${anio.Anio}-05-04`]?.[0]?.Valor
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          })   
           }
           else if(elemento.id=='05-05'){
           let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-05-01`]?.[0]?.Valor || 0
@@ -3733,6 +3960,19 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":(Valor2-Valor1)<0 ? 1 : 2,
             "ValorMostrar": (Valor2-Valor1)<0 ? ('-$ ' + (Number(((Valor2-Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor2-Valor1)).toFixed(0))).toLocaleString('en-US')
             }) 
+            //Promedio
+            let Valor1Prom=this.DatosElementosPromedios[`${anio.Anio}-05-01`]?.[0]?.Valor || 0
+            let Valor2Prom=this.DatosElementosPromedios[`${anio.Anio}-05-04`]?.[0]?.Valor || 0
+
+            let ValorPromedio=Valor2Prom-Valor1Prom
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+              "Valor":ValorPromedio,
+              "TipoNumero":ValorPromedio<0 ? 1 : 2,
+              "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+              '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+            })             
+
+
           }
           else if(elemento.id=='05-06'){
           let Valor2=Math.abs(this.DatosElementosAcumulados[`${anio.Anio}-05-03`]?.[0]?.Valor) || 0
@@ -3742,16 +3982,36 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":( Valor2==0 ? 0 :  Number((Valor3/Valor2)*360))<0 ? 1 : 2,
             "ValorMostrar": Valor2==0 ? 0 :  Number((Valor3/Valor2)*360).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }) 
+          //Promedio
+          let Valor1Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-05-03`]?.[0]?.Valor.toFixed(0)) || 0
+          let Valor2Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-05-04`]?.[0]?.Valor.toFixed(0)) || 0
+
+          let ValorPromedio=Valor1Prom==0?0 :(Valor2Prom/(Valor1Prom*-1))*30
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          }) 
+
           }
           else if(elemento.id=='05-07'){
-          let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-05-03`]?.[0]?.Valor || 0
+          let Valor1=Number(this.DatosElementosAcumulados[`${anio.Anio}-05-03`]?.[0]?.Valor.toFixed(0)) || 0
           let Valor2=Number(this.DatosElementosAcumulados[`${anio.Anio}-05-06`]?.[0]?.Valor.toFixed(0)) || 0
           this.DatosElementosAcumulados[`${keyAnual}`].push({ 
-
             "Valor":(Valor2-15) * (Valor1 / 360),
             "TipoNumero":((Valor2-15) * (Valor1 / 360))<0 ? 1 : 2,
-            "ValorMostrar":((Valor2-15) * (Valor1 / 360))<0 ? ('-$ ' + (Number(((Valor2-15) * (Valor1 / 360) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor2-15) * (Valor1 / 360))).toLocaleString('en-US')
-           
+            "ValorMostrar":((Valor2-15) * (Valor1 / 360))<0 ? ('-$ ' + (Number(((Valor2-15) * (Valor1 / 360) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor2-15) * (Valor1 / 360))).toLocaleString('en-US')          
+          }) 
+          //Promedio
+          let Valor1Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-05-03`]?.[0]?.Valor.toFixed(0)) || 0
+          let Valor2Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-05-06`]?.[0]?.Valor.toFixed(0)) || 0
+
+          let ValorPromedio=(Valor2Prom-15 ) * (Valor1Prom/30)
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
           }) 
 
           }
@@ -3767,6 +4027,15 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : 
             '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
             }) 
+          //Promedio
+          let ValorPromedio=this.DatosElementosAcumulados[`${anio.Anio}-06-01`]?.[0]?.Valor
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          })
+
           }
 
           else if(
@@ -3782,6 +4051,16 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":ValorElemento<0 ? 1 : 2,
             "ValorMostrar": ValorElemento<0 ? ('-$ ' + (Number((ValorElemento * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((ValorElemento).toFixed(0))).toLocaleString('en-US')
             }) 
+          //Promedio
+          let ValorPromedio=
+          (this.DatosElementosAcumulados[`${anio.Anio}-${elemento.id}`]?.[0]?.Valor || 0)/12
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          })  
+
           }
 
           else if(elemento.id=='06-04'){
@@ -3794,6 +4073,14 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":((Valor3+Valor2)+Valor1)<0 ? 1 : 2,
             "ValorMostrar": ((Valor3+Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3+Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3+Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
             }) 
+          //Promedio
+          let ValorPromedio=this.DatosElementosAcumulados[`${anio.Anio}-06-04`]?.[0]?.Valor
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          })             
           }
 
           else if(elemento.id=='06-05'){
@@ -3804,6 +4091,18 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":(Valor2-Valor1)<0 ? 1 : 2,
             "ValorMostrar": (Valor2-Valor1)<0 ? ('-$ ' + (Number(((Valor2-Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor2-Valor1)).toFixed(0))).toLocaleString('en-US')
             }) 
+            //Promedio
+          let Valor1Prom=this.DatosElementosPromedios[`${anio.Anio}-06-01`]?.[0]?.Valor || 0
+          let Valor2Prom=this.DatosElementosPromedios[`${anio.Anio}-06-04`]?.[0]?.Valor || 0
+
+          let ValorPromedio=Valor2Prom-Valor1Prom
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          })  
+
           }
 
           else if(elemento.id=='06-06'){
@@ -3814,7 +4113,18 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "TipoNumero":( Valor2==0 ? 0 :  Number((Valor3/Valor2)*360))<0 ? 1 : 2,
             "ValorMostrar": Valor2==0 ? 0 :  Number((Valor3/Valor2)*360).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }) 
+          //Promedio
+          let Valor1Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-06-03`]?.[0]?.Valor.toFixed(0)) || 0
+          let Valor2Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-06-04`]?.[0]?.Valor.toFixed(0)) || 0
+
+          let ValorPromedio=(Valor1Prom*-1)==0?0:Valor2Prom/(Valor1Prom*-1)*30
+          this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          }) 
           }
+
           else if(elemento.id=='06-07'){
           let Valor1=this.DatosElementosAcumulados[`${anio.Anio}-06-02`]?.[0]?.Valor || 0
           let Valor2=Number(this.DatosElementosAcumulados[`${anio.Anio}-06-06`]?.[0]?.Valor.toFixed(0)) || 0
@@ -3825,7 +4135,18 @@ this.CatalogoElementos.forEach((catalogo:any) => {
             "ValorMostrar":((Valor2-30) * (Valor1 / 360))<0 ? ('-$ ' + (Number(((Valor2-30) * (Valor1 / 360) * -1).toFixed(0))).toLocaleString('en-US')) :
              '$ ' + (Number((Valor2-30) * (Valor1 / 360))).toLocaleString('en-US')
            
-          }) 
+          })
+          //Promedio
+          let Valor1Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-06-02`]?.[0]?.Valor.toFixed(0)) || 0
+          let Valor2Prom=Number(this.DatosElementosPromedios[`${anio.Anio}-06-06`]?.[0]?.Valor.toFixed(0)) || 0
+
+          let ValorPromedio=(Valor2Prom-30) * (Valor1Prom / 360)
+            this.DatosElementosPromedios[`${keyAnual}`].push({ 
+            "Valor":ValorPromedio,
+            "TipoNumero":ValorPromedio<0 ? 1 : 2,
+            "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+            '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+          })            
 
           }
 
