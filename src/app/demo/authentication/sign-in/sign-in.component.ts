@@ -40,13 +40,15 @@ ngOnInit(): void {
      });
      Swal.showLoading();
      let Subscription:Subscription
+     let SubscriptionEmpresa:Subscription
  
      Subscription=  this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
       Subscription.unsubscribe()
       localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0])); 
       if(resp.length>0){  
+      SubscriptionEmpresa=  
          this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((empresa:any)=>{
-
+          SubscriptionEmpresa.unsubscribe()
            if(empresa[0].ConfigInicial==false){
              this.router.navigate(['/configuracion-inicial'])
              Swal.close()
@@ -58,7 +60,7 @@ ngOnInit(): void {
              Swal.fire({
                position: "center",
                icon: "success",
-               title: "Inicio de sesión exitosa",
+               title: "Inicio de sesión exitoso",
                showConfirmButton: false,
                timer: 1500
              });
