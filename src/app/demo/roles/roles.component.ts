@@ -22,6 +22,8 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
 })
 export default class RolesComponent implements OnInit {
   @Input() ConfigInicial:boolean=false
+  @Input() empresaID:string=''
+  idEmpresa:string=''
   constructor(
     private authS:AuthService,
     private conS:ConfigurationService,
@@ -45,6 +47,12 @@ export default class RolesComponent implements OnInit {
       else {
         this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
       }
+    if(this.empresaID!=''){
+        this.idEmpresa=this.empresaID
+    }
+    else {
+        this.idEmpresa=this.usuario.idEmpresa
+    }      
 
    
       this.obtenerAtributos()
@@ -81,7 +89,7 @@ export default class RolesComponent implements OnInit {
   let _Rol={
     "Rol":this.nombreRol.value,
     "Atributos":_AtributosRol,
-    "idEmpresa":this.usuario.idEmpresa,
+    "idEmpresa":this.idEmpresa,
     "idMatriz":this.usuario.idMatriz,
     "idUsuario":this.usuario.id,
     "Usuario":this.usuario.Usuario,

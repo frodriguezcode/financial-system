@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit,Renderer2  } from '@angular/core';
+import { Component, Input, OnInit,Renderer2  } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TabViewModule } from 'primeng/tabview';
 
@@ -81,6 +81,8 @@ export default class ItemsComponent  implements OnInit{
   cargando: boolean = true;
   TipoCategoria:any=0
   idItems=[]
+  idEmpresa:string=''
+  @Input() empresaID:string=''
   ngOnInit(): void {
     this.todasSucursales=true
     this.conS.usuario$.subscribe(usuario => {
@@ -91,6 +93,15 @@ export default class ItemsComponent  implements OnInit{
         this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
 
       }
+
+      if(this.empresaID!=''){
+        this.idEmpresa=this.empresaID
+      }
+
+      else {
+        this.idEmpresa=this.usuario.idEmpresa
+      }
+
       this.obtenerCategorias()
       this.obtenerEmpresas()
       this.obtenerSucursales()
@@ -109,18 +120,23 @@ export default class ItemsComponent  implements OnInit{
 
 obtenerUsuarios(){
   if(this.usuario.isAdmin==false){
-    this.authS.obtenerUsuarios(this.usuario.idEmpresa).subscribe((resp:any)=>{
+    this.authS.obtenerUsuarios(this.idEmpresa).subscribe((resp:any)=>{
       this.Usuarios=resp
       this.UsuariosSeleccionados=resp
     })
   }
   else {
     this.authS.obtenerUsuariosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
+ 
+    this.authS.obtenerUsuarios(this.idEmpresa).subscribe((resp:any)=>{
       this.Usuarios=resp
       this.UsuariosSeleccionados=resp
    
     })
+    })
   }
+  
+
 }
 
 borrarCuenta(idCuenta:string){
@@ -153,7 +169,7 @@ borrarCuenta(idCuenta:string){
 }
 
   obtenerProyectos(){
-    this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
+    this.conS.obtenerProyectos(this.idEmpresa).subscribe((resp: any)=>{
     this.Proyectos=resp
     
       this.obtenerItems()
@@ -189,7 +205,7 @@ borrarCuenta(idCuenta:string){
   getItemsGroup(){
     this.ItemsGroup=[]
     let _Items:any=[]
-    _Items=this.Items.filter((i:any)=>i.idEmpresa==this.usuario.idEmpresa)
+    _Items=this.Items.filter((i:any)=>i.idEmpresa==this.idEmpresa)
 
     _Items.forEach((item:any) => {
 
@@ -393,6 +409,7 @@ borrarCuenta(idCuenta:string){
   }
 
   getNameUsuario(Usuarios:any){
+
     if(Usuarios==undefined || Usuarios.length==0){
       return []
     }
@@ -400,10 +417,15 @@ borrarCuenta(idCuenta:string){
       
       let NombresUsuarios:any=[]
       Usuarios.forEach(usuario => {       
+
         let Usuario = this.Usuarios.filter((user: any) => user.id==usuario)
-
+        if(Usuario.length>0){
           NombresUsuarios.push(' ' + Usuario[0].Nombres)
-
+          
+        }
+        else {
+          NombresUsuarios.push(' ')
+        }
         
       });
     
@@ -479,7 +501,7 @@ borrarCuenta(idCuenta:string){
       Proyectos: new FormControl(this.Proyectos), 
       Usuarios: new FormControl(this.Usuarios), 
       Editando: new FormControl(false), 
-      idEmpresa: new FormControl(this.usuario.idEmpresa), 
+      idEmpresa: new FormControl(this.idEmpresa), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
       idCategoria: new FormControl('',[Validators.required]), 
 
@@ -605,7 +627,7 @@ borrarCuenta(idCuenta:string){
   }
 
   obtenerSucursales(){
-    this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
+    this.conS.obtenerSucursales(this.idEmpresa).subscribe(resp=>{
       this.Sucursales=resp.filter((suc:any)=>suc.Activo==true)
       this.obtenerProyectos()
     })
@@ -684,7 +706,7 @@ borrarCuenta(idCuenta:string){
 
   obtenerItems(){
     let Subscribe:Subscription
-    Subscribe= this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
+    Subscribe= this.conS.obtenerItems(this.idEmpresa).subscribe(resp=>{
       // resp.forEach((item:any)=>{
       //   this.conS.ActualizarItem(item).then(resp=>{
       //     console.log('Actualizado')
@@ -737,7 +759,7 @@ borrarCuenta(idCuenta:string){
             "Dinamica":false,
             "idPadre":"od11V2OHVgaLG1RiXMiz",
             "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-            "idEmpresa":this.usuario.idEmpresa,
+            "idEmpresa":this.idEmpresa,
             "idMatriz":this.usuario.idMatriz,
             "Orden":1,
             "TipoRubro":1,
@@ -764,7 +786,7 @@ borrarCuenta(idCuenta:string){
             "Dinamica":false,
             "idPadre":"od11V2OHVgaLG1RiXMiz",
             "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-            "idEmpresa":this.usuario.idEmpresa,
+            "idEmpresa":this.idEmpresa,
             "idMatriz":this.usuario.idMatriz,
             "Orden":1,
             "TipoRubro":2,
@@ -792,7 +814,7 @@ borrarCuenta(idCuenta:string){
           "Dinamica":false,
           "idPadre":"od11V2OHVgaLG1RiXMiz",
           "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-          "idEmpresa":this.usuario.idEmpresa,
+          "idEmpresa":this.idEmpresa,
           "idMatriz":this.usuario.idMatriz,
           "Orden":2,
           "TipoRubro":1,
@@ -846,7 +868,7 @@ borrarCuenta(idCuenta:string){
           "Dinamica":false,
           "idPadre":"od11V2OHVgaLG1RiXMiz",
           "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-          "idEmpresa":this.usuario.idEmpresa,
+          "idEmpresa":this.idEmpresa,
           "idMatriz":this.usuario.idMatriz,
           "Orden":2,
           "TipoRubro":2,
@@ -900,7 +922,7 @@ borrarCuenta(idCuenta:string){
             "Dinamica":true,
             "idPadre":"od11V2OHVgaLG1RiXMiz",
             "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-            "idEmpresa":this.usuario.idEmpresa,
+            "idEmpresa":this.idEmpresa,
             "idMatriz":this.usuario.idMatriz,
             "Orden":3,
             "TipoRubro":1,
@@ -928,7 +950,7 @@ borrarCuenta(idCuenta:string){
             "Dinamica":true,
             "idPadre":"od11V2OHVgaLG1RiXMiz",
             "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-            "idEmpresa":this.usuario.idEmpresa,
+            "idEmpresa":this.idEmpresa,
             "idMatriz":this.usuario.idMatriz,
             "Orden":3,
             "TipoRubro":2,
@@ -960,7 +982,7 @@ borrarCuenta(idCuenta:string){
           "Dinamica":false,
           "idPadre":"KtA2Cxpd79TJrW9afqR9",
           "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-          "idEmpresa":this.usuario.idEmpresa,
+          "idEmpresa":this.idEmpresa,
           "idMatriz":this.usuario.idMatriz,
           "userIds":userIds,
           "Orden":1,
@@ -1017,7 +1039,7 @@ borrarCuenta(idCuenta:string){
           "animation":"",
           "idPadre":"KtA2Cxpd79TJrW9afqR9",
           "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-          "idEmpresa":this.usuario.idEmpresa,
+          "idEmpresa":this.idEmpresa,
           "idMatriz":this.usuario.idMatriz,
           "userIds":userIds,
           "Orden":1,
@@ -1075,7 +1097,7 @@ borrarCuenta(idCuenta:string){
           "Dinamica":true,
           "idPadre":"KtA2Cxpd79TJrW9afqR9",
           "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-          "idEmpresa":this.usuario.idEmpresa,
+          "idEmpresa":this.idEmpresa,
           "idMatriz":this.usuario.idMatriz,
           "userIds":userIds,
           "Orden":2,
@@ -1104,7 +1126,7 @@ borrarCuenta(idCuenta:string){
           "Dinamica":true,
           "idPadre":"KtA2Cxpd79TJrW9afqR9",
           "idAbuelo":"EESGPM4hWXvDlXSRnCwA",
-          "idEmpresa":this.usuario.idEmpresa,
+          "idEmpresa":this.idEmpresa,
           "idMatriz":this.usuario.idMatriz,
           "Orden":2,
           "TipoRubro":2,
@@ -1362,7 +1384,7 @@ console.log('hijos',hijos)
           "Dinamica":true,
           "idPadre":ItemForm.idCategoria,
           "idAbuelo":this.getIdAbuelo(ItemForm.idCategoria),
-          "idEmpresa":this.usuario.idEmpresa,
+          "idEmpresa":this.idEmpresa,
           "idMatriz":this.usuario.idMatriz,
           "Orden":this.getOrdenItem(ItemForm.idCategoria),
           "TipoRubro":this.TipoRubro,
@@ -1416,7 +1438,7 @@ console.log('hijos',hijos)
 getOrdenItem(idCategoria:any){
   let _Items:any=[]
   let MaxOrden:number=0
-  _Items=this.Items.filter((i:any)=>i.idEmpresa==this.usuario.idEmpresa && i.idCategoria==idCategoria)
+  _Items=this.Items.filter((i:any)=>i.idEmpresa==this.idEmpresa && i.idCategoria==idCategoria)
   if(_Items.length>0){
     MaxOrden=Math.max(..._Items.map(obj => obj.Orden))+1
 

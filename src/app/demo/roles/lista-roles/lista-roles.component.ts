@@ -21,6 +21,8 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
 export default class ListaRolesComponent implements OnInit {
   @Input() Atributos:any
   @Input() ConfigInicial:boolean=false
+  @Input() empresaID:string=''
+  idEmpresa:string=''
   Roles:any=[]
   RolSeleccionado:any
   usuario:any=[]
@@ -42,6 +44,12 @@ ngOnInit(): void {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
+    if(this.empresaID!=''){
+        this.idEmpresa=this.empresaID
+    }
+    else {
+        this.idEmpresa=this.usuario.idEmpresa
+    }    
 
  this.obtenerAtributos()
     this.obtenerRoles()
@@ -67,7 +75,7 @@ obtenerModulos(){
 }
 
 obtenerRoles(){
-  this.authS.obtenerRoles(this.usuario.idEmpresa).subscribe((resp:any)=>{
+  this.authS.obtenerRoles(this.idEmpresa).subscribe((resp:any)=>{
     this.Roles=resp
     this.obtenerModulos()
   })
@@ -162,7 +170,6 @@ obtenerAtributosByModulo(idModulo:string,parentKey: string,Atributos:any){
 
 
 actualizarRol(){
-  console.log('ItemsModulosAtributos',this.ItemsModulosAtributos)
   let _AtributosRol:any=[]
 this.ItemsModulosAtributos.forEach((atributo: any) => {
 atributo.children.forEach((element:any) => {

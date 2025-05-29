@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
@@ -25,6 +25,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
   styleUrls: ['./proyectos.component.scss']
 })
 export default class ProyectosComponent implements OnInit {
+  @Input() empresaID:string=''
+  @Output() proyectoCreado = new EventEmitter<any>();
   Proyectos:any=[]
   Empresas:any=[]
   Sucursales:any=[]
@@ -77,6 +79,15 @@ ngOnInit(): void {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
+    if(this.empresaID!=''){
+        this.idEmpresa=this.empresaID
+    }
+
+    else {
+        this.idEmpresa=this.usuario.idEmpresa
+    }
+
+  
 
     this.obtenerEmpresas()
     if(this.usuario.Rol=='Super Usuario'){
@@ -108,7 +119,7 @@ obtenerUsuarios(){
   }
 
   else {
-    this.Usuarios=resp.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
+    this.Usuarios=resp.filter((resp:any)=>resp.idEmpresa==this.idEmpresa)
     
   }
   this.Usuarios.map((user:any)=>user.NombreEmpresa=user.Nombres + ' - ' + user.Empresa)
@@ -116,7 +127,13 @@ obtenerUsuarios(){
 }
 
 getUsuarioByEmpresa(idEmpresa:any){
-  return this.Usuarios.filter((emp:any)=>emp.idEmpresa==idEmpresa)
+  if(this.Usuarios!=undefined){
+    return this.Usuarios.filter((emp:any)=>emp.idEmpresa==idEmpresa)
+
+  }
+  else {
+    return []
+  }
 }
 showDialog() {
   this.visible = true;
@@ -297,11 +314,12 @@ else {
 this.ProyectoForm.value.MesesRango=añosAgrupados
 this.ProyectoForm.value.FechaInicio=FechaInicio
 this.ProyectoForm.value.FechaFinal=FechaFinal
-console.log('Form',this.ProyectoForm.value);
+
 
 
 
   this.conS.crearProyecto(this.ProyectoForm.value).then((resp: any)=>{
+    this.proyectoCreado.emit(this.ProyectoForm.value);
     Swal.fire({
       position: "center",
       icon: "success",
@@ -356,43 +374,37 @@ getNombreEmpresa(idEmpresa){
 }
 obtenerProyectos(){
   this.cargando=true
-  if(this.usuario.isAdmin==true){
-    this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
-    this.Proyectos=resp
+  // if(this.usuario.isAdmin==true){
+  //   this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((resp: any)=>{
+  //   this.Proyectos=resp
   
   
   
-    this.Proyectos.map((proyect: any) => {
-      proyect.RangoFechas[0] = proyect.RangoFechas[0] && proyect.RangoFechas[0].seconds 
-        ? new Date(proyect.RangoFechas[0].seconds * 1000) 
-        : new Date()
+  //   this.Proyectos.map((proyect: any) => {
+  //     proyect.RangoFechas[0] = proyect.RangoFechas[0] && proyect.RangoFechas[0].seconds 
+  //       ? new Date(proyect.RangoFechas[0].seconds * 1000) 
+  //       : new Date()
       
-      proyect.RangoFechas[1] = proyect.RangoFechas[1] && proyect.RangoFechas[1].seconds 
-        ? new Date(proyect.RangoFechas[1].seconds * 1000) 
-        : new Date(),
+  //     proyect.RangoFechas[1] = proyect.RangoFechas[1] && proyect.RangoFechas[1].seconds 
+  //       ? new Date(proyect.RangoFechas[1].seconds * 1000) 
+  //       : new Date(),
 
-        proyect.Duracion =    proyect.FechaInicio=="" || proyect.FechaFinal==" " ? 'Sin fechas de proyecto definidas' :  this.calcularDuracion(proyect.FechaInicio,proyect.FechaFinal),
-        proyect.Empresa =    this.getNombreEmpresa(proyect.idEmpresa)
+  //       proyect.Duracion =    proyect.FechaInicio=="" || proyect.FechaFinal==" " ? 'Sin fechas de proyecto definidas' :  this.calcularDuracion(proyect.FechaInicio,proyect.FechaFinal),
+  //       proyect.Empresa =    this.getNombreEmpresa(proyect.idEmpresa)
 
 
-    }
+  //   }
   
   
   
-  );
+  // );
     
-  this.cargando=false
-  console.log('cargando',this.cargando)
-    })
+  // this.cargando=false
+  //   })
     
-  }
-
-  else {
-    this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe((resp: any)=>{
+  // }
+    this.conS.obtenerProyectos(this.idEmpresa).subscribe((resp: any)=>{
     this.Proyectos=resp
-  
-  
-  
     this.Proyectos.map((proyect: any) => {
       proyect.RangoFechas[0] = proyect.RangoFechas[0] && proyect.RangoFechas[0].seconds 
         ? new Date(proyect.RangoFechas[0].seconds * 1000) 
@@ -405,18 +417,14 @@ obtenerProyectos(){
         proyect.Empresa =    this.getNombreEmpresa(proyect.idEmpresa)
 
     });
-    
-  
-  
     this.cargando=false
-  console.log('cargando',this.cargando)
   
     })
 
-  }
+  
 }
 obtenerSucursales(){
-  this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe((resp: any)=>{
+  this.conS.obtenerSucursales(this.idEmpresa).subscribe((resp: any)=>{
   this.Sucursales=resp.filter(data=>data.Activo==true)
 
   })

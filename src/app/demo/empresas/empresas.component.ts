@@ -20,6 +20,7 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export default class EmpresasComponent implements OnInit {
   empresaFound: boolean = false;
+  MostrarEmpresas: boolean = true;
   Empresas: any = [];
   Matrices: any = [];
   Atributos: any = [];

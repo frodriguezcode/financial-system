@@ -234,12 +234,12 @@
               
           
 
-              <div class="col-12 col-lg-6 col-md-6">
+              <div class="col-12 col-lg-12 col-md-12">
                 <div class="form-group">
                   <label for="exampleInputPassword1">Asignar sucursales</label>
                   <br>
                   <p-multiSelect                
-                  [options]="getSucursalesByEmpresa(this.usuarioForm.value.idEmpresa)" 
+                  [options]="getSucursalesByEmpresa(this.idEmpresa)" 
                   formControlName="Sucursales"
                   optionLabel="Nombre" 
                   [appendTo]="'body'"
@@ -252,12 +252,12 @@
                 <button type="button" [disabled]="this.idEmpresa=='' || this.idEmpresa== '0' " (click)="showCrearSucursal()" class="btn btn-success">Crear Sucursal</button>
               </div>
 
-              <div  class="col-12 col-lg-6 col-md-6">
+              <div  class="col-12 col-lg-12 col-md-12">
                 <div class="form-group">
                   <label for="exampleInputPassword1">Asignar proyectos</label>
                   <br>
                   <p-multiSelect 
-                  [options]="getProyectosByEmpresa(this.usuarioForm.value.idEmpresa)" 
+                  [options]="getProyectosByEmpresa(this.idEmpresa)" 
                   [maxSelectedLabels]="1" 
                   [appendTo]="'body'"
                   formControlName="Proyectos"

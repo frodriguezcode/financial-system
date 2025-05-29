@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
@@ -24,6 +24,8 @@ export default class SucursalesComponent implements OnInit {
   SucursalForm!:FormGroup
   Fecha:any= new Date();
   usuario:any
+  @Input() empresaID:string=''
+  idEmpresa:string=''
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService, private readonly router: Router) {}
 
 ngOnInit(): void {
@@ -33,6 +35,12 @@ ngOnInit(): void {
     }
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+    }
+    if(this.empresaID!=''){
+        this.idEmpresa=this.empresaID
+    }
+    else {
+        this.idEmpresa=this.usuario.idEmpresa
     }
     this.obtenerSucursales()
   this.obtenerEmpresas()
@@ -49,7 +57,7 @@ cargarFormulario(){
   this.SucursalForm = new FormGroup({
     Nombre: new FormControl('',[Validators.required]), 
     idMatriz: new FormControl(this.usuario.idMatriz,[Validators.required]), 
-    idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
+    idEmpresa: new FormControl(this.idEmpresa,[Validators.required]), 
     Activo: new FormControl(true), 
     Editando: new FormControl(false), 
     FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
@@ -109,7 +117,7 @@ crearSucursal(){
   })
 }
 obtenerSucursales(){
-  this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe((resp: any)=>{
+  this.conS.obtenerSucursales(this.idEmpresa).subscribe((resp: any)=>{
   this.Sucursales=resp
   })
 }

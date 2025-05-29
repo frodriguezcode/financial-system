@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
@@ -22,7 +22,7 @@ import Swal from 'sweetalert2'
   selector: 'app-crear-usuario',
   standalone: true,
   imports: [CommonModule, SharedModule, RouterModule,
-     FormsModule, ReactiveFormsModule,TableModule,DialogModule,MultiSelectModule,SucursalesComponent,ProyectosComponent,CalendarModule],
+     FormsModule, ReactiveFormsModule,TableModule,DialogModule,MultiSelectModule,CalendarModule],
   templateUrl: './crear-usuario.component.html',
   styleUrls: ['./crear-usuario.component.scss']
 })
@@ -37,6 +37,8 @@ export default class CrearUsuarioComponent implements OnInit {
 usuarioForm!: FormGroup;
 ProyectoForm!: FormGroup;
 nombreEmpresa:any
+@Input() empresaID:string=''
+@Output() usuarioCreado = new EventEmitter<any>();
 idEmpresa:string=''
 Sucursal:FormControl=new FormControl ('')
 Fecha: any = new Date();
@@ -67,7 +69,12 @@ ngOnInit(): void {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
-  
+    if(this.empresaID!=''){
+        this.idEmpresa=this.empresaID
+    }
+    else {
+        this.idEmpresa=this.usuario.idEmpresa
+    }  
    
     this.obtenerProyectosByMatriz()
     this.obtenerSucursales()
@@ -234,30 +241,15 @@ obtenerUsuarios(){
   let subscribe:Subscription
  this.authS.obtenerUsuariosByMatriz(this.usuario.idMatriz).subscribe(resp=>{
     //subscribe.unsubscribe()
-    if(this.getNombreRol(this.usuario.idRol)=='Super Usuario'){
-      this.Usuarios=resp
-      
-      // this.Usuarios.forEach(element => {
-        //   element.Sucursales=this.Sucursales
-        //   element.Proyectos=this.Proyectos
-        //   this.authS.ActualizarUsuario(element).then(resp=>{
-          
-        //   })
-        
-        // });
-     
-      }
-      else {
-        this.Usuarios=resp.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
-        
-      }
-    
+    // if(this.getNombreRol(this.usuario.idRol)=='Super Usuario'){
+    //   this.Usuarios=resp   
+    //   }
+    this.Usuarios=resp.filter((resp:any)=>resp.idEmpresa==this.idEmpresa)
     this.Usuarios.forEach(proyecto => {
       if (!proyecto.Proyectos) {
         proyecto.Proyectos = [];
     }
     });
-
     this.Usuarios.map((proyecto: any) => {
       proyecto.ProyectosSelect = this.Proyectos.filter(proy => 
           Array.isArray(proyecto.Proyectos) && proyecto.Proyectos.length > 0 
@@ -270,13 +262,13 @@ obtenerUsuarios(){
       this.Usuarios.map((user:any)=>user.Empresa=this.getNombreEmpresa(user.idEmpresa))
 
     
-    if(this.getNombreRol(this.usuario.idRol)=='Super Usuario'){
-      this.Roles=this.RolesBack
-    }
-    else {
-      this.Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
+    // if(this.getNombreRol(this.usuario.idRol)=='Super Usuario'){
+    //   this.Roles=this.RolesBack
+    // }
+    // else {
+    //   this.Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==this.idEmpresa)
 
-    }
+    // }
     this.usuario.Rol=this.getNombreRol(this.usuario.idRol)
     localStorage.setItem('usuarioFinancialSystems', JSON.stringify( this.usuario)); 
     this.UsuariosBack=resp
@@ -308,7 +300,7 @@ verifyPassw(){
 
 obtenerEmpresas(){
   this.authS.obtenerEmpresas(this.usuario.idMatriz).subscribe(resp=>{
-    this.Empresas = resp.filter((resp:any)=>resp.id==this.usuario.idEmpresa)
+    this.Empresas = resp.filter((resp:any)=>resp.id==this.idEmpresa)
     this.EmpresasBack = resp
   })
 }
@@ -317,7 +309,8 @@ obtenerRoles(){
 
 
     this.RolesBack=roles
-    this.Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa)
+    this.Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==this.idEmpresa)
+    console.log('Roles',this.Roles)
     this.obtenerUsuarios()
 
   })
@@ -331,13 +324,13 @@ return _Roles
 
 getSucursalesByEmpresa(idEmpresa:any){
 let _Sucursales:any=[]
-_Sucursales=this.SucursalesTodasBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
+_Sucursales=this.SucursalesTodasBack.filter((resp:any)=>resp.idEmpresa==this.idEmpresa)
 return _Sucursales
 }
 getProyectosByEmpresa(idEmpresa:any){
 let _Proyectos:any=[]
 
-_Proyectos=this.ProyectosBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
+_Proyectos=this.ProyectosBack.filter((resp:any)=>resp.idEmpresa==this.idEmpresa)
 
 return _Proyectos
 }
@@ -363,7 +356,7 @@ getNombreRol(idRol:string){
 }
 obtenerSucursales(){
   this.conS.obtenerSucursalesByMatriz(this.usuario.idMatriz).subscribe(resp=>{
-    this.Sucursales=resp.filter((resp:any)=>resp.idEmpresa==this.usuario.idEmpresa && resp.Activo==true)
+    this.Sucursales=resp.filter((resp:any)=>resp.idEmpresa==this.idEmpresa && resp.Activo==true)
     this.SucursalesTodas=resp.filter((resp:any)=> resp.Activo==true)
     this.SucursalesTodasBack=resp.filter((resp:any)=> resp.Activo==true)
 
@@ -394,9 +387,9 @@ this.usuarioForm.get('Proyectos')!.disable();
  else {
    this.SucursalesTodas=this.SucursalesTodasBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
   this.Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==idEmpresa)
-  this.usuarioForm.get('idRol')!.enable();
-  this.usuarioForm.get('Sucursales')!.enable();
-this.usuarioForm.get('Proyectos')!.enable();
+//   this.usuarioForm.get('idRol')!.enable();
+//   this.usuarioForm.get('Sucursales')!.enable();
+// this.usuarioForm.get('Proyectos')!.enable();
  }
  
 }
@@ -489,7 +482,7 @@ cargarFormulario() {
     AnioRegistro: new FormControl(new Date().getFullYear()),
     Activo: new FormControl(true),
     Editando: new FormControl(false),
-    idEmpresa: new FormControl('',[Validators.required]),
+    idEmpresa: new FormControl(this.idEmpresa,[Validators.required]),
     idMatriz: new FormControl(this.usuario.idMatriz),
     idRol: new FormControl('',[Validators.required]),
     IdSucursal: new FormControl(0),
@@ -503,9 +496,9 @@ cargarFormulario() {
   this.fieldsMatchValidator()
 
 );  
-this.usuarioForm.get('idRol')!.disable();
-this.usuarioForm.get('Sucursales')!.disable();
-this.usuarioForm.get('Proyectos')!.disable();
+// this.usuarioForm.get('idRol')!.disable();
+// this.usuarioForm.get('Sucursales')!.disable();
+// this.usuarioForm.get('Proyectos')!.disable();
 }
 fieldsMatchValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -584,6 +577,7 @@ getMonthName(Fecha: string) {
 crearUsuario(){
   this.usuarioForm.value.Empresa=this.getNombreEmpresa(this.usuarioForm.value.idEmpresa)
   this.authS.crearUsuario(this.usuarioForm.value).then((resp:any)=>{
+    this.usuarioCreado.emit(this.usuarioForm.value);
     this.toastr.success('Guardado', '¡Exito!');
     this.usuarioForm.get('Nombres').setValue('');
     this.usuarioForm.get('Password').setValue('');
