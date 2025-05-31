@@ -88,7 +88,9 @@ header="Crear Proyecto"
 [(visible)]="visible" 
 [style]="{ width: '50rem' }" 
 [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
-[maximizable]="true">
+[maximizable]="true"
+  [draggable]="false"
+>
 <form *ngIf="ProyectoForm" [formGroup]="ProyectoForm">
 
   <div class="form-group">
@@ -158,7 +160,7 @@ header="Crear Proyecto"
     <p-calendar 
         formControlName="RangoFechas"
         [numberOfMonths]="2" 
-        [appendTo]="'body'"
+        appendTo="body"
         dateFormat="dd/mm/yy"
         selectionMode="range" 
         [readonlyInput]="false" />

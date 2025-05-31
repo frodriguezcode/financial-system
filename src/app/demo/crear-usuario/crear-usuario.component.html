@@ -127,7 +127,9 @@
       [(visible)]="visible" 
       [style]="{ width: '50rem',heigth:'80rem' }" 
       [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
-      [maximizable]="true">
+      [maximizable]="true"
+        [draggable]="false"
+      >
       <div class="col-md-12 col-lg-12 col-12">
         <form *ngIf="usuarioForm" [formGroup]="usuarioForm">
           <div class="row">

@@ -16,3 +16,37 @@
   overflow: hidden;
   text-overflow: ellipsis; 
 }
+
+
+
+
+
+  :host ::ng-deep .p-dialog-maximized {
+  max-width: 80vw !important;
+  max-height: 80vh !important;
+  top: 10vh !important;
+  left: 5vw !important;
+  transform: none !important;
+}
+
+
+:host ::ng-deep .p-dialog {
+  transition: all 0.5s ease;
+}
+
+:host ::ng-deep {
+  .p-dialog {
+    z-index: 1025 !important;
+  }
+  
+  .p-dialog-mask {
+    z-index: 1024 !important;
+  }
+  
+
+  .p-calendar-panel,
+  .p-multiselect-panel,
+  .p-dropdown-panel {
+    z-index: 1026 !important;
+  }
+}
