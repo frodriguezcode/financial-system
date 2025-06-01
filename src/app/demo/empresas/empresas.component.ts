@@ -10,38 +10,136 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { ConfigurationService } from 'src/app/services/configuration.service';
+import { Subscription } from 'rxjs';
+import { StepperModule } from 'primeng/stepper';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-empresas',
   standalone: true,
-  imports: [CommonModule, SharedModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, FormsModule, ReactiveFormsModule,
+    StepperModule,
+    ButtonModule],
   templateUrl: './empresas.component.html',
   styleUrls: ['./empresas.component.scss']
 })
 export default class EmpresasComponent implements OnInit {
   empresaFound: boolean = false;
+  active: number | undefined = 0;
+  idEmpresaCreada: string = '';
   MostrarEmpresas: boolean = true;
   Empresas: any = [];
   Matrices: any = [];
   Atributos: any = [];
+  Roles: any = [];
+  Usuarios: any = [];
+  SaldosIniciales: any = [];
+  Sucursales: any = [];
+  Proyectos: any = [];
   EmpresaForm!: FormGroup;
   Fecha: any = new Date();
+  FlujoConfiguracion: any = [];
   usuario:any
+  PasoAnterior:any
   constructor(
     private readonly router: Router,
     private datePipe: DatePipe,
     private empS: EmpresasService,
+    private conS: ConfigurationService,
     private authS: AuthService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
+    this.FlujoConfiguracion.push(
+      {
+        Nombre: 'Crear Roles',
+        Descripcion: 'Definiremos los roles los cuales controlarás los accesos al los diferentes módulos del sistema',
+        Opcional: false,
+        Visitado: false,
+        Orden: 1,
+        OrdenAnterior:0
+      },
+      {
+        Nombre: 'Crear Usuarios',
+        Opcional: false,
+        Descripcion: 'Aquí podrás crear los usuarios que tendrán acceso al sistema',
+        Visitado: false,
+        Orden: 2,
+        OrdenAnterior:1
+      },
+      {
+        Nombre: 'Crear Sucursales',
+        Opcional: true,
+        Descripcion: 'Ahora crearemos las sucursales de tu empresa. Si tu empresa no tiene sucursales puedes pasar al siguiente paso.',
+        Visitado: false,
+        Orden: 3,
+        OrdenAnterior:2
+      },
+      {
+        Nombre: 'Crear Proyectos',
+        Descripcion: 'Ahora crearemos los proyectos de tu empresa. Si tu empresa no tiene proyectos puedes crearlos posteriormente y pasar al siguiente paso.',
+        Opcional: false,
+        Visitado: false,
+        Orden: 4,
+        OrdenAnterior:3
+
+      },
+      {
+        Nombre: 'Crear Cuentas Contables',
+        Opcional: false,
+        Descripcion: 'Define las cuentas contables de tu empresa',
+        Visitado: false,
+        Orden: 5,
+        OrdenAnterior:4
+      },
+      {
+        Nombre: 'Crear Cuentas Bancarias',
+        Opcional: false,
+        Descripcion: 'Define las cuentas bancarias de tu empresa',
+        Visitado: false,
+        Orden: 6,
+        OrdenAnterior:5
+      },
+      {
+        Nombre: 'Crear Socios de Negocios',
+        Opcional: false,
+        Descripcion: 'Crea los socios de negocios que formarán parte de tu empresa.',
+        Visitado: false,
+        Orden: 7,
+        OrdenAnterior:6
+      },
+      {
+        Nombre: 'Crear Saldos Iniciales',
+        Opcional: false,
+        Descripcion: 'Establece los saldos iniciales de las sucursales o proyectos',
+        Visitado: false,
+        Orden: 8,
+        OrdenAnterior:7
+      },
+    );
     this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     this.obtenerEmpresas();
     this.obtenerCorporaciones();
     this.obtenerAtributos();
+    this.obtenerColecciones();
     
   }
+
+ obtenerColecciones(){
+  let Subscripcion:Subscription
+Subscripcion= this.conS.obtenerColecciones(this.usuario.idMatriz).subscribe((resp:any)=>{
+  Subscripcion.unsubscribe()
+  console.log('resp',resp)
+  this.Roles=resp[0]
+  this.Usuarios=resp[1]
+  this.SaldosIniciales=resp[2]
+  this.Sucursales=resp[3]
+  this.Proyectos=resp[4]
+
+  })
+ } 
 
   obtenerAtributos(){
     this.authS.obtenerAtributos().subscribe((data:any)=>{
@@ -151,8 +249,6 @@ export default class EmpresasComponent implements OnInit {
     }
   } // ~Verificar Empresa
 
-  // ~Actualizar Estado Emprewsa
-
   ActualizarEmpresaEstado(Empresa:any,Estado:boolean){
     this.empS.ActualizarEmpresaEstado(Empresa,Estado).then(resp=>{
       if(Estado==true){
@@ -164,5 +260,117 @@ export default class EmpresasComponent implements OnInit {
     })
   }
 
-  // ~Actualizar Estado Emprewsa
+actualizarEstadoFlujo(orden: any) {
+    const paso = this.FlujoConfiguracion.find((item: any) => item.Orden === orden + 1);
+    if (paso) {
+      paso.Visitado = true;
+      Swal.fire({
+        title: `${paso.Descripcion}`,
+        showClass: {
+          popup: `
+      animate__animated
+      animate__fadeInUp
+      animate__faster
+    `
+        },
+        hideClass: {
+          popup: `
+      animate__animated
+      animate__fadeOutDown
+      animate__faster
+    `
+        },
+        timer: 3000, // 5 segundos
+        timerProgressBar: true, // Muestra una barra de tiempo opcional
+        showConfirmButton: false // Oculta el botón de confirmación
+      });
+    }
+}
+
+onPasoCambiado(nuevoPaso: number) {
+ 
+    this.irAlSiguientePaso(nuevoPaso) 
+}
+
+obtenerRolesByEmpresa() {
+  return this.Roles.filter((user: any) => user.idEmpresa == this.idEmpresaCreada);
+}
+guardarRolByEmpresa(Rol: any) {
+  this.Roles.push(Rol);
+}
+
+obtenerUsuariosByEmpresa() {
+    return this.Usuarios.filter((user: any) => user.idEmpresa == this.idEmpresaCreada);
+}
+guardarUsuarioByEmpresa(Usuario: any) {
+    this.Usuarios.push(Usuario);
+}
+
+obtenerSaldosInicialesByEmpresa() {
+    return this.SaldosIniciales.filter((user: any) => user.idEmpresa == this.idEmpresaCreada);
+}
+
+irAlSiguientePaso(orden: any) {
+    if (orden == 1) {
+      if (this.obtenerRolesByEmpresa().length == 0) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Debe de crear al menos un rol',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        setTimeout(()=>{
+          this.active=orden-1    
+        }, 250);
+      } else {
+        this.actualizarEstadoFlujo(orden);
+        this.active=orden
+        //nextCallback.emit();
+      }
+    } else if (orden == 2) {
+      if (this.obtenerUsuariosByEmpresa().length == 0) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Debe de crear al menos un usuario',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        setTimeout(()=>{
+          this.active=orden-1    
+        }, 250);
+      } else {
+        this.actualizarEstadoFlujo(orden);
+        this.active=orden
+       
+      }
+    } else if (orden == 8) {
+      if (this.obtenerSaldosInicialesByEmpresa().length == 0) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Debe de crear al menos un saldo inicial',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        setTimeout(()=>{
+          this.active=orden-1    
+        }, 250);        
+      } else {
+        this.actualizarEstadoFlujo(orden);
+        this.active=orden
+        
+      }
+    } 
+    else {
+        this.actualizarEstadoFlujo(orden);
+        this.active=orden
+        
+      }
+this.PasoAnterior = orden;
+  }
+
+
+
 }

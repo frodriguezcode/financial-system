@@ -797,6 +797,23 @@ obtenerValoresPlanesItems(idEmpresa:any): Observable<any[]> {
   .valueChanges();
 }
 
+obtenerColecciones(idMatriz:any) {
+const Roles$ = this.afs.collection('Roles',(ref)=>ref.where('idMatriz','==',idMatriz)).valueChanges();
+const Usuarios$ = this.afs.collection('Usuarios',(ref)=>ref.where('idMatriz','==',idMatriz)).valueChanges();
+const SaldosIniciales$ = this.afs.collection('SaldosIniciales',(ref)=>ref.where('idMatriz','==',idMatriz)).valueChanges();
+const Sucursales$ = this.afs.collection('Sucursales',(ref)=>ref.where('idMatriz','==',idMatriz)).valueChanges();
+const Proyectos$ = this.afs.collection('Proyectos',(ref)=>ref.where('idMatriz','==',idMatriz)).valueChanges();
+
+return combineLatest([ Roles$,Usuarios$,SaldosIniciales$,Sucursales$,Proyectos$]).pipe(
+   
+    map(([Roles, Usuarios,SaldosIniciales,Sucursales,Proyectos]) => {
+  
+      return [Roles, Usuarios,SaldosIniciales,Sucursales,Proyectos];
+    })
+);
+
+}
+
 
    
 }
