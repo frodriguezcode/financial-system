@@ -1100,7 +1100,7 @@ obtenerRegistros(){
 
           // this.MesesSeleccionados=this.Meses
     
-
+        
      
           
 
@@ -1838,11 +1838,13 @@ this.construirValores()
             dataTree.data.valores[claveMensual] = 
             {
              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valor,
              "Color": valor<0 ? '#ff3200': '#000000',
             }
             dataTree.data.valores[claveAnual] = 
              {
              "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valorAnual,
              "Color": valorAnual<0 ? '#ff3200': '#000000',
              }
            
@@ -1853,11 +1855,13 @@ this.construirValores()
             dataTree.data.valores[claveMensual] = 
               {
              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valor,
              "Color": valor<0 ? '#ff3200': '#000000',
               }
             dataTree.data.valores[claveAnual] = 
             {
             "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": valorAnual,
             "Color": valorAnual<0 ? '#ff3200': '#000000',
             }
            
@@ -1869,6 +1873,7 @@ this.construirValores()
               dataTree.data.valores[claveMensual] = 
               {
              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valor,
              "Color": valor<0 ? '#ff3200': '#000000',
               }
               totalAnual += valor;
@@ -1876,6 +1881,7 @@ this.construirValores()
               dataTree.data.valores[claveAnual] =
               {
               "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               }                  
             }
@@ -1884,12 +1890,14 @@ this.construirValores()
               dataTree.data.valores[claveMensual] = 
               {
               "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": valor,
               "Color": valor<0 ? '#ff3200': '#000000',
               }
               totalAnual += valor;
               dataTree.data.valores[claveAnual] =
               {
               "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               }  
             }
@@ -1898,12 +1906,14 @@ this.construirValores()
               dataTree.data.valores[claveMensual] =
               {
               "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": valor,
               "Color": valor<0 ? '#ff3200': '#000000',
               }
               totalAnual += valor;
               dataTree.data.valores[claveAnual] =
               {
               "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               }  
             }
@@ -1912,12 +1922,14 @@ this.construirValores()
               dataTree.data.valores[claveMensual] =
               {
               "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": valor,
               "Color": valor<0 ? '#ff3200': '#000000',
               }
               totalAnual += valor;
               dataTree.data.valores[claveAnual] = 
               {
               "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               }  
             }
@@ -1928,12 +1940,14 @@ this.construirValores()
             const valor = this.getValorCategoriaMensual(dataTree.data.idCategoria,mes.NumMes,anio.Anio) || 0;
             dataTree.data.valores[claveMensual] = {
              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valor,
              "Color": valor<0 ? '#ff3200': '#000000'
             }
             totalAnual += valor;
             dataTree.data.valores[claveAnual] = 
             {
             "Valor": totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": totalAnual,
             "Color": totalAnual<0 ? '#ff3200': '#000000',
             }  
             
@@ -1947,11 +1961,13 @@ this.construirValores()
               cuenta.data.valores[claveMensualHijo] = 
               {
              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valor,
              "Color": valor<0 ? '#ff3200': '#000000'
               }
               cuenta.data.valores[claveAnualHijo] =   
               {
              "Valor": valorAnual<0 ? ('-$ '+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valorAnual,
              "Color": valorAnual<0 ? '#ff3200': '#000000'
               }
 
@@ -1964,12 +1980,14 @@ this.construirValores()
               subCuenta.data.valores[claveMensualHijo] =                 
                 {
                 "Valor": valorNieto<0 ? ('-$ '+ (valorNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": valorNieto,
                 "Color": valorNieto<0 ? '#ff3200': '#000000'
                 }
 
               subCuenta.data.valores[claveAnualNieto] = 
                 {
                 "Valor": valorNietoAnual<0 ? ('-$ '+ (valorNietoAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNietoAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": valorNietoAnual,
                 "Color": valorNietoAnual<0 ? '#ff3200': '#000000'
                 }
 
