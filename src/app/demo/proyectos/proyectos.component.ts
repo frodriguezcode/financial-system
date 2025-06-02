@@ -90,14 +90,10 @@ ngOnInit(): void {
   
 
     this.obtenerEmpresas()
-    if(this.usuario.Rol=='Super Usuario'){
 
-      this.obtenerSucursalesByMatriz()
-    }
-    else {
+  
       this.obtenerSucursales()
-
-    }
+    
   this.obtenerUsuarios()
  
   });
@@ -426,7 +422,7 @@ obtenerProyectos(){
 obtenerSucursales(){
   this.conS.obtenerSucursales(this.idEmpresa).subscribe((resp: any)=>{
   this.Sucursales=resp.filter(data=>data.Activo==true)
-
+this.SucursalesTodasBack=resp
   })
 }
 obtenerSucursalesByMatriz(){

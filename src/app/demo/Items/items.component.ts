@@ -1347,15 +1347,7 @@ console.log('hijos',hijos)
             timer: 1500
           });
       }
-     else if(ItemForm.Usuarios.length==0 ){
-            Swal.fire({
-            position: "center",
-            icon: "warning",
-            title: "Debe asignar esta cuenta a 1 o varios usuarios",
-            showConfirmButton: false,
-            timer: 1500
-          });
-      }
+
   
       else {
         if(ItemForm.Sucursales.length>0){
