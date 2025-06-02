@@ -1,5 +1,5 @@
 // angular import
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
@@ -25,6 +25,7 @@ export default class SucursalesComponent implements OnInit {
   Fecha:any= new Date();
   usuario:any
   @Input() empresaID:string=''
+  @Output() sucursalCreada = new EventEmitter<any>();
   idEmpresa:string=''
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService, private readonly router: Router) {}
 
@@ -42,6 +43,7 @@ ngOnInit(): void {
     else {
         this.idEmpresa=this.usuario.idEmpresa
     }
+    
     this.obtenerSucursales()
   this.obtenerEmpresas()
   
@@ -103,15 +105,16 @@ verificarSucursal(){
 }
 
 crearSucursal(){
-  Swal.fire({
-    title: 'Ahora crearemos los usuarios para la nueva empresa'
-   });
-   Swal.showLoading();
+  // Swal.fire({
+  //   title: 'Ahora crearemos los usuarios para la nueva empresa'
+  //  });
+  //  Swal.showLoading();
   this.conS.crearSucursal(this.SucursalForm.value).then((resp: any)=>{
-    Swal.hideLoading();
-    setTimeout(()=>{                           // <<<---using ()=> syntax
-      this.router.navigate(['/Usuarios'])
-  }, 3000);
+    this.sucursalCreada.emit(this.SucursalForm.value);
+  //   Swal.hideLoading();
+  //   setTimeout(()=>{
+  //     this.router.navigate(['/Usuarios'])
+  // }, 3000);
 
     this.cargarFormulario()
   })

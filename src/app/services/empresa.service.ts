@@ -24,6 +24,19 @@ export class EmpresasService {
         .ref.set(Object.assign(empresa, {id: id}))
     }
 
+crearEmpresaOfMatriz(empresa: any) {
+    const id = this.afs.createId();
+  
+    // Añadimos el id al objeto antes de guardarlo
+    const empresaConId = Object.assign(empresa, { id: id });
+  
+    // Retornamos un objeto que incluye el id y la promesa
+    return {
+      id: id,
+      result: this.afs.collection('Empresas').doc(id).set(empresaConId)
+    };
+  }
+
     guardarRol(Rol:any){
         var id = this.afs.createId();
         this.afs

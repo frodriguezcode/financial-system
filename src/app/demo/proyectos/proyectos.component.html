@@ -141,6 +141,7 @@ header="Crear Proyecto"
 <br>
 <div *ngIf="this.idEmpresa!='' ">
   <p-multiSelect
+  *ngIf="getUsuarioByEmpresa(this.idEmpresa).length>0"
   [options]="getUsuarioByEmpresa(this.idEmpresa)" 
   formControlName="Usuarios"
   [maxSelectedLabels]="1" 

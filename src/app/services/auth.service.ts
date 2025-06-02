@@ -114,6 +114,19 @@ export class AuthService {
     .doc(idEmpresa)
     .ref.set(Object.assign(empresa, {id: idEmpresa}))
 }
+
+  crearEmpresabyMatriz(empresa: any) {
+    const id = this.afs.createId();
+  
+    // Añadimos el id al objeto antes de guardarlo
+    const empresaConId = Object.assign(empresa, { id: id });
+  
+    // Retornamos un objeto que incluye el id y la promesa
+    return {
+      id: id,
+      result: this.afs.collection('Empresa').doc(id).set(empresaConId)
+    };
+  }
   crearMatriz(Matriz: any,idMatriz:any){
    
     return this.afs

@@ -1,5 +1,5 @@
 // angular import
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 // project import
@@ -23,6 +23,7 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
 export default class RolesComponent implements OnInit {
   @Input() ConfigInicial:boolean=false
   @Input() empresaID:string=''
+  @Output() rolCreado = new EventEmitter<any>();
   idEmpresa:string=''
   constructor(
     private authS:AuthService,
@@ -53,7 +54,7 @@ export default class RolesComponent implements OnInit {
     else {
         this.idEmpresa=this.usuario.idEmpresa
     }      
-
+    console.log('idEmpresa',this.idEmpresa)
    
       this.obtenerAtributos()
     });
@@ -90,14 +91,17 @@ export default class RolesComponent implements OnInit {
     "Rol":this.nombreRol.value,
     "Atributos":_AtributosRol,
     "idEmpresa":this.idEmpresa,
+    "isAdmin":_AtributosRol.every(item => item.Seleccionado === true),
     "idMatriz":this.usuario.idMatriz,
     "idUsuario":this.usuario.id,
     "Usuario":this.usuario.Usuario,
+
     "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
   }
 
-  this.authS.guardarRol(_Rol).then(resp=>{
 
+  this.authS.guardarRol(_Rol).then(resp=>{
+    this.rolCreado.emit(_Rol);
     this.toastr.success('Rol creado', '¡Exito!');
     this.nombreRol.setValue('')
     this.ItemsModulosAtributos.forEach((atributo: any) => {

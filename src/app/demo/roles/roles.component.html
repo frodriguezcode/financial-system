@@ -100,7 +100,11 @@
       </div>
   </p-tabPanel>
   <p-tabPanel header="Roles">
-<app-lista-roles *ngIf="this.Modulos.length>0" [ModulosTodos]="this.Modulos" [ConfigInicial]="this.ConfigInicial"></app-lista-roles>
+<app-lista-roles 
+*ngIf="this.Modulos.length>0" 
+  [ModulosTodos]="this.Modulos" 
+  [empresaID]=" this.idEmpresa"
+  [ConfigInicial]="this.ConfigInicial"></app-lista-roles>
 
   </p-tabPanel>
 </p-tabView>

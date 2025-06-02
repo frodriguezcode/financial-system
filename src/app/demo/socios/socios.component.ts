@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
@@ -21,11 +21,12 @@ export default class SocioNegocioComponent implements OnInit {
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService) {}
 
   Socios:any=[]
-  
+  @Input() empresaID:string=''
   socioFound:boolean=false
   SocioForm!:FormGroup
   Fecha:any= new Date();
   usuario:any;
+  idEmpresa:string=''
   tipoSocios: any = [
     {id: "1", name: "Cliente"},
     {id: "2", name: "Proveedor"},
@@ -42,6 +43,12 @@ export default class SocioNegocioComponent implements OnInit {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
+    if(this.empresaID!=''){
+        this.idEmpresa=this.empresaID
+    }
+    else {
+        this.idEmpresa=this.usuario.idEmpresa
+    }
     this.obtenerSocios();
   
  
@@ -51,7 +58,7 @@ export default class SocioNegocioComponent implements OnInit {
   }
 
   obtenerSocios(){
-    this.conS.obtenerSocios(this.usuario.idEmpresa).subscribe(resp=>{
+    this.conS.obtenerSocios(this.idEmpresa).subscribe(resp=>{
       this.Socios=resp
       this.cargarFormulario()
     })
@@ -69,7 +76,7 @@ export default class SocioNegocioComponent implements OnInit {
       Nombre: new FormControl('',[Validators.required]), 
       Tipo: new FormControl('',[Validators.required]), 
       Activo: new FormControl(true), 
-      idEmpresa: new FormControl(this.usuario.idEmpresa), 
+      idEmpresa: new FormControl(this.idEmpresa), 
       Editando: new FormControl(false), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
 

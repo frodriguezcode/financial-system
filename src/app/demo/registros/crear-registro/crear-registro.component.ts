@@ -257,6 +257,7 @@ ngOnInit(): void {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
+    console.log('usuario',this.usuario)
     this.obtenerEmpresas()
     this.obtenerRoles()
     this.obtenerTiposOperacionByEmpresa()
@@ -965,54 +966,7 @@ restablecer(){
 
 }
 obtenerRegistros(){
-  if(this.usuario.isAdmin==true){
-    let Subscribe:Subscription
-    Subscribe=  this.conS.obtenerRegistrosByMatriz(this.usuario.idMatriz).subscribe((resp:any)=>{
-      Subscribe.unsubscribe()
-               this.registrosBackUp=[]
-               this.registrosBackUp= resp.sort((a:any, b:any) => b.Orden - a.Orden)
-              //  resp.sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
-              //    let _Registro={
-              //      "Activo":element.Activo,
-              //      "Animation":'animate__animated animate__flipInX',
-              //      "ActivarAnimation":false,
-              //      "AnioRegistro":element.AnioRegistro,
-              //      "Cuenta":element.Cuenta,
-              //      "CuentaSeleccionada":[],
-              //      "Editando":element.Editando,
-              //      "FechaRegistro":element.FechaRegistro,
-              //      "MesRegistro":element.MesRegistro,
-              //      "NumMes":element.NumMes,
-              //      "Orden":element.Orden,
-              //      "Valor":element.Valor,
-              //      "TipoOperacion":element.TipoOperacion || '',
-              //      "Tipo":element.Tipo || '',
-              //      "TipoRegistro":element.TipoRegistro,
-              //      "id":element.id,
-              //      "idAbuelo":element.idFlujo,
-              //      "idPadre":element.idCategoria,
-              //      "idNieto":element.idNieto,
-              //      "idEmpresa":element.idEmpresa,
-              //      "idTipo":element.idTipo,
-              //      "idMatriz":element.idMatriz,
-              //      "idSocioNegocio":element.idSocioNegocio,
-              //      "idSucursal":element.idSucursal,
-              //      "idProyecto":element.idProyecto || '',
-              //      "NumCuenta":element.Cuenta.Cuenta || '',
-              //      "Comentarios":element.Comentarios || '',
-           
-              //    }
-              //    this.registrosBackUp.push(_Registro)
-              //  })
-               this.refreshRegistros()
 
-               setTimeout(() => {
-                this.syncScroll();
-              }, 0);
-      })
-
-  }
-  else {
     let Subscribe:Subscription
     Subscribe= this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
     Subscribe.unsubscribe()
@@ -1059,7 +1013,7 @@ obtenerRegistros(){
 
   })
 
-  }
+  
 
 
  

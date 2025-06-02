@@ -4,31 +4,31 @@
       <div class="col-md-4">
         <h5>Crear Empresa</h5>
         <hr />
-  
+
         <form *ngIf="EmpresaForm" [formGroup]="EmpresaForm">
           <div class="form-group">
             <label for="exampleInputEmail1">Nombre de Empresa</label>
             <input type="text" formControlName="Nombre" class="form-control" id="exampleInputEmail1"
               aria-describedby="emailHelp" placeholder="Escriba un nombre de la empresa" />
           </div>
-  
-         
+
+
           <!-- <div class="form-group">
             <label for="exampleInputPassword1">Empresa</label>
             <input (input)="verificarEmpresa()" type="text" formControlName="Cuenta" class="form-control" id="exampleInputPassword1" placeholder="Escriba una cuenta" />
             <span *ngIf="empresaFound==true" style="color: red;"><p>Ya existe una cuenta con este numero</p></span>
   
           </div> -->
-         
-  
+
+
           <button [disabled]="this.EmpresaForm.invalid || empresaFound==true" (click)="crearEmpresa()" type="button"
             class="btn btn-primary">Guardar</button>
         </form>
       </div>
-  
-  
-       <!-- ~Tabla -->
-       <div class="col-md-8">
+
+
+      <!-- ~Tabla -->
+      <div class="col-md-8">
         <h5>Lista de Empresas</h5>
         <hr />
         <div class="table-responsive">
@@ -54,7 +54,7 @@
                     <input [(ngModel)]="empresa.Nombre" class="form-control text-center col-4">
                   </ng-template>
                 </td>
-  
+
                 <!-- <td class="text-center">
                   <ng-container *ngIf="!banco.Editando; else editarCuenta">
                     {{banco.Cuenta}}
@@ -90,25 +90,78 @@
                     type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
                 <td class="text-center" *ngIf="!empresa.Activo"><button (click)="ActualizarEmpresaEstado(empresa,true)"
                     type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
-  
+
               </tr>
-  
-  
+
+
             </tbody>
           </table>
         </div>
       </div>
       <!-- ~Tabla -->
-  
-  
+
+
     </div>
 
   </div>
-<div *ngIf="MostrarEmpresas==false" class="card flex justify-content-center animate__animated animate__fadeIn">
-    <p-stepper [(activeStep)]="active"
-  (activeStepChange)="onPasoCambiado($event)"
-  >
-</p-stepper>
-</div>
+  <div *ngIf="MostrarEmpresas==false" class="card flex justify-content-center animate__animated animate__fadeIn">
+    <p-stepper [(activeStep)]="active" (activeStepChange)="onPasoCambiado($event)">
+      <p-stepperPanel *ngFor="let flujo of FlujoConfiguracion" [header]="flujo.Nombre">
+        <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback"
+          let-index="index">
+          <div class="flex flex-column justify-content-between h-full min-h-[400px]">
+            <!-- 🔼 Botones de navegación arriba -->
+            <div class="flex justify-content-between mb-4" style="margin-top: -20px;">
+              <p-button *ngIf="index > 0" label="Anterior" icon="pi pi-arrow-left" (onClick)="prevCallback.emit()"
+                class="p-button-secondary p-button-sm boton-pequeno" />
+              <ng-container *ngIf="flujo.Orden != 8; else finalizarBoton">
+                <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right"
+                  class="p-button-secondary p-button-sm boton-pequeno" (onClick)="irAlSiguientePaso(flujo.Orden)" />
+              </ng-container>
+              <ng-template #finalizarBoton>
+                <p-button label="Finalizar" icon="pi pi-check" iconPos="right"
+                  class="p-button-secondary p-button-sm boton-pequeno" (onClick)="irAlSiguientePaso(flujo.Orden)" />
+              </ng-template>
+            </div>
+            <!-- 🔽 Contenido dinámico del paso -->
+            <div class="mb-4">
+              <div *ngIf="flujo.Orden == 1">
+                <app-roles (rolCreado)="guardarRolByEmpresa($event)" [empresaID]="idEmpresaCreada"></app-roles>
+              </div>
+              <div *ngIf="flujo.Orden == 2">
+                <app-sucursal (sucursalCreada)="guardarSucursalByEmpresa($event)" [empresaID]="idEmpresaCreada"></app-sucursal>
+              </div>
+              <div *ngIf="flujo.Orden == 3">
+                <app-proyectos (proyectoCreado)="guardarProyectoByEmpresa($event)" [empresaID]="idEmpresaCreada"></app-proyectos>
+              </div>
+              <div *ngIf="flujo.Orden == 4">
+                <app-crear-usuario (usuarioCreado)="guardarUsuarioByEmpresa($event)"
+                  [empresaID]="idEmpresaCreada"></app-crear-usuario>
+              </div>
+              <div *ngIf="flujo.Orden == 5">
+                <app-elemento [empresaID]="idEmpresaCreada"></app-elemento>
+              </div>
+              <div *ngIf="flujo.Orden == 6">
+                <app-bancos [empresaID]="idEmpresaCreada"></app-bancos>
+              </div>
+              <div *ngIf="flujo.Orden == 7">
+                <app-socios [empresaID]="idEmpresaCreada"></app-socios>
+              </div>
+              <div *ngIf="flujo.Orden == 8">
+
+              <app-saldos-iniciales 
+              (saldoInicialCreado)="guardarSaldoInicialByEmpresa($event)"
+              [empresaID]="idEmpresaCreada">
+              </app-saldos-iniciales>
+
+
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+      </p-stepperPanel>
+    </p-stepper>
+  </div>
 
 </app-card>

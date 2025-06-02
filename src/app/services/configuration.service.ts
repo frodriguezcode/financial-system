@@ -364,6 +364,13 @@ ActualizarBancoEstado(Banco: any,Activo:boolean) {
       .valueChanges();
     }
 
+  ActualizarEmpresa(idEmpresa:string) {
+      return this.afs
+    .collection('Empresa')
+    .doc(idEmpresa)
+    .ref.update({ConfigInicial:true});
+}
+
     //?------------SUCURSALES------------
     obtenerAniosPlaneacion(idEmpresa:any) {
       return this.afs

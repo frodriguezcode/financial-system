@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
@@ -20,6 +20,8 @@ import { TableModule } from 'primeng/table';
 export default class BancosComponent implements OnInit {
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService) {}
   Monedas:any=[]
+  @Input() empresaID:string=''
+  idEmpresa:string=''
   Bancos:any=[]
   Empresas:any=[]
   Sucursales:any=[]
@@ -108,6 +110,12 @@ export default class BancosComponent implements OnInit {
     else {
       this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
     }
+    if(this.empresaID!=''){
+        this.idEmpresa=this.empresaID
+    }
+    else {
+        this.idEmpresa=this.usuario.idEmpresa
+    } 
 
     this.obtenerSucursales()
   
@@ -121,7 +129,7 @@ export default class BancosComponent implements OnInit {
    }
 
   obtenerSucursales(){
-    this.conS.obtenerSucursales(this.usuario.idEmpresa).subscribe(resp=>{
+    this.conS.obtenerSucursales(this.idEmpresa).subscribe(resp=>{
       this.Sucursales=resp
       this.obtenerMonedas()
       this.obtenerBancos()
@@ -133,7 +141,7 @@ export default class BancosComponent implements OnInit {
     })
   }
   obtenerBancos(){
-    this.conS.obtenerBancos(  this.usuario.idEmpresa).subscribe(resp=>{
+    this.conS.obtenerBancos(  this.idEmpresa).subscribe(resp=>{
       this.Bancos=resp
       this.cargarFormulario()
     })
@@ -148,7 +156,7 @@ export default class BancosComponent implements OnInit {
       Editando: new FormControl(false), 
       idMoneda: new FormControl(''), 
       idSucursal: new FormControl('0',[Validators.required]), 
-      idEmpresa: new FormControl(this.usuario.idEmpresa,[Validators.required]), 
+      idEmpresa: new FormControl(this.idEmpresa,[Validators.required]), 
       FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
 
      })

@@ -1,0 +1,79 @@
+<div style="margin-left: -5px;" class="row">
+  <div class="col-2">
+    <div class="mb-3">
+      <label for="formGroupExampleInput2" class="form-label">Valor</label>
+      <input [formControl]="SaldoInicialValor" type="number" class="form-control" id="formGroupExampleInput2"
+        placeholder="Ingrese el valor del saldo inicial">
+    </div>
+  </div>
+  <div class="col-2">
+    <div class="mb-3">
+      <label for="formGroupExampleInput2" class="form-label">Año</label>
+      <input [formControl]="AnioSaldoInicial" type="number" class="form-control" id="formGroupExampleInput2"
+        placeholder="Ingrese el año">
+    </div>
+  </div>
+  <div class="col-2">
+    <div class="mb-3">
+      <label for="inputState" class="form-label">Mes</label>
+      <select [(ngModel)]="MesSeleccionado" id="inputState" class="form-select">
+        <option selected>Seleccione un mes</option>
+        <option *ngFor="let mes of Meses">{{mes.Mes}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="mb-3">
+      <label for="inputState" class="form-label">Sucursales</label>
+      <br>
+      <p-multiSelect
+      [options]="Sucursales"
+      [style]="{'width':'250px'}"
+      [panelStyle]="{'width':'300px'}"
+      appendTo="body" [(ngModel)]="SucursalesSeleccionadas" optionLabel="Nombre"
+      placeholder="Seleccione las sucursales" />
+    </div>
+  </div>
+  <div style="margin-left: -2px;" class="col-3">
+    <div class="mb-3">
+      <label for="inputState" class="form-label">Proyectos</label>
+      <br>
+      <p-multiSelect 
+      [options]="Proyectos" 
+      [style]="{'width':'250px'}" 
+      [panelStyle]="{'width':'300px'}"     
+      [(ngModel)]="ProyectosSeleccionados" appendTo="body" optionLabel="Nombre"
+        placeholder="Seleccione los proyectos" />
+    </div>
+  </div>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+    <button 
+    [disabled]="!this.MesSeleccionado ||
+    (AnioSaldoInicial.value==0) ||
+     SaldoInicialValor.value==0"
+    (click)="crearSaldoInicial()" class="btn btn-success me-md-2" type="button">Guardar</button>
+  </div>
+</div>
+<table *ngIf="cargando==false"  class="table">
+  <thead>
+    <tr>
+      <th scope="col">Valor</th>
+      <th scope="col">Año</th>
+      <th scope="col">Mes</th>
+      <th scope="col">Sucursales</th>
+      <th scope="col">Proyectos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let saldo of SaldosIniciales">
+   
+      <td>{{saldo.Valor}}</td>
+      <td>{{saldo.AnioRegistro}}</td>
+      <td>{{saldo.MesRegistro}}</td>
+      <td>{{saldo.NombreSucursales}}</td>
+      <td>{{saldo.NombreProyectos}}</td>
+
+
+    </tr>
+  </tbody>
+</table>

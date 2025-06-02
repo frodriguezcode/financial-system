@@ -1390,7 +1390,7 @@ console.log('hijos',hijos)
           "TipoRubro":this.TipoRubro,
           "OrdenReal":this.MaxOrden,
           "CuentasHijos":[],
-          "Tipo":"",
+          "Tipo":this.getTipo(ItemForm.idCategoria),
           "Nombre":this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre,
           "FechaCreacion":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd'),
   }
@@ -1425,7 +1425,6 @@ console.log('hijos',hijos)
   }
 
   getIdAbuelo(idPadre:string){
-    console.log('idPadre',idPadre)
     let Padre=this.CategoriasBack.find((cat:any)=>cat.id==idPadre)
     if(Padre){
       return Padre.idAbuelo
@@ -1435,6 +1434,7 @@ console.log('hijos',hijos)
     }
 
   }
+
 getOrdenItem(idCategoria:any){
   let _Items:any=[]
   let MaxOrden:number=0
