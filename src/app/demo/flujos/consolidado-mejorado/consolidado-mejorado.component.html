@@ -148,6 +148,7 @@ appendTo="body"
                     <span [style.color]="rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio].Color">
                       {{rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio].Valor || 0}}
                     </span>
+
                   </span>
                   <span *ngIf="rowData.tipo=='Hijo'">
                   <span [style.color]="rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio].Color">
@@ -174,6 +175,23 @@ appendTo="body"
                   <span *ngIf="rowData.tipo=='Nieto'">
                     <span [style.color]="rowData.valores[rowData.id +'-'+ col.Anio].Color">
                       {{rowData.valores[rowData.id + '-'+col.Anio].Valor || 0}}
+                    </span>
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="col.Tipo==5">
+                  <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                    <span [style.color]="rowData.valores['Prom-'+ rowData.idCategoria +'-'+ col.Anio]?.Color || '' ">
+                      {{rowData.valores['Prom-'+rowData.idCategoria + '-'+col.Anio]?.Valor || 0 }}
+                    </span>
+                  </span>
+                  <span *ngIf="rowData.tipo=='Hijo'">
+                    <span [style.color]="rowData.valores['Prom-'+rowData.idItem +'-'+ col.Anio]?.Color || '' ">
+                      {{rowData.valores['Prom-'+rowData.idItem + '-'+col.Anio]?.Valor || 0 }}
+                    </span>
+                  </span>
+                  <span *ngIf="rowData.tipo=='Nieto'">
+                    <span [style.color]="rowData.valores['Prom-'+rowData.id +'-'+ col.Anio]?.Color || '' ">
+                      {{rowData.valores['Prom-'+rowData.id + '-'+col.Anio]?.Valor || 0 }}
                     </span>
                   </span>
                 </ng-container>

@@ -22,11 +22,13 @@ constructor(private conS:ConfigurationService){}
 Anios: any[] = [];
 AnioSeleccionados: any[] = [];
 Trimestres: any[] = [];
+Meses: any[] = [];
 Cabecera: any[] = [];
 Registros: any[] = [];
 Items: any[] = [];
 SaldoInicial: any[] = [];
 Categorias: any[] = [];
+DataTreeTableTrimestral=[]
 DataTreeTable=[]
 usuario:any
 cargando:boolean=true
@@ -39,10 +41,120 @@ maxCategoryLength: number = 0;
 
 ngOnInit(): void {
   this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  this.Anios=[
+    {Anio:2023,
+    Mostrar: true
+    },
+    {Anio:2024,
+    Mostrar: true
 
+    },
+    {Anio:2025,
+    Mostrar: true
+
+    },
+  ]
+  this.Meses= [
+    {
+      Mes: 'Enero',
+      NumMes:1,
+      Trimestre:1,
+      seleccionado: false
+    },
+    {
+      Mes: 'Febrero',
+      NumMes:2,
+      Trimestre:1,
+      seleccionado: false
+    },
+    {
+      Mes: 'Marzo',
+      NumMes:3,
+      Trimestre:1,
+      seleccionado: false
+    },
+    {
+      Mes: 'Abril',
+      NumMes:4,
+      Trimestre:2,
+      seleccionado: false
+    },
+    {
+      Mes: 'Mayo',
+      NumMes:5,
+      Trimestre:2,
+      seleccionado: false
+    },
+    {
+      Mes: 'Junio',
+      NumMes:6,
+      Trimestre:2,
+      seleccionado: false
+    },
+    {
+      Mes: 'Julio',
+      NumMes:7,
+      Trimestre:3,
+      seleccionado: false
+    },
+    {
+      Mes: 'Agosto',
+      NumMes:8,
+      Trimestre:3,
+      seleccionado: false
+    },
+    {
+      Mes: 'Septiembre',
+      NumMes:9,
+      Trimestre:3,
+      seleccionado: false
+    },
+    {
+      Mes: 'Octubre',
+      NumMes:10,
+      Trimestre:4,
+      seleccionado: false
+    },
+    {
+      Mes: 'Noviembre',
+      NumMes:11,
+      Trimestre:4,
+      seleccionado: false
+    },
+    {
+      Mes: 'Diciembre',
+      NumMes:12,
+      Trimestre:4,
+      seleccionado: false
+    },
+  
+  ]
+  this.Trimestres=[
+  {
+        Trimestre:"Trimestre 1",
+        Nombre:"Trimestre 1",
+        id:1
+  },
+  {
+    Trimestre:"Trimestre 2",
+    Nombre:"Trimestre 2",
+    id:2
+  },
+  {
+    Trimestre:"Trimestre 3",
+    Nombre:"Trimestre 3",
+    id:3
+  },
+  {
+    Trimestre:"Trimestre 4",
+    Nombre:"Trimestre 4",
+    id:4
+  }
+  ]
   this.conS.RegistrosTrimestrales$.subscribe((data:any)=>{
     this.Trimestres=data.Trimestres.sort((a:any, b:any) => a.NumTrimestre - b.NumTrimestre)
     this.Anios=data.Anios
+    this.DataTreeTable=data.DataTreeTable
     this.Categorias=data.Categorias
     this.Items=data.Items
     this.Registros=data.Registros
@@ -50,8 +162,73 @@ ngOnInit(): void {
     this.construirCabecera()
   })
 
+    this.Categorias.forEach(categ => {
+
+    this.DataTreeTableTrimestral.push({
+      data: { 
+         Nombre: categ.Nombre, 
+         size: '200mb', 
+         type: 'Folder',
+         valores: {},
+         idCategoria:categ.id,
+         orden:categ.Orden,
+         tipo: 
+         (categ.Orden == 1 || categ.Orden == 4 || categ.Orden == 7 || categ.Orden == 10 ) ?'Abuelo' :
+         (categ.Orden == 0 ) ?'Saldo Inicial' :
+         (categ.Orden == 11 ) ?'Saldo Final' 
+         :'Padre'
+         },
+      children:
+      
+      this.getItemsByCategoria(categ.id)
+
+    })
+
+
+    
+    
+    
+    
+  })
+
   this.maxCategoryLength = this.findLongestCategory();
 }
+
+  getItemsByCategoria(idCategoria:string){
+    let Item=this.Items.filter((it:any)=>it.idPadre==idCategoria)
+    let ItemsEncontrados:any=[]
+    if(Item.length>0){
+      let data:any
+      Item.forEach((item:any)=>{
+        ItemsEncontrados.push(
+          {
+         data:{
+           Nombre: item.Nombre, 
+           idItem: item.id,
+           size: '200mb', 
+           type: 'Folder',
+           orden:item.Orden,
+           tipo:'Hijo',
+           valores: {},
+         },
+          children: item.CuentasHijos === undefined ? [] : item.CuentasHijos.map(hijo => ({
+            data:{
+            ...hijo,
+              valores: {},
+              tipo:'Nieto',
+              Orden:hijo.Orden
+            }  
+          }))
+      });
+      })
+      return ItemsEncontrados
+    }
+    else {
+      return []
+    } 
+
+
+  }
 
 
 findLongestCategory(): number {
@@ -87,29 +264,28 @@ calcColumnWidthPx(): number {
 construirCabecera(){
 
   this.Cabecera=[]
-  // this.Cabecera.push({
-  //   "Nombre":"Concepto",
-  //   "Mes":"",
-  //   "NumMes":"",
-  //   "Anio":"",
-  //   "Tipo":1,
-  //   "Mostrar":true,
-  //   "MostrarBoton":true
-  // })
-  this.Anios.forEach((anio:any) => {
-    this.getTrimestresByAnio(anio.Anio).forEach((trim:any) => {
+  this.Cabecera.push({
+    "Nombre":"Concepto",
+    "Mes":"",
+    "NumMes":"",
+    "Anio":"",
+    "Tipo":1,
+    "Mostrar":true,
+    "MostrarBoton":true
+  })
+
+  let AniosCabecera=this.AnioSeleccionados.length>0 ? this.AnioSeleccionados:this.Anios
+  let Trimestres=this.TrimestresSeleccionados.length>0 ? this.TrimestresSeleccionados:this.Trimestres
+  
+  AniosCabecera.forEach((anio:any) => {
+    Trimestres.forEach((trim:any) => {
   
         this.Cabecera.push({
           "Nombre":trim.Trimestre + ' - ' + anio.Anio,
           "Trimestre":trim.Trimestre,
-          "NumTrimestre":trim.NumTrimestre,
+          "NumTrimestre":trim.id,
           "Anio":anio.Anio,
-          "Tipo":2,
-          "Mostrar":true,
-          "MostrarBoton":true,
-          "MostrarBotonSemanal":true,
-          "MostrarBotonMensual":true,
-          "MostrarSemanas":true,
+          "Tipo":2
         })
 
     });
@@ -123,7 +299,7 @@ construirCabecera(){
       "MostrarBoton":true
     })
   });
-  this.construirData()
+  this.construirValores()
  }
 
  toggleAllRows() {
@@ -143,131 +319,208 @@ construirCabecera(){
     }
   }
 }
+getMesesByTrimestre(idTrimestre:any){
+  return this.Meses.filter((mes:any)=>mes.Trimestre==idTrimestre)
+}
+construirValores(){
+  // let AniosCabecera=this.AnioSeleccionados.length>0 ? this.AnioSeleccionados:this.Anios
+  // let Trimestres=this.TrimestresSeleccionados.length>0 ? this.TrimestresSeleccionados:this.Trimestres   
+  // this.DataTreeTableTrimestral.forEach(dataTree => {
+  //   if (dataTree.data.valores !== undefined) {
+  //     dataTree.data.valores = {};
 
-construirData(){
-  
-  let indexCategoria:number=0
-  let indexItem:number=0
-  this.DataTreeTable=[]
-  this.Categorias.forEach(categ => {
-    indexCategoria+=1
-    let newRow: any = {
-      key: `${indexCategoria}`,
-      data: {
-        id_categoria: categ.id, // O el campo relevante de Categorias
-        categoria: categ.Nombre, // O el campo relevante de Categorias
-        values: {}, // Aquí guardaremos los valores por mes-año
-        children: [],
-        tipo:0
-      }
-    }
+  //   AniosCabecera.forEach(anio => {
+  //     let totalAnual = 0;
+  //     const claveAnual= `${dataTree.data.idCategoria}-${anio.Anio}`;
+  //       Trimestres.forEach(trim => {
+  //         const claveTrimestral = `${dataTree.data.idCategoria}-${trim.id}-${anio.Anio}`;
+  //         if(dataTree.data.tipo=='Saldo Inicial'){
+ 
 
-    this.Anios.forEach((anio:any) => {
-      this.getTrimestresByAnio(anio.Anio).forEach((trim:any) => {
-        let key = `${trim.NumTrimestre}-${anio.Anio}`;
-        newRow.data.tipo=categ.Tipo
-        if(categ.Orden==0) {
-          this.RegistrosSaldosFinalesTrimestrales.push({
-            "key":key,
-            "Anio":anio.Anio,
-            "Valor":this.getValorSaldoFinalTrimestral(trim.NumTrimestre,anio.Anio) || 0
-          })
-          newRow.data.values[key] = this.getSaldoInicialTrimestral(trim.NumTrimestre,anio.Anio) || 0;
-         
+  //           const valor = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
+  //           const valorAnual = this.obtenerValorSaldoInicialAnual(anio.Anio) || 0
+           
+           
+  //           dataTree.data.valores[claveTrimestral] = 
+  //           {
+  //            "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //            "ValorNumero": valor,
+  //            "Color": valor<0 ? '#ff3200': '#000000',
+  //           }
+  //           dataTree.data.valores[claveAnual] = 
+  //            {
+  //            "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //            "ValorNumero": valorAnual,
+  //            "Color": valorAnual<0 ? '#ff3200': '#000000',
+  //            }
+           
+  //         }
+  //       else if(dataTree.data.tipo=='Saldo Final'){
+  //           const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
+  //           const valorAnual = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0
+  //           dataTree.data.valores[claveMensual] = 
+  //             {
+  //            "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //            "ValorNumero": valor,
+  //            "Color": valor<0 ? '#ff3200': '#000000',
+  //             }
+  //           dataTree.data.valores[claveAnual] = 
+  //           {
+  //           "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //           "ValorNumero": valorAnual,
+  //           "Color": valorAnual<0 ? '#ff3200': '#000000',
+  //           }
+           
+  //         }
 
-        }
-        else if(categ.Orden==1) {
-          newRow.data.values[key] = this.getDataFlujoOperativoTrimestral(trim.NumTrimestre,anio.Anio) || 0;         
-        }
-        else if(categ.Orden==4) {
-          newRow.data.values[key] = this.getDataFlujoInversionTrimestral(trim.NumTrimestre,anio.Anio) || 0;
-        }
+  //         if(dataTree.data.tipo=='Abuelo'){
+  //           if(dataTree.data.orden==1){
+  //             const valor = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio) || 0;
+  //             dataTree.data.valores[claveMensual] = 
+  //             {
+  //            "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //            "ValorNumero": valor,
+  //            "Color": valor<0 ? '#ff3200': '#000000',
+  //             }
+  //             totalAnual += valor;
 
-        else if(categ.Orden==7) {
-          newRow.data.values[key] = this.getDataFlujoFinancieroTrimestre(trim.NumTrimestre,anio.Anio) || 0;
+  //             dataTree.data.valores[claveAnual] =
+  //             {
+  //             "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //             "ValorNumero": totalAnual,
+  //             "Color": totalAnual<0 ? '#ff3200': '#000000',
+  //             }                  
+  //           }
+  //         else if(dataTree.data.orden==4){
+  //             const valor = this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio) || 0;
+  //             dataTree.data.valores[claveMensual] = 
+  //             {
+  //             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //             "ValorNumero": valor,
+  //             "Color": valor<0 ? '#ff3200': '#000000',
+  //             }
+  //             totalAnual += valor;
+  //             dataTree.data.valores[claveAnual] =
+  //             {
+  //             "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //             "ValorNumero": totalAnual,
+  //             "Color": totalAnual<0 ? '#ff3200': '#000000',
+  //             }  
+  //           }
+  //         else if(dataTree.data.orden==7){
+  //             const valor = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio) || 0;
+  //             dataTree.data.valores[claveMensual] =
+  //             {
+  //             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //             "ValorNumero": valor,
+  //             "Color": valor<0 ? '#ff3200': '#000000',
+  //             }
+  //             totalAnual += valor;
+  //             dataTree.data.valores[claveAnual] =
+  //             {
+  //             "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //             "ValorNumero": totalAnual,
+  //             "Color": totalAnual<0 ? '#ff3200': '#000000',
+  //             }  
+  //           }
+  //         else if(dataTree.data.orden==10){
+  //             const valor = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) || 0;
+  //             dataTree.data.valores[claveMensual] =
+  //             {
+  //             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //             "ValorNumero": valor,
+  //             "Color": valor<0 ? '#ff3200': '#000000',
+  //             }
+  //             totalAnual += valor;
+  //             dataTree.data.valores[claveAnual] = 
+  //             {
+  //             "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //             "ValorNumero": totalAnual,
+  //             "Color": totalAnual<0 ? '#ff3200': '#000000',
+  //             }  
+  //           }
+  //         }
 
-        }
+  //         if(dataTree.data.tipo=='Padre'){
 
-        else if(categ.Orden==10) {
-          newRow.data.values[key] = this.getDataFlujoLibreTrimestral(trim.NumTrimestre,anio.Anio) || 0;
-        }
+  //           const valor = this.getValorCategoriaMensual(dataTree.data.idCategoria,mes.NumMes,anio.Anio) || 0;
+  //           dataTree.data.valores[claveMensual] = {
+  //            "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //            "ValorNumero": valor,
+  //            "Color": valor<0 ? '#ff3200': '#000000'
+  //           }
+  //           totalAnual += valor;
+  //           dataTree.data.valores[claveAnual] = 
+  //           {
+  //           "Valor": totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //           "ValorNumero": totalAnual,
+  //           "Color": totalAnual<0 ? '#ff3200': '#000000',
+  //           }  
+            
+  //           let claveAnualHijo: any
+  //           let claveAnualNieto: any        
+  //           dataTree.children.forEach(cuenta => {
+  //             const claveMensualHijo = `${cuenta.data.idItem}-${mes.NumMes}-${anio.Anio}`;
+  //             claveAnualHijo= `${cuenta.data.idItem}-${anio.Anio}`;
+  //             const valor = this.getValorItemMensual(cuenta.data.idItem, mes.NumMes, anio.Anio) || 0;
+  //             const valorAnual = this.getValorItemAnual(cuenta.data.idItem,anio.Anio) || 0;
+  //             cuenta.data.valores[claveMensualHijo] = 
+  //             {
+  //            "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //            "ValorNumero": valor,
+  //            "Color": valor<0 ? '#ff3200': '#000000'
+  //             }
+  //             cuenta.data.valores[claveAnualHijo] =   
+  //             {
+  //            "Valor": valorAnual<0 ? ('-$ '+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //            "ValorNumero": valorAnual,
+  //            "Color": valorAnual<0 ? '#ff3200': '#000000'
+  //             }
 
-        else if(categ.Orden==11) {
-          newRow.data.values[key] = this.getValorSaldoFinalTrimestral(trim.NumTrimestre,anio.Anio) || 0;
-        }
-
-        else {
-          newRow.data.values[key] = this.getValorCategoriaTrimestral(categ.id,trim.NumTrimestre,anio.Anio) || 0;
-        }
-
-      })
-
-      let key = `${anio.Anio}`;
-
-      if(categ.Orden==0) {
-        newRow.data.values[key] = this.obtenerValorSaldoInicialAnual(anio.Anio);
-       
-
-      }
-      else if(categ.Orden==1) {
-        newRow.data.values[key] = this.getDataFlujoOperativoAnual(anio.Anio) || 0;
-   
-
-      }
-      else if(categ.Orden==4) {
-        newRow.data.values[key] = this.getDataFlujoInversionAnual(anio.Anio) || 0;
-
-
-      }
-      else if(categ.Orden==7) {
-        newRow.data.values[key] = this.getDataFlujoFinancieroAnual(anio.Anio) || 0;
-
-      }
-      else if(categ.Orden==10) {
-        newRow.data.values[key] = this.getDataFlujoLibreAnual(anio.Anio) || 0;
-
-
-      }
-      else if(categ.Orden==11) {
-        newRow.data.values[key] = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0;
-  
-
-      }
-      else {
-        newRow.data.values[key] = this.getValorCategoriaAnual(categ.id,anio.Anio) || 0;
-      }
-  
-    })
-
-    this.getItems(categ.id).forEach(item => {
-      let newItem: any = {
-        key: `${indexCategoria}-${indexItem}`,
-        data: {
-          id_item: item.id, // Nombre del item
-          categoria: item.Nombre, // Nombre del item
-          values: {}
-        }
-      };
-      this.Anios.forEach((anio:any) => {
-        this.getTrimestresByAnio(anio.Anio).forEach((trim:any) => {
-          indexItem+=1
-          let key = `${trim.NumTrimestre}-${anio.Anio}`;
-       
-            newItem.data.values[key] = this.getValorItemTrimestral(item.id, trim.NumTrimestre, anio.Anio) || 0;
+  //             cuenta.children.forEach(subCuenta => {
           
-    
+  //             const claveMensualHijo = `${subCuenta.data.id}-${mes.NumMes}-${anio.Anio}`;
+  //             claveAnualNieto= `${subCuenta.data.id}-${anio.Anio}`;
+  //             const valorNieto = this.getValorSubItemMensual(subCuenta.data.id, mes.NumMes, anio.Anio) || 0;
+  //             const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.id, anio.Anio) || 0;
+  //             subCuenta.data.valores[claveMensualHijo] =                 
+  //               {
+  //               "Valor": valorNieto<0 ? ('-$ '+ (valorNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //               "ValorNumero": valorNieto,
+  //               "Color": valorNieto<0 ? '#ff3200': '#000000'
+  //               }
+
+  //             subCuenta.data.valores[claveAnualNieto] = 
+  //               {
+  //               "Valor": valorNietoAnual<0 ? ('-$ '+ (valorNietoAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNietoAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+  //               "ValorNumero": valorNietoAnual,
+  //               "Color": valorNietoAnual<0 ? '#ff3200': '#000000'
+  //               }
+
+  //             });
+  //           });
+
+
+
+  //         }
+
+
+
+
+
+  //       });
+   
         
-      })
-      let keyAnio = `${anio.Anio}`;
-        newItem.data.values[keyAnio] = this.getValorItemAnual(item.id,anio.Anio) || 0;
-      })
-      newRow.data.children.push(newItem);
-    })
-  
-    this.DataTreeTable.push(newRow)
-  })
-this.cargando=false
-} 
+
+        
+  //     });
+  //   }
+  // }); 
+  // this.cargar=false
+  // console.log('Cabecera',this.Cabecera)
+  // console.log('DataTreeTable',this.DataTreeTable)
+ }
+
 
 getValorItemTrimestral(idElemento:any,Trim:any,Anio:any){
   let _Data: any=[];

@@ -91,61 +91,73 @@ export default class FlujoConsolidadoComponent implements OnInit {
     {
       Mes: 'Enero',
       NumMes:1,
+      Trimestre:1,
       seleccionado: false
     },
     {
       Mes: 'Febrero',
       NumMes:2,
+      Trimestre:1,
       seleccionado: false
     },
     {
       Mes: 'Marzo',
       NumMes:3,
+      Trimestre:1,
       seleccionado: false
     },
     {
       Mes: 'Abril',
       NumMes:4,
+      Trimestre:2,
       seleccionado: false
     },
     {
       Mes: 'Mayo',
       NumMes:5,
+      Trimestre:2,
       seleccionado: false
     },
     {
       Mes: 'Junio',
       NumMes:6,
+      Trimestre:2,
       seleccionado: false
     },
     {
       Mes: 'Julio',
       NumMes:7,
+      Trimestre:3,
       seleccionado: false
     },
     {
       Mes: 'Agosto',
       NumMes:8,
+      Trimestre:3,
       seleccionado: false
     },
     {
       Mes: 'Septiembre',
       NumMes:9,
+      Trimestre:3,
       seleccionado: false
     },
     {
       Mes: 'Octubre',
       NumMes:10,
+      Trimestre:4,
       seleccionado: false
     },
     {
       Mes: 'Noviembre',
       NumMes:11,
+      Trimestre:4,
       seleccionado: false
     },
     {
       Mes: 'Diciembre',
       NumMes:12,
+      Trimestre:4,
       seleccionado: false
     },
   

@@ -126,7 +126,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   maxCategoryLength: number = 0;
   ngOnInit(): void {
-      this.Anios=[
+  this.Anios=[
     {Anio:2023,
     Mostrar: true
     },
@@ -145,75 +145,98 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
       Mes: 'Enero',
       NumMes:1,
       Trimestre:1,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Febrero',
       NumMes:2,
       Trimestre:1,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Marzo',
       NumMes:3,
       Trimestre:1,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Abril',
       NumMes:4,
       Trimestre:2,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Mayo',
       NumMes:5,
       Trimestre:2,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Junio',
       NumMes:6,
       Trimestre:2,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Julio',
       NumMes:7,
       Trimestre:3,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Agosto',
       NumMes:8,
       Trimestre:3,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Septiembre',
       NumMes:9,
       Trimestre:3,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Octubre',
       NumMes:10,
       Trimestre:4,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Noviembre',
       NumMes:11,
       Trimestre:4,
-      Mostrar: true
+      seleccionado: false
     },
     {
       Mes: 'Diciembre',
       NumMes:12,
       Trimestre:4,
-      Mostrar: true
+      seleccionado: false
     },
   
+  ]
+
+  this.Trimestres=[
+  {
+        Trimestre:"Trimestre 1",
+        Nombre:"Trimestre 1",
+        id:1
+  },
+  {
+    Trimestre:"Trimestre 2",
+    Nombre:"Trimestre 2",
+    id:2
+  },
+  {
+    Trimestre:"Trimestre 3",
+    Nombre:"Trimestre 3",
+    id:3
+  },
+  {
+    Trimestre:"Trimestre 4",
+    Nombre:"Trimestre 4",
+    id:4
+  }
   ]
   this.MesesBack=this.Meses
   this.AniosBack=this.Anios
@@ -1093,8 +1116,8 @@ obtenerRegistros(){
           // this.MesesBack=mesesActivos.sort((a:any, b:any) => a.NumMes- b.NumMes)
           // this.Anios=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
           // this.AniosBack=aniosActivos.sort((a:any, b:any) => a.Anio- b.Anio)
-          this.Trimestres=obtenerTrimestresUnicos(this.Registros, this.SaldoInicial)
-          this.Semestres=obtenerSemestresUnicos(this.Registros, this.SaldoInicial)
+          //this.Trimestres=obtenerTrimestresUnicos(this.Registros, this.SaldoInicial)
+          //this.Semestres=obtenerSemestresUnicos(this.Registros, this.SaldoInicial)
           // this.Anios.map((anio:any)=>{anio.Mostrar=true,anio.MostrarBoton=true})
           // this.Meses.map((mes:any)=>{mes.Mostrar=true,mes.MostrarBoton=true})
 
@@ -1823,6 +1846,7 @@ this.construirValores()
     this.Anios.forEach(anio => {
       let totalAnual = 0;
       const claveAnual= `${dataTree.data.idCategoria}-${anio.Anio}`;
+      const claveAnualPromedio= `Prom-${dataTree.data.idCategoria}-${anio.Anio}`;
         this.Meses.forEach(mes => {
           const claveMensual = `${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`;
           let key = `${mes.NumMes}-${anio.Anio}`;
@@ -1835,6 +1859,7 @@ this.construirValores()
 
             const valor = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
             const valorAnual = this.obtenerValorSaldoInicialAnual(anio.Anio) || 0
+            const valorAnualPromedio =Number((valorAnual/12).toFixed(0))
             dataTree.data.valores[claveMensual] = 
             {
              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -1847,11 +1872,18 @@ this.construirValores()
              "ValorNumero": valorAnual,
              "Color": valorAnual<0 ? '#ff3200': '#000000',
              }
+            dataTree.data.valores[claveAnualPromedio] = 
+             {
+             "Valor": valorAnualPromedio<0 ? ('-$'+ (valorAnualPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnualPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valorAnualPromedio,
+             "Color": valorAnualPromedio<0 ? '#ff3200': '#000000',
+             }
            
           }
         else if(dataTree.data.tipo=='Saldo Final'){
             const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
             const valorAnual = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0
+          
             dataTree.data.valores[claveMensual] = 
               {
              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -1864,13 +1896,27 @@ this.construirValores()
             "ValorNumero": valorAnual,
             "Color": valorAnual<0 ? '#ff3200': '#000000',
             }
+            
+           const valorAnualPromedio =
+           this.DataTreeTable[0].data.valores[`Prom-0-${anio.Anio}`]?.ValorNumero+
+           this.DataTreeTable[1].data.valores[`Prom-EESGPM4hWXvDlXSRnCwA-${anio.Anio}`]?.ValorNumero+
+           this.DataTreeTable[4].data.valores[`Prom-GMzSuF04XQBsPmAkIB2C-${anio.Anio}`]?.ValorNumero+
+           this.DataTreeTable[7].data.valores[`Prom-psmpY6iyDJNkW7AKFXgK-${anio.Anio}`]?.ValorNumero
+            
+            dataTree.data.valores[claveAnualPromedio] = 
+             {
+             "Valor": valorAnualPromedio<0 ? ('-$'+ (valorAnualPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnualPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valorAnualPromedio,
+             "Color": valorAnualPromedio<0 ? '#ff3200': '#000000',
+             }
            
           }
 
           if(dataTree.data.tipo=='Abuelo'){
             if(dataTree.data.orden==1){
-              const valor = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio) || 0;
-              dataTree.data.valores[claveMensual] = 
+            const valor = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio) || 0;
+            
+            dataTree.data.valores[claveMensual] = 
               {
              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
              "ValorNumero": valor,
@@ -1883,6 +1929,13 @@ this.construirValores()
               "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
+              } 
+              const ValorPromedio=Number((totalAnual/12).toFixed(0))
+              dataTree.data.valores[claveAnualPromedio] =
+              {
+              "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": ValorPromedio,
+              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
               }                  
             }
           else if(dataTree.data.orden==4){
@@ -1899,7 +1952,15 @@ this.construirValores()
               "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
-              }  
+              }
+              
+              const ValorPromedio=Number((totalAnual/12).toFixed(0))
+              dataTree.data.valores[claveAnualPromedio] =
+              {
+              "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": ValorPromedio,
+              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+              } 
             }
           else if(dataTree.data.orden==7){
               const valor = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio) || 0;
@@ -1916,6 +1977,14 @@ this.construirValores()
               "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               }  
+
+              const ValorPromedio=Number((totalAnual/12).toFixed(0))
+              dataTree.data.valores[claveAnualPromedio] =
+              {
+              "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": ValorPromedio,
+              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+              }               
             }
           else if(dataTree.data.orden==10){
               const valor = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) || 0;
@@ -1931,7 +2000,15 @@ this.construirValores()
               "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
-              }  
+              }
+              
+              const ValorPromedio=Number((totalAnual/12).toFixed(0))
+              dataTree.data.valores[claveAnualPromedio] =
+              {
+              "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": ValorPromedio,
+              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+              } 
             }
           }
 
@@ -1949,13 +2026,23 @@ this.construirValores()
             "Valor": totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             "ValorNumero": totalAnual,
             "Color": totalAnual<0 ? '#ff3200': '#000000',
-            }  
+            }
+            const ValorPromedio=Number((totalAnual/12).toFixed(0))
+            dataTree.data.valores[claveAnualPromedio] =
+            {
+              "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": ValorPromedio,
+              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+            }   
             
             let claveAnualHijo: any
             let claveAnualNieto: any        
+            let claveAnualNietoProm: any        
+            let claveAnualHijoProm: any        
             dataTree.children.forEach(cuenta => {
               const claveMensualHijo = `${cuenta.data.idItem}-${mes.NumMes}-${anio.Anio}`;
               claveAnualHijo= `${cuenta.data.idItem}-${anio.Anio}`;
+              claveAnualHijoProm= `Prom-${cuenta.data.idItem}-${anio.Anio}`;
               const valor = this.getValorItemMensual(cuenta.data.idItem, mes.NumMes, anio.Anio) || 0;
               const valorAnual = this.getValorItemAnual(cuenta.data.idItem,anio.Anio) || 0;
               cuenta.data.valores[claveMensualHijo] = 
@@ -1971,10 +2058,19 @@ this.construirValores()
              "Color": valorAnual<0 ? '#ff3200': '#000000'
               }
 
+              const ValorPromedio=Number((valorAnual/12).toFixed(0))
+              cuenta.data.valores[claveAnualHijoProm] =
+              {
+              "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": ValorPromedio,
+              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+              }               
+
               cuenta.children.forEach(subCuenta => {
           
               const claveMensualHijo = `${subCuenta.data.id}-${mes.NumMes}-${anio.Anio}`;
               claveAnualNieto= `${subCuenta.data.id}-${anio.Anio}`;
+              claveAnualNietoProm= `Prom-${subCuenta.data.id}-${anio.Anio}`;
               const valorNieto = this.getValorSubItemMensual(subCuenta.data.id, mes.NumMes, anio.Anio) || 0;
               const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.id, anio.Anio) || 0;
               subCuenta.data.valores[claveMensualHijo] =                 
@@ -1989,6 +2085,13 @@ this.construirValores()
                 "Valor": valorNietoAnual<0 ? ('-$ '+ (valorNietoAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNietoAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                 "ValorNumero": valorNietoAnual,
                 "Color": valorNietoAnual<0 ? '#ff3200': '#000000'
+                }
+               const ValorPromedio=Number((valorNietoAnual/12).toFixed(0))  
+               subCuenta.data.valores[claveAnualNietoProm] = 
+                {
+                "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": ValorPromedio,
+                "Color": ValorPromedio<0 ? '#ff3200': '#000000'
                 }
 
               });
@@ -2303,6 +2406,17 @@ construirCabecera(){
         // "Mostrar":true,
         // "MostrarBoton":true
       })
+      this.Cabecera.push({
+        "Nombre":"Promedio " + anio.Anio,
+        "Mes":"",
+        "NumMes":"",
+        "Anio":anio.Anio,
+        "Tipo":5,
+        // "Mostrar":true,
+        // "MostrarBoton":true
+      })
+      
+
     });
 
 
