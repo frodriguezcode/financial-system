@@ -1838,7 +1838,7 @@ this.construirValores()
 
   }
 
-  construirValores(){
+construirValores(){
    
   this.DataTreeTable.forEach(dataTree => {
     if (dataTree.data.valores !== undefined) {
