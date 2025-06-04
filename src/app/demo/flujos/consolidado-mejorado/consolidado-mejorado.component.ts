@@ -776,9 +776,8 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
    
     this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
     this.SaldoInicial= this.conS.filtradoDinamico(CriteriosSaldos,this.SaldoInicialBack)
-
    this.construirCabecera()
-
+   
   
   }
 
@@ -912,7 +911,7 @@ filtrarCuentas(TipoRubro:any){
       this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro
       &&
 
-      item.Sucursales.some(sucursal => sucursalesID.includes(sucursal.id))
+      item.idSucursales.some(sucursal => sucursalesID.includes(sucursal))
       )
 
 
@@ -928,14 +927,14 @@ filtrarCuentas(TipoRubro:any){
     else {
       const proyectosIds = this.ProyectoSeleccionado.map(p => p.id);
       this.Items=this.ItemsBack.filter((item:any)=>item.TipoRubro==TipoRubro &&
-      item.Proyectos.some(proyecto => proyectosIds.includes(proyecto.id))
+      item.idProyectos.some(proyecto => proyectosIds.includes(proyecto))
       )
     }
     
   }
-  this.getDataCategorias()
-  this.getDataCategoriasMensual()
-  this.getDataCategoriasAnual()
+  // this.getDataCategorias()
+  // this.getDataCategoriasMensual()
+  // this.getDataCategoriasAnual()
 
 }
   
@@ -1761,7 +1760,18 @@ getDataItemAnual(){
       }) 
   });
 
-  this.DataTreeTable=[]
+this.construirItemsCatalogos()
+ 
+    
+this.construirValores()
+  
+
+
+
+  }
+
+construirItemsCatalogos(){
+    this.DataTreeTable=[]
   
   this.Categorias.forEach(categ => {
 
@@ -1791,19 +1801,11 @@ getDataItemAnual(){
     
     
   })
- 
-    
-this.construirValores()
-  
 
+}
 
-
-  }
-
-
-
-  getItemsByCategoria(idCategoria:string){
-    let Item=this.ItemsBack.filter((it:any)=>it.idPadre==idCategoria)
+getItemsByCategoria(idCategoria:string){
+    let Item=this.Items.filter((it:any)=>it.idPadre==idCategoria)
     let ItemsEncontrados:any=[]
     if(Item.length>0){
       let data:any
@@ -2114,8 +2116,7 @@ construirValores(){
     }
   }); 
   this.cargar=false
-  console.log('Cabecera',this.Cabecera)
-  console.log('DataTreeTable',this.DataTreeTable)
+
   }
 
 

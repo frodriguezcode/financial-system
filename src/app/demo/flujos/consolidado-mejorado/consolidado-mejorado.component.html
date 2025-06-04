@@ -36,7 +36,10 @@
   emptyMessage="No hay sucursales disponibles"
   emptyFilterMessage="No se encontraron coincidencias"
   />
-<p-multiSelect [disabled]="SucursalSeleccionada.length>0" class="m-1" (onChange)=" filtrarData();filtrarCuentas(2)" [options]="Proyectos"
+<p-multiSelect 
+[disabled]="SucursalSeleccionada.length>0" 
+  class="m-1" (onChange)=" filtrarData();filtrarCuentas(2)" 
+  [options]="Proyectos"
   [(ngModel)]="ProyectoSeleccionado"
   optionLabel="NombreSucursal" 
   appendTo="body"
@@ -145,36 +148,36 @@ appendTo="body"
               <td style="width: 200px" class="text-center" *ngFor="let col of columns">
                 <ng-container *ngIf="col.Tipo==3">
                   <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
-                    <span [style.color]="rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio].Color">
-                      {{rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio].Valor || 0}}
+                    <span [style.color]="rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
+                      {{rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio]?.Valor || 0}}
                     </span>
 
                   </span>
                   <span *ngIf="rowData.tipo=='Hijo'">
-                  <span [style.color]="rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio].Color">
-                    {{rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio].Valor || 0}}
+                  <span [style.color]="rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
+                    {{rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio]?.Valor || 0}}
                   </span>  
                   </span>
                 <span *ngIf="rowData.tipo=='Nieto'">
-                  <span [style.color]="rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio].Color">
-                    {{rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio].Valor || 0}}
+                  <span [style.color]="rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
+                    {{rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio]?.Valor || 0}}
                   </span> 
                 </span>
                 </ng-container>
                 <ng-container *ngIf="col.Tipo==4">
                   <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
-                    <span [style.color]="rowData.valores[rowData.idCategoria +'-'+ col.Anio].Color">
-                      {{rowData.valores[rowData.idCategoria + '-'+col.Anio].Valor || 0}}
+                    <span [style.color]="rowData.valores[rowData.idCategoria +'-'+ col.Anio]?.Color || ''">
+                      {{rowData.valores[rowData.idCategoria + '-'+col.Anio]?.Valor || 0}}
                     </span>
                   </span>
                   <span *ngIf="rowData.tipo=='Hijo'">
                     <span [style.color]="rowData.valores[rowData.idItem +'-'+ col.Anio].Color">
-                      {{rowData.valores[rowData.idItem + '-'+col.Anio].Valor || 0}}
+                      {{rowData.valores[rowData.idItem + '-'+col.Anio]?.Valor || 0}}
                     </span>
                   </span>
                   <span *ngIf="rowData.tipo=='Nieto'">
-                    <span [style.color]="rowData.valores[rowData.id +'-'+ col.Anio].Color">
-                      {{rowData.valores[rowData.id + '-'+col.Anio].Valor || 0}}
+                    <span [style.color]="rowData.valores[rowData.id +'-'+ col.Anio]?.Color || ''">
+                      {{rowData.valores[rowData.id + '-'+col.Anio]?.Valor || 0}}
                     </span>
                   </span>
                 </ng-container>
