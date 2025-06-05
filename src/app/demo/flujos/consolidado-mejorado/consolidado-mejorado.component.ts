@@ -932,9 +932,11 @@ filtrarCuentas(TipoRubro:any){
     }
     
   }
+this.construirItemsCatalogos()
   // this.getDataCategorias()
   // this.getDataCategoriasMensual()
   // this.getDataCategoriasAnual()
+
 
 }
   
@@ -1763,7 +1765,7 @@ getDataItemAnual(){
 this.construirItemsCatalogos()
  
     
-this.construirValores()
+
   
 
 
@@ -1801,7 +1803,7 @@ construirItemsCatalogos(){
     
     
   })
-
+   this.construirValores()
 }
 
 getItemsByCategoria(idCategoria:string){
@@ -2494,8 +2496,7 @@ construirCabecera(){
     this.getDataCategorias()
     this.getDataCategoriasMensual()
     this.getDataCategoriasAnual()
-
-
+ 
 
     let DataSemestral={
       'Registros':this.Registros,

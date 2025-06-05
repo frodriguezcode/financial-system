@@ -164,11 +164,8 @@ ngOnInit(): void {
     this.DataTreeTable=data.DataTreeTable
     this.Categorias=data.Categorias
     this.Items=data.Items
-    console.log('data',data)
-  })
-
+    this.DataTreeTableTrimestral=[]
     this.Categorias.forEach(categ => {
-
     this.DataTreeTableTrimestral.push({
       data: { 
          Nombre: categ.Nombre, 
@@ -186,17 +183,20 @@ ngOnInit(): void {
       children:
       
       this.getItemsByCategoria(categ.id)
-
+  
     })
-
+  
     
     
     
     
   })
   this.construirValores()
-
+  
   this.maxCategoryLength = this.findLongestCategory();
+
+  })
+
 }
 
   getItemsByCategoria(idCategoria:string){
@@ -601,9 +601,7 @@ construirValores(){
     }
   }); 
   this.cargar=false
-  console.log('Cabecera',this.Cabecera)
-  console.log('DataTreeTableTrimestral',this.DataTreeTableTrimestral)
-  console.log('DataTreeTable',this.DataTreeTable)
+
  }
 
 

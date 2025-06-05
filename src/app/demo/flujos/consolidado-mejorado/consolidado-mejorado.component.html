@@ -107,101 +107,103 @@ appendTo="body"
 [disabled]="this.Cabecera.length<=1"
 (click)="mostrarSemanas()" type="button" class="btn btn-warning m-1 mt-2">Semanal 
 </button> -->
-
-<div *ngIf="this.Cabecera.length<=1 && this.cargar==false"  class="alert alert-warning mt-2" role="alert">
-  No tiene registros en esta empresa
-</div>
-
-<div *ngIf="this.cargar==true" class="d-flex justify-content-center">
-  <div class="spinner-border" role="status">
-    <span class="visually-hidden">Loading...</span>
+<div *ngIf="verMensual==true">
+  <div *ngIf="this.Cabecera.length<=1 && this.cargar==false"  class="alert alert-warning mt-2" role="alert">
+    No tiene registros en esta empresa
   </div>
+  
+  <div *ngIf="this.cargar==true" class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  
+    <p-treeTable 
+    [value]="DataTreeTable" 
+    [columns]="Cabecera" 
+    [scrollable]="true" 
+    scrollHeight="800px" 
+    [resizableColumns]="true"
+    [tableStyle]="{'min-width': (Cabecera.length * 150) + 'px'}">
+        <ng-template pTemplate="header" let-columns>
+            <tr >
+                <th style="width: 400px;position: sticky; left: 0; background: white; z-index: 1;">Nombre</th>
+                <th style="width: 200px" class="text-center"  *ngFor="let col of columns">{{col.Nombre}}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+            <tr 
+            [ngClass]="{
+                      'Abuelo': rowData.tipo=='Abuelo', 
+                      'Padre': rowData.tipo=='Padre', 
+                      'Hijo': rowData.tipo=='Hijo', 
+                      'Nieto': rowData.tipo=='Nieto', 
+                      'Saldos': rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'     
+                      }"
+            [ttRow]="rowNode">
+                <td style="width: 400px; position: sticky; left: 0; background: inherit;">
+                     <p-treeTableToggler [rowNode]="rowNode" />                
+                       {{rowData.Nombre}}        
+                </td>
+                <td style="width: 200px" class="text-center" *ngFor="let col of columns">
+                  <ng-container *ngIf="col.Tipo==3">
+                    <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                      <span [style.color]="rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
+                        {{rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio]?.Valor || 0}}
+                      </span>
+  
+                    </span>
+                    <span *ngIf="rowData.tipo=='Hijo'">
+                    <span [style.color]="rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
+                      {{rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio]?.Valor || 0}}
+                    </span>  
+                    </span>
+                  <span *ngIf="rowData.tipo=='Nieto'">
+                    <span [style.color]="rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
+                      {{rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio]?.Valor || 0}}
+                    </span> 
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="col.Tipo==4">
+                    <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                      <span [style.color]="rowData.valores[rowData.idCategoria +'-'+ col.Anio]?.Color || ''">
+                        {{rowData.valores[rowData.idCategoria + '-'+col.Anio]?.Valor || 0}}
+                      </span>
+                    </span>
+                    <span *ngIf="rowData.tipo=='Hijo'">
+                      <span [style.color]="rowData.valores[rowData.idItem +'-'+ col.Anio].Color">
+                        {{rowData.valores[rowData.idItem + '-'+col.Anio]?.Valor || 0}}
+                      </span>
+                    </span>
+                    <span *ngIf="rowData.tipo=='Nieto'">
+                      <span [style.color]="rowData.valores[rowData.id +'-'+ col.Anio]?.Color || ''">
+                        {{rowData.valores[rowData.id + '-'+col.Anio]?.Valor || 0}}
+                      </span>
+                    </span>
+                  </ng-container>
+                  <ng-container *ngIf="col.Tipo==5">
+                    <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                      <span [style.color]="rowData.valores['Prom-'+ rowData.idCategoria +'-'+ col.Anio]?.Color || '' ">
+                        {{rowData.valores['Prom-'+rowData.idCategoria + '-'+col.Anio]?.Valor || 0 }}
+                      </span>
+                    </span>
+                    <span *ngIf="rowData.tipo=='Hijo'">
+                      <span [style.color]="rowData.valores['Prom-'+rowData.idItem +'-'+ col.Anio]?.Color || '' ">
+                        {{rowData.valores['Prom-'+rowData.idItem + '-'+col.Anio]?.Valor || 0 }}
+                      </span>
+                    </span>
+                    <span *ngIf="rowData.tipo=='Nieto'">
+                      <span [style.color]="rowData.valores['Prom-'+rowData.id +'-'+ col.Anio]?.Color || '' ">
+                        {{rowData.valores['Prom-'+rowData.id + '-'+col.Anio]?.Valor || 0 }}
+                      </span>
+                    </span>
+                  </ng-container>
+                </td>
+            </tr>
+        </ng-template>
+    </p-treeTable>
+
 </div>
-
-  <p-treeTable 
-  [value]="DataTreeTable" 
-  [columns]="Cabecera" 
-  [scrollable]="true" 
-  scrollHeight="800px" 
-  [resizableColumns]="true"
-  [tableStyle]="{'min-width': (Cabecera.length * 150) + 'px'}">
-      <ng-template pTemplate="header" let-columns>
-          <tr >
-              <th style="width: 400px;position: sticky; left: 0; background: white; z-index: 1;">Nombre</th>
-              <th style="width: 200px" class="text-center"  *ngFor="let col of columns">{{col.Nombre}}</th>
-          </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-          <tr 
-          [ngClass]="{
-                    'Abuelo': rowData.tipo=='Abuelo', 
-                    'Padre': rowData.tipo=='Padre', 
-                    'Hijo': rowData.tipo=='Hijo', 
-                    'Nieto': rowData.tipo=='Nieto', 
-                    'Saldos': rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'     
-                    }"
-          [ttRow]="rowNode">
-              <td style="width: 400px; position: sticky; left: 0; background: inherit;">
-                   <p-treeTableToggler [rowNode]="rowNode" />                
-                     {{rowData.Nombre}}        
-              </td>
-              <td style="width: 200px" class="text-center" *ngFor="let col of columns">
-                <ng-container *ngIf="col.Tipo==3">
-                  <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
-                    <span [style.color]="rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
-                      {{rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio]?.Valor || 0}}
-                    </span>
-
-                  </span>
-                  <span *ngIf="rowData.tipo=='Hijo'">
-                  <span [style.color]="rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
-                    {{rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio]?.Valor || 0}}
-                  </span>  
-                  </span>
-                <span *ngIf="rowData.tipo=='Nieto'">
-                  <span [style.color]="rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
-                    {{rowData.valores[rowData.id + '-'+col.NumMes +'-'+col.Anio]?.Valor || 0}}
-                  </span> 
-                </span>
-                </ng-container>
-                <ng-container *ngIf="col.Tipo==4">
-                  <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
-                    <span [style.color]="rowData.valores[rowData.idCategoria +'-'+ col.Anio]?.Color || ''">
-                      {{rowData.valores[rowData.idCategoria + '-'+col.Anio]?.Valor || 0}}
-                    </span>
-                  </span>
-                  <span *ngIf="rowData.tipo=='Hijo'">
-                    <span [style.color]="rowData.valores[rowData.idItem +'-'+ col.Anio].Color">
-                      {{rowData.valores[rowData.idItem + '-'+col.Anio]?.Valor || 0}}
-                    </span>
-                  </span>
-                  <span *ngIf="rowData.tipo=='Nieto'">
-                    <span [style.color]="rowData.valores[rowData.id +'-'+ col.Anio]?.Color || ''">
-                      {{rowData.valores[rowData.id + '-'+col.Anio]?.Valor || 0}}
-                    </span>
-                  </span>
-                </ng-container>
-                <ng-container *ngIf="col.Tipo==5">
-                  <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
-                    <span [style.color]="rowData.valores['Prom-'+ rowData.idCategoria +'-'+ col.Anio]?.Color || '' ">
-                      {{rowData.valores['Prom-'+rowData.idCategoria + '-'+col.Anio]?.Valor || 0 }}
-                    </span>
-                  </span>
-                  <span *ngIf="rowData.tipo=='Hijo'">
-                    <span [style.color]="rowData.valores['Prom-'+rowData.idItem +'-'+ col.Anio]?.Color || '' ">
-                      {{rowData.valores['Prom-'+rowData.idItem + '-'+col.Anio]?.Valor || 0 }}
-                    </span>
-                  </span>
-                  <span *ngIf="rowData.tipo=='Nieto'">
-                    <span [style.color]="rowData.valores['Prom-'+rowData.id +'-'+ col.Anio]?.Color || '' ">
-                      {{rowData.valores['Prom-'+rowData.id + '-'+col.Anio]?.Valor || 0 }}
-                    </span>
-                  </span>
-                </ng-container>
-              </td>
-          </tr>
-      </ng-template>
-  </p-treeTable>
 
 
 
@@ -240,8 +242,6 @@ appendTo="body"
 
 <!-- Para solucionar la tabla de flujos -->
 
-
-<br>
 <consolidado-mejorado-trimestral *ngIf="verTrimestral==true"></consolidado-mejorado-trimestral>
 <app-consolidado-mejorado-semestral *ngIf="verSemestral==true"></app-consolidado-mejorado-semestral>
 
