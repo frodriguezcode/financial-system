@@ -11,6 +11,7 @@ import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { TreeTableModule } from 'primeng/treetable';
+import { MultiSelectModule } from 'primeng/multiselect';
 @Component({
   selector: 'consolidado-mejorado-trimestral',
   standalone: true,
@@ -20,6 +21,7 @@ import { TreeTableModule } from 'primeng/treetable';
     TableModule,
     ButtonModule,
     TreeTableModule,
+    MultiSelectModule
     ],
   templateUrl: './consolidado-mejorado-trimestral.html',
   styleUrls: ['./consolidado-mejorado-trimestral.scss']

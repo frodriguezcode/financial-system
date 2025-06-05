@@ -2117,7 +2117,7 @@ construirValores(){
       });
     }
   }); 
-      let DataTrimestral={
+    let DataTrimestral={
       'Cabecera':this.Cabecera,
       'Categorias':this.Categorias,
       'Items':this.Items,
@@ -2125,6 +2125,15 @@ construirValores(){
 
     }
     this.conS.enviarRegistrosTrimestrales(DataTrimestral)
+
+    let DataSemestral={
+      'Cabecera':this.Cabecera,
+      'Categorias':this.Categorias,
+      'Items':this.Items,
+      'DataTreeTable':this.DataTreeTable
+      
+    }
+    this.conS.enviarRegistrosSemestrales(DataSemestral)
     this.cargar=false
 
   }
@@ -2498,17 +2507,7 @@ construirCabecera(){
     this.getDataCategoriasAnual()
  
 
-    let DataSemestral={
-      'Registros':this.Registros,
-      'Anios':this.Anios,
-      'Cabecera':this.Cabecera,
-      'Categorias':this.Categorias,
-      'Items':this.Items,
-      'Semestres':this.Semestres,
-      'SaldoInicial':this.SaldoInicial
-      
-    }
-    this.conS.enviarRegistrosSemestrales(DataSemestral)
+
 
    }
 getItems(idCategoria:any){

@@ -9,10 +9,11 @@ import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
+import { TreeTableModule } from 'primeng/treetable';
 @Component({
   selector: 'app-consolidado-mejorado-semestral',
   standalone: true,
-  imports: [CommonModule, SharedModule, TableModule, ButtonModule],
+  imports: [CommonModule, SharedModule, TableModule, ButtonModule,TreeTableModule],
   templateUrl: './consolidado-mejorado-semestral.component.html',
   styleUrls: ['./consolidado-mejorado-semestral.component.scss']
 })
@@ -21,10 +22,12 @@ export default class ConsolidadoSemestralComponent implements OnInit {
   constructor(private conS: ConfigurationService) { }
 
   @ViewChild('dt') table: Table;
+
   Anios: any[] = [];
-  RegistrosSaldosFinalesSemestrales: any[] = [];
   AnioSeleccionados: any[] = [];
   Semestres: any[] = [];
+  Meses: any[] = [];
+  RegistrosSaldosFinalesSemestrales: any[] = [];
   Cabecera: any[] = [];
   Registros: any[] = [];
   Items: any[] = [];
@@ -43,6 +46,95 @@ export default class ConsolidadoSemestralComponent implements OnInit {
 
   ngOnInit(): void {
     this.usuario = JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+
+  this.Anios=[
+    {Anio:2023,
+    Mostrar: true
+    },
+    {Anio:2024,
+    Mostrar: true
+
+    },
+    {Anio:2025,
+    Mostrar: true
+
+    },
+  ]
+  this.Meses= [
+    {
+      Mes: 'Enero',
+      NumMes:1,
+      Trimestre:1,
+      seleccionado: false
+    },
+    {
+      Mes: 'Febrero',
+      NumMes:2,
+      Trimestre:1,
+      seleccionado: false
+    },
+    {
+      Mes: 'Marzo',
+      NumMes:3,
+      Trimestre:1,
+      seleccionado: false
+    },
+    {
+      Mes: 'Abril',
+      NumMes:4,
+      Trimestre:2,
+      seleccionado: false
+    },
+    {
+      Mes: 'Mayo',
+      NumMes:5,
+      Trimestre:2,
+      seleccionado: false
+    },
+    {
+      Mes: 'Junio',
+      NumMes:6,
+      Trimestre:2,
+      seleccionado: false
+    },
+    {
+      Mes: 'Julio',
+      NumMes:7,
+      Trimestre:3,
+      seleccionado: false
+    },
+    {
+      Mes: 'Agosto',
+      NumMes:8,
+      Trimestre:3,
+      seleccionado: false
+    },
+    {
+      Mes: 'Septiembre',
+      NumMes:9,
+      Trimestre:3,
+      seleccionado: false
+    },
+    {
+      Mes: 'Octubre',
+      NumMes:10,
+      Trimestre:4,
+      seleccionado: false
+    },
+    {
+      Mes: 'Noviembre',
+      NumMes:11,
+      Trimestre:4,
+      seleccionado: false
+    },
+    {
+      Mes: 'Diciembre',
+      NumMes:12,
+      Trimestre:4,
+      seleccionado: false
+    },
+  
+  ]
 
     this.conS.RegistrosSemestrales$.subscribe((data: any) => {
       console.log('data', data)

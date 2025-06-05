@@ -13,6 +13,7 @@
     optionLabel="SemanaAnio" 
     placeholder="Seleccione semanas" /> -->
 <p-multiSelect class="m-1"
+*ngIf="verMensual==true"
  [options]="MesesBack" 
  (onChange)="filtrarPorAnioMes()"
  appendTo="body"
@@ -61,7 +62,9 @@ appendTo="body"
 </div> -->
 
 <br>
-<div class="form-check form-check-inline">
+<div 
+
+class="form-check form-check-inline">
   <input (change)="cambiarPeriodo(1)" class="form-check-input" 
   type="radio" name="inlineRadioOptions"
   [checked]="verMensual"
