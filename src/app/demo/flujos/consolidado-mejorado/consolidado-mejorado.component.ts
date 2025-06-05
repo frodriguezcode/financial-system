@@ -2115,7 +2115,15 @@ construirValores(){
       });
     }
   }); 
-  this.cargar=false
+      let DataTrimestral={
+      'Cabecera':this.Cabecera,
+      'Categorias':this.Categorias,
+      'Items':this.Items,
+      'DataTreeTable':this.DataTreeTable
+
+    }
+    this.conS.enviarRegistrosTrimestrales(DataTrimestral)
+    this.cargar=false
 
   }
 
@@ -2488,17 +2496,7 @@ construirCabecera(){
     this.getDataCategoriasAnual()
 
 
-    let DataTrimestral={
-      'Registros':this.Registros,
-      'Anios':this.Anios,
-      'Cabecera':this.Cabecera,
-      'Categorias':this.Categorias,
-      'Items':this.Items,
-      'Trimestres':this.Trimestres,
-      'SaldoInicial':this.SaldoInicial
 
-    }
-    this.conS.enviarRegistrosTrimestrales(DataTrimestral)
     let DataSemestral={
       'Registros':this.Registros,
       'Anios':this.Anios,
