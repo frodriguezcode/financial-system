@@ -8,13 +8,7 @@
   </div>
 </div>
 
-<p-multiSelect class="m-1"
- [options]="Trimestres" 
- (onChange)="construirCabecera()"
- appendTo="body"
- [(ngModel)]="TrimestresSeleccionados"
- optionLabel="Trimestre" placeholder="Trimestres"
- />
+
   <p-treeTable 
   [value]="DataTreeTableTrimestral" 
   [columns]="Cabecera" 

@@ -178,6 +178,12 @@ cargando:boolean=true
   // expandedKeys: { [key: string]: boolean } = {};
 
 ngOnInit(): void {
+  const screenWidth = window.innerWidth;
+   if (screenWidth >= 1024 && screenWidth <= 1400) {
+      // Opción 1
+      (document.body.style as any).zoom = '0.8'
+  
+   }
 
   this.MesesTodos= [
     

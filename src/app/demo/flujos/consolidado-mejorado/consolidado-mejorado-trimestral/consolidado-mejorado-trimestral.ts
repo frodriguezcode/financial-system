@@ -161,11 +161,14 @@ ngOnInit(): void {
     id:4
   }
   ]
-  this.construirCabecera()
+ 
   this.conS.RegistrosTrimestrales$.subscribe((data:any)=>{
     this.DataTreeTable=data.DataTreeTable
     this.Categorias=data.Categorias
     this.Items=data.Items
+    this.TrimestresSeleccionados=data.Trimestres
+    this.AnioSeleccionados=data.Anios
+    console.log('TrimestresSeleccionados',this.TrimestresSeleccionados)
     this.DataTreeTableTrimestral=[]
     this.Categorias.forEach(categ => {
     this.DataTreeTableTrimestral.push({
@@ -187,7 +190,7 @@ ngOnInit(): void {
       this.getItemsByCategoria(categ.id)
   
     })
-  
+   this.construirCabecera()
     
     
     
@@ -331,6 +334,9 @@ getMesesByTrimestre(idTrimestre:any){
 construirValores(){
   let AniosCabecera=this.AnioSeleccionados.length>0 ? this.AnioSeleccionados:this.Anios
   let Trimestres=this.TrimestresSeleccionados.length>0 ? this.TrimestresSeleccionados:this.Trimestres   
+
+  let CantidadTrimestres:number=0
+  CantidadTrimestres=this.TrimestresSeleccionados.length==0?4:this.TrimestresSeleccionados.length
   this.DataTreeTableTrimestral.forEach(dataTree => {
     if (dataTree.data.valores !== undefined) {
       dataTree.data.valores = {};
@@ -377,7 +383,7 @@ construirValores(){
              }
 
              
-            PromedioTrimestral=Number((totalAnual/3).toFixed(0))
+            PromedioTrimestral=Number((totalAnual/CantidadTrimestres).toFixed(0))
             dataTree.data.valores[claveTrimestralPromedio] = 
              {
              "Valor": PromedioTrimestral<0 ? ('-$'+ (PromedioTrimestral*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (PromedioTrimestral)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -456,7 +462,7 @@ construirValores(){
             } 
 
             //PromedioTrimestral
-            valorPromedioTrimestral=Number((totalAnual/3).toFixed(0))
+            valorPromedioTrimestral=Number((totalAnual/CantidadTrimestres).toFixed(0))
             dataTree.data.valores[claveTrimestralPromedio] = 
             {
              "Valor": valorPromedioTrimestral<0 ? ('-$ '+ (valorPromedioTrimestral*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorPromedioTrimestral)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -485,7 +491,7 @@ construirValores(){
             "ValorNumero": totalAnual,
             "Color": totalAnual<0 ? '#ff3200': '#000000',
             }
-            const ValorPromedio=Number((totalAnual/3).toFixed(0))
+            const ValorPromedio=Number((totalAnual/CantidadTrimestres).toFixed(0))
             dataTree.data.valores[claveTrimestralPromedio] =
             {
               "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -496,8 +502,7 @@ construirValores(){
 
 
 
-            let claveAnualHijo: any
-            let claveAnualNieto: any        
+            let claveAnualHijo: any      
             let clavePromedioTrimestralHijo: any  
             this.DataTreeTableTrimestral[dataTree.data.orden].children.forEach(cuenta => {
               
@@ -532,7 +537,7 @@ construirValores(){
              "Color": valorAnualHijo<0 ? '#ff3200': '#000000'
               }
 
-              valorPromedioHijo= Number((valorAnualHijo/3).toFixed(0));
+              valorPromedioHijo= Number((valorAnualHijo/CantidadTrimestres).toFixed(0));
               cuenta.data.valores[clavePromedioTrimestralHijo] =   
               {
              "Valor": valorPromedioHijo<0 ? ('-$ '+ (valorPromedioHijo*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorPromedioHijo)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -576,7 +581,7 @@ construirValores(){
                 }
 
                 
-              valorNietoPromedio=Number((valorNietoAnual/3).toFixed(0))
+              valorNietoPromedio=Number((valorNietoAnual/CantidadTrimestres).toFixed(0))
               subCuenta.data.valores[clavePromedioTrimestralHijo] = 
                 {
                 "Valor": valorNietoPromedio<0 ? ('-$ '+ (valorNietoPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNietoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),

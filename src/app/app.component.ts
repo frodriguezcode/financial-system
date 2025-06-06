@@ -13,6 +13,8 @@ export class AppComponent implements OnInit {
 
   // life cycle event
   ngOnInit() {
+
+
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         return;
@@ -20,4 +22,6 @@ export class AppComponent implements OnInit {
       window.scrollTo(0, 0);
     });
   }
+
+  
 }

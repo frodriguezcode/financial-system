@@ -62,6 +62,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   SemanasSeleccionadas:any=[]
   CatalogoFechas:any=[]
   Trimestres:any=[]
+  TrimestresSeleccionados: any[] = [];
   Meses:any=[]
   MesesBack:any=[]
   MesesSeleccionados:any=[]
@@ -126,6 +127,12 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   maxCategoryLength: number = 0;
   ngOnInit(): void {
+  const screenWidth = window.innerWidth;
+   if (screenWidth >= 1024 && screenWidth <= 1400) {
+      // Opción 1
+      (document.body.style as any).zoom = '0.8'
+  
+   }    
   this.Anios=[
     {Anio:2023,
     Mostrar: true
@@ -218,9 +225,9 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   this.Trimestres=[
   {
-        Trimestre:"Trimestre 1",
-        Nombre:"Trimestre 1",
-        id:1
+    Trimestre:"Trimestre 1",
+    Nombre:"Trimestre 1",
+    id:1
   },
   {
     Trimestre:"Trimestre 2",
@@ -727,7 +734,50 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
   filtrarPorAnioMes(){
     this.Anios=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados: this.AniosBack
     this.Meses=this.MesesSeleccionados.length>0 ? this.MesesSeleccionados: this.MesesBack
-    this.construirCabecera()
+    this.Cabecera=[]
+    this.Anios.forEach((anio:any) => {
+      this.Meses.forEach((mes:any) => {
+          this.Cabecera.push({
+            "Nombre":mes.Mes + ' ' + anio.Anio,
+            "Mes":mes.Mes,
+            "NumMes":mes.NumMes,
+            "Anio":anio.Anio,
+            "Tipo":3
+          })
+      });
+      this.Cabecera.push({
+        "Nombre":"Total " + anio.Anio,
+        "Mes":"",
+        "NumMes":"",
+        "Anio":anio.Anio,
+        "Tipo":4
+      })
+      this.Cabecera.push({
+        "Nombre":"Promedio " + anio.Anio,
+        "Mes":"",
+        "NumMes":"",
+        "Anio":anio.Anio,
+        "Tipo":5
+      })
+      
+
+    });
+
+
+    this.CabeceraBack=this.Cabecera
+
+    
+  }
+  filtrarPorTrimestre(){
+  let DataTrimestral={
+      'Cabecera':this.Cabecera,
+      'Categorias':this.Categorias,
+      'Items':this.Items,
+      "Trimestres":this.TrimestresSeleccionados,
+      "Anios":this.AniosSeleccionados,
+      'DataTreeTable':this.DataTreeTable
+    }
+    this.conS.enviarRegistrosTrimestrales(DataTrimestral)
   }
 
   filtrarData(){
@@ -1843,15 +1893,19 @@ getItemsByCategoria(idCategoria:string){
   }
 
 construirValores(){
-   
+    
+  let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
+  let Meses=this.MesesSeleccionados.length>0 ? this.MesesSeleccionados:this.Meses  
+  let CantidadMeses:number=0
+  CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
   this.DataTreeTable.forEach(dataTree => {
     if (dataTree.data.valores !== undefined) {
-      dataTree.data.valores = {};
-    this.Anios.forEach(anio => {
+      dataTree.data.valores = {}; 
+    AniosCabecera.forEach(anio => {
       let totalAnual = 0;
       const claveAnual= `${dataTree.data.idCategoria}-${anio.Anio}`;
       const claveAnualPromedio= `Prom-${dataTree.data.idCategoria}-${anio.Anio}`;
-        this.Meses.forEach(mes => {
+        Meses.forEach(mes => {
           const claveMensual = `${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`;
           let key = `${mes.NumMes}-${anio.Anio}`;
           if(dataTree.data.tipo=='Saldo Inicial'){
@@ -1863,7 +1917,7 @@ construirValores(){
 
             const valor = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
             const valorAnual = this.obtenerValorSaldoInicialAnual(anio.Anio) || 0
-            const valorAnualPromedio =Number((valorAnual/12).toFixed(0))
+            const valorAnualPromedio =Number((valorAnual/CantidadMeses).toFixed(0))
             dataTree.data.valores[claveMensual] = 
             {
              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -1934,7 +1988,7 @@ construirValores(){
               "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               } 
-              const ValorPromedio=Number((totalAnual/12).toFixed(0))
+              const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
               dataTree.data.valores[claveAnualPromedio] =
               {
               "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -1958,7 +2012,7 @@ construirValores(){
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               }
               
-              const ValorPromedio=Number((totalAnual/12).toFixed(0))
+              const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
               dataTree.data.valores[claveAnualPromedio] =
               {
               "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -1982,7 +2036,7 @@ construirValores(){
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               }  
 
-              const ValorPromedio=Number((totalAnual/12).toFixed(0))
+              const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
               dataTree.data.valores[claveAnualPromedio] =
               {
               "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -2006,7 +2060,7 @@ construirValores(){
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               }
               
-              const ValorPromedio=Number((totalAnual/12).toFixed(0))
+              const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
               dataTree.data.valores[claveAnualPromedio] =
               {
               "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -2031,7 +2085,7 @@ construirValores(){
             "ValorNumero": totalAnual,
             "Color": totalAnual<0 ? '#ff3200': '#000000',
             }
-            const ValorPromedio=Number((totalAnual/12).toFixed(0))
+            const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
             dataTree.data.valores[claveAnualPromedio] =
             {
               "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -2062,7 +2116,7 @@ construirValores(){
              "Color": valorAnual<0 ? '#ff3200': '#000000'
               }
 
-              const ValorPromedio=Number((valorAnual/12).toFixed(0))
+              const ValorPromedio=Number((valorAnual/CantidadMeses).toFixed(0))
               cuenta.data.valores[claveAnualHijoProm] =
               {
               "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -2090,7 +2144,7 @@ construirValores(){
                 "ValorNumero": valorNietoAnual,
                 "Color": valorNietoAnual<0 ? '#ff3200': '#000000'
                 }
-               const ValorPromedio=Number((valorNietoAnual/12).toFixed(0))  
+               const ValorPromedio=Number((valorNietoAnual/CantidadMeses).toFixed(0))  
                subCuenta.data.valores[claveAnualNietoProm] = 
                 {
                 "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -2117,12 +2171,13 @@ construirValores(){
       });
     }
   }); 
-    let DataTrimestral={
+  let DataTrimestral={
       'Cabecera':this.Cabecera,
       'Categorias':this.Categorias,
       'Items':this.Items,
+      "Trimestres":this.TrimestresSeleccionados,
+      "Anios":this.AniosSeleccionados,
       'DataTreeTable':this.DataTreeTable
-
     }
     this.conS.enviarRegistrosTrimestrales(DataTrimestral)
 

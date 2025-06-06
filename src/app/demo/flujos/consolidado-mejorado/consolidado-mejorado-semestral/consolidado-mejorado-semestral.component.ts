@@ -26,6 +26,7 @@ export default class ConsolidadoSemestralComponent implements OnInit {
   Anios: any[] = [];
   AnioSeleccionados: any[] = [];
   Semestres: any[] = [];
+  SemestresSeleccionados: any[] = [];
   Meses: any[] = [];
   RegistrosSaldosFinalesSemestrales: any[] = [];
   Cabecera: any[] = [];
@@ -37,7 +38,6 @@ export default class ConsolidadoSemestralComponent implements OnInit {
   usuario: any
   cargando: boolean = true
   RegistrosSaldosFinalesSemestres = []
-  SemestresSeleccionados: any[] = [];
   ExpandirCuentas: boolean = false
   Expandir: boolean = false
 
@@ -46,7 +46,17 @@ export default class ConsolidadoSemestralComponent implements OnInit {
 
   ngOnInit(): void {
     this.usuario = JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-
+ this.Semestres=[    
+    {
+      Semestre: 'Semestre 1',
+      NumSemestre:1
+    },
+    {
+      Semestre: 'Semestre 2',
+      NumSemestre:2
+    }
+  
+  ]
   this.Anios=[
     {Anio:2023,
     Mostrar: true
@@ -64,86 +74,83 @@ export default class ConsolidadoSemestralComponent implements OnInit {
     {
       Mes: 'Enero',
       NumMes:1,
-      Trimestre:1,
+      Semestre:1,
       seleccionado: false
     },
     {
       Mes: 'Febrero',
       NumMes:2,
-      Trimestre:1,
+      Semestre:1,
       seleccionado: false
     },
     {
       Mes: 'Marzo',
       NumMes:3,
-      Trimestre:1,
+      Semestre:1,
       seleccionado: false
     },
     {
       Mes: 'Abril',
       NumMes:4,
-      Trimestre:2,
+      Semestre:1,
       seleccionado: false
     },
     {
       Mes: 'Mayo',
       NumMes:5,
-      Trimestre:2,
+      Semestre:1,
       seleccionado: false
     },
     {
       Mes: 'Junio',
       NumMes:6,
-      Trimestre:2,
+      Semestre:1,
       seleccionado: false
     },
     {
       Mes: 'Julio',
       NumMes:7,
-      Trimestre:3,
+      Semestre:2,
       seleccionado: false
     },
     {
       Mes: 'Agosto',
       NumMes:8,
-      Trimestre:3,
+      Semestre:2,
       seleccionado: false
     },
     {
       Mes: 'Septiembre',
       NumMes:9,
-      Trimestre:3,
+      Semestre:2,
       seleccionado: false
     },
     {
       Mes: 'Octubre',
       NumMes:10,
-      Trimestre:4,
+      Semestre:2,
       seleccionado: false
     },
     {
       Mes: 'Noviembre',
       NumMes:11,
-      Trimestre:4,
+      Semestre:2,
       seleccionado: false
     },
     {
       Mes: 'Diciembre',
       NumMes:12,
-      Trimestre:4,
+      Semestre:2,
       seleccionado: false
     },
   
   ]
 
+ 
+
     this.conS.RegistrosSemestrales$.subscribe((data: any) => {
       console.log('data', data)
-      this.Semestres = data.Semestres.sort((a: any, b: any) => a.NumSemestre - b.NumSemestre)
-      this.Anios = data.Anios
-      this.Categorias = data.Categorias
-      this.Items = data.Items
-      this.Registros = data.Registros
-      this.SaldoInicial = data.SaldoInicial
+    
       this.construirCabecera()
 
     })
@@ -191,6 +198,8 @@ export default class ConsolidadoSemestralComponent implements OnInit {
 
   construirCabecera() {
     this.Cabecera = []
+  let AniosCabecera=this.AnioSeleccionados.length>0 ? this.AnioSeleccionados:this.Anios
+  let Semestres=this.SemestresSeleccionados.length>0 ? this.SemestresSeleccionados:this.Semestres
     this.Anios.forEach((anio: any) => {
       this.getSemestresByAnio(anio.Anio).forEach((sem: any) => {
 

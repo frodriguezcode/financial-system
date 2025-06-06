@@ -1,0 +1,7 @@
+@media screen and (min-width: 720px) and (max-width: 1440px) {
+  body {
+    transform: scale(0.8);
+    transform-origin: top left;
+    width: 125%; /* compensar el espacio reducido al escalar */
+  }
+}

@@ -20,6 +20,16 @@
  [(ngModel)]="MesesSeleccionados"
  optionLabel="Mes" placeholder="Meses" 
  />
+
+ <p-multiSelect
+ *ngIf="verTrimestral==true"
+ class="m-1"
+ [options]="Trimestres" 
+ (onChange)="construirCabecera()"
+ appendTo="body"
+ [(ngModel)]="TrimestresSeleccionados"
+ optionLabel="Trimestre" placeholder="Trimestres"
+ />
 <p-multiSelect class="m-1"
  [options]="AniosBack"
  (onChange)="filtrarPorAnioMes()"
