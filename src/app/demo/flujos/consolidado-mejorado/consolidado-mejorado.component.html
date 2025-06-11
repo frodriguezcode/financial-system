@@ -12,24 +12,15 @@
     [(ngModel)]="SemanasSeleccionadas" 
     optionLabel="SemanaAnio" 
     placeholder="Seleccione semanas" /> -->
-<p-multiSelect class="m-1"
-*ngIf="verMensual==true"
- [options]="MesesBack" 
- (onChange)="filtrarPorAnioMes()"
- appendTo="body"
- [(ngModel)]="MesesSeleccionados"
- optionLabel="Mes" placeholder="Meses" 
- />
-
- <p-multiSelect
- *ngIf="verTrimestral==true"
- class="m-1"
- [options]="Trimestres" 
- (onChange)="construirCabecera()"
- appendTo="body"
- [(ngModel)]="TrimestresSeleccionados"
- optionLabel="Trimestre" placeholder="Trimestres"
- />
+<p-multiSelect
+  *ngIf="verTrimestral==true"
+  class="m-1"
+  [options]="Trimestres" 
+  (onChange)="construirCabecera()"
+  appendTo="body"
+  [(ngModel)]="TrimestresSeleccionados"
+  optionLabel="Trimestre" placeholder="Trimestres"
+/>
 <p-multiSelect class="m-1"
  [options]="AniosBack"
  (onChange)="filtrarPorAnioMes()"
@@ -37,6 +28,15 @@
  [(ngModel)]="AniosSeleccionados"
  optionLabel="Anio" placeholder="Años" 
  />
+<p-multiSelect class="m-1"
+*ngIf="verMensual==true"
+ [options]="PeriodosTiempos" 
+ (onChange)="filtrarPorAnioMes()"
+ appendTo="body"
+ [(ngModel)]="PeriodosTiemposSeleccionados"
+ optionLabel="Nombre" placeholder="Intérvalos" 
+ />
+
 <p-multiSelect [disabled]="ProyectoSeleccionado.length>0" 
   class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" 
   [options]="Sucursales"
@@ -208,6 +208,20 @@ class="form-check form-check-inline">
                     <span *ngIf="rowData.tipo=='Nieto'">
                       <span [style.color]="rowData.valores['Prom-'+rowData.id +'-'+ col.Anio]?.Color || '' ">
                         {{rowData.valores['Prom-'+rowData.id + '-'+col.Anio]?.Valor || 0 }}
+                      </span>
+                    </span>
+                  </ng-container>
+                  <ng-container *ngIf="col.Tipo==7">
+                    <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                      <span [style.color]="rowData.valores['sem-'+ rowData.idCategoria +'-'+ col.NumSem+ '-' + col.Anio]?.Color || '' ">
+                        {{rowData.valores['sem-'+ rowData.idCategoria +'-'+ col.NumSem + '-' + col.Anio]?.Valor || 0 }}
+                      </span>
+                    </span>
+                  </ng-container>
+                  <ng-container *ngIf="col.Tipo==9">
+                    <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                      <span [style.color]="rowData.valores['prom-'+ rowData.idCategoria +'-'+ col.NumSem+ '-' + col.Anio]?.Color || '' ">
+                        {{rowData.valores['prom-'+ rowData.idCategoria +'-'+ col.NumSem + '-' + col.Anio]?.Valor || 0 }}
                       </span>
                     </span>
                   </ng-container>

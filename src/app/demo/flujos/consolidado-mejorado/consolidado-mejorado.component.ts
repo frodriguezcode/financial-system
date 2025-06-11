@@ -62,6 +62,7 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   SemanasSeleccionadas:any=[]
   CatalogoFechas:any=[]
   Trimestres:any=[]
+
   TrimestresSeleccionados: any[] = [];
   Meses:any=[]
   MesesBack:any=[]
@@ -126,14 +127,104 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   frozenCols!: Column[];
 
   maxCategoryLength: number = 0;
+
+  PeriodosTiempos:any=[]
+  PeriodosTiemposSeleccionados:any=[]
   ngOnInit(): void {
+
+  this.PeriodosTiempos.push(
+    {
+      "Nombre":"Trimestre 1",
+      "Numero":1,
+      "Tipo":1,
+      "Orden":1
+    },
+    {
+      "Nombre":"Trimestre 2",
+      "Numero":2,
+      "Tipo":1,
+      "Orden":2
+    },
+    {
+      "Nombre":"Trimestre 3",
+      "Numero":3,
+      "Tipo":1,
+      "Orden":3
+    },
+    {
+      "Nombre":"Trimestre 4",
+      "Numero":4,
+      "Tipo":1,
+      "Orden":4
+    },
+    {
+      "Nombre":"Semestre 1",
+      "Numero":1,
+      "Tipo":2,
+      "Orden":5
+    },
+    {
+      "Nombre":"Semestre 2",
+      "Numero":2,
+      "Tipo":2,
+      "Orden":6
+    },
+    {
+      "Nombre":"Anual",
+      "Numero":1,
+      "Tipo":3,
+      "Orden":7
+    },
+)
+
   const screenWidth = window.innerWidth;
    if (screenWidth >= 1024 && screenWidth <= 1400) {
       // Opción 1
       (document.body.style as any).zoom = '0.8'
   
-   }    
-  this.Anios=[
+   } 
+
+
+this.Semestres=[
+  {
+    Semestre:"Semestre 1",
+    Nombre:"Semestre 1",
+    id:1
+  },
+  {
+    Trimestre:"Semestre 2",
+    Nombre:"Semestre 2",
+    id:2
+  }
+
+]    
+this.Trimestres=[
+  {
+    Trimestre:"Trimestre 1",
+    Nombre:"Trimestre 1",
+    id:1,
+    idSemestre:1
+  },
+  {
+    Trimestre:"Trimestre 2",
+    Nombre:"Trimestre 2",
+    id:2,
+    idSemestre:1
+  },
+  {
+    Trimestre:"Trimestre 3",
+    Nombre:"Trimestre 3",
+    id:3,
+    idSemestre:2
+  },
+  {
+    Trimestre:"Trimestre 4",
+    Nombre:"Trimestre 4",
+    id:4,
+    idSemestre:2
+  }
+]    
+this.Anios=[
     {Anio:2023,
     Mostrar: true
     },
@@ -145,8 +236,8 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
     Mostrar: true
 
     },
-  ]
-  this.Meses= [
+]
+this.Meses= [
 
     {
       Mes: 'Enero',
@@ -221,30 +312,10 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
       seleccionado: false
     },
   
-  ]
+]
 
-  this.Trimestres=[
-  {
-    Trimestre:"Trimestre 1",
-    Nombre:"Trimestre 1",
-    id:1
-  },
-  {
-    Trimestre:"Trimestre 2",
-    Nombre:"Trimestre 2",
-    id:2
-  },
-  {
-    Trimestre:"Trimestre 3",
-    Nombre:"Trimestre 3",
-    id:3
-  },
-  {
-    Trimestre:"Trimestre 4",
-    Nombre:"Trimestre 4",
-    id:4
-  }
-  ]
+
+
   this.MesesBack=this.Meses
   this.AniosBack=this.Anios
     this.conS.usuario$.subscribe(usuario => {
@@ -1891,7 +1962,12 @@ getItemsByCategoria(idCategoria:string){
 
 
   }
-
+getTrimestresBySemestre(idSemestre:any){
+  return this.Trimestres.filter((trim:any)=>trim.idSemestre==idSemestre)
+}
+getMesesByTrimestre(idTrimestre:any){
+  return this.Meses.filter((mes:any)=>mes.Trimestre==idTrimestre)
+}
 construirValores(){
     
   let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
@@ -1905,265 +1981,295 @@ construirValores(){
       let totalAnual = 0;
       const claveAnual= `${dataTree.data.idCategoria}-${anio.Anio}`;
       const claveAnualPromedio= `Prom-${dataTree.data.idCategoria}-${anio.Anio}`;
-        Meses.forEach(mes => {
-          const claveMensual = `${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`;
-          let key = `${mes.NumMes}-${anio.Anio}`;
-          if(dataTree.data.tipo=='Saldo Inicial'){
-            this.RegistrosSaldosFinalesMensuales.push({
-              "key":key,
-              "Anio":anio.Anio,
-              "Valor":this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
-            })
+      this.Semestres.forEach(semestre => {
+        this.getTrimestresBySemestre(semestre.id).forEach((trim:any)=>{
 
-            const valor = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
-            const valorAnual = this.obtenerValorSaldoInicialAnual(anio.Anio) || 0
-            const valorAnualPromedio =Number((valorAnual/CantidadMeses).toFixed(0))
-            dataTree.data.valores[claveMensual] = 
-            {
-             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-             "ValorNumero": valor,
-             "Color": valor<0 ? '#ff3200': '#000000',
-            }
-            dataTree.data.valores[claveAnual] = 
-             {
-             "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-             "ValorNumero": valorAnual,
-             "Color": valorAnual<0 ? '#ff3200': '#000000',
-             }
-            dataTree.data.valores[claveAnualPromedio] = 
-             {
-             "Valor": valorAnualPromedio<0 ? ('-$'+ (valorAnualPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnualPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-             "ValorNumero": valorAnualPromedio,
-             "Color": valorAnualPromedio<0 ? '#ff3200': '#000000',
-             }
-           
-          }
-        else if(dataTree.data.tipo=='Saldo Final'){
-            const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
-            const valorAnual = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0
-          
-            dataTree.data.valores[claveMensual] = 
-              {
-             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-             "ValorNumero": valor,
-             "Color": valor<0 ? '#ff3200': '#000000',
-              }
-            dataTree.data.valores[claveAnual] = 
-            {
-            "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-            "ValorNumero": valorAnual,
-            "Color": valorAnual<0 ? '#ff3200': '#000000',
-            }
-            
-           const valorAnualPromedio =
-           this.DataTreeTable[0].data.valores[`Prom-0-${anio.Anio}`]?.ValorNumero+
-           this.DataTreeTable[1].data.valores[`Prom-EESGPM4hWXvDlXSRnCwA-${anio.Anio}`]?.ValorNumero+
-           this.DataTreeTable[4].data.valores[`Prom-GMzSuF04XQBsPmAkIB2C-${anio.Anio}`]?.ValorNumero+
-           this.DataTreeTable[7].data.valores[`Prom-psmpY6iyDJNkW7AKFXgK-${anio.Anio}`]?.ValorNumero
-            
-            dataTree.data.valores[claveAnualPromedio] = 
-             {
-             "Valor": valorAnualPromedio<0 ? ('-$'+ (valorAnualPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnualPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-             "ValorNumero": valorAnualPromedio,
-             "Color": valorAnualPromedio<0 ? '#ff3200': '#000000',
-             }
-           
-          }
-
-          if(dataTree.data.tipo=='Abuelo'){
-            if(dataTree.data.orden==1){
-            const valor = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio) || 0;
-            
-            dataTree.data.valores[claveMensual] = 
-              {
-             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-             "ValorNumero": valor,
-             "Color": valor<0 ? '#ff3200': '#000000',
-              }
-              totalAnual += valor;
-
-              dataTree.data.valores[claveAnual] =
-              {
-              "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": totalAnual,
-              "Color": totalAnual<0 ? '#ff3200': '#000000',
-              } 
-              const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
-              dataTree.data.valores[claveAnualPromedio] =
-              {
-              "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": ValorPromedio,
-              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
-              }                  
-            }
-          else if(dataTree.data.orden==4){
-              const valor = this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio) || 0;
+          this.getMesesByTrimestre(trim.id).forEach(mes => {
+            const claveMensual = `${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`;
+            let key = `${mes.NumMes}-${anio.Anio}`;
+            if(dataTree.data.tipo=='Saldo Inicial'){
+              this.RegistrosSaldosFinalesMensuales.push({
+                "key":key,
+                "Anio":anio.Anio,
+                "Valor":this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
+              })
+    
+              const valor = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
+              const valorAnual = this.obtenerValorSaldoInicialAnual(anio.Anio) || 0
+              const valorAnualPromedio =Number((valorAnual/CantidadMeses).toFixed(0))
               dataTree.data.valores[claveMensual] = 
               {
-              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": valor,
-              "Color": valor<0 ? '#ff3200': '#000000',
+               "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+               "ValorNumero": valor,
+               "Color": valor<0 ? '#ff3200': '#000000',
               }
-              totalAnual += valor;
-              dataTree.data.valores[claveAnual] =
+    
+    
+              dataTree.data.valores[claveAnual] = 
+               {
+               "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+               "ValorNumero": valorAnual,
+               "Color": valorAnual<0 ? '#ff3200': '#000000',
+               }
+              dataTree.data.valores[claveAnualPromedio] = 
+               {
+               "Valor": valorAnualPromedio<0 ? ('-$'+ (valorAnualPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnualPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+               "ValorNumero": valorAnualPromedio,
+               "Color": valorAnualPromedio<0 ? '#ff3200': '#000000',
+               }
+             
+            }
+          else if(dataTree.data.tipo=='Saldo Final'){
+              const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
+              const valorAnual = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0
+            
+              dataTree.data.valores[claveMensual] = 
+                {
+               "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+               "ValorNumero": valor,
+               "Color": valor<0 ? '#ff3200': '#000000',
+                }
+              dataTree.data.valores[claveAnual] = 
               {
-              "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": totalAnual,
-              "Color": totalAnual<0 ? '#ff3200': '#000000',
+              "Valor": valorAnual<0 ? ('-$'+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "ValorNumero": valorAnual,
+              "Color": valorAnual<0 ? '#ff3200': '#000000',
               }
               
-              const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
-              dataTree.data.valores[claveAnualPromedio] =
-              {
-              "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": ValorPromedio,
-              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
-              } 
+             const valorAnualPromedio =
+             this.DataTreeTable[0].data.valores[`Prom-0-${anio.Anio}`]?.ValorNumero+
+             this.DataTreeTable[1].data.valores[`Prom-EESGPM4hWXvDlXSRnCwA-${anio.Anio}`]?.ValorNumero+
+             this.DataTreeTable[4].data.valores[`Prom-GMzSuF04XQBsPmAkIB2C-${anio.Anio}`]?.ValorNumero+
+             this.DataTreeTable[7].data.valores[`Prom-psmpY6iyDJNkW7AKFXgK-${anio.Anio}`]?.ValorNumero
+              
+              dataTree.data.valores[claveAnualPromedio] = 
+               {
+               "Valor": valorAnualPromedio<0 ? ('-$'+ (valorAnualPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnualPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+               "ValorNumero": valorAnualPromedio,
+               "Color": valorAnualPromedio<0 ? '#ff3200': '#000000',
+               }
+             
             }
-          else if(dataTree.data.orden==7){
-              const valor = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio) || 0;
-              dataTree.data.valores[claveMensual] =
-              {
-              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": valor,
-              "Color": valor<0 ? '#ff3200': '#000000',
+    
+            if(dataTree.data.tipo=='Abuelo'){
+              if(dataTree.data.orden==1){
+              const valor = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio) || 0;
+              
+              dataTree.data.valores[claveMensual] = 
+                {
+               "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+               "ValorNumero": valor,
+               "Color": valor<0 ? '#ff3200': '#000000',
+                }
+                totalAnual += valor;
+    
+                dataTree.data.valores[claveAnual] =
+                {
+                "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": totalAnual,
+                "Color": totalAnual<0 ? '#ff3200': '#000000',
+                } 
+                const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
+                dataTree.data.valores[claveAnualPromedio] =
+                {
+                "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": ValorPromedio,
+                "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+                }                  
               }
-              totalAnual += valor;
-              dataTree.data.valores[claveAnual] =
-              {
-              "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": totalAnual,
-              "Color": totalAnual<0 ? '#ff3200': '#000000',
-              }  
-
-              const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
-              dataTree.data.valores[claveAnualPromedio] =
-              {
-              "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": ValorPromedio,
-              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
-              }               
+            else if(dataTree.data.orden==4){
+                const valor = this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio) || 0;
+                dataTree.data.valores[claveMensual] = 
+                {
+                "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": valor,
+                "Color": valor<0 ? '#ff3200': '#000000',
+                }
+                totalAnual += valor;
+                dataTree.data.valores[claveAnual] =
+                {
+                "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": totalAnual,
+                "Color": totalAnual<0 ? '#ff3200': '#000000',
+                }
+                
+                const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
+                dataTree.data.valores[claveAnualPromedio] =
+                {
+                "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": ValorPromedio,
+                "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+                } 
+              }
+            else if(dataTree.data.orden==7){
+                const valor = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio) || 0;
+                dataTree.data.valores[claveMensual] =
+                {
+                "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": valor,
+                "Color": valor<0 ? '#ff3200': '#000000',
+                }
+                totalAnual += valor;
+                dataTree.data.valores[claveAnual] =
+                {
+                "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": totalAnual,
+                "Color": totalAnual<0 ? '#ff3200': '#000000',
+                }  
+    
+                const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
+                dataTree.data.valores[claveAnualPromedio] =
+                {
+                "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": ValorPromedio,
+                "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+                }               
+              }
+            else if(dataTree.data.orden==10){
+                const valor = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) || 0;
+                dataTree.data.valores[claveMensual] =
+                {
+                "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": valor,
+                "Color": valor<0 ? '#ff3200': '#000000',
+                }
+                totalAnual += valor;
+                dataTree.data.valores[claveAnual] = 
+                {
+                "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": totalAnual,
+                "Color": totalAnual<0 ? '#ff3200': '#000000',
+                }
+                
+                const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
+                dataTree.data.valores[claveAnualPromedio] =
+                {
+                "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": ValorPromedio,
+                "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+                } 
+              }
             }
-          else if(dataTree.data.orden==10){
-              const valor = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio) || 0;
-              dataTree.data.valores[claveMensual] =
-              {
-              "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": valor,
-              "Color": valor<0 ? '#ff3200': '#000000',
+    
+            if(dataTree.data.tipo=='Padre'){
+    
+              const valor = this.getValorCategoriaMensual(dataTree.data.idCategoria,mes.NumMes,anio.Anio) || 0;
+              dataTree.data.valores[claveMensual] = {
+               "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+               "ValorNumero": valor,
+               "Color": valor<0 ? '#ff3200': '#000000'
               }
               totalAnual += valor;
               dataTree.data.valores[claveAnual] = 
               {
-              "Valor": totalAnual<0 ? ('-$'+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              "Valor": totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               "ValorNumero": totalAnual,
               "Color": totalAnual<0 ? '#ff3200': '#000000',
               }
-              
               const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
               dataTree.data.valores[claveAnualPromedio] =
               {
-              "Valor": ValorPromedio<0 ? ('-$'+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": ValorPromedio,
-              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
-              } 
-            }
-          }
-
-          if(dataTree.data.tipo=='Padre'){
-
-            const valor = this.getValorCategoriaMensual(dataTree.data.idCategoria,mes.NumMes,anio.Anio) || 0;
-            dataTree.data.valores[claveMensual] = {
-             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-             "ValorNumero": valor,
-             "Color": valor<0 ? '#ff3200': '#000000'
-            }
-            totalAnual += valor;
-            dataTree.data.valores[claveAnual] = 
-            {
-            "Valor": totalAnual<0 ? ('-$ '+ (totalAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-            "ValorNumero": totalAnual,
-            "Color": totalAnual<0 ? '#ff3200': '#000000',
-            }
-            const ValorPromedio=Number((totalAnual/CantidadMeses).toFixed(0))
-            dataTree.data.valores[claveAnualPromedio] =
-            {
-              "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": ValorPromedio,
-              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
-            }   
-            
-            let claveAnualHijo: any
-            let claveAnualNieto: any        
-            let claveAnualNietoProm: any        
-            let claveAnualHijoProm: any        
-            dataTree.children.forEach(cuenta => {
-              const claveMensualHijo = `${cuenta.data.idItem}-${mes.NumMes}-${anio.Anio}`;
-              claveAnualHijo= `${cuenta.data.idItem}-${anio.Anio}`;
-              claveAnualHijoProm= `Prom-${cuenta.data.idItem}-${anio.Anio}`;
-              const valor = this.getValorItemMensual(cuenta.data.idItem, mes.NumMes, anio.Anio) || 0;
-              const valorAnual = this.getValorItemAnual(cuenta.data.idItem,anio.Anio) || 0;
-              cuenta.data.valores[claveMensualHijo] = 
-              {
-             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-             "ValorNumero": valor,
-             "Color": valor<0 ? '#ff3200': '#000000'
-              }
-              cuenta.data.valores[claveAnualHijo] =   
-              {
-             "Valor": valorAnual<0 ? ('-$ '+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-             "ValorNumero": valorAnual,
-             "Color": valorAnual<0 ? '#ff3200': '#000000'
-              }
-
-              const ValorPromedio=Number((valorAnual/CantidadMeses).toFixed(0))
-              cuenta.data.valores[claveAnualHijoProm] =
-              {
-              "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              "ValorNumero": ValorPromedio,
-              "Color": ValorPromedio<0 ? '#ff3200': '#000000',
-              }               
-
-              cuenta.children.forEach(subCuenta => {
-          
-              const claveMensualHijo = `${subCuenta.data.id}-${mes.NumMes}-${anio.Anio}`;
-              claveAnualNieto= `${subCuenta.data.id}-${anio.Anio}`;
-              claveAnualNietoProm= `Prom-${subCuenta.data.id}-${anio.Anio}`;
-              const valorNieto = this.getValorSubItemMensual(subCuenta.data.id, mes.NumMes, anio.Anio) || 0;
-              const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.id, anio.Anio) || 0;
-              subCuenta.data.valores[claveMensualHijo] =                 
+                "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": ValorPromedio,
+                "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+              }   
+              
+              let claveAnualHijo: any
+              let claveAnualNieto: any        
+              let claveAnualNietoProm: any        
+              let claveAnualHijoProm: any        
+              dataTree.children.forEach(cuenta => {
+                const claveMensualHijo = `${cuenta.data.idItem}-${mes.NumMes}-${anio.Anio}`;
+                claveAnualHijo= `${cuenta.data.idItem}-${anio.Anio}`;
+                claveAnualHijoProm= `Prom-${cuenta.data.idItem}-${anio.Anio}`;
+                const valor = this.getValorItemMensual(cuenta.data.idItem, mes.NumMes, anio.Anio) || 0;
+                const valorAnual = this.getValorItemAnual(cuenta.data.idItem,anio.Anio) || 0;
+                cuenta.data.valores[claveMensualHijo] = 
                 {
-                "Valor": valorNieto<0 ? ('-$ '+ (valorNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-                "ValorNumero": valorNieto,
-                "Color": valorNieto<0 ? '#ff3200': '#000000'
+               "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+               "ValorNumero": valor,
+               "Color": valor<0 ? '#ff3200': '#000000'
                 }
-
-              subCuenta.data.valores[claveAnualNieto] = 
+                cuenta.data.valores[claveAnualHijo] =   
                 {
-                "Valor": valorNietoAnual<0 ? ('-$ '+ (valorNietoAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNietoAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-                "ValorNumero": valorNietoAnual,
-                "Color": valorNietoAnual<0 ? '#ff3200': '#000000'
+               "Valor": valorAnual<0 ? ('-$ '+ (valorAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+               "ValorNumero": valorAnual,
+               "Color": valorAnual<0 ? '#ff3200': '#000000'
                 }
-               const ValorPromedio=Number((valorNietoAnual/CantidadMeses).toFixed(0))  
-               subCuenta.data.valores[claveAnualNietoProm] = 
+    
+                const ValorPromedio=Number((valorAnual/CantidadMeses).toFixed(0))
+                cuenta.data.valores[claveAnualHijoProm] =
                 {
                 "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                 "ValorNumero": ValorPromedio,
-                "Color": ValorPromedio<0 ? '#ff3200': '#000000'
-                }
-
+                "Color": ValorPromedio<0 ? '#ff3200': '#000000',
+                }               
+    
+                cuenta.children.forEach(subCuenta => {
+            
+                const claveMensualHijo = `${subCuenta.data.id}-${mes.NumMes}-${anio.Anio}`;
+                claveAnualNieto= `${subCuenta.data.id}-${anio.Anio}`;
+                claveAnualNietoProm= `Prom-${subCuenta.data.id}-${anio.Anio}`;
+                const valorNieto = this.getValorSubItemMensual(subCuenta.data.id, mes.NumMes, anio.Anio) || 0;
+                const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.id, anio.Anio) || 0;
+                subCuenta.data.valores[claveMensualHijo] =                 
+                  {
+                  "Valor": valorNieto<0 ? ('-$ '+ (valorNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  "ValorNumero": valorNieto,
+                  "Color": valorNieto<0 ? '#ff3200': '#000000'
+                  }
+    
+                subCuenta.data.valores[claveAnualNieto] = 
+                  {
+                  "Valor": valorNietoAnual<0 ? ('-$ '+ (valorNietoAnual*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorNietoAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  "ValorNumero": valorNietoAnual,
+                  "Color": valorNietoAnual<0 ? '#ff3200': '#000000'
+                  }
+                 const ValorPromedio=Number((valorNietoAnual/CantidadMeses).toFixed(0))  
+                 subCuenta.data.valores[claveAnualNietoProm] = 
+                  {
+                  "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  "ValorNumero": ValorPromedio,
+                  "Color": ValorPromedio<0 ? '#ff3200': '#000000'
+                  }
+    
+                });
               });
-            });
+    
+    
+    
+            }
+    
+    
+    
+    
+    
+          });
 
+  
 
-
+        })
+        if(dataTree.data.tipo=='Saldo Inicial'){
+          const claveSemestral = `sem-${dataTree.data.idCategoria}-${semestre.id}-${anio.Anio}`;
+          const claveSemestralPromedio = `prom-${dataTree.data.idCategoria}-${semestre.id}-${anio.Anio}`;
+          let keySemestre = semestre.id==1 ? `0-1-${anio.Anio}`:`0-7-${anio.Anio}`;
+          let valor=this.DataTreeTable[0].data.valores[keySemestre]?.ValorNumero || 0
+          let valorPromedio=valor/2
+          dataTree.data.valores[claveSemestral] = 
+          {
+            "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": valor,
+            "Color": valor<0 ? '#ff3200': '#000000',
           }
-
-
-
-
-
-        });
+          dataTree.data.valores[claveSemestralPromedio] = 
+          {
+            "Valor": valorPromedio<0 ? ('-$ '+ (valorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": valorPromedio,
+            "Color": valorPromedio<0 ? '#ff3200': '#000000',
+          }
+        }  
+      });  
+      
    
         
 
@@ -2190,6 +2296,7 @@ construirValores(){
     }
     this.conS.enviarRegistrosSemestrales(DataSemestral)
     this.cargar=false
+    console.log('DataTreeTable',this.DataTreeTable)
 
   }
 
@@ -2426,79 +2533,147 @@ getDataFlujoLibreAnual(Anio:any){
 getMesesByAnio(anio:any){
   return this.Meses.filter((mes:any)=>mes.Anio==anio)
 }
+
+
 construirCabecera(){
 
     this.Cabecera=[]
-    // this.Cabecera.push({
-    //   "Nombre":"Concepto",
-    //   "Mes":"",
-    //   "NumMes":"",
-    //   "Anio":"",
-    //   "Tipo":1,
-    //   "Mostrar":true,
-    //   "MostrarBoton":true
-    // })
+    this.CabeceraBack=[]
     this.Anios.forEach((anio:any) => {
-      //this.getMesesByAnio(anio.Anio).forEach((mes:any) => {
       this.Meses.forEach((mes:any) => {
-        // this.getSemanasByMesAnio(anio.Anio,mes.NumMes).forEach((sem:any) => {
-        //   this.Cabecera.push({
-        //     "Nombre":sem.Semana + ' '+ mes.Mes + ' ' + anio.Anio,
-        //     "Mes":mes.Mes,
-        //     "NumMes":mes.NumMes,
-        //     "Anio":anio.Anio,
-        //     "Tipo":2,
-        //     "NumSemana":sem.NumSemana,
-        //     "Mostrar":true,
-        //     "MostrarBoton":true
-            
-          
-        //   })
-          
-        // });
-       // if(this.getSemanasByMesAnio(anio.Anio,mes.NumMes).length>0){
-          this.Cabecera.push({
+          this.CabeceraBack.push({
             "Nombre":mes.Mes + ' ' + anio.Anio,
             "Mes":mes.Mes,
             "NumMes":mes.NumMes,
             "Anio":anio.Anio,
             "Tipo":3,
-            // "Mostrar":true,
-            // "MostrarBoton":true,
-            // "MostrarBotonSemanal":true,
-            // "MostrarBotonMensual":true,
-            // "MostrarSemanas":true,
+            "Mostrar":true
+          })
+        if(mes.NumMes==3){
+          this.CabeceraBack.push({
+            "Nombre":"Total Trimestre 1",
+            "NumTrim":1,
+            "Anio":anio.Anio,
+            "Tipo":6,
+            "Mostrar":false
+          })
+          this.CabeceraBack.push({
+            "Nombre":"Promedio Trimestre 1",
+            "NumTrim":1,
+            "Anio":anio.Anio,
+            "Tipo":8,
+            "Mostrar":false
+          })
+        }
+        else if(mes.NumMes==6){
+          this.CabeceraBack.push({
+            "Nombre":"Total Trimestre 2",
+            "NumTrim":2,
+            "Anio":anio.Anio,
+            "Tipo":6,
+            "Mostrar":false
+          })
+          this.CabeceraBack.push({
+            "Nombre":"Promedio Trimestre 2",
+            "NumTrim":2,
+            "Anio":anio.Anio,
+            "Tipo":8,
+            "Mostrar":false
+          })
+          this.CabeceraBack.push({
+            "Nombre":"Total Semestre 1",
+            "NumSem":1,
+            "Anio":anio.Anio,
+            "Tipo":7,
+            "Mostrar":false
+          })
+          this.CabeceraBack.push({
+            "Nombre":"Promedio Semestre 1",
+            "NumSem":1,
+            "Anio":anio.Anio,
+            "Tipo":9,
+            "Mostrar":false
+          })
+        } 
+        else if(mes.NumMes==9){
+          this.CabeceraBack.push({
+            "Nombre":"Total Trimestre 3",
+            "NumTrim":3,
+            "Anio":anio.Anio,
+            "Tipo":6,
+            "Mostrar":false
+          })
+          this.CabeceraBack.push({
+            "Nombre":"Promedio Trimestre 3",
+            "NumTrim":2,
+            "Anio":anio.Anio,
+            "Tipo":8,
+            "Mostrar":false
+          })
+        }
+        else if(mes.NumMes==12){
+          this.CabeceraBack.push({
+            "Nombre":"Total Trimestre 4",
+            "NumTrim":4,
+            "Anio":anio.Anio,
+            "Tipo":6,
+            "Mostrar":false
           })
 
-      //  }
+          this.CabeceraBack.push({
+            "Nombre":"Promedio Trimestre 4",
+            "NumTrim":4,
+            "Anio":anio.Anio,
+            "Tipo":8,
+            "Mostrar":false
+          })
+          this.CabeceraBack.push({
+            "Nombre":"Total Semestre 2",
+            "NumSem":2,
+            "Anio":anio.Anio,
+            "Tipo":7,
+            "Mostrar":false
+          })
+          this.CabeceraBack.push({
+            "Nombre":"Promedio Semestre 2",
+            "NumSem":2,
+            "Anio":anio.Anio,
+            "Tipo":9,
+            "Mostrar":false
+          })
+
+          
+        }
+
+
       });
-      this.Cabecera.push({
+
+      this.CabeceraBack.push({
         "Nombre":"Total " + anio.Anio,
         "Mes":"",
         "NumMes":"",
         "Anio":anio.Anio,
         "Tipo":4,
-        // "Mostrar":true,
-        // "MostrarBoton":true
+        "Mostrar":true
       })
-      this.Cabecera.push({
+      this.CabeceraBack.push({
         "Nombre":"Promedio " + anio.Anio,
         "Mes":"",
         "NumMes":"",
         "Anio":anio.Anio,
         "Tipo":5,
-        // "Mostrar":true,
-        // "MostrarBoton":true
+        "Mostrar":true
       })
       
 
     });
 
 
-    this.CabeceraBack=this.Cabecera
+    //this.Cabecera=this.CabeceraBack.filter((cab:any)=>cab.Mostrar==true)
+    this.Cabecera=this.CabeceraBack
 
  
-    // this.DataSaldoInicial=[]
+    
     // this.DataSaldoFinal=[]
     // this.DataSaldoInicialMensual=[]
     // this.DataSaldoFinalMensual=[]
