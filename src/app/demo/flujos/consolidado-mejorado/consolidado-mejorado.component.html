@@ -136,6 +136,7 @@ class="form-check form-check-inline">
     [columns]="Cabecera" 
     [scrollable]="true" 
     scrollHeight="800px" 
+    [styleClass]="selectedSize"
     [resizableColumns]="true"
     [tableStyle]="{'min-width': (Cabecera.length * 150) + 'px'}">
         <ng-template pTemplate="header" let-columns>
@@ -217,11 +218,22 @@ class="form-check form-check-inline">
                         {{rowData.valores['sem-'+ rowData.idCategoria +'-'+ col.NumSem + '-' + col.Anio]?.Valor || 0 }}
                       </span>
                     </span>
+                    <span *ngIf="rowData.tipo=='Hijo'">
+                      <span [style.color]="rowData.valores['sem-'+rowData.idItem +'-'+ col.NumSem + '-' + col.Anio].Color">
+                        {{rowData.valores['sem-'+rowData.idItem + '-'+ col.NumSem+ '-' +col.Anio]?.Valor || 0}}
+                      </span>
+                    </span>
+                    
                   </ng-container>
                   <ng-container *ngIf="col.Tipo==9">
                     <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
-                      <span [style.color]="rowData.valores['prom-'+ rowData.idCategoria +'-'+ col.NumSem+ '-' + col.Anio]?.Color || '' ">
-                        {{rowData.valores['prom-'+ rowData.idCategoria +'-'+ col.NumSem + '-' + col.Anio]?.Valor || 0 }}
+                      <span [style.color]="rowData.valores['sem-prom-'+ rowData.idCategoria +'-'+ col.NumSem + '-' + col.Anio]?.Color || '' ">
+                        {{rowData.valores['sem-prom-'+ rowData.idCategoria +'-'+ col.NumSem + '-' + col.Anio]?.Valor || 0 }}
+                      </span>
+                    </span>
+                    <span *ngIf="rowData.tipo=='Hijo'">
+                      <span [style.color]="rowData.valores['sem-Prom-'+rowData.idItem +'-'+ col.NumSem +'-'+ col.Anio]?.Color || '' ">
+                        {{rowData.valores['sem-Prom-'+rowData.idItem + '-'+ col.NumSem +'-'+ col.Anio]?.Valor || 0 }}
                       </span>
                     </span>
                   </ng-container>
