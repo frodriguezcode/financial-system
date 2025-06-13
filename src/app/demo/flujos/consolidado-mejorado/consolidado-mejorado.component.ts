@@ -2259,11 +2259,171 @@ construirValores(){
     
     
     
+          
+          
+          
+          
+          
           });
+         //Datos Trimestrales 
+        const claveTrimestral = `trim-${dataTree.data.idCategoria}-${trim.id}-${anio.Anio}`;
+        const claveTrimestralPromedio = `trim-prom-${dataTree.data.idCategoria}-${trim.id}-${anio.Anio}`;
+        if(dataTree.data.tipo=='Saldo Inicial'){
+          let keyTrimestre= trim.id==1 ? `0-1-${anio.Anio}`: trim.id==2 ?  `0-4-${anio.Anio}` : trim.id==3 ?  `0-7-${anio.Anio}`: `0-10-${anio.Anio}`;
+          let valor=this.DataTreeTable[0].data.valores[keyTrimestre]?.ValorNumero || 0
+          let valorPromedio=valor/4
+          dataTree.data.valores[claveTrimestral] = 
+          {
+            "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": valor,
+            "Color": valor<0 ? '#ff3200': '#000000',
+          }
+          dataTree.data.valores[claveTrimestralPromedio] = 
+          {
+            "Valor": valorPromedio<0 ? ('-$ '+ (valorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": valorPromedio,
+            "Color": valorPromedio<0 ? '#ff3200': '#000000',
+          }
+        }  
 
+        else if(dataTree.data.tipo=='Saldo Final'){
+          let keyTrimestre = trim.id==1 ? `11-3-${anio.Anio}`: trim.id==2 ?  `11-6-${anio.Anio}` : trim.id==3 ?  `11-9-${anio.Anio}`: `11-12-${anio.Anio}`;
+          let valor=this.DataTreeTable[11].data.valores[keyTrimestre]?.ValorNumero || 0
+          let valorPromedio=valor/4
+          dataTree.data.valores[claveTrimestral] = 
+          {
+            "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": valor,
+            "Color": valor<0 ? '#ff3200': '#000000',
+          }
+          dataTree.data.valores[claveTrimestralPromedio] = 
+          {
+            "Valor": valorPromedio<0 ? ('-$ '+ (valorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": valorPromedio,
+            "Color": valorPromedio<0 ? '#ff3200': '#000000',
+          }
+        }
+
+        else if(dataTree.data.tipo=='Abuelo'){
+
+        if(dataTree.data.orden==1 || dataTree.data.orden==4 || dataTree.data.orden==7 || dataTree.data.orden==10 ){
+            let ValorAcumulado=0
+            let ValorAcumuladoPromedio=0
+           
+            this.getMesesByTrimestre(trim.id).forEach(mes => {
+              ValorAcumulado+=this.DataTreeTable[1].data.valores[`${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0
+            })
+          dataTree.data.valores[claveTrimestral] = 
+          {
+            "Valor": ValorAcumulado<0 ? ('-$ '+ (ValorAcumulado*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": ValorAcumulado,
+            "Color": ValorAcumulado<0 ? '#ff3200': '#000000',
+          }
+          ValorAcumuladoPromedio=ValorAcumulado/4
+
+          dataTree.data.valores[claveTrimestralPromedio] = 
+          {
+            "Valor": ValorAcumuladoPromedio<0 ? ('-$ '+ (ValorAcumuladoPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": ValorAcumuladoPromedio,
+            "Color": ValorAcumuladoPromedio<0 ? '#ff3200': '#000000',
+          }
+
+        }
+        }
+
+        if(dataTree.data.tipo=='Padre'){
+          let ValorAcumulado=0
+          let ValorAcumuladoPromedio=0           
+          this.getMesesByTrimestre(trim.id).forEach(mes => {
+              ValorAcumulado+=this.DataTreeTable[dataTree.data.orden].data.valores[`${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0         
+          }) 
+          dataTree.data.valores[claveTrimestral] = 
+          {
+            "Valor": ValorAcumulado<0 ? ('-$ '+ (ValorAcumulado*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": ValorAcumulado,
+            "Color": ValorAcumulado<0 ? '#ff3200': '#000000'
+          }
+          ValorAcumuladoPromedio=ValorAcumulado/2
+          dataTree.data.valores[claveTrimestralPromedio] =
+          {
+            "Valor": ValorAcumuladoPromedio<0 ? ('-$ '+ (ValorAcumuladoPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            "ValorNumero": ValorAcumuladoPromedio,
+            "Color": ValorAcumuladoPromedio<0 ? '#ff3200': '#000000',
+          }
+          
+          //Hijos
+          this.DataTreeTable[dataTree.data.orden].children.forEach(cuenta => {  
+              let valorTrimestralHijo =  0;
+              let valorTrimestralPromedioHijo =  0;
+              const claveTrimestralHijo = `trim-${cuenta.data.idItem}-${trim.id}-${anio.Anio}`;
+              const clavePromedioTrimestrallHijo= `trim-Prom-${cuenta.data.idItem}-${trim.id}-${anio.Anio}`;
+              this.getMesesByTrimestre(trim.id).forEach((mes:any)=>{
+                let ArregloHijos=this.DataTreeTable[dataTree.data.orden].children == undefined 
+                || this.DataTreeTable[dataTree.data.orden].children.length ==0? []:
+                this.DataTreeTable[dataTree.data.orden].children
+                ArregloHijos.forEach((child:any)=>{
+                 valorTrimestralHijo+=  child.data.valores[`${cuenta.data.idItem}-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0 
+                })
+              })
+
+              valorTrimestralPromedioHijo= Number((valorTrimestralHijo/4).toFixed(0));
+
+              cuenta.data.valores[claveTrimestralHijo] = 
+              {
+             "Valor": valorTrimestralHijo<0 ? ('-$ '+ (valorTrimestralHijo*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorTrimestralHijo)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valorTrimestralHijo,
+             "Color": valorTrimestralHijo<0 ? '#ff3200': '#000000'
+              }
+
+
+            cuenta.data.valores[clavePromedioTrimestrallHijo] =   
+              {
+             "Valor": valorTrimestralPromedioHijo<0 ? ('-$ '+ (valorTrimestralPromedioHijo*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorTrimestralPromedioHijo)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valorTrimestralPromedioHijo,
+             "Color": valorTrimestralPromedioHijo<0 ? '#ff3200': '#000000'
+              }         
+            //Nieto  
+            cuenta.children.forEach(subCuenta => {
+              let valorTrimestralNieto =  0;
+              let valorTrimestralPromedioNieto=  0;
+              const claveSemestralHijo = `sem-${subCuenta.data.id}-${semestre.id}-${anio.Anio}`;
+              const clavePromedioSemestralHijo = `Prom-nieto-${subCuenta.data.id}-${semestre.id}-${anio.Anio}`;              
+              this.getMesesBySemestre(semestre.id).forEach((mes:any)=>{
+              this.DataTreeTable[dataTree.data.orden].children.forEach((child:any)=>{               
+                 child.children.forEach(nieto => {
+                   valorTrimestralNieto+=
+                   nieto.data.valores[`${subCuenta.data.id}-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0 
+                  
+                });              
+              }) 
+
+              })
+
+              valorTrimestralPromedioNieto= Number((valorTrimestralNieto/2).toFixed(0));
+
+              subCuenta.data.valores[claveSemestralHijo] =                 
+              {
+                "Valor": valorTrimestralNieto<0 ? ('-$ '+ (valorTrimestralNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorTrimestralNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                "ValorNumero": valorTrimestralNieto,
+                "Color": valorTrimestralNieto<0 ? '#ff3200': '#000000'
+              } 
+
+              subCuenta.data.valores[clavePromedioSemestralHijo] =   
+              {
+             "Valor": valorTrimestralPromedioNieto<0 ? ('-$ '+ (valorTrimestralPromedioNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorTrimestralPromedioNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+             "ValorNumero": valorTrimestralPromedioNieto,
+             "Color": valorTrimestralPromedioNieto<0 ? '#ff3200': '#000000'
+              }                           
+
+
+
+            })
+            })
+        }
   
 
         })
+      //Datos Semestrales
         const claveSemestral = `sem-${dataTree.data.idCategoria}-${semestre.id}-${anio.Anio}`;
         const claveSemestralPromedio = `sem-prom-${dataTree.data.idCategoria}-${semestre.id}-${anio.Anio}`;
         if(dataTree.data.tipo=='Saldo Inicial'){
@@ -2418,6 +2578,8 @@ construirValores(){
             })
             })
         }
+
+      
 
 
 
