@@ -50,7 +50,7 @@ export default class EmpresasComponent implements OnInit {
   empresaFound: boolean = false;
   active: number | undefined = 0;
   idEmpresaCreada: string = '';
-  MostrarEmpresas: boolean = true;
+  MostrarEmpresas: boolean = false;
   Empresas: any = [];
   Matrices: any = [];
   Atributos: any = [];

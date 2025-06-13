@@ -50,7 +50,7 @@ ngOnInit(): void {
          this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((empresa:any)=>{
           SubscriptionEmpresa.unsubscribe()
            if(empresa[0].ConfigInicial==false){
-             this.router.navigate(['/configuracion-inicial'])
+             this.router.navigate(['/empresas'])
              Swal.close()
              this.obtenerAtributos(resp[0].idEmpresa,resp[0].idRol)
            }

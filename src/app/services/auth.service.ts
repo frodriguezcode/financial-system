@@ -82,6 +82,7 @@ export class AuthService {
       "Atributos":Atributos,
       "idEmpresa":idEmpresa,
       "idUsuario":user.Usuario,
+      "idMatriz":user.idMatriz,
       "Usuario":id,
       "FechaRegistro":user.FechaRegistro
     }
