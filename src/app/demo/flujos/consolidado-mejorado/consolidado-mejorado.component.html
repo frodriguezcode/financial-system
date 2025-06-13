@@ -141,8 +141,11 @@ class="form-check form-check-inline">
     [tableStyle]="{'min-width': (Cabecera.length * 150) + 'px'}">
         <ng-template pTemplate="header" let-columns>
             <tr >
-                <th style="width: 400px;position: sticky; left: 0; background: white; z-index: 1;">Nombre</th>
-                <th style="width: 200px" class="text-center"  *ngFor="let col of columns">{{col.Nombre}}</th>
+                <th style="width: 450px;position: sticky; left: 0; background: #a2d7b4; z-index: 1;">Nombre</th>
+                <th style="width: 200px" 
+                class="text-center" 
+                [style.background-color]="col?.Color || ''" 
+                *ngFor="let col of columns">{{col.Nombre}}</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
@@ -155,7 +158,7 @@ class="form-check form-check-inline">
                       'Saldos': rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'     
                       }"
             [ttRow]="rowNode">
-                <td style="width: 400px; position: sticky; left: 0; background: inherit;">
+                <td style="width: 450px; position: sticky; left: 0; background: inherit;">
                      <p-treeTableToggler [rowNode]="rowNode" />                
                        {{rowData.Nombre}}        
                 </td>
@@ -223,6 +226,11 @@ class="form-check form-check-inline">
                         {{rowData.valores['sem-'+rowData.idItem + '-'+ col.NumSem+ '-' +col.Anio]?.Valor || 0}}
                       </span>
                     </span>
+                   <span *ngIf="rowData.tipo=='Nieto'">
+                    <span [style.color]="rowData.valores['sem-'+rowData.id +'-'+ col.NumSem + '-' + col.Anio]?.Color || ''">
+                      {{rowData.valores['sem-'+rowData.id +'-'+ col.NumSem+ '-' + col.Anio]?.Valor || 0}}
+                    </span>
+                   </span>
                     
                   </ng-container>
                   <ng-container *ngIf="col.Tipo==9">
@@ -236,6 +244,13 @@ class="form-check form-check-inline">
                         {{rowData.valores['sem-Prom-'+rowData.idItem + '-'+ col.NumSem +'-'+ col.Anio]?.Valor || 0 }}
                       </span>
                     </span>
+
+                   <span *ngIf="rowData.tipo=='Nieto'">
+                    <span [style.color]="rowData.valores['Prom-nieto-'+rowData.id +'-'+ col.NumSem + '-' + col.Anio]?.Color || ''">
+                      {{rowData.valores['Prom-nieto-'+rowData.id +'-'+ col.NumSem + '-' + col.Anio]?.Valor || 0}}
+                    </span>
+                   </span>   
+                                    
                   </ng-container>
                 </td>
             </tr>
