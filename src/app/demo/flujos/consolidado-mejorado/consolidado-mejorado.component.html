@@ -37,24 +37,20 @@
  optionLabel="Nombre" placeholder="Intérvalos" 
  />
 
-    <p-treeSelect 
-      [(ngModel)]="selectedNodes" 
-      [options]="timeHierarchy" 
-      placeholder="Seleccione períodos"
-      selectionMode="checkbox"
-      appendTo="body"
-      [metaKeySelection]="false"
-      display="chip"
-      [showClear]="true"
-      [filter]="true"
-    ></p-treeSelect>
-    
-    <div *ngIf="selectedNodes?.length > 0">
-      <h4>Períodos seleccionados:</h4>
-      <ul>
-        <li *ngFor="let node of selectedNodes">{{ getNodeLabel(node) }}</li>
-      </ul>
-    </div>
+<p-treeSelect 
+  [(ngModel)]="selectedNodes" 
+  [options]="timeHierarchy" 
+  placeholder="Seleccione período"
+  (onNodeSelect)="PeriodosSeleccionados()"
+  [metaKeySelection]="false"
+  selectionMode="checkbox"
+  display="chip"
+  appendTo="body"
+  [showClear]="true"
+  [filter]="true"
+  [filterBy]="'label'"
+  [scrollHeight]="'400px'"
+></p-treeSelect>
 
 <p-multiSelect [disabled]="ProyectoSeleccionado.length>0" 
   class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" 
