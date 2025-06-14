@@ -3,15 +3,15 @@
   <div class="col-sm-12">
 <!-- <p>{{this.width}}</p> -->
     <app-card cardTitle="Flujos" [options]="false">
-      <button type="button" (click)="showDialog()" class="btn btn-success" ngbTooltip="Ajustar Saldos Iniciales">Ajustar Saldos</button>
+      <!-- <button type="button" (click)="showDialog()" class="btn btn-success" ngbTooltip="Ajustar Saldos Iniciales">Ajustar Saldos</button> -->
+      <app-consolidado-mejorado></app-consolidado-mejorado>
      
-        <p-tabView [(activeIndex)]="activeIndex">
+        <!-- <p-tabView [(activeIndex)]="activeIndex">
         <p-tabPanel header="Consolidado">
-         <app-consolidado-mejorado></app-consolidado-mejorado>
-         <!-- <app-flujo-consolidado></app-flujo-consolidado> -->
+         <app-flujo-consolidado></app-flujo-consolidado>
         </p-tabPanel>
     
-        </p-tabView>
+        </p-tabView> -->
 
     </app-card>
   </div>

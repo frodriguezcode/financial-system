@@ -1,5 +1,5 @@
 // angular import
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -25,7 +25,8 @@ interface TreeNodeData {
 }
 
 interface TreeNode {
-  data: TreeNodeData;
+  label: string;
+  value: string;
   children?: TreeNode[];
 }
 
@@ -38,7 +39,7 @@ interface Column {
   selector: 'app-consolidado-mejorado',
   standalone: true,
   imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule,
-    TreeTableModule,TableModule,ButtonModule,
+    TreeTableModule,TableModule,ButtonModule,TreeSelectModule,
     ConsolidadoMejoradoTrimesralComponent,ConsolidadoSemestralComponent],
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
@@ -46,7 +47,7 @@ interface Column {
 
 
 export default class ConsolidadoMejoradoComponent implements OnInit {
-  @ViewChild('dt') table: Table; 
+@ViewChild('dt') table: Table; 
   constructor(
     private conS:ConfigurationService
   ) {}
@@ -125,13 +126,58 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   verSemestral:boolean=false
 
   frozenCols!: Column[];
-
+timeHierarchy:any
   maxCategoryLength: number = 0;
-
+  selectedNodes: any;
   PeriodosTiempos:any=[]
   PeriodosTiemposSeleccionados:any=[]
   ngOnInit(): void {
-
+this.timeHierarchy = [
+    {
+      label: '2023',
+      value: '2023',
+      children: [
+        {
+          label: 'Semestre 1',
+          value: '2023-S1',
+          children: [
+            { label: 'Trimestre 1 (Ene-Mar)', value: '2023-T1' },
+            { label: 'Trimestre 2 (Abr-Jun)', value: '2023-T2' }
+          ]
+        },
+        {
+          label: 'Semestre 2',
+          value: '2023-S2',
+          children: [
+            { label: 'Trimestre 3 (Jul-Sep)', value: '2023-T3' },
+            { label: 'Trimestre 4 (Oct-Dic)', value: '2023-T4' }
+          ]
+        }
+      ]
+    },
+    {
+      label: '2024',
+      value: '2024',
+      children: [
+        {
+          label: 'Semestre 1',
+          value: '2024-S1',
+          children: [
+            { label: 'Trimestre 1 (Ene-Mar)', value: '2024-T1' },
+            { label: 'Trimestre 2 (Abr-Jun)', value: '2024-T2' }
+          ]
+        },
+        {
+          label: 'Semestre 2',
+          value: '2024-S2',
+          children: [
+            { label: 'Trimestre 3 (Jul-Sep)', value: '2024-T3' },
+            { label: 'Trimestre 4 (Oct-Dic)', value: '2024-T4' }
+          ]
+        }
+      ]
+    }
+  ];
   this.PeriodosTiempos.push(
     {
       "Nombre":"Trimestre 1",
@@ -346,6 +392,54 @@ this.Meses= [
     });
 
     this.maxCategoryLength = this.findLongestCategory();
+  }
+
+generateTimeHierarchy(startYear: number, endYear: number): TreeNode[] {
+  const years: TreeNode[] = [];
+  
+  for (let year = startYear; year <= endYear; year++) {
+    years.push({
+      label: year.toString(),
+      value: year.toString(),
+      children: [
+        {
+          label: 'Semestre 1',
+          value: `${year}-S1`,
+          children: [
+            { label: 'Trimestre 1', value: `${year}-T1` },
+            { label: 'Trimestre 2', value: `${year}-T2` }
+          ]
+        },
+        {
+          label: 'Semestre 2',
+          value: `${year}-S2`,
+          children: [
+            { label: 'Trimestre 3', value: `${year}-T3` },
+            { label: 'Trimestre 4', value: `${year}-T4` }
+          ]
+        }
+      ]
+    });
+  }
+  
+  return years;
+}
+
+  getNodeLabel(value: string): string {
+    const node = this.findNode(this.timeHierarchy, value);
+    return node ? node.label : value;
+  }
+
+    // Función auxiliar para encontrar un nodo por su valor
+  private findNode(nodes: TreeNode[], value: string): TreeNode | null {
+    for (const node of nodes) {
+      if (node.value === value) return node;
+      if (node.children) {
+        const found = this.findNode(node.children, value);
+        if (found) return found;
+      }
+    }
+    return null;
   }
 
   findLongestCategory(): number {
@@ -713,7 +807,7 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
   });
  
 }
-  filtrarMeses(numMes:any){
+filtrarMeses(numMes:any){
     let _MesEncontrado:any=[]
     _MesEncontrado=this.MesesSeleccionados.filter((mes:any)=>mes.NumMes==numMes)
    
@@ -723,9 +817,9 @@ ocultarMostrarMeses(NumMes:any,Anio:any){
     else {
       return false
     }
-  }
+}
 
-  obtenerProyectos(){
+obtenerProyectos(){
     let _subscribe:Subscription
     _subscribe= this.conS.obtenerProyectos(this.usuario.idEmpresa).subscribe(resp=>{
       _subscribe.unsubscribe()
@@ -2343,7 +2437,7 @@ construirValores(){
             "ValorNumero": ValorAcumulado,
             "Color": ValorAcumulado<0 ? '#ff3200': '#000000'
           }
-          ValorAcumuladoPromedio=ValorAcumulado/2
+          ValorAcumuladoPromedio=ValorAcumulado/4
           dataTree.data.valores[claveTrimestralPromedio] =
           {
             "Valor": ValorAcumuladoPromedio<0 ? ('-$ '+ (ValorAcumuladoPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -2386,8 +2480,8 @@ construirValores(){
             cuenta.children.forEach(subCuenta => {
               let valorTrimestralNieto =  0;
               let valorTrimestralPromedioNieto=  0;
-              const claveSemestralHijo = `sem-${subCuenta.data.id}-${semestre.id}-${anio.Anio}`;
-              const clavePromedioSemestralHijo = `Prom-nieto-${subCuenta.data.id}-${semestre.id}-${anio.Anio}`;              
+              const claveTrimestralHijo = `trim-${subCuenta.data.id}-${trim.id}-${anio.Anio}`;
+              const clavePromedioTrimestralHijo = `Prom-nieto-trim-${subCuenta.data.id}-${trim.id}-${anio.Anio}`;              
               this.getMesesBySemestre(semestre.id).forEach((mes:any)=>{
               this.DataTreeTable[dataTree.data.orden].children.forEach((child:any)=>{               
                  child.children.forEach(nieto => {
@@ -2399,16 +2493,16 @@ construirValores(){
 
               })
 
-              valorTrimestralPromedioNieto= Number((valorTrimestralNieto/2).toFixed(0));
+              valorTrimestralPromedioNieto= Number((valorTrimestralNieto/4).toFixed(0));
 
-              subCuenta.data.valores[claveSemestralHijo] =                 
+              subCuenta.data.valores[claveTrimestralHijo] =                 
               {
                 "Valor": valorTrimestralNieto<0 ? ('-$ '+ (valorTrimestralNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorTrimestralNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                 "ValorNumero": valorTrimestralNieto,
                 "Color": valorTrimestralNieto<0 ? '#ff3200': '#000000'
               } 
 
-              subCuenta.data.valores[clavePromedioSemestralHijo] =   
+              subCuenta.data.valores[clavePromedioTrimestralHijo] =   
               {
              "Valor": valorTrimestralPromedioNieto<0 ? ('-$ '+ (valorTrimestralPromedioNieto*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valorTrimestralPromedioNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
              "ValorNumero": valorTrimestralPromedioNieto,

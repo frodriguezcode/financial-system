@@ -374,3 +374,20 @@ button[pButton].expanded {
 .p-treetable .p-treetable-tbody > tr > td:first-child {
   background: inherit;
 }
+
+
+/* Asegura que la tabla tenga scroll horizontal */
+.p-treetable-scrollable-body {
+  overflow-x: auto !important;
+}
+
+/* Opcional: estilo para la barra de scroll */
+.top-scroll-container::-webkit-scrollbar {
+  height: 8px;
+  background: #f5f5f5;
+}
+
+.top-scroll-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}

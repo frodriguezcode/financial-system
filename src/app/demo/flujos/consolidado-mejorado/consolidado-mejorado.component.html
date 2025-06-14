@@ -37,6 +37,25 @@
  optionLabel="Nombre" placeholder="Intérvalos" 
  />
 
+    <p-treeSelect 
+      [(ngModel)]="selectedNodes" 
+      [options]="timeHierarchy" 
+      placeholder="Seleccione períodos"
+      selectionMode="checkbox"
+      appendTo="body"
+      [metaKeySelection]="false"
+      display="chip"
+      [showClear]="true"
+      [filter]="true"
+    ></p-treeSelect>
+    
+    <div *ngIf="selectedNodes?.length > 0">
+      <h4>Períodos seleccionados:</h4>
+      <ul>
+        <li *ngFor="let node of selectedNodes">{{ getNodeLabel(node) }}</li>
+      </ul>
+    </div>
+
 <p-multiSelect [disabled]="ProyectoSeleccionado.length>0" 
   class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" 
   [options]="Sucursales"
@@ -130,15 +149,19 @@ class="form-check form-check-inline">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
-  
-    <p-treeTable 
+
+
+
+    <p-treeTable
     [value]="DataTreeTable" 
     [columns]="Cabecera" 
     [scrollable]="true" 
     scrollHeight="800px" 
     [styleClass]="selectedSize"
     [resizableColumns]="true"
-    [tableStyle]="{'min-width': (Cabecera.length * 150) + 'px'}">
+    [tableStyle]="{'min-width': (Cabecera.length * 150) + 'px'}"
+    #table
+    >
         <ng-template pTemplate="header" let-columns>
             <tr >
                 <th style="width: 450px;position: sticky; left: 0; background: #a2d7b4; z-index: 1;">Nombre</th>
@@ -215,6 +238,23 @@ class="form-check form-check-inline">
                       </span>
                     </span>
                   </ng-container>
+                  <ng-container *ngIf="col.Tipo==6">
+                    <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                      <span [style.color]="rowData.valores['trim-'+rowData.idCategoria + '-'+ col.NumTrim + '-'+ col.Anio]?.Color || ''">
+                        {{rowData.valores['trim-'+rowData.idCategoria + '-' + col.NumTrim + '-' + col.Anio]?.Valor || 0}}
+                      </span>
+                    </span>
+                    <span *ngIf="rowData.tipo=='Hijo'">
+                      <span [style.color]="rowData.valores['trim-'+ rowData.idItem +'-'+ col.NumTrim + '-' + col.Anio].Color">
+                        {{rowData.valores['trim-'+ rowData.idItem +'-'+ col.NumTrim + '-' + col.Anio]?.Valor || 0}}
+                      </span>
+                    </span>
+                    <span *ngIf="rowData.tipo=='Nieto'">
+                      <span [style.color]="rowData.valores['trim-'+ rowData.id +'-'+ col.NumTrim + '-' + col.Anio]?.Color || ''">
+                        {{rowData.valores['trim-'+ rowData.id +'-'+ col.NumTrim + '-' + col.Anio]?.Valor || 0}}
+                      </span>
+                    </span>
+                  </ng-container>
                   <ng-container *ngIf="col.Tipo==7">
                     <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
                       <span [style.color]="rowData.valores['sem-'+ rowData.idCategoria +'-'+ col.NumSem+ '-' + col.Anio]?.Color || '' ">
@@ -233,6 +273,23 @@ class="form-check form-check-inline">
                    </span>
                     
                   </ng-container>
+                  <ng-container *ngIf="col.Tipo==8">
+                    <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
+                      <span [style.color]="rowData.valores['trim-prom-'+ rowData.idCategoria + '-'+ col.NumTrim + '-' + col.Anio]?.Color || '' ">
+                        {{rowData.valores['trim-prom-'+ rowData.idCategoria + '-' + col.NumTrim + '-' + col.Anio]?.Valor || 0 }}
+                      </span>
+                    </span>
+                    <span *ngIf="rowData.tipo=='Hijo'">
+                      <span [style.color]="rowData.valores['trim-Prom-'+rowData.idItem + '-' + col.NumTrim + '-' + col.Anio]?.Color || '' ">
+                        {{rowData.valores['trim-Prom-'+rowData.idItem + '-' + col.NumTrim + '-' + col.Anio]?.Valor || 0 }}
+                      </span>
+                    </span>
+                    <span *ngIf="rowData.tipo=='Nieto'">
+                      <span [style.color]="rowData.valores['Prom-nieto-trim-'+rowData.id + '-' + col.NumTrim + '-' + col.Anio]?.Color || '' ">
+                        {{rowData.valores['Prom-nieto-trim-'+rowData.id + '-' + col.NumTrim + '-' +col.Anio]?.Valor || 0 }}
+                      </span>
+                    </span>
+                  </ng-container>                  
                   <ng-container *ngIf="col.Tipo==9">
                     <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
                       <span [style.color]="rowData.valores['sem-prom-'+ rowData.idCategoria +'-'+ col.NumSem + '-' + col.Anio]?.Color || '' ">
@@ -256,8 +313,8 @@ class="form-check form-check-inline">
             </tr>
         </ng-template>
     </p-treeTable>
-
 </div>
+
 
 
 
