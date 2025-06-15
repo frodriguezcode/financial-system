@@ -28,20 +28,21 @@
  [(ngModel)]="AniosSeleccionados"
  optionLabel="Anio" placeholder="Años" 
  />
-<p-multiSelect class="m-1"
+<!-- <p-multiSelect class="m-1"
 *ngIf="verMensual==true"
  [options]="PeriodosTiempos" 
  (onChange)="filtrarPorAnioMes()"
  appendTo="body"
  [(ngModel)]="PeriodosTiemposSeleccionados"
  optionLabel="Nombre" placeholder="Intérvalos" 
- />
+ /> -->
 
 <p-treeSelect 
   [(ngModel)]="selectedNodes" 
   [options]="timeHierarchy" 
   placeholder="Seleccione período"
-  (onNodeSelect)="PeriodosSeleccionados()"
+  (onNodeSelect)="verPeriodosSeleccionados()"
+  (onNodeUnselect)="verPeriodosSeleccionados()"
   [metaKeySelection]="false"
   selectionMode="checkbox"
   display="chip"
