@@ -1178,7 +1178,161 @@ getCatalogoFechas(){
    
     this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
     this.SaldoInicial= this.conS.filtradoDinamico(CriteriosSaldos,this.SaldoInicialBack)
-   this.construirCabecera()
+    this.Cabecera=[]
+    this.CabeceraBack=[]
+    this.Anios.forEach((anio:any) => {
+      this.Semestres.forEach(semestre => {
+        this.getTrimestresBySemestre(semestre.id).forEach((trim:any)=>{
+          this.getMesesByTrimestre(trim.id).forEach((mes:any) => {
+              this.CabeceraBack.push({
+                "Nombre":mes.Mes + ' ' + anio.Anio,
+                "Mes":mes.Mes,
+                "NumMes":mes.NumMes,
+                "Anio":anio.Anio,
+                "Color":'#a2d7b4',
+                "Tipo":3,
+                "Mostrar":true
+              })
+            if(mes.NumMes==3){
+              this.CabeceraBack.push({
+                "Nombre":"Total Trimestre 1",
+                "NumTrim":1,
+                "Anio":anio.Anio,
+                "Color":'#4fd37c',
+                "Tipo":6,
+                "Mostrar":false
+              })
+              this.CabeceraBack.push({
+                "Nombre":"Promedio Trimestre 1",
+                "NumTrim":1,
+                "Anio":anio.Anio,
+                "Color":'#4fd37c',
+                "Tipo":8,
+                "Mostrar":false
+              })
+            }
+            else if(mes.NumMes==6){
+              this.CabeceraBack.push({
+                "Nombre":"Total Trimestre 2",
+                "NumTrim":2,
+                "Anio":anio.Anio,
+                "Color":'#4fd37c',
+                "Tipo":6,
+                "Mostrar":false
+              })
+              this.CabeceraBack.push({
+                "Nombre":"Promedio Trimestre 2",
+                "NumTrim":2,
+                "Anio":anio.Anio,
+                "Color":'#4fd37c',
+                "Tipo":8,
+                "Mostrar":false
+              })
+              this.CabeceraBack.push({
+                "Nombre":"Total Semestre 1",
+                "NumSem":1,
+                "Anio":anio.Anio,
+                "Color":'#2ac25e',
+                "Tipo":7,
+                "Mostrar":false
+              })
+              this.CabeceraBack.push({
+                "Nombre":"Promedio Semestre 1",
+                "NumSem":1,
+                "Anio":anio.Anio,
+                "Color":'#2ac25e',
+                "Tipo":9,
+                "Mostrar":false
+              })
+            } 
+            else if(mes.NumMes==9){
+              this.CabeceraBack.push({
+                "Nombre":"Total Trimestre 3",
+                "NumTrim":3,
+                "Anio":anio.Anio,
+                "Color":'#4fd37c',
+                "Tipo":6,
+                "Mostrar":false
+              })
+              this.CabeceraBack.push({
+                "Nombre":"Promedio Trimestre 3",
+                "NumTrim":3,
+                "Anio":anio.Anio,
+                "Color":'#4fd37c',
+                "Tipo":8,
+                "Mostrar":false
+              })
+            }
+            else if(mes.NumMes==12){
+              this.CabeceraBack.push({
+                "Nombre":"Total Trimestre 4",
+                "NumTrim":4,
+                "Anio":anio.Anio,
+                "Color":'#4fd37c',
+                "Tipo":6,
+                "Mostrar":false
+              })
+    
+              this.CabeceraBack.push({
+                "Nombre":"Promedio Trimestre 4",
+                "NumTrim":4,
+                "Anio":anio.Anio,
+                "Color":'#4fd37c',
+                "Tipo":8,
+                "Mostrar":false
+              })
+              this.CabeceraBack.push({
+                "Nombre":"Total Semestre 2",
+                "NumSem":2,
+                "Anio":anio.Anio,
+                "Color":'#2ac25e',
+                "Tipo":7,
+                "Mostrar":false
+              })
+              this.CabeceraBack.push({
+                "Nombre":"Promedio Semestre 2",
+                "NumSem":2,
+                "Anio":anio.Anio,
+                "Color":'#2ac25e',
+                "Tipo":9,
+                "Mostrar":false
+              })
+    
+              
+            }
+    
+    
+          });
+          
+        })
+
+      })
+
+      this.CabeceraBack.push({
+        "Nombre":"Total " + anio.Anio,
+        "Mes":"",
+        "NumMes":"",
+        "Anio":anio.Anio,
+        "Color":'#58d683',
+        "Tipo":4,
+        "Mostrar":true
+      })
+      this.CabeceraBack.push({
+        "Nombre":"Promedio " + anio.Anio,
+        "Mes":"",
+        "NumMes":"",
+        "Color":'#58d683',
+        "Anio":anio.Anio,
+        "Tipo":5,
+        "Mostrar":true
+      })
+      
+
+    });
+
+
+    //this.Cabecera=this.CabeceraBack.filter((cab:any)=>cab.Mostrar==true)
+    this.Cabecera=this.CabeceraBack
    
   
   }
@@ -1289,7 +1443,6 @@ obtenerItems(){
   let _subscribe:Subscription
   _subscribe=  this.conS.obtenerItems(this.usuario.idEmpresa).subscribe(resp=>{
     _subscribe.unsubscribe()
-    console.log('resp',resp)
     this.Items=[]
           this.Items=resp.filter((item:any)=>item.Activo==true);
           this.ItemsBack=resp.filter((item:any)=>item.Activo==true);;
@@ -1668,15 +1821,13 @@ getSaldoInicialMensual(Mes:any,Anio:any){
 
   else {
     let key=`${Mes-1}-${Anio}`
-    let keyEnero=`12-${Anio-1}`
     let ValorSaldo:number=0
 
     let RSFM=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key)
-    let RSFMEnero=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==keyEnero)
     let RSFM2=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.Anio==Anio-1)
 
  if(RSFM.length>0){
-      ValorSaldo=RSFM[0].Valor
+      ValorSaldo=RSFM[RSFM.length-1].Valor
     }
     else if(RSFM2.length>0) {
       ValorSaldo=RSFM2[RSFM2.length-1].Valor
@@ -1684,7 +1835,6 @@ getSaldoInicialMensual(Mes:any,Anio:any){
     else {
       ValorSaldo=0
     }
-
 
 
       return ValorSaldo
@@ -2253,9 +2403,8 @@ getMesesBySemestre(idSemestre:any){
   return this.Meses.filter((mes:any)=>mes.Semestre==idSemestre)
 }
 construirValores(){
-    
+
   let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
-  let Meses=this.MesesSeleccionados.length>0 ? this.MesesSeleccionados:this.Meses  
   let CantidadMeses:number=0
   CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
   this.DataTreeTable.forEach(dataTree => {
@@ -2277,10 +2426,16 @@ construirValores(){
                 "Anio":anio.Anio,
                 "Valor":this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
               })
-    
-              const valor = this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0
+              
+       
+              const valor = 
+        
+              (this.getSaldoInicialMensual(mes.NumMes,anio.Anio) || 0)
+              
               const valorAnual = this.obtenerValorSaldoInicialAnual(anio.Anio) || 0
               const valorAnualPromedio =Number((valorAnual/CantidadMeses).toFixed(0))
+             
+             
               dataTree.data.valores[claveMensual] = 
               {
                "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -2304,7 +2459,13 @@ construirValores(){
              
             }
           else if(dataTree.data.tipo=='Saldo Final'){
-              const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
+              // const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
+              // const valorAnual = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0
+              const valor = 
+              (this.DataTreeTable[0].data.valores[`0-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0)+
+              (this.DataTreeTable[1].data.valores[`EESGPM4hWXvDlXSRnCwA-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0)+
+              (this.DataTreeTable[4].data.valores[`GMzSuF04XQBsPmAkIB2C-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0)+
+              (this.DataTreeTable[7].data.valores[`psmpY6iyDJNkW7AKFXgK-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0)
               const valorAnual = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0
             
               dataTree.data.valores[claveMensual] = 
@@ -2541,10 +2702,7 @@ construirValores(){
           let keyTrimestre= trim.id==1 ? `0-1-${anio.Anio}`: trim.id==2 ?  `0-4-${anio.Anio}` : trim.id==3 ?  `0-7-${anio.Anio}`: `0-10-${anio.Anio}`;
           let valor=this.DataTreeTable[0].data.valores[keyTrimestre]?.ValorNumero || 0
           let valorPromedio=Number((valor/3).toFixed(1))
-          if(anio.Anio==2025 && trim.id==3 ){
-            console.log('valor',valor)
-            console.log('valorPromedio',valorPromedio)
-          }
+    
           dataTree.data.valores[claveTrimestral] = 
           {
             "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -2886,7 +3044,6 @@ construirValores(){
     }
     this.conS.enviarRegistrosSemestrales(DataSemestral)
     this.cargar=false
-    console.log('DataTreeTable',this.DataTreeTable)
 
   }
 
