@@ -39,8 +39,10 @@
 
 <p-treeSelect 
   [(ngModel)]="selectedNodes" 
+  [disabled]="verTodo==false"
   [options]="timeHierarchy" 
   placeholder="Seleccione período"
+  (onClear)="verPeriodosSeleccionados()"
   (onNodeSelect)="verPeriodosSeleccionados()"
   (onNodeUnselect)="verPeriodosSeleccionados()"
   [metaKeySelection]="false"
@@ -53,7 +55,7 @@
   [scrollHeight]="'400px'"
 ></p-treeSelect>
 
-<p-multiSelect [disabled]="ProyectoSeleccionado.length>0" 
+<p-multiSelect [disabled]="ProyectoSeleccionado.length>0 ||verTodo==false" 
   class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" 
   [options]="Sucursales"
   [(ngModel)]="SucursalSeleccionada" 
@@ -64,7 +66,7 @@
   emptyFilterMessage="No se encontraron coincidencias"
   />
 <p-multiSelect 
-[disabled]="SucursalSeleccionada.length>0" 
+[disabled]="SucursalSeleccionada.length>0 ||verTodo==false" 
   class="m-1" (onChange)=" filtrarData();filtrarCuentas(2)" 
   [options]="Proyectos"
   [(ngModel)]="ProyectoSeleccionado"
@@ -76,8 +78,10 @@
   />
 <p-multiSelect
 appendTo="body"
+[disabled]="verTodo==false"
 (onChange)=" filtrarData()" class="m-1" [options]="CuentasBancarias"
-  [(ngModel)]="CuentaBancariaSeleccionada" optionLabel="CuentaNombre" placeholder="Seleccione una cuenta" />
+[(ngModel)]="CuentaBancariaSeleccionada" optionLabel="CuentaNombre" placeholder="Seleccione una cuenta" 
+/>
 <br>
 
 <!-- <div class="form-check">
@@ -88,29 +92,47 @@ appendTo="body"
 </div> -->
 
 <br>
-<div 
-
-class="form-check form-check-inline">
-  <input (change)="cambiarPeriodo(1)" class="form-check-input" 
-  type="radio" name="inlineRadioOptions"
-  [checked]="verMensual"
-  id="inlineRadio1" value="option1">
-  <label class="form-check-label" for="inlineRadio1">Mensual</label>
-</div>
 <div class="form-check form-check-inline">
-  <input (change)="cambiarPeriodo(2)" class="form-check-input" type="radio" 
-  [checked]="verTrimestral"
-  name="inlineRadioOptions" id="inlineRadio2" value="option2">
-  <label class="form-check-label" for="inlineRadio2">Trimestral</label>
-</div>
-<div class="form-check form-check-inline">
-  <input (change)="cambiarPeriodo(3)" class="form-check-input"
-  [checked]="verSemestral"
-  type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-  <label class="form-check-label" for="inlineRadio3">Semestral</label>
+  <input class="form-check-input"
+         type="radio"
+         name="modo"
+         [(ngModel)]="modoSeleccionado"
+         [value]="'todo'"
+         (change)="capturarCambio()">
+  <label class="form-check-label">Todo</label>
 </div>
 
-<div *ngIf="verMensual==true">
+<div class="form-check form-check-inline">
+  <input class="form-check-input"
+         type="radio"
+         name="modo"
+         [(ngModel)]="modoSeleccionado"
+         [value]="'trimestral'"
+         (change)="capturarCambio()">
+  <label class="form-check-label">Totales Trimestrales</label>
+</div>
+
+<div class="form-check form-check-inline">
+  <input class="form-check-input"
+         type="radio"
+         name="modo"
+         [(ngModel)]="modoSeleccionado"
+         [value]="'semestral'"
+         (change)="capturarCambio()">
+  <label class="form-check-label">Totales Semestrales</label>
+</div>
+
+<div class="form-check form-check-inline">
+  <input class="form-check-input"
+         type="radio"
+         name="modo"
+         [(ngModel)]="modoSeleccionado"
+         [value]="'anual'"
+         (change)="capturarCambio()">
+  <label class="form-check-label">Totales Anuales</label>
+</div>
+
+<div >
   <button  type="button"
   [disabled]="this.Cabecera.length<=1"
   (click)="descargarExcel()" class="btn btn-success m-1 mt-2">Descargar <i class="fa-solid fa-file-arrow-down"></i></button>
@@ -136,7 +158,7 @@ class="form-check form-check-inline">
 [disabled]="this.Cabecera.length<=1"
 (click)="mostrarSemanas()" type="button" class="btn btn-warning m-1 mt-2">Semanal 
 </button> -->
-<div *ngIf="verMensual==true">
+<div>
   <div *ngIf="this.Cabecera.length<=1 && this.cargar==false"  class="alert alert-warning mt-2" role="alert">
     No tiene registros en esta empresa
   </div>
@@ -162,7 +184,7 @@ class="form-check form-check-inline">
         <ng-template pTemplate="header" let-columns>
             <tr >
                 <th style="width: 450px;position: sticky; left: 0; background: #a2d7b4; z-index: 1;">Nombre</th>
-                <th style="width: 200px" 
+                <th style="width: 250px" 
                 class="text-center" 
                 [style.background-color]="col?.Color || ''" 
                 *ngFor="let col of columns">{{col.Nombre}}</th>
@@ -182,7 +204,7 @@ class="form-check form-check-inline">
                      <p-treeTableToggler [rowNode]="rowNode" />                
                        {{rowData.Nombre}}        
                 </td>
-                <td style="width: 200px" class="text-center" *ngFor="let col of columns">
+                <td style="width: 250px" class="text-center" *ngFor="let col of columns">
                   <ng-container *ngIf="col.Tipo==3">
                     <span *ngIf="rowData.tipo=='Abuelo' || rowData.tipo=='Padre' || rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'">
                       <span [style.color]="rowData.valores[rowData.idCategoria + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
@@ -311,47 +333,6 @@ class="form-check form-check-inline">
         </ng-template>
     </p-treeTable>
 </div>
-
-
-
-
-
-<!-- <p-table *ngIf="cargar==true" [value]="DataTreeTable">
-  <ng-template pTemplate="header">
-      <tr>
-          <th>Categoría</th>
-          <th *ngFor="let cab of Cabecera">
-            <ng-container *ngIf="cab.Tipo!=1">
-              {{ cab.Mes }} {{ cab.Anio }}
-
-            </ng-container>
-          </th>
-      </tr>
-  </ng-template>
-
-  <ng-template pTemplate="body" let-rowData>
-      <tr>
-          <td>{{ rowData.data.categoria }}</td>
-          <td *ngFor="let cab of Cabecera">
-            <ng-container *ngIf="cab.Tipo!=1">
-              <ng-container *ngIf="cab.Tipo==3">
-                {{ rowData.data.values[cab.Mes + '-' + cab.Anio] || 0 }}
-              </ng-container>
-              <ng-container *ngIf="cab.Tipo==4">
-                {{ rowData.data.values[cab.Anio] || 0 }}
-              </ng-container>
-
-            </ng-container>
-          </td>
-      </tr>
-  </ng-template>
-</p-table> -->
-
-
-<!-- Para solucionar la tabla de flujos -->
-
-<consolidado-mejorado-trimestral *ngIf="verTrimestral==true"></consolidado-mejorado-trimestral>
-<app-consolidado-mejorado-semestral *ngIf="verSemestral==true"></app-consolidado-mejorado-semestral>
 
 
 

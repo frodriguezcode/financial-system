@@ -41,8 +41,7 @@ interface Column {
   selector: 'app-consolidado-mejorado',
   standalone: true,
   imports: [CommonModule, SharedModule,MultiSelectModule,TreeSelectModule,
-    TreeTableModule,TableModule,ButtonModule,TreeSelectModule,
-    ConsolidadoMejoradoTrimesralComponent,ConsolidadoSemestralComponent],
+    TreeTableModule,TableModule,ButtonModule,TreeSelectModule],
   templateUrl: './consolidado-mejorado.component.html',
   styleUrls: ['./consolidado-mejorado.component.scss']
 })
@@ -124,10 +123,12 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
   DataTreeTable:any=[]
   RegistrosSaldosFinalesMensuales:any=[]
 
-  verMensual:boolean=true
+  verTodo:boolean=true
+  verMensual:boolean=false
   verTrimestral:boolean=false
   verSemestral:boolean=false
-
+  verAnual:boolean=false
+modoSeleccionado: string = 'todo';
   frozenCols!: Column[];
 timeHierarchy:any
   maxCategoryLength: number = 0;
@@ -355,7 +356,81 @@ this.Meses= [
     this.maxCategoryLength = this.findLongestCategory();
   }
 
+capturarCambio() {
+  let CopiaCabecera=[...this.CabeceraBack]
+  if(this.modoSeleccionado=='todo'){
+    this.verTodo=true
+    this.verTrimestral=false
+    this.verSemestral=false
+    this.verAnual=false
+
+ 
+    this.Cabecera=this.CabeceraBack
+
+  }
+  else if(this.modoSeleccionado=='trimestral'){
+    this.verTrimestral=true
+    this.verSemestral=false
+    this.verTodo=false
+    this.verAnual=false
+
+  CopiaCabecera.forEach((cab:any)=>{
+    if(cab.Tipo==6 || cab.Tipo==8){
+      cab.Mostrar=true
+    }
+    else {
+      cab.Mostrar=false
+    }
+
+  }) 
+    this.Cabecera=CopiaCabecera.filter((_cab:any)=>_cab.Mostrar==true)
+
+  }
+  else if(this.modoSeleccionado=='semestral'){
+    this.verSemestral=true
+    this.verTodo=false
+    this.verAnual=false
+    this.verTrimestral=false
+
+  CopiaCabecera.forEach((cab:any)=>{
+    if(cab.Tipo==7 || cab.Tipo==9){
+      cab.Mostrar=true
+    }
+    else {
+      cab.Mostrar=false
+  }
+  }) 
+    this.Cabecera=CopiaCabecera.filter((_cab:any)=>_cab.Mostrar==true)
+
+  }
+  else if(this.modoSeleccionado=='anual'){
+    this.verAnual=true
+    this.verSemestral=false
+    this.verTrimestral=false
+    this.verTodo=false
+  CopiaCabecera.forEach((cab:any)=>{
+    if(cab.Tipo==4 || cab.Tipo==5){
+      cab.Mostrar=true
+    }
+    else {
+      cab.Mostrar=false
+  }
+  }) 
+    this.Cabecera=CopiaCabecera.filter((_cab:any)=>_cab.Mostrar==true)
+  }
+
+  
+  
+
+}
+
+
 PeriodosSeleccionados(nodesSeleccionados: TreeNode[]){
+  console.log('nodesSeleccionados',nodesSeleccionados)
+  if(nodesSeleccionados==null){
+    return []
+  }
+else {
   const anios = new Set<number>();
   const semestres = new Set<string>(); // usar string para Set
   const trimestres = new Set<string>();
@@ -364,218 +439,229 @@ PeriodosSeleccionados(nodesSeleccionados: TreeNode[]){
     if (node.tipo === 1) {
       anios.add(node.numPeriodo);
     }
-
-    if (node.tipo === 2) {
-      // Extraer año desde key o usar alguna lógica para asociarlo
-      const anio = +(node.key?.split('-')[0] || 0);
-      anios.add(anio);
-      semestres.add(`${anio}-${node.numPeriodo}`);
-    }
-
-    if (node.tipo === 3) {
-      // Extraer año y semestre desde key (estructura tipo "2024-2024-S1-T1")
-      const partes = node.key?.split('-') || [];
-      const anio = +partes[0];
-      const trimestre = node.numPeriodo;
-
-      if (anio && trimestre) {
-        anios.add(anio);
-
-        // Trimestre está en el semestre, así que deducimos el semestre a partir del trimestre
-        const semestre = trimestre <= 2 ? 1 : 2;
-        semestres.add(`${anio}-${semestre}`);
-        trimestres.add(`${anio}-${trimestre}`);
+   
+    
+        if (node.tipo === 2) {
+          // Extraer año desde key o usar alguna lógica para asociarlo
+          const anio = +(node.key?.split('-')[0] || 0);
+          anios.add(anio);
+          semestres.add(`${anio}-${node.numPeriodo}`);
+        }
+    
+        if (node.tipo === 3) {
+          // Extraer año y semestre desde key (estructura tipo "2024-2024-S1-T1")
+          const partes = node.key?.split('-') || [];
+          const anio = +partes[0];
+          const trimestre = node.numPeriodo;
+    
+          if (anio && trimestre) {
+            anios.add(anio);
+    
+            // Trimestre está en el semestre, así que deducimos el semestre a partir del trimestre
+            const semestre = trimestre <= 2 ? 1 : 2;
+            semestres.add(`${anio}-${semestre}`);
+            trimestres.add(`${anio}-${trimestre}`);
+          }
+        }
       }
-    }
-  }
-
-  return {
-    anios: Array.from(anios),
-    semestres: Array.from(semestres).map(s => {
-      const [anio, semestre] = s.split('-').map(Number);
-      return { anio, semestre };
-    }),
-    trimestres: Array.from(trimestres).map(t => {
-      const [anio, trimestre] = t.split('-').map(Number);
-      return { anio, trimestre };
-    })
-  };
-} 
-verPeriodosSeleccionados(){
-const seleccion = this.PeriodosSeleccionados(this.selectedNodes);
-let AniosUnicos=seleccion.anios
-let SemestresUnicos=seleccion.semestres.map((sem:any)=>sem.semestre)
-let TrimestresUnicos=seleccion.trimestres.map((trim:any)=>trim.trimestre)
-
-
-this.Anios=
-AniosUnicos.length==0? this.Anios=this.AniosBack:
-this.AniosBack.filter((anio:any)=>AniosUnicos.includes(anio.Anio))
-
-this.Trimestres=
-TrimestresUnicos.length==0?this.Trimestres=this.TrimestresBack:
-this.TrimestresBack.filter((trim:any)=>TrimestresUnicos.includes(trim.id))
-
-
-this.Semestres=
-SemestresUnicos.length==0?this.Semestres=this.SemestresBack :
-this.SemestresBack.filter((sem:any)=>SemestresUnicos.includes(sem.id))
-
-    this.Cabecera=[]
-    this.CabeceraBack=[]
-    this.Anios.forEach((anio:any) => {
-      this.Semestres.forEach(semestre => {
-        this.getTrimestresBySemestre(semestre.id).forEach((trim:any)=>{
-          this.getMesesByTrimestre(trim.id).forEach((mes:any) => {
-              this.CabeceraBack.push({
-                "Nombre":mes.Mes + ' ' + anio.Anio,
-                "Mes":mes.Mes,
-                "NumMes":mes.NumMes,
-                "Anio":anio.Anio,
-                "Color":'#a2d7b4',
-                "Tipo":3,
-                "Mostrar":true
-              })
-            if(mes.NumMes==3){
-              this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 1",
-                "NumTrim":1,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":6,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 1",
-                "NumTrim":1,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":8,
-                "Mostrar":false
-              })
-            }
-            else if(mes.NumMes==6){
-              this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 2",
-                "NumTrim":2,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":6,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 2",
-                "NumTrim":2,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":8,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Total Semestre 1",
-                "NumSem":1,
-                "Anio":anio.Anio,
-                "Color":'#2ac25e',
-                "Tipo":7,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Semestre 1",
-                "NumSem":1,
-                "Anio":anio.Anio,
-                "Color":'#2ac25e',
-                "Tipo":9,
-                "Mostrar":false
-              })
-            } 
-            else if(mes.NumMes==9){
-              this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 3",
-                "NumTrim":3,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":6,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 3",
-                "NumTrim":3,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":8,
-                "Mostrar":false
-              })
-            }
-            else if(mes.NumMes==12){
-              this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 4",
-                "NumTrim":4,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":6,
-                "Mostrar":false
-              })
     
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 4",
-                "NumTrim":4,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":8,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Total Semestre 2",
-                "NumSem":2,
-                "Anio":anio.Anio,
-                "Color":'#2ac25e',
-                "Tipo":7,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Semestre 2",
-                "NumSem":2,
-                "Anio":anio.Anio,
-                "Color":'#2ac25e',
-                "Tipo":9,
-                "Mostrar":false
-              })
-    
-              
-            }
-    
-    
-          });
-          
+      return {
+        anios: Array.from(anios),
+        semestres: Array.from(semestres).map(s => {
+          const [anio, semestre] = s.split('-').map(Number);
+          return { anio, semestre };
+        }),
+        trimestres: Array.from(trimestres).map(t => {
+          const [anio, trimestre] = t.split('-').map(Number);
+          return { anio, trimestre };
         })
+      };
+  
+}
+} 
 
-      })
 
-      this.CabeceraBack.push({
-        "Nombre":"Total " + anio.Anio,
-        "Mes":"",
-        "NumMes":"",
-        "Anio":anio.Anio,
-        "Color":'#58d683',
-        "Tipo":4,
-        "Mostrar":true
-      })
-      this.CabeceraBack.push({
-        "Nombre":"Promedio " + anio.Anio,
-        "Mes":"",
-        "NumMes":"",
-        "Color":'#58d683',
-        "Anio":anio.Anio,
-        "Tipo":5,
-        "Mostrar":true
-      })
+verPeriodosSeleccionados(){
+
+const seleccion:any = this.PeriodosSeleccionados(this.selectedNodes);
+if(seleccion.length==0){
+   this.Cabecera=this.CabeceraBack
+}
+else {
+  let AniosUnicos=seleccion.anios
+  let SemestresUnicos=seleccion.semestres.map((sem:any)=>sem.semestre)
+  let TrimestresUnicos=seleccion.trimestres.map((trim:any)=>trim.trimestre)
+  
+  
+  this.Anios=
+  AniosUnicos.length==0? this.Anios=this.AniosBack:
+  this.AniosBack.filter((anio:any)=>AniosUnicos.includes(anio.Anio))
+  
+  this.Trimestres=
+  TrimestresUnicos.length==0?this.Trimestres=this.TrimestresBack:
+  this.TrimestresBack.filter((trim:any)=>TrimestresUnicos.includes(trim.id))
+  
+  
+  this.Semestres=
+  SemestresUnicos.length==0?this.Semestres=this.SemestresBack :
+  this.SemestresBack.filter((sem:any)=>SemestresUnicos.includes(sem.id))
+  
+      this.Cabecera=[]
+      this.Anios.forEach((anio:any) => {
+        this.Semestres.forEach(semestre => {
+          this.getTrimestresBySemestre(semestre.id).forEach((trim:any)=>{
+            this.getMesesByTrimestre(trim.id).forEach((mes:any) => {
+                this.Cabecera.push({
+                  "Nombre":mes.Mes + ' ' + anio.Anio,
+                  "Mes":mes.Mes,
+                  "NumMes":mes.NumMes,
+                  "Anio":anio.Anio,
+                  "Color":'#a2d7b4',
+                  "Tipo":3,
+                  "Mostrar":true
+                })
+              if(mes.NumMes==3){
+                this.Cabecera.push({
+                  "Nombre":"Total Trimestre 1",
+                  "NumTrim":1,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":6,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Trimestre 1",
+                  "NumTrim":1,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":8,
+                  "Mostrar":false
+                })
+              }
+              else if(mes.NumMes==6){
+                this.Cabecera.push({
+                  "Nombre":"Total Trimestre 2",
+                  "NumTrim":2,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":6,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Trimestre 2",
+                  "NumTrim":2,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":8,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Total Semestre 1",
+                  "NumSem":1,
+                  "Anio":anio.Anio,
+                  "Color":'#2ac25e',
+                  "Tipo":7,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Semestre 1",
+                  "NumSem":1,
+                  "Anio":anio.Anio,
+                  "Color":'#2ac25e',
+                  "Tipo":9,
+                  "Mostrar":false
+                })
+              } 
+              else if(mes.NumMes==9){
+                this.Cabecera.push({
+                  "Nombre":"Total Trimestre 3",
+                  "NumTrim":3,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":6,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Trimestre 3",
+                  "NumTrim":3,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":8,
+                  "Mostrar":false
+                })
+              }
+              else if(mes.NumMes==12){
+                this.Cabecera.push({
+                  "Nombre":"Total Trimestre 4",
+                  "NumTrim":4,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":6,
+                  "Mostrar":false
+                })
       
+                this.Cabecera.push({
+                  "Nombre":"Promedio Trimestre 4",
+                  "NumTrim":4,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":8,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Total Semestre 2",
+                  "NumSem":2,
+                  "Anio":anio.Anio,
+                  "Color":'#2ac25e',
+                  "Tipo":7,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Semestre 2",
+                  "NumSem":2,
+                  "Anio":anio.Anio,
+                  "Color":'#2ac25e',
+                  "Tipo":9,
+                  "Mostrar":false
+                })
+      
+                
+              }
+      
+      
+            });
+            
+          })
+  
+        })
+  
+        this.Cabecera.push({
+          "Nombre":"Total " + anio.Anio,
+          "Mes":"",
+          "NumMes":"",
+          "Anio":anio.Anio,
+          "Color":'#58d683',
+          "Tipo":4,
+          "Mostrar":true
+        })
+        this.Cabecera.push({
+          "Nombre":"Promedio " + anio.Anio,
+          "Mes":"",
+          "NumMes":"",
+          "Color":'#58d683',
+          "Anio":anio.Anio,
+          "Tipo":5,
+          "Mostrar":true
+        })
+        
+  
+      });
 
-    });
+}
 
 
     //this.Cabecera=this.CabeceraBack.filter((cab:any)=>cab.Mostrar==true)
-    this.Cabecera=this.CabeceraBack
+ 
 } 
 
 generateTimeHierarchy(startYear: number, endYear: number): TreeNode[] {
@@ -3304,7 +3390,7 @@ construirCabecera(){
               })
             if(mes.NumMes==3){
               this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 1",
+                "Nombre":"Total Trimestre 1" + ' (' + anio.Anio + ')',
                 "NumTrim":1,
                 "Anio":anio.Anio,
                 "Color":'#4fd37c',
@@ -3312,7 +3398,7 @@ construirCabecera(){
                 "Mostrar":false
               })
               this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 1",
+                "Nombre":"Promedio Trimestre 1" + ' (' + anio.Anio + ')',
                 "NumTrim":1,
                 "Anio":anio.Anio,
                 "Color":'#4fd37c',
@@ -3322,7 +3408,7 @@ construirCabecera(){
             }
             else if(mes.NumMes==6){
               this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 2",
+                "Nombre":"Total Trimestre 2" + ' (' + anio.Anio + ')',
                 "NumTrim":2,
                 "Anio":anio.Anio,
                 "Color":'#4fd37c',
@@ -3330,7 +3416,7 @@ construirCabecera(){
                 "Mostrar":false
               })
               this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 2",
+                "Nombre":"Promedio Trimestre 2" + ' (' + anio.Anio + ')',
                 "NumTrim":2,
                 "Anio":anio.Anio,
                 "Color":'#4fd37c',
@@ -3338,7 +3424,7 @@ construirCabecera(){
                 "Mostrar":false
               })
               this.CabeceraBack.push({
-                "Nombre":"Total Semestre 1",
+                "Nombre":"Total Semestre 1" + ' (' + anio.Anio + ')',
                 "NumSem":1,
                 "Anio":anio.Anio,
                 "Color":'#2ac25e',
@@ -3346,7 +3432,7 @@ construirCabecera(){
                 "Mostrar":false
               })
               this.CabeceraBack.push({
-                "Nombre":"Promedio Semestre 1",
+                "Nombre":"Promedio Semestre 1" + ' (' + anio.Anio + ')',
                 "NumSem":1,
                 "Anio":anio.Anio,
                 "Color":'#2ac25e',
@@ -3356,7 +3442,7 @@ construirCabecera(){
             } 
             else if(mes.NumMes==9){
               this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 3",
+                "Nombre":"Total Trimestre 3" + ' (' + anio.Anio + ')',
                 "NumTrim":3,
                 "Anio":anio.Anio,
                 "Color":'#4fd37c',
@@ -3364,7 +3450,7 @@ construirCabecera(){
                 "Mostrar":false
               })
               this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 3",
+                "Nombre":"Promedio Trimestre 3" + ' (' + anio.Anio + ')',
                 "NumTrim":3,
                 "Anio":anio.Anio,
                 "Color":'#4fd37c',
@@ -3374,7 +3460,7 @@ construirCabecera(){
             }
             else if(mes.NumMes==12){
               this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 4",
+                "Nombre":"Total Trimestre 4" + ' (' + anio.Anio + ')',
                 "NumTrim":4,
                 "Anio":anio.Anio,
                 "Color":'#4fd37c',
@@ -3383,7 +3469,7 @@ construirCabecera(){
               })
     
               this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 4",
+                "Nombre":"Promedio Trimestre 4" + ' (' + anio.Anio + ')',
                 "NumTrim":4,
                 "Anio":anio.Anio,
                 "Color":'#4fd37c',
@@ -3391,7 +3477,7 @@ construirCabecera(){
                 "Mostrar":false
               })
               this.CabeceraBack.push({
-                "Nombre":"Total Semestre 2",
+                "Nombre":"Total Semestre 2" + ' (' + anio.Anio + ')',
                 "NumSem":2,
                 "Anio":anio.Anio,
                 "Color":'#2ac25e',
@@ -3399,7 +3485,7 @@ construirCabecera(){
                 "Mostrar":false
               })
               this.CabeceraBack.push({
-                "Nombre":"Promedio Semestre 2",
+                "Nombre":"Promedio Semestre 2" + ' (' + anio.Anio + ')', 
                 "NumSem":2,
                 "Anio":anio.Anio,
                 "Color":'#2ac25e',
