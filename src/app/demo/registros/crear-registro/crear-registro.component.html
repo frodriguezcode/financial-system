@@ -600,14 +600,14 @@
               </ng-template>
             </p-dropdown>
           </td> -->
-
+<!-- (input)="formatearNumero(Valor, registros.idTipo)" -->
           <td class="text-center">
             <input
               [ngClass]="registros.idTipo == 1 ? 'textoInputPositivo' : 'textoInputNegativo'"
               (keyup.enter)="salvarRegistro(registros, Valor.value)"
               #Valor
               [disabled]="this.Items.length == 0 || registros.idCategoria == '' || getCuentabyCategoria(registros.idPadre).length == 0"
-              (input)="formatearNumero(Valor, registros.idTipo)"
+              
               style="min-width: 9rem; min-height: 1rem; font-weight: bolder"
               [ngModel]="registros.Valor | currencySymbol"
               class="form-control text-center col-6"

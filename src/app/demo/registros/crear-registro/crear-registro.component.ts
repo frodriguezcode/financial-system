@@ -1241,22 +1241,25 @@ validateInput(value: string): boolean {
   return regex.test(value);
 }
 
-formatearNumero(input: HTMLInputElement,Tipo:any) {
+formatearNumero(input: HTMLInputElement, Tipo: any) {
+  const simbolo = Tipo == 1 ? '$' : '-$';
 
-  let valor :any
-  let Simbolo=Tipo==1 ? '$ ' : '-$ '
-  if(Tipo==2 ){
+  // Limpiar todo excepto números y punto
+  let valor = input.value.replace(/[^0-9.]/g, '');
 
-    valor = input.value.replace(/[\s\-$]/g, '')
-    }
-  else {
-    valor = input.value.replace(/[\s$]/g, '')
-      
+  // Permitir solo un punto decimal
+  const partes = valor.split('.');
+  if (partes.length > 2) {
+    valor = partes[0] + '.' + partes.slice(1).join('');
   }
 
-  if (!isNaN(+valor)) {
-    input.value =
-     `${Simbolo} ${Number(valor).toLocaleString('en-US')}`
+  const numero = parseFloat(valor);
+
+  if (!isNaN(numero)) {
+    input.value = `${simbolo} ${numero.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
   }
 }
 
@@ -1332,6 +1335,7 @@ salvarRegistro(Registro: any, Valor: any) {
     //this.Registros = this.registrosBackUp;
     
     // Save to Firebase with the cleaned object
+
     this.conS.updateRegistro(registroToUpdate).then(resp => {
       this.toastr.success('Guardado', '¡Exito!');
       this.calcularImporteTotal(this.Registros);
