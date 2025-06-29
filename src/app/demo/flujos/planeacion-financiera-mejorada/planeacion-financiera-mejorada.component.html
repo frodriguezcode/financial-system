@@ -1,3 +1,27 @@
+<p-multiSelect [disabled]="ProyectoSeleccionado.length>0 " 
+  class="m-1" (onChange)=" construirItemsCatalogos()" 
+  [options]="Sucursales"
+  [(ngModel)]="SucursalSeleccionada" 
+  optionLabel="Nombre"
+  appendTo="body"
+  placeholder="Seleccione una sucursal" 
+  emptyMessage="No hay sucursales disponibles"
+  emptyFilterMessage="No se encontraron coincidencias"
+  />
+<p-multiSelect 
+[disabled]="SucursalSeleccionada.length>0" 
+  class="m-1" (onChange)=" construirItemsCatalogos()" 
+  [options]="Proyectos"
+  [(ngModel)]="ProyectoSeleccionado"
+  optionLabel="NombreSucursal" 
+  appendTo="body"
+  placeholder="Seleccione un proyecto"
+  emptyMessage="No hay proyectos disponibles"
+  emptyFilterMessage="No se encontraron coincidencias"
+  />
+
+
+
 
 <div class="contenedor-main">
   <!-- Planeacion        -->
