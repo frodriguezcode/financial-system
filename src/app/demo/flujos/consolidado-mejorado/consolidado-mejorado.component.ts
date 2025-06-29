@@ -2489,7 +2489,7 @@ getMesesBySemestre(idSemestre:any){
   return this.Meses.filter((mes:any)=>mes.Semestre==idSemestre)
 }
 construirValores(){
-
+  console.log('DataTreeTable',this.DataTreeTable)
   let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
   let CantidadMeses:number=0
   CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
