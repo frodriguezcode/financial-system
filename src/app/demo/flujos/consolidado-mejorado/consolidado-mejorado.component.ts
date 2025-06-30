@@ -106,6 +106,8 @@ export default class ConsolidadoMejoradoComponent implements OnInit {
 
   Sucursales:any=[]
   SucursalSeleccionada:any=[]
+  Usuarios:any=[]
+  UsuariosSeleccionados:any=[]
   Proyectos:any=[]
   ProyectoSeleccionado:any=[]
 
@@ -135,6 +137,10 @@ timeHierarchy:any
   selectedNodes: any;
   PeriodosTiempos:any=[]
   PeriodosTiemposSeleccionados:any=[]
+
+  DataByMatriz:any=[]
+  DataByEmpresa:any=[]
+  idEmpresa:string=''
   ngOnInit(): void {
 this.timeHierarchy = this.generateTimeHierarchy(2024, new Date().getFullYear());
   this.PeriodosTiempos.push(
@@ -345,10 +351,12 @@ this.Meses= [
       else {
         this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
       }
-      this.obtenerSaldoInicial()
-      this.obtenerSucursales()
-      this.obtenerProyectos()
-      this.obtenerBancos()
+      this.idEmpresa=this.usuario.idEmpresa
+            this.obtenerSaldoInicial()
+      // this.obtenerSucursales()
+      // this.obtenerProyectos()
+      // this.obtenerBancos()
+      this.obtenerDataEmpresa()
       this.getCatalogoFechas()
    
     });
@@ -423,10 +431,87 @@ capturarCambio() {
   
 
 }
+obtenerDataEmpresa(){
+  this.cargar=true
+  this.conS.obtenerDataEmpresa(this.usuario.idMatriz).subscribe(resp=>{
+    this.construirCabecera()
+    this.DataByMatriz=resp
+    this.construirData()
+  })
+}
+
+construirData(){
+  this.DataByEmpresa=this.DataByMatriz.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
+   console.log('DataByEmpresa',this.DataByEmpresa)
+   this.Proyectos=this.DataByEmpresa.Proyectos
+   this.Sucursales=this.DataByEmpresa.Sucursales
+   this.Items=this.DataByEmpresa.CuentasContables
+   this.ItemsBack=this.DataByEmpresa.CuentasContables
+   this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
+   this.Registros=this.DataByEmpresa.Registros
+   this.Categorias=[]
+   this.SaldoInicial=this.DataByEmpresa.SaldosIniciales
+   this.Usuarios=this.DataByEmpresa.Usuarios
+   this.Categorias.push(
+      {
+      "Calculado":true,
+      "Mostrar":true,
+      "Nombre":"Saldo Inicial en Bancos",
+      "Orden":0,
+      "Suma":false,
+      "Tipo":0,
+      "id":0,
+    })
+    this.DataByEmpresa.Categorias.forEach(categoria => {
+        let _Categ={
+          "Calculado":categoria.Calculado,
+          "Mostrar":categoria.Mostrar,
+          "Nombre":categoria.Nombre,
+          "Orden":categoria.Orden,
+          "Suma":categoria.Suma,
+          "Tipo":categoria.Tipo,
+          "id":categoria.id,
+        }
+        this.Categorias.push(_Categ)
+
+        if(categoria.Orden==9){
+          this.Categorias.push(
+            {
+            "Calculado":true,
+            "Mostrar":true,
+            "Nombre":"Saldo Final en Bancos",
+            "Orden":11,
+            "Suma":false,
+            "Tipo":11,
+            "id":11,
+          })
+        }
+    })
+
+this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
+//this.construirItemsCatalogos()
+
+  let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
+  let CantidadMeses:number=0
+  CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
+this.DataTreeTable=
+this.conS.construirItemsCatalogos(
+this.Categorias,
+CantidadMeses,
+AniosCabecera,
+this.Registros,
+this.SaldoInicial,
+this.Items
+)
+
+console.log('DataTreeTable',this.DataTreeTable)
+
+
+}
+
 
 
 PeriodosSeleccionados(nodesSeleccionados: TreeNode[]){
-  console.log('nodesSeleccionados',nodesSeleccionados)
   if(nodesSeleccionados==null){
     return []
   }
@@ -1470,7 +1555,7 @@ getCatalogoFechas(){
       "Tipo":0,
       "id":0,
     })
-      data.forEach(categoria => {
+    data.forEach(categoria => {
         let _Categ={
           "Calculado":categoria.Calculado,
           "Mostrar":categoria.Mostrar,
@@ -2411,8 +2496,7 @@ this.construirItemsCatalogos()
   }
 
 construirItemsCatalogos(){
-    this.DataTreeTable=[]
-  
+  this.DataTreeTable=[] 
   this.Categorias.forEach(categ => {
 
     this.DataTreeTable.push({
@@ -2455,6 +2539,8 @@ getItemsByCategoria(idCategoria:string){
          data:{
            Nombre: item.Nombre, 
            idItem: item.id,
+           idProyectos:item.idProyectos == undefined? []: item.idProyectos,
+           idSucursales:item.idSucursales == undefined? []: item.idSucursales,
            size: '200mb', 
            type: 'Folder',
            orden:item.Orden,
@@ -2489,7 +2575,6 @@ getMesesBySemestre(idSemestre:any){
   return this.Meses.filter((mes:any)=>mes.Semestre==idSemestre)
 }
 construirValores(){
-  console.log('DataTreeTable',this.DataTreeTable)
   let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
   let CantidadMeses:number=0
   CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
@@ -2829,7 +2914,7 @@ construirValores(){
             let ValorAcumuladoPromedio=0
            
             this.getMesesByTrimestre(trim.id).forEach(mes => {
-              ValorAcumulado+=this.DataTreeTable[1].data.valores[`${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0
+              ValorAcumulado+=this.DataTreeTable[dataTree.data.orden].data.valores[`${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0
             })
           dataTree.data.valores[claveTrimestral] = 
           {
@@ -2988,7 +3073,7 @@ construirValores(){
             let ValorAcumuladoPromedio=0
            
             this.getMesesBySemestre(semestre.id).forEach(mes => {
-              ValorAcumulado+=this.DataTreeTable[1].data.valores[`${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0
+              ValorAcumulado+=this.DataTreeTable[dataTree.data.orden].data.valores[`${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0
             })
           dataTree.data.valores[claveSemestral] = 
           {
