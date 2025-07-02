@@ -1,26 +1,48 @@
-<p-multiSelect [disabled]="ProyectoSeleccionado.length>0 " 
-  class="m-1" (onChange)=" construirItemsCatalogos()" 
-  [options]="Sucursales"
-  [(ngModel)]="SucursalSeleccionada" 
-  optionLabel="Nombre"
-  appendTo="body"
-  placeholder="Seleccione una sucursal" 
-  emptyMessage="No hay sucursales disponibles"
-  emptyFilterMessage="No se encontraron coincidencias"
+<div *ngIf="this.cargar==false">
+  <p-multiSelect  
+    (onChange)="filtrado()"
+    [disabled]="ProyectoSeleccionado.length>0"
+    class="m-1" 
+    [options]="Sucursales"
+    [(ngModel)]="SucursalSeleccionada" 
+    optionLabel="Nombre"
+    appendTo="body"
+    placeholder="Seleccione una sucursal" 
+    emptyMessage="No hay sucursales disponibles"
+    emptyFilterMessage="No se encontraron coincidencias"
   />
-<p-multiSelect 
-[disabled]="SucursalSeleccionada.length>0" 
-  class="m-1" (onChange)=" construirItemsCatalogos()" 
-  [options]="Proyectos"
-  [(ngModel)]="ProyectoSeleccionado"
-  optionLabel="NombreSucursal" 
-  appendTo="body"
-  placeholder="Seleccione un proyecto"
-  emptyMessage="No hay proyectos disponibles"
-  emptyFilterMessage="No se encontraron coincidencias"
+  <p-multiSelect 
+  [disabled]="SucursalSeleccionada.length>0" 
+  (onChange)="filtrado()"
+    class="m-1" 
+    [options]="Proyectos"
+    [(ngModel)]="ProyectoSeleccionado"
+    optionLabel="Nombre" 
+    appendTo="body"
+    placeholder="Seleccione un proyecto"
+    emptyMessage="No hay proyectos disponibles"
+    emptyFilterMessage="No se encontraron coincidencias"
   />
 
-      <p-treeTable
+</div>
+
+
+
+<div>
+  <div *ngIf="this.Cabecera.length<=1 && this.cargar==false"  class="alert alert-warning mt-2" role="alert">
+    No tiene registros en esta empresa
+  </div>
+  
+  <div *ngIf="this.cargar==true" class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+
+
+    <p-treeTable
+    *ngIf="this.cargar==false"
     [value]="DataTreeTableReal" 
     [columns]="Cabecera" 
     [scrollable]="true" 
@@ -181,32 +203,4 @@
             </tr>
         </ng-template>
     </p-treeTable>
-
-
-  
-
-
-
-<div class="contenedor-main">
-  <!-- Planeacion        -->
-  <div class="card flex justify-content-center">
-  
-    <p-dialog header="Agregar Año" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-        <span class="p-text-secondary block mb-5">Agrege un año a su planeación financiera</span>
-  
-        <div class="flex align-items-center gap-3 mb-5">
-            <label for="email" class="font-semibold w-6rem">Año</label>
-            <input #Anio pInputText id="number" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex justify-content-end gap-2">
-            <p-button label="Cancelar" severity="secondary" (onClick)="visible = false" />
-            <p-button label="Guardar" (onClick)="guardarAnio(Anio.value)" />
-        </div>
-    </p-dialog>
-  </div>
-  
-  
-
-
 </div>
-
