@@ -204,15 +204,30 @@ construirItemsCatalogos(
    ){
   this.DataTreeTable=[] 
   this.SaldoInicial=SaldosIniciales
+  console.log('Categorias',Categorias)
   Categorias.forEach(categ => {
 
     this.DataTreeTable.push({
+      OrdenData:
+      categ.Orden==2? 1 :
+      categ.Orden==3? 2 :
+      categ.Orden==5? 3 :
+      categ.Orden==6? 4 :
+      categ.Orden==8? 5 :
+      categ.Orden==9? 6 :
+      categ.Orden==1? 7 :
+      categ.Orden==4? 8 :
+      categ.Orden==7? 9 :
+      categ.Orden==10? 10 :
+      categ.Orden==0? 11 :
+      categ.Orden==11? 12:13,
       data: { 
          Nombre: categ.Nombre, 
          size: '200mb', 
          type: 'Folder',
          valores: {},
          idCategoria:categ.id,
+         idAbuelo:categ.idAbuelo ||'',
          orden:categ.Orden,
          tipo: 
          (categ.Orden == 1 || categ.Orden == 4 || categ.Orden == 7 || categ.Orden == 10 ) ?'Abuelo' :
@@ -233,7 +248,7 @@ construirItemsCatalogos(
     
     
   })
-
+console.log('DataTreeTable',this.DataTreeTable)
   return this.construirValores(AniosSeleccionados,CantMeses,Registros)
 }  
 
@@ -659,9 +674,12 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
   let AniosCabecera=AniosSeleccionados.length>0 ? AniosSeleccionados:this.Anios
   let CantidadMeses:number=0
   CantidadMeses=MesesSeleccionados
-  this.DataTreeTable.forEach(dataTree => {
+  let DataTreeTable=[...this.DataTreeTable]
+  DataTreeTable
+  .sort((a:any, b:any) => a.OrdenData - b.OrdenData)
+  .forEach(dataTree => {
     if (dataTree.data.valores !== undefined) {
-      dataTree.data.valores = {}; 
+    dataTree.data.valores = {}; 
     AniosCabecera.forEach(anio => {
       let totalAnual = 0;
       const claveAnual= `${dataTree.data.idCategoria}-${anio.Anio}`;
@@ -749,9 +767,13 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
             }
     
           else if(dataTree.data.tipo=='Abuelo'){
+            let valor=0
               if(dataTree.data.orden==1){
-              const valor = this.getDataFlujoOperativoMensual(mes.NumMes,anio.Anio,Registros) || 0;
-              
+            let DataTreeTableHijo= this.DataTreeTable
+            .filter((data:any)=>data.OrdenData==1|| data.OrdenData==2) 
+            DataTreeTableHijo.forEach(dataHijo => {
+              valor+=dataHijo.data.valores[`${dataHijo.data.idCategoria}-${mes.NumMes}-${anio.Anio}`].ValorNumero || 0
+            }); 
               dataTree.data.valores[claveMensual] = 
                 {
                "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -775,8 +797,19 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
                 }                  
               }
             else if(dataTree.data.orden==4){
-                const valor = this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio,Registros) || 0;
-                dataTree.data.valores[claveMensual] = 
+
+                let valor = 0
+
+               // let valor = this.getDataFlujoInversionMensual(mes.NumMes,anio.Anio,Registros) || 0;
+              
+                let DataTreeTableHijo= this.DataTreeTable
+                  .filter((data:any)=>data.OrdenData==3|| data.OrdenData==4) 
+                  DataTreeTableHijo.forEach(dataHijo => {
+                  valor+=dataHijo.data.valores[`${dataHijo.data.idCategoria}-${mes.NumMes}-${anio.Anio}`].ValorNumero || 0
+                }); 
+              
+              
+               dataTree.data.valores[claveMensual] = 
                 {
                 "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                 "ValorNumero": valor,
@@ -799,8 +832,14 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
                 } 
               }
             else if(dataTree.data.orden==7){
-                const valor = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio,Registros) || 0;
-                dataTree.data.valores[claveMensual] =
+            let valor =0
+            let DataTreeTableHijo= this.DataTreeTable
+              .filter((data:any)=>data.OrdenData==5|| data.OrdenData==6) 
+              DataTreeTableHijo.forEach(dataHijo => {
+              valor+=dataHijo.data.valores[`${dataHijo.data.idCategoria}-${mes.NumMes}-${anio.Anio}`].ValorNumero || 0
+            });
+            //const valor = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio,Registros) || 0;
+            dataTree.data.valores[claveMensual] =
                 {
                 "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                 "ValorNumero": valor,
@@ -823,7 +862,14 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
                 }               
               }
             else if(dataTree.data.orden==10){
-                const valor = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio,Registros) || 0;
+                //const valor = this.getDataFlujoLibreMensual(mes.NumMes,anio.Anio,Registros) || 0;
+            let valor =0
+            let DataTreeTableHijo= this.DataTreeTable
+              .filter((data:any)=>data.OrdenData==7 || data.OrdenData==8 || data.OrdenData==9 ) 
+              DataTreeTableHijo.forEach(dataHijo => {
+              valor+=dataHijo.data.valores[`${dataHijo.data.idCategoria}-${mes.NumMes}-${anio.Anio}`].ValorNumero || 0
+            }); 
+                
                 dataTree.data.valores[claveMensual] =
                 {
                 "Valor": valor<0 ? ('-$ '+ (valor*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -950,21 +996,10 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
                 "Valor": ValorPromedio<0 ? ('-$ '+ (ValorPromedio*-1)).replace(/\B(?=(\d{3})+(?!\d))/g, ","): ('$ '+ (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                 "ValorNumero": ValorPromedio,
                 "Color": ValorPromedio<0 ? '#ff3200': '#000000',
-              }   
-              
-    
-    
+              }  
+        
             }
     
-    
-    
-    
-    
-          
-          
-          
-          
-          
           });
          //Datos Trimestrales 
         const claveTrimestral = `trim-${dataTree.data.idCategoria}-${trim.id}-${anio.Anio}`;
@@ -1007,6 +1042,7 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
           }
         }
 
+        
         else if(dataTree.data.tipo=='Abuelo'){
 
         if(dataTree.data.orden==1 || dataTree.data.orden==4 || dataTree.data.orden==7 || dataTree.data.orden==10 ){
@@ -1044,7 +1080,14 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
           this.getMesesByTrimestre(trim.id).forEach(mes => {
             this.DataTreeTable[dataTree.data.orden]==undefined ? 0 :
               ValorAcumulado+=this.DataTreeTable[dataTree.data.orden].data.valores[`${dataTree.data.idCategoria}-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0         
-          }) 
+      
+              }) 
+              // if(anio.Anio==2025 && trim.id==2 && dataTree.data.idCategoria=='od11V2OHVgaLG1RiXMiz' ){
+              //   console.log('ValorAcumulado',ValorAcumulado)
+              //     console.log('DataTreeTable',this.DataTreeTable[dataTree.data.orden])
+           
+              //   }
+
       
           dataTree.data.valores[claveTrimestral] = 
           {

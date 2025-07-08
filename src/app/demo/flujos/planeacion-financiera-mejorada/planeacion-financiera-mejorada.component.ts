@@ -303,6 +303,7 @@ this.Categorias=[]
           "Suma":categoria.Suma,
           "Tipo":categoria.Tipo,
           "id":categoria.id,
+          "idAbuelo":categoria.idAbuelo,
         }
         this.Categorias.push(_Categ)
 
@@ -324,7 +325,7 @@ this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
 let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
 let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
-this.DataTreeTableReal=
+this.DataTreeTableRealBack=
 this.conS.construirItemsCatalogos(
 this.Categorias,
 CantidadMeses,
@@ -337,7 +338,7 @@ this.Items
 
 
 
-this.DataTreeTableReal = this.DataTreeTableReal.filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
+this.DataTreeTableReal = this.DataTreeTableRealBack.filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
 
 this.DataTreeTableReal.forEach(dataTree => {
 
@@ -346,8 +347,7 @@ this.DataTreeTableReal.forEach(dataTree => {
 
   });
 });
-this.DataTreeTableRealBack=this.DataTreeTableReal
-console.log('DataTreeTableReal',this.DataTreeTableReal)
+
 if(this.DataTreeTableReal.length>0){
   this.cargar=false
 }
@@ -376,8 +376,11 @@ const resultado = this.filtrarEstructura(this.DataTreeTableRealBack, idProyectos
 let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
 let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
-this.DataTreeTableReal=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros)
-console.log('DataTreeTableReal',this.DataTreeTableReal)
+
+
+
+this.DataTreeTableReal=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros).filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
+//console.log('DataTreeTableReal',this.DataTreeTableReal)
 }
 filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {
   return estructura.map(padre => {
@@ -665,7 +668,6 @@ construirCabecera(){
 
     });
     this.Cabecera=this.CabeceraBack
- console.log('Cabecera',this.Cabecera)   
 }
 // Función auxiliar para evitar repetir código
 formatearItem(item: any) {

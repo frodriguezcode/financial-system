@@ -55,26 +55,29 @@
   [scrollHeight]="'400px'"
 ></p-treeSelect>
 
-<p-multiSelect [disabled]="ProyectoSeleccionado.length>0 ||verTodo==false" 
-  class="m-1" (onChange)=" filtrarData();filtrarCuentas(1)" 
-  [options]="Sucursales"
-  [(ngModel)]="SucursalSeleccionada" 
-  optionLabel="Nombre"
-  appendTo="body"
-  placeholder="Seleccione una sucursal" 
-  emptyMessage="No hay sucursales disponibles"
-  emptyFilterMessage="No se encontraron coincidencias"
+  <p-multiSelect  
+    (onChange)="filtrado()"
+    [disabled]="ProyectoSeleccionado.length>0"
+    class="m-1" 
+    [options]="Sucursales"
+    [(ngModel)]="SucursalSeleccionada" 
+    optionLabel="Nombre"
+    appendTo="body"
+    placeholder="Seleccione una sucursal" 
+    emptyMessage="No hay sucursales disponibles"
+    emptyFilterMessage="No se encontraron coincidencias"
   />
-<p-multiSelect 
-[disabled]="SucursalSeleccionada.length>0 ||verTodo==false" 
-  class="m-1" (onChange)=" filtrarData();filtrarCuentas(2)" 
-  [options]="Proyectos"
-  [(ngModel)]="ProyectoSeleccionado"
-  optionLabel="NombreSucursal" 
-  appendTo="body"
-  placeholder="Seleccione un proyecto"
-  emptyMessage="No hay proyectos disponibles"
-  emptyFilterMessage="No se encontraron coincidencias"
+  <p-multiSelect 
+  [disabled]="SucursalSeleccionada.length>0" 
+  (onChange)="filtrado()"
+    class="m-1" 
+    [options]="Proyectos"
+    [(ngModel)]="ProyectoSeleccionado"
+    optionLabel="Nombre" 
+    appendTo="body"
+    placeholder="Seleccione un proyecto"
+    emptyMessage="No hay proyectos disponibles"
+    emptyFilterMessage="No se encontraron coincidencias"
   />
 <p-multiSelect
 appendTo="body"

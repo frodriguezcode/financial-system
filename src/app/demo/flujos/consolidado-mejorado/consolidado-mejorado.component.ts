@@ -138,6 +138,8 @@ timeHierarchy:any
   PeriodosTiempos:any=[]
   PeriodosTiemposSeleccionados:any=[]
 
+  DataTreeTableRealBack:any=[]
+  DataTreeTableReal:any=[]
   DataByMatriz:any=[]
   DataByEmpresa:any=[]
   idEmpresa:string=''
@@ -441,17 +443,15 @@ obtenerDataEmpresa(){
 }
 
 construirData(){
-  this.DataByEmpresa=this.DataByMatriz.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
-   console.log('DataByEmpresa',this.DataByEmpresa)
-   this.Proyectos=this.DataByEmpresa.Proyectos
-   this.Sucursales=this.DataByEmpresa.Sucursales
-   this.Items=this.DataByEmpresa.CuentasContables
-   this.ItemsBack=this.DataByEmpresa.CuentasContables
-   this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
-   this.Registros=this.DataByEmpresa.Registros
-   this.Categorias=[]
-   this.SaldoInicial=this.DataByEmpresa.SaldosIniciales
-   this.Usuarios=this.DataByEmpresa.Usuarios
+this.cargar=true
+this.DataByEmpresa=this.DataByMatriz.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
+this.Proyectos=this.DataByEmpresa.Proyectos
+this.Sucursales=this.DataByEmpresa.Sucursales
+this.Items=this.DataByEmpresa.CuentasContables
+this.ItemsBack=this.DataByEmpresa.CuentasContables
+this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
+this.Registros=this.DataByEmpresa.Registros
+this.Categorias=[]
    this.Categorias.push(
       {
       "Calculado":true,
@@ -471,6 +471,7 @@ construirData(){
           "Suma":categoria.Suma,
           "Tipo":categoria.Tipo,
           "id":categoria.id,
+          "idAbuelo":categoria.idAbuelo,
         }
         this.Categorias.push(_Categ)
 
@@ -489,24 +490,83 @@ construirData(){
     })
 
 this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
-//this.construirItemsCatalogos()
-
-  let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
-  let CantidadMeses:number=0
-  CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
-this.DataTreeTable=
+let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
+let CantidadMeses:number=0
+CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
+this.DataTreeTableRealBack=
 this.conS.construirItemsCatalogos(
 this.Categorias,
 CantidadMeses,
 AniosCabecera,
 this.Registros,
-this.SaldoInicial,
+this.DataByEmpresa.SaldosIniciales,
 this.Items
 )
 
-console.log('DataTreeTable',this.DataTreeTable)
 
 
+
+this.DataTreeTable = this.DataTreeTableRealBack
+
+
+if(this.DataTreeTable.length>0){
+  this.cargar=false
+}
+}
+
+filtrado(){
+
+ if(this.ProyectoSeleccionado.length>0){
+  this.SucursalSeleccionada=[]
+ } 
+
+ else if(this.SucursalSeleccionada.length>0){
+  this.ProyectoSeleccionado=[]
+ }
+
+let idProyectos=
+
+this.ProyectoSeleccionado.map((proy1:any)=>proy1.id)
+
+let idSucursales=
+
+this.SucursalSeleccionada.map((suc1:any)=>suc1.id)
+const resultado = this.filtrarEstructura(this.DataTreeTableRealBack, idProyectos, idSucursales);
+
+
+let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
+let CantidadMeses:number=0
+CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
+
+
+
+this.DataTreeTable=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros)
+//console.log('DataTreeTableReal',this.DataTreeTableReal)
+}
+filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {
+  return estructura.map(padre => {
+
+    const hijosFiltrados = padre.children?.filter((hijo: any) => {
+
+      if (proyectosSeleccionados.length > 0) {
+        // Solo filtramos por proyectos, ignoramos sucursales
+        return hijo.data.idProyectos.some((id: string) => proyectosSeleccionados.includes(id));
+      }
+
+      if (sucursalesSeleccionadas.length > 0) {
+        // Solo filtramos por sucursales, ignoramos proyectos
+        return hijo.data.idSucursales.some((id: string) => sucursalesSeleccionadas.includes(id));
+      }
+
+      // Si no hay proyectos ni sucursales seleccionados, mostramos todo
+      return true;
+    }) || [];
+
+    return {
+      ...padre,
+      children: hijosFiltrados
+    };
+  });
 }
 
 
