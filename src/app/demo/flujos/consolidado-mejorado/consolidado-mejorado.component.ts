@@ -539,8 +539,18 @@ let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
 
 
+this.SaldoInicialBack.map((saldo:any)=>saldo.ids=[...saldo.idSucursal, ...saldo.idProyecto])
+let idProyectosSaldoInicial=this.ProyectoSeleccionado.map((proy:any)=>proy.id)
+let idSucursalesSaldoInicial=this.SucursalSeleccionada.map((suc:any)=>suc.id)
+let idsUnidos=[...idProyectosSaldoInicial, ...idSucursalesSaldoInicial]
+this.SaldoInicial=
+idsUnidos.length==0 ? this.SaldoInicialBack:
+this.SaldoInicialBack.filter(item => 
+    item.ids.some((id:any) => idsUnidos.includes(id))
+);
 
-this.DataTreeTable=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros)
+console.log('SaldoInicial',this.SaldoInicial)
+this.DataTreeTable=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros,this.SaldoInicial)
 //console.log('DataTreeTableReal',this.DataTreeTableReal)
 }
 filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {

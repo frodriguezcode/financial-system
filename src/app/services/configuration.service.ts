@@ -360,6 +360,7 @@ getDataFlujoOperativoMensual(Mes:any,Anio:any,Registros:any){
 getSaldoInicialMensual(Mes:any,Anio:any){
   let _Data: any=[];
   let _DataSaldoFinal: any=[];
+
   _Data=this.SaldoInicial.filter((saldo:any)=>saldo
   && saldo.NumMes==Mes
   && saldo.AnioRegistro==Anio
@@ -370,6 +371,12 @@ getSaldoInicialMensual(Mes:any,Anio:any){
   && saldo.AnioRegistro==Anio
   )
 
+  if(Mes==5 && Anio==2025){
+    console.log('SaldoInicial',this.SaldoInicial)
+    console.log('_Data',_Data)
+    console.log('_DataSaldoFinal',_DataSaldoFinal)
+    console.log('RegistrosSaldosFinalesMensuales',this.RegistrosSaldosFinalesMensuales)
+  }
 
   if(_Data.length>0){
     let Valor:number=0
@@ -389,10 +396,10 @@ getSaldoInicialMensual(Mes:any,Anio:any){
     let RSFM2=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.Anio==Anio-1)
 
  if(RSFM.length>0){
-      ValorSaldo=RSFM[RSFM.length-1].Valor
+      ValorSaldo=RSFM[RSFM.length-1].Valor || 0
     }
     else if(RSFM2.length>0) {
-      ValorSaldo=RSFM2[RSFM2.length-1].Valor
+      ValorSaldo=RSFM2[RSFM2.length-1].Valor || 0
     }
     else {
       ValorSaldo=0
@@ -666,14 +673,22 @@ getDataFlujoFinancieroAnual(Anio:any,Registros:any){
   }
 }
 
-filtrarDatos(DataTreeTable:any,AniosSeleccionados:any,CantMeses:any,Registros:any){
+filtrarDatos(
+  DataTreeTable:any,
+  AniosSeleccionados:any,
+  CantMeses:any,
+  Registros:any,
+  SaldosIniciales:any
+  ){
   this.DataTreeTable=DataTreeTable
+  this.SaldoInicial=SaldosIniciales
   return this.construirValores(AniosSeleccionados,CantMeses,Registros)
 }
 construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
   let AniosCabecera=AniosSeleccionados.length>0 ? AniosSeleccionados:this.Anios
   let CantidadMeses:number=0
   CantidadMeses=MesesSeleccionados
+  this.RegistrosSaldosFinalesMensuales=[]
   let DataTreeTable=[...this.DataTreeTable]
   DataTreeTable
   .sort((a:any, b:any) => a.OrdenData - b.OrdenData)

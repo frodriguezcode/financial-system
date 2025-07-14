@@ -379,7 +379,7 @@ CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.lengt
 
 
 
-this.DataTreeTableReal=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros).filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
+this.DataTreeTableReal=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros,[]).filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
 //console.log('DataTreeTableReal',this.DataTreeTableReal)
 }
 filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {
