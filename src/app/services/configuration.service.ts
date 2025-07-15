@@ -204,7 +204,6 @@ construirItemsCatalogos(
    ){
   this.DataTreeTable=[] 
   this.SaldoInicial=SaldosIniciales
-  console.log('Categorias',Categorias)
   Categorias.forEach(categ => {
 
     this.DataTreeTable.push({
@@ -248,7 +247,6 @@ construirItemsCatalogos(
     
     
   })
-console.log('DataTreeTable',this.DataTreeTable)
   return this.construirValores(AniosSeleccionados,CantMeses,Registros)
 }  
 
@@ -306,15 +304,15 @@ getMesesBySemestre(idSemestre:any){
 }
 getValorSaldoFinal(Mes:any,Anio:any,Registros:any){
 
-  return  this.getSaldoInicialMensual(Mes,Anio,) + 
+  return  this.getSaldoInicialMensual(Mes,Anio) + 
   this.getDataFlujoLibreMensual(Mes,Anio,Registros)
 
 }
 
 getDataFlujoLibreMensual(Mes:any,Anio:any,Registros:any){
-  return this.getDataFlujoOperativoMensual(Mes,Anio,Registros) 
-  + this.getDataFlujoInversionMensual(Mes,Anio,Registros)
-  + this.getDataFlujoFinancieroMensual(Mes,Anio,Registros)
+  return (this.DataTreeTable[1].data.valores[`EESGPM4hWXvDlXSRnCwA-${Mes}-${Anio}`]?.ValorNumero || 0)+
+         (this.DataTreeTable[4].data.valores[`GMzSuF04XQBsPmAkIB2C-${Mes}-${Anio}`]?.ValorNumero || 0)+
+         (this.DataTreeTable[7].data.valores[`psmpY6iyDJNkW7AKFXgK-${Mes}-${Anio}`]?.ValorNumero || 0)
 }
 getDataFlujoInversionMensual(Mes:any,Anio:any,Registros:any){
   let _Data: any=[];
@@ -360,7 +358,6 @@ getDataFlujoOperativoMensual(Mes:any,Anio:any,Registros:any){
 getSaldoInicialMensual(Mes:any,Anio:any){
   let _Data: any=[];
   let _DataSaldoFinal: any=[];
-
   _Data=this.SaldoInicial.filter((saldo:any)=>saldo
   && saldo.NumMes==Mes
   && saldo.AnioRegistro==Anio
@@ -371,12 +368,7 @@ getSaldoInicialMensual(Mes:any,Anio:any){
   && saldo.AnioRegistro==Anio
   )
 
-  if(Mes==5 && Anio==2025){
-    console.log('SaldoInicial',this.SaldoInicial)
-    console.log('_Data',_Data)
-    console.log('_DataSaldoFinal',_DataSaldoFinal)
-    console.log('RegistrosSaldosFinalesMensuales',this.RegistrosSaldosFinalesMensuales)
-  }
+
 
   if(_Data.length>0){
     let Valor:number=0
@@ -387,6 +379,14 @@ getSaldoInicialMensual(Mes:any,Anio:any){
     return Valor
   }
 
+ else if(_DataSaldoFinal.length>0){
+    let Valor:number=0
+    _DataSaldoFinal.forEach((data:any) => {
+        Valor+=Number(data.Valor)
+    });
+
+    return Valor
+  }
 
   else {
     let key=`${Mes-1}-${Anio}`
@@ -395,15 +395,17 @@ getSaldoInicialMensual(Mes:any,Anio:any){
     let RSFM=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.key==key)
     let RSFM2=this.RegistrosSaldosFinalesMensuales.filter((reg:any)=>reg.Anio==Anio-1)
 
+
+
  if(RSFM.length>0){
       ValorSaldo=RSFM[RSFM.length-1].Valor || 0
-    }
-    else if(RSFM2.length>0) {
+}
+else if(RSFM2.length>0) {
       ValorSaldo=RSFM2[RSFM2.length-1].Valor || 0
-    }
-    else {
+}
+else {
       ValorSaldo=0
-    }
+}
 
 
       return ValorSaldo
@@ -681,6 +683,7 @@ filtrarDatos(
   SaldosIniciales:any
   ){
   this.DataTreeTable=DataTreeTable
+
   this.SaldoInicial=SaldosIniciales
   return this.construirValores(AniosSeleccionados,CantMeses,Registros)
 }
@@ -709,8 +712,10 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
               this.RegistrosSaldosFinalesMensuales.push({
                 "key":key,
                 "Anio":anio.Anio,
-                "Valor":this.getValorSaldoFinal(mes.NumMes,anio.Anio,Registros) || 0
+                "Valor":
+                this.getValorSaldoFinal(mes.NumMes,anio.Anio,Registros) || 0
               })
+ 
               
        
               const valor = 
@@ -747,10 +752,13 @@ construirValores(AniosSeleccionados:any,MesesSeleccionados:any,Registros:any){
               // const valor = this.getValorSaldoFinal(mes.NumMes,anio.Anio) || 0
               // const valorAnual = this.obtenerValorSaldoFinalAnual(anio.Anio) || 0
               const valor = 
-              (this.DataTreeTable[0].data.valores[`0-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0)+
+              (this.DataTreeTable[0].data.valores[`0-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0)        
+              +
               (this.DataTreeTable[1].data.valores[`EESGPM4hWXvDlXSRnCwA-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0)+
               (this.DataTreeTable[4].data.valores[`GMzSuF04XQBsPmAkIB2C-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0)+
               (this.DataTreeTable[7].data.valores[`psmpY6iyDJNkW7AKFXgK-${mes.NumMes}-${anio.Anio}`]?.ValorNumero || 0)
+
+              
               const valorAnual = this.obtenerValorSaldoFinalAnual(anio.Anio,Registros) || 0
             
               dataTree.data.valores[claveMensual] = 

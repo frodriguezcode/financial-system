@@ -488,7 +488,6 @@ this.Categorias=[]
           })
         }
     })
-
 this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
 let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
 let CantidadMeses:number=0
@@ -549,7 +548,6 @@ this.SaldoInicialBack.filter(item =>
     item.ids.some((id:any) => idsUnidos.includes(id))
 );
 
-console.log('SaldoInicial',this.SaldoInicial)
 this.DataTreeTable=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros,this.SaldoInicial)
 //console.log('DataTreeTableReal',this.DataTreeTableReal)
 }
