@@ -342,10 +342,7 @@ this.Meses= [
   
 ]
 
-
-
   this.MesesBack=this.Meses
-  this.AniosBack=this.Anios
     this.conS.usuario$.subscribe(usuario => {
       if (usuario) {
       this.usuario=usuario
@@ -450,6 +447,7 @@ this.Sucursales=this.DataByEmpresa.Sucursales
 this.Items=this.DataByEmpresa.CuentasContables
 this.ItemsBack=this.DataByEmpresa.CuentasContables
 this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
+console.log('CuentasBancarias',this.CuentasBancarias)
 this.Registros=this.DataByEmpresa.Registros
 this.Categorias=[]
    this.Categorias.push(
@@ -494,6 +492,7 @@ let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
 this.DataTreeTableRealBack=
 this.conS.construirItemsCatalogos(
+true,
 this.Categorias,
 CantidadMeses,
 AniosCabecera,
@@ -548,7 +547,8 @@ this.SaldoInicialBack.filter(item =>
     item.ids.some((id:any) => idsUnidos.includes(id))
 );
 
-this.DataTreeTable=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros,this.SaldoInicial)
+
+this.DataTreeTable=this.conS.filtrarDatos(resultado,this.AniosBack,CantidadMeses,this.Registros,this.SaldoInicial)
 //console.log('DataTreeTableReal',this.DataTreeTableReal)
 }
 filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {
@@ -1372,12 +1372,10 @@ getCatalogoFechas(){
   }
 
   filtrarData(){
-    let SemanasRegistros:any=[]
     let Cuentas:any=[]
     let CriteriosRegistros:any=[]
-    let CriteriosSaldos:any=[]
-    let Sucursales:any=[]
-    let Proyectos:any=[]
+
+
 
     // if(this.SemanasSeleccionadas.length>0){
     //   this.SemanasSeleccionadas.forEach((element:any) => {
@@ -1389,190 +1387,16 @@ getCatalogoFechas(){
         Cuentas.push(element.Cuenta)
       });
     }
-    if(this.SucursalSeleccionada.length>0){
-      this.SucursalSeleccionada.forEach((element:any) => {
-        Sucursales.push(element.id)
-      });
-    }
-    if(this.ProyectoSeleccionado.length>0){
-      this.ProyectoSeleccionado.forEach((element:any) => {
-        Proyectos.push(element.id)
-      });
-    }
 
     CriteriosRegistros={
-      NumSemana:SemanasRegistros,
       NumCuenta:Cuentas,
-      idProyecto:Proyectos,
-      idSucursal:Sucursales
-
     }
-    CriteriosSaldos={
-      SemanaNum:SemanasRegistros,
-      NumCuenta:Cuentas,
-      idProyecto:Proyectos,
-      idSucursal:Sucursales
 
-    }
    
     this.Registros= this.conS.filtradoDinamico(CriteriosRegistros,this.RegistrosBackUp)
-    this.SaldoInicial= this.conS.filtradoDinamico(CriteriosSaldos,this.SaldoInicialBack)
-    this.Cabecera=[]
-    this.CabeceraBack=[]
-    this.Anios.forEach((anio:any) => {
-      this.Semestres.forEach(semestre => {
-        this.getTrimestresBySemestre(semestre.id).forEach((trim:any)=>{
-          this.getMesesByTrimestre(trim.id).forEach((mes:any) => {
-              this.CabeceraBack.push({
-                "Nombre":mes.Mes + ' ' + anio.Anio,
-                "Mes":mes.Mes,
-                "NumMes":mes.NumMes,
-                "Anio":anio.Anio,
-                "Color":'#a2d7b4',
-                "Tipo":3,
-                "Mostrar":true
-              })
-            if(mes.NumMes==3){
-              this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 1",
-                "NumTrim":1,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":6,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 1",
-                "NumTrim":1,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":8,
-                "Mostrar":false
-              })
-            }
-            else if(mes.NumMes==6){
-              this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 2",
-                "NumTrim":2,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":6,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 2",
-                "NumTrim":2,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":8,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Total Semestre 1",
-                "NumSem":1,
-                "Anio":anio.Anio,
-                "Color":'#2ac25e',
-                "Tipo":7,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Semestre 1",
-                "NumSem":1,
-                "Anio":anio.Anio,
-                "Color":'#2ac25e',
-                "Tipo":9,
-                "Mostrar":false
-              })
-            } 
-            else if(mes.NumMes==9){
-              this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 3",
-                "NumTrim":3,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":6,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 3",
-                "NumTrim":3,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":8,
-                "Mostrar":false
-              })
-            }
-            else if(mes.NumMes==12){
-              this.CabeceraBack.push({
-                "Nombre":"Total Trimestre 4",
-                "NumTrim":4,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":6,
-                "Mostrar":false
-              })
-    
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Trimestre 4",
-                "NumTrim":4,
-                "Anio":anio.Anio,
-                "Color":'#4fd37c',
-                "Tipo":8,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Total Semestre 2",
-                "NumSem":2,
-                "Anio":anio.Anio,
-                "Color":'#2ac25e',
-                "Tipo":7,
-                "Mostrar":false
-              })
-              this.CabeceraBack.push({
-                "Nombre":"Promedio Semestre 2",
-                "NumSem":2,
-                "Anio":anio.Anio,
-                "Color":'#2ac25e',
-                "Tipo":9,
-                "Mostrar":false
-              })
-    
-              
-            }
-    
-    
-          });
-          
-        })
 
-      })
+    this.filtrado()
 
-      this.CabeceraBack.push({
-        "Nombre":"Total " + anio.Anio,
-        "Mes":"",
-        "NumMes":"",
-        "Anio":anio.Anio,
-        "Color":'#58d683',
-        "Tipo":4,
-        "Mostrar":true
-      })
-      this.CabeceraBack.push({
-        "Nombre":"Promedio " + anio.Anio,
-        "Mes":"",
-        "NumMes":"",
-        "Color":'#58d683',
-        "Anio":anio.Anio,
-        "Tipo":5,
-        "Mostrar":true
-      })
-      
-
-    });
-
-
-    //this.Cabecera=this.CabeceraBack.filter((cab:any)=>cab.Mostrar==true)
-    this.Cabecera=this.CabeceraBack
-   
   
   }
 

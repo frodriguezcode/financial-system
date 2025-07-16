@@ -1,28 +1,56 @@
 <div *ngIf="this.cargar==false">
-  <p-multiSelect  
+<div class="row">
+  <div class="col-3">
+    <p-treeSelect 
+      class="w-full md:w-20rem" 
+      display="chip" 
+      [(ngModel)]="selectedNodes" 
+      containerStyleClass="w-full" 
+      [options]="timeHierarchy" 
+      placeholder="Seleccione período"
+      (onClear)="verPeriodosSeleccionados()"
+      (onNodeSelect)="verPeriodosSeleccionados()"
+      (onNodeUnselect)="verPeriodosSeleccionados()"
+      [metaKeySelection]="false"
+      selectionMode="checkbox"
+      appendTo="body"
+      [showClear]="true"
+      [filter]="true"
+      [filterBy]="'label'"
+      [scrollHeight]="'400px'"
+    ></p-treeSelect>
+  </div>
+  <div class="col-3">
+    <p-multiSelect  
+      (onChange)="filtrado()"
+      [disabled]="ProyectoSeleccionado.length>0"
+      class="m-1" 
+      [options]="Sucursales"
+      [(ngModel)]="SucursalSeleccionada" 
+      optionLabel="Nombre"
+      appendTo="body"
+      placeholder="Seleccione una sucursal" 
+      emptyMessage="No hay sucursales disponibles"
+      emptyFilterMessage="No se encontraron coincidencias"
+    />
+  </div>
+  <div class="col-3">
+    <p-multiSelect 
+    [disabled]="SucursalSeleccionada.length>0" 
     (onChange)="filtrado()"
-    [disabled]="ProyectoSeleccionado.length>0"
-    class="m-1" 
-    [options]="Sucursales"
-    [(ngModel)]="SucursalSeleccionada" 
-    optionLabel="Nombre"
-    appendTo="body"
-    placeholder="Seleccione una sucursal" 
-    emptyMessage="No hay sucursales disponibles"
-    emptyFilterMessage="No se encontraron coincidencias"
-  />
-  <p-multiSelect 
-  [disabled]="SucursalSeleccionada.length>0" 
-  (onChange)="filtrado()"
-    class="m-1" 
-    [options]="Proyectos"
-    [(ngModel)]="ProyectoSeleccionado"
-    optionLabel="Nombre" 
-    appendTo="body"
-    placeholder="Seleccione un proyecto"
-    emptyMessage="No hay proyectos disponibles"
-    emptyFilterMessage="No se encontraron coincidencias"
-  />
+      class="m-1" 
+      [options]="Proyectos"
+      [(ngModel)]="ProyectoSeleccionado"
+      optionLabel="Nombre" 
+      appendTo="body"
+      placeholder="Seleccione un proyecto"
+      emptyMessage="No hay proyectos disponibles"
+      emptyFilterMessage="No se encontraron coincidencias"
+    />
+  </div>
+
+
+</div>
 
 </div>
 
@@ -204,3 +232,6 @@
         </ng-template>
     </p-treeTable>
 </div>
+<app-planeado-financiero
+*ngIf="this.cargar==false" 
+></app-planeado-financiero>

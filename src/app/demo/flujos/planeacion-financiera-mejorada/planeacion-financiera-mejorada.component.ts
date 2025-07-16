@@ -20,6 +20,9 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SidebarModule } from 'primeng/sidebar';
 import { Subscription } from 'rxjs';
+import { TreeSelectModule } from 'primeng/treeselect';
+import PlaneadoFinancieroComponent from './planeado-financiero/planeado-financiero.component';
+
 interface TreeNode {
   label: string;
   key: string;
@@ -38,6 +41,7 @@ interface Column {
   selector: 'app-planeacion-financiera-mejorada',
   standalone: true,
   imports: [
+    PlaneadoFinancieroComponent,
     CommonModule, 
     SharedModule,
     MultiSelectModule,
@@ -49,6 +53,7 @@ interface Column {
     InputGroupModule,
     InputGroupAddonModule,
     TreeTableModule,
+    TreeSelectModule,
     SidebarModule],
   templateUrl: './planeacion-financiera-mejorada.component.html',
   styleUrls: ['./planeacion-financiera-mejorada.component.scss']
@@ -92,6 +97,11 @@ idEmpresa:string=''
 DataByMatriz:any=[]
 DataByEmpresa:any=[]
 cargar:boolean=true
+
+timeHierarchy:any
+selectedNodes: any;
+PeriodosTiempos:any=[]
+PeriodosTiemposSeleccionados:any=[]
 constructor(private conS:ConfigurationService,private toastr: ToastrService){
 
 
@@ -244,6 +254,51 @@ this.Trimestres=[
 this.TrimestresBack= this.Trimestres
 this.SemestresBack=this.Semestres
 this.AniosBack=this.Anios
+this.timeHierarchy = this.generateTimeHierarchy(2024, new Date().getFullYear());
+  this.PeriodosTiempos.push(
+    {
+      "Nombre":"Trimestre 1",
+      "Numero":1,
+      "Tipo":1,
+      "Orden":1
+    },
+    {
+      "Nombre":"Trimestre 2",
+      "Numero":2,
+      "Tipo":1,
+      "Orden":2
+    },
+    {
+      "Nombre":"Trimestre 3",
+      "Numero":3,
+      "Tipo":1,
+      "Orden":3
+    },
+    {
+      "Nombre":"Trimestre 4",
+      "Numero":4,
+      "Tipo":1,
+      "Orden":4
+    },
+    {
+      "Nombre":"Semestre 1",
+      "Numero":1,
+      "Tipo":2,
+      "Orden":5
+    },
+    {
+      "Nombre":"Semestre 2",
+      "Numero":2,
+      "Tipo":2,
+      "Orden":6
+    },
+    {
+      "Nombre":"Anual",
+      "Numero":1,
+      "Tipo":3,
+      "Orden":7
+    },
+)
   this.conS.usuario$.subscribe(usuario => {
     if (usuario) {
     this.usuario=usuario
@@ -272,7 +327,42 @@ obtenerDataEmpresa(){
     this.construirData()
   })
 }
-
+generateTimeHierarchy(startYear: number, endYear: number): TreeNode[] {
+  const years: TreeNode[] = [];
+  
+  for (let year = startYear; year <= endYear; year++) {
+    years.push({
+      label: year.toString(),
+      key: year.toString(),
+      tipo:1,
+      numPeriodo:year,
+      children: [
+        {
+          label: 'Semestre 1',
+          key: `${year}-S1`,
+          tipo:2,
+          numPeriodo:1,
+          children: [
+            { label: 'Trimestre 1', key: `${year}-${year}-S1-T1` ,tipo:3,numPeriodo:1},
+            { label: 'Trimestre 2', key: `${year}-${year}-S1-T2`,tipo:3,numPeriodo:2 }
+          ]
+        },
+        {
+          label: 'Semestre 2',
+          tipo:2,
+          numPeriodo:2,
+          key: `${year}-S2`,
+          children: [
+            { label: 'Trimestre 3', key: `${year}-${year}-S2-T3`,tipo:3,numPeriodo:3 },
+            { label: 'Trimestre 4', key: `${year}-${year}-S2-T4`,tipo:3,numPeriodo:4 }
+          ]
+        }
+      ]
+    });
+  }
+  
+  return years;
+}
 
 construirData(){
 this.cargar=true
@@ -325,8 +415,12 @@ this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
 let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
 let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
+
+this.enviarDatosReal()
+
 this.DataTreeTableRealBack=
 this.conS.construirItemsCatalogos(
+true,
 this.Categorias,
 CantidadMeses,
 AniosCabecera,
@@ -351,6 +445,18 @@ this.DataTreeTableReal.forEach(dataTree => {
 if(this.DataTreeTableReal.length>0){
   this.cargar=false
 }
+}
+
+enviarDatosReal(){
+  let _Data={
+"Categorias":this.Categorias,
+"Items":this.Items,
+"Proyectos":this.ProyectoSeleccionado.length==0 ? this.Proyectos :this.ProyectoSeleccionado,
+"Sucursales":this.SucursalSeleccionada.length==0 ? this.Sucursales :this.SucursalSeleccionada,
+"Cabecera":this.Cabecera
+
+}
+this.conS.enviarDataPlaneadoFinanciera(_Data)
 }
 
 filtrado(){
@@ -379,7 +485,7 @@ CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.lengt
 
 
 
-this.DataTreeTableReal=this.conS.filtrarDatos(resultado,AniosCabecera,CantidadMeses,this.Registros,[]).filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
+this.DataTreeTableReal=this.conS.filtrarDatos(resultado,this.AniosBack,CantidadMeses,this.Registros,[]).filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
 //console.log('DataTreeTableReal',this.DataTreeTableReal)
 }
 filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {
@@ -408,6 +514,243 @@ filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursale
   });
 }
 
+PeriodosSeleccionados(nodesSeleccionados: TreeNode[]){
+  if(nodesSeleccionados==null){
+    return []
+  }
+else {
+  const anios = new Set<number>();
+  const semestres = new Set<string>(); // usar string para Set
+  const trimestres = new Set<string>();
+
+  for (const node of nodesSeleccionados) {
+    if (node.tipo === 1) {
+      anios.add(node.numPeriodo);
+    }
+   
+    
+        if (node.tipo === 2) {
+          // Extraer año desde key o usar alguna lógica para asociarlo
+          const anio = +(node.key?.split('-')[0] || 0);
+          anios.add(anio);
+          semestres.add(`${anio}-${node.numPeriodo}`);
+        }
+    
+        if (node.tipo === 3) {
+          // Extraer año y semestre desde key (estructura tipo "2024-2024-S1-T1")
+          const partes = node.key?.split('-') || [];
+          const anio = +partes[0];
+          const trimestre = node.numPeriodo;
+    
+          if (anio && trimestre) {
+            anios.add(anio);
+    
+            // Trimestre está en el semestre, así que deducimos el semestre a partir del trimestre
+            const semestre = trimestre <= 2 ? 1 : 2;
+            semestres.add(`${anio}-${semestre}`);
+            trimestres.add(`${anio}-${trimestre}`);
+          }
+        }
+      }
+    
+      return {
+        anios: Array.from(anios),
+        semestres: Array.from(semestres).map(s => {
+          const [anio, semestre] = s.split('-').map(Number);
+          return { anio, semestre };
+        }),
+        trimestres: Array.from(trimestres).map(t => {
+          const [anio, trimestre] = t.split('-').map(Number);
+          return { anio, trimestre };
+        })
+      };
+  
+}
+} 
+
+
+verPeriodosSeleccionados(){
+
+const seleccion:any = this.PeriodosSeleccionados(this.selectedNodes);
+if(seleccion.length==0){
+   this.Cabecera=this.CabeceraBack
+}
+else {
+  let AniosUnicos=seleccion.anios
+  let SemestresUnicos=seleccion.semestres.map((sem:any)=>sem.semestre)
+  let TrimestresUnicos=seleccion.trimestres.map((trim:any)=>trim.trimestre)
+  
+  
+  this.Anios=
+  AniosUnicos.length==0? this.Anios=this.AniosBack:
+  this.AniosBack.filter((anio:any)=>AniosUnicos.includes(anio.Anio))
+  
+  this.Trimestres=
+  TrimestresUnicos.length==0?this.Trimestres=this.TrimestresBack:
+  this.TrimestresBack.filter((trim:any)=>TrimestresUnicos.includes(trim.id))
+  
+  
+  this.Semestres=
+  SemestresUnicos.length==0?this.Semestres=this.SemestresBack :
+  this.SemestresBack.filter((sem:any)=>SemestresUnicos.includes(sem.id))
+  
+      this.Cabecera=[]
+      this.Anios.forEach((anio:any) => {
+        this.Semestres.forEach(semestre => {
+          this.getTrimestresBySemestre(semestre.id).forEach((trim:any)=>{
+            this.getMesesByTrimestre(trim.id).forEach((mes:any) => {
+                this.Cabecera.push({
+                  "Nombre":mes.Mes + ' ' + anio.Anio,
+                  "Mes":mes.Mes,
+                  "NumMes":mes.NumMes,
+                  "Anio":anio.Anio,
+                  "Color":'#a2d7b4',
+                  "Tipo":3,
+                  "Mostrar":true
+                })
+              if(mes.NumMes==3){
+                this.Cabecera.push({
+                  "Nombre":"Total Trimestre 1",
+                  "NumTrim":1,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":6,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Trimestre 1",
+                  "NumTrim":1,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":8,
+                  "Mostrar":false
+                })
+              }
+              else if(mes.NumMes==6){
+                this.Cabecera.push({
+                  "Nombre":"Total Trimestre 2",
+                  "NumTrim":2,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":6,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Trimestre 2",
+                  "NumTrim":2,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":8,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Total Semestre 1",
+                  "NumSem":1,
+                  "Anio":anio.Anio,
+                  "Color":'#2ac25e',
+                  "Tipo":7,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Semestre 1",
+                  "NumSem":1,
+                  "Anio":anio.Anio,
+                  "Color":'#2ac25e',
+                  "Tipo":9,
+                  "Mostrar":false
+                })
+              } 
+              else if(mes.NumMes==9){
+                this.Cabecera.push({
+                  "Nombre":"Total Trimestre 3",
+                  "NumTrim":3,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":6,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Trimestre 3",
+                  "NumTrim":3,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":8,
+                  "Mostrar":false
+                })
+              }
+              else if(mes.NumMes==12){
+                this.Cabecera.push({
+                  "Nombre":"Total Trimestre 4",
+                  "NumTrim":4,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":6,
+                  "Mostrar":false
+                })
+      
+                this.Cabecera.push({
+                  "Nombre":"Promedio Trimestre 4",
+                  "NumTrim":4,
+                  "Anio":anio.Anio,
+                  "Color":'#4fd37c',
+                  "Tipo":8,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Total Semestre 2",
+                  "NumSem":2,
+                  "Anio":anio.Anio,
+                  "Color":'#2ac25e',
+                  "Tipo":7,
+                  "Mostrar":false
+                })
+                this.Cabecera.push({
+                  "Nombre":"Promedio Semestre 2",
+                  "NumSem":2,
+                  "Anio":anio.Anio,
+                  "Color":'#2ac25e',
+                  "Tipo":9,
+                  "Mostrar":false
+                })
+      
+                
+              }
+      
+      
+            });
+            
+          })
+  
+        })
+  
+        this.Cabecera.push({
+          "Nombre":"Total " + anio.Anio,
+          "Mes":"",
+          "NumMes":"",
+          "Anio":anio.Anio,
+          "Color":'#58d683',
+          "Tipo":4,
+          "Mostrar":true
+        })
+        this.Cabecera.push({
+          "Nombre":"Promedio " + anio.Anio,
+          "Mes":"",
+          "NumMes":"",
+          "Color":'#58d683',
+          "Anio":anio.Anio,
+          "Tipo":5,
+          "Mostrar":true
+        })
+        
+  
+      });
+
+}
+
+this.enviarDatosReal()
+    //this.Cabecera=this.CabeceraBack.filter((cab:any)=>cab.Mostrar==true)
+ 
+} 
 
 getNameSucursal(idSucursal:any){
     if(idSucursal=='0'){
