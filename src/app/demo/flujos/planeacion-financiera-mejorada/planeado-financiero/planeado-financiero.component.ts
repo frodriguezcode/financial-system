@@ -24,6 +24,8 @@ Categorias:any=[]
 Cabecera:any=[]
 Items:any=[]
 Proyectos:any=[]
+RegistrosPlanes:any=[]
+RegistrosPlanesBack:any=[]
 Sucursales:any=[]
 Anios: any[] = []
 usuario:any
@@ -126,8 +128,23 @@ guardarValorPlan(data:any,anio:any,mes:any){
       "Mes":mes,
     }
 
-    console.log('dataPlaneacion',dataPlaneacion)
+    // Update local array
+    const index = this.RegistrosPlanesBack.findIndex((reg: any) =>
+       reg.idItem === dataPlaneacion.idItem &&
+       reg.Anio === dataPlaneacion.Anio &&
+       reg.Mes === dataPlaneacion.Mes 
+    );
+    if (index !== -1) {
+      // If exists, update
+      this.RegistrosPlanesBack[index] = dataPlaneacion;
+    } else {
+      // If doesn't exist, add
+      this.RegistrosPlanesBack.push(dataPlaneacion);
+    }
+    this.RegistrosPlanes=this.RegistrosPlanesBack
 
+
+    console.log('dataPlaneacion',dataPlaneacion)
   }
 
 }
