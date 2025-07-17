@@ -244,7 +244,7 @@ export class ConfigurationService {
         },
         children:
 
-          this.getItemsByCategoria(categ.id, Items)
+          this.getItemsByCategoria(categ.id, Items,categ.Tipo)
 
       })
 
@@ -979,7 +979,7 @@ export class ConfigurationService {
 
 
 
-  getItemsByCategoria(idCategoria: string, Items: any) {
+  getItemsByCategoria(idCategoria: string, Items: any,TipoCateg:any) {
     let Item = Items.filter((it: any) => it.idPadre == idCategoria)
     let ItemsEncontrados: any = []
     if (Item.length > 0) {
@@ -996,6 +996,7 @@ export class ConfigurationService {
               type: 'Folder',
               idCategoria: idCategoria,
               orden: item.Orden,
+              TipoCateg:TipoCateg,
               tipo: 'Hijo',
               valores: {},
             },

@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { TreeTableModule } from 'primeng/treetable';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-planeado-financiero',
@@ -25,7 +26,10 @@ Items:any=[]
 Proyectos:any=[]
 Sucursales:any=[]
 Anios: any[] = []
+usuario:any
 ngOnInit(): void {
+this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+
 this.Anios=[
     {Anio:2023,
     Mostrar: true
@@ -84,6 +88,50 @@ this.DataTreeTablePlan.forEach(dataTree => {
 
 
 }
+
+guardarValorPlan(data:any,anio:any,mes:any){
+  console.log('data',data)
+  let Valor:number=0
+
+  Valor=Number(data.valores[data.idItem + '-' + mes + '-' + anio].ValorNumero)
+  console.log('Valor',Valor)
+
+
+  if(data.TipoCateg==1 && Valor<0){
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      title: 'El Valor debe ser positivo',
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  else if(data.TipoCateg==2 && Valor>0){
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      title: 'El Valor debe ser negativo',
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  else {
+    let dataPlaneacion={
+      "idItem":data.idItem,
+      "idCategoria":data.idCategoria,
+      "idEmpresa":this.usuario.idEmpresa,
+      "idMatriz":this.usuario.idMatriz,
+      "Valor":Valor,
+      "Anio":anio,
+      "Mes":mes,
+    }
+
+    console.log('dataPlaneacion',dataPlaneacion)
+
+  }
+
+}
+
 
 
 

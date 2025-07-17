@@ -34,7 +34,12 @@
               <div class="d-flex justify-content-center">
                 <div class="input-group mb-3 w-50">
                   <span class="input-group-text">$</span>
-                  <input type="text" class="form-control" aria-label="Amount">
+                  <input 
+                  (keyup.enter)="guardarValorPlan(rowData,col.Anio,col.NumMes)"
+                  [(ngModel)]="rowData.valores[rowData.idItem + '-' + col.NumMes + '-' + col.Anio].ValorNumero"
+                  type="text" 
+                  class="form-control" 
+                  aria-label="Amount">
                 </div>
               </div>
 
