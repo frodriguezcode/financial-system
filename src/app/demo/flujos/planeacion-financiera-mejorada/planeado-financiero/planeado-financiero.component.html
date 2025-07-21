@@ -3,7 +3,7 @@
   #table>
   <ng-template pTemplate="header" let-columns>
     <tr>
-      <th style="width: 450px;position: sticky; left: 0; background: #a2d7b4; z-index: 1;">Nombre</th>
+      <th style="width: 450px;position: sticky; left: 0; background: #a2d7b4; z-index: 1;">Consolidad Plan</th>
       <th style="width: 250px" class="text-center" [style.background-color]="col?.Color || ''"
         *ngFor="let col of columns">{{col.Nombre}}</th>
     </tr>
@@ -33,9 +33,10 @@
             <span [style.color]="rowData.valores[rowData.idItem + '-'+col.NumMes +'-'+col.Anio]?.Color || ''">
               <div class="d-flex justify-content-center">
                 <div class="input-group mb-3 w-50">
-                  <span class="input-group-text">$</span>
+                  <span *ngIf="rowData.TipoCateg==1" class="input-group-text">$</span>
+                  <span *ngIf="rowData.TipoCateg==2" class="input-group-text">-$</span>
                   <input 
-                  (keyup.enter)="guardarValorPlan(rowData,col.Anio,col.NumMes)"
+                  (keyup.enter)="guardarValorPlan(rowData,col.Anio,col.NumMes,col.Mes)"
                   [(ngModel)]="rowData.valores[rowData.idItem + '-' + col.NumMes + '-' + col.Anio].ValorNumero"
                   type="text" 
                   class="form-control" 

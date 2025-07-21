@@ -497,6 +497,7 @@ this.Categorias,
 CantidadMeses,
 AniosCabecera,
 this.Registros,
+[],
 this.DataByEmpresa.SaldosIniciales,
 this.Items
 )

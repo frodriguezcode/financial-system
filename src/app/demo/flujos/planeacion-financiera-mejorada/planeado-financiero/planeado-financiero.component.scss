@@ -1,1 +1,7 @@
 @import '../../../flujos/consolidado/flujos-consolidado.component.scss';
+.toast-center-center {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+  position: fixed !important;
+}

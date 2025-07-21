@@ -96,12 +96,18 @@ RegistrosBackUp:any=[]
 idEmpresa:string=''
 DataByMatriz:any=[]
 DataByEmpresa:any=[]
+DataPlanesByEmpresa:any=[]
 cargar:boolean=true
-
+modoSeleccionado: string = 'todo';
 timeHierarchy:any
 selectedNodes: any;
 PeriodosTiempos:any=[]
 PeriodosTiemposSeleccionados:any=[]
+verTodo:boolean=true
+verMensual:boolean=false
+verTrimestral:boolean=false
+verSemestral:boolean=false
+verAnual:boolean=false
 constructor(private conS:ConfigurationService,private toastr: ToastrService){
 
 
@@ -319,6 +325,73 @@ this.timeHierarchy = this.generateTimeHierarchy(2024, new Date().getFullYear());
 
 }
 
+capturarCambio() {
+  let CopiaCabecera=[...this.CabeceraBack]
+  if(this.modoSeleccionado=='todo'){
+    this.verTodo=true
+    this.verTrimestral=false
+    this.verSemestral=false
+    this.verAnual=false
+
+ 
+    this.Cabecera=this.CabeceraBack
+
+  }
+  else if(this.modoSeleccionado=='trimestral'){
+    this.verTrimestral=true
+    this.verSemestral=false
+    this.verTodo=false
+    this.verAnual=false
+
+  CopiaCabecera.forEach((cab:any)=>{
+    if(cab.Tipo==6 || cab.Tipo==8){
+      cab.Mostrar=true
+    }
+    else {
+      cab.Mostrar=false
+    }
+
+  }) 
+    this.Cabecera=CopiaCabecera.filter((_cab:any)=>_cab.Mostrar==true)
+
+  }
+  else if(this.modoSeleccionado=='semestral'){
+    this.verSemestral=true
+    this.verTodo=false
+    this.verAnual=false
+    this.verTrimestral=false
+
+  CopiaCabecera.forEach((cab:any)=>{
+    if(cab.Tipo==7 || cab.Tipo==9){
+      cab.Mostrar=true
+    }
+    else {
+      cab.Mostrar=false
+  }
+  }) 
+    this.Cabecera=CopiaCabecera.filter((_cab:any)=>_cab.Mostrar==true)
+
+  }
+  else if(this.modoSeleccionado=='anual'){
+    this.verAnual=true
+    this.verSemestral=false
+    this.verTrimestral=false
+    this.verTodo=false
+  CopiaCabecera.forEach((cab:any)=>{
+    if(cab.Tipo==4 || cab.Tipo==5){
+      cab.Mostrar=true
+    }
+    else {
+      cab.Mostrar=false
+  }
+  }) 
+    this.Cabecera=CopiaCabecera.filter((_cab:any)=>_cab.Mostrar==true)
+  }
+
+  this.enviarDatosReal()
+  
+
+}
 obtenerDataEmpresa(){
   this.cargar=true
   this.conS.obtenerDataEmpresa(this.usuario.idMatriz).subscribe(resp=>{
@@ -369,6 +442,7 @@ this.cargar=true
 this.DataByEmpresa=this.DataByMatriz.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
 this.Proyectos=this.DataByEmpresa.Proyectos
 this.Sucursales=this.DataByEmpresa.Sucursales
+this.DataPlanesByEmpresa=this.DataByEmpresa.RegistrosPlanes
 this.Items=this.DataByEmpresa.CuentasContables
 this.ItemsBack=this.DataByEmpresa.CuentasContables
 this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
@@ -415,9 +489,6 @@ this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
 let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
 let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
-
-this.enviarDatosReal()
-
 this.DataTreeTableRealBack=
 this.conS.construirItemsCatalogos(
 true,
@@ -425,6 +496,7 @@ this.Categorias,
 CantidadMeses,
 AniosCabecera,
 this.Registros,
+[],
 this.DataByEmpresa.SaldosIniciales,
 this.Items
 )
@@ -443,17 +515,22 @@ this.DataTreeTableReal.forEach(dataTree => {
 });
 
 if(this.DataTreeTableReal.length>0){
+  this.enviarDatosReal()
   this.cargar=false
 }
 }
 
 enviarDatosReal(){
+console.log('Categorias1',this.Categorias)
   let _Data={
-"Categorias":this.Categorias,
+"Categorias":this.Categorias.filter((cat:any)=>cat.Orden!=13 && cat.Orden!=14),
+
+"DataTreeTableReal":this.DataTreeTableReal,
 "Items":this.Items,
 "Proyectos":this.ProyectoSeleccionado.length==0 ? this.Proyectos :this.ProyectoSeleccionado,
 "Sucursales":this.SucursalSeleccionada.length==0 ? this.Sucursales :this.SucursalSeleccionada,
-"Cabecera":this.Cabecera
+"Cabecera":this.Cabecera,
+"DataPlanesByEmpresa":this.DataPlanesByEmpresa
 
 }
 this.conS.enviarDataPlaneadoFinanciera(_Data)
