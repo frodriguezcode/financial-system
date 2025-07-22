@@ -93,10 +93,12 @@ CuentasBancarias:any=[]
 CuentaBancariaSeleccionada:any=[]
 Registros:any=[]
 RegistrosBackUp:any=[]
+RegistrosPlanesBack:any=[]
+RegistrosPlanes:any=[]
+
 idEmpresa:string=''
 DataByMatriz:any=[]
 DataByEmpresa:any=[]
-DataPlanesByEmpresa:any=[]
 cargar:boolean=true
 modoSeleccionado: string = 'todo';
 timeHierarchy:any
@@ -442,7 +444,7 @@ this.cargar=true
 this.DataByEmpresa=this.DataByMatriz.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
 this.Proyectos=this.DataByEmpresa.Proyectos
 this.Sucursales=this.DataByEmpresa.Sucursales
-this.DataPlanesByEmpresa=this.DataByEmpresa.RegistrosPlanes
+this.RegistrosPlanesBack=this.DataByEmpresa.RegistrosPlanes
 this.Items=this.DataByEmpresa.CuentasContables
 this.ItemsBack=this.DataByEmpresa.CuentasContables
 this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
@@ -484,6 +486,15 @@ this.Categorias=[]
           })
         }
     })
+this.Categorias.push({
+    "Calculado": true,
+    "Mostrar": true,
+    "Nombre": "Flujo de Efectivo Acumulado",
+    "Orden": 13,
+    "Suma": true,
+    "Tipo": 3,
+    "id": "13"
+})
 
 this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
 let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
@@ -491,13 +502,13 @@ let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
 this.DataTreeTableRealBack=
 this.conS.construirItemsCatalogos(
-true,
+false,
 this.Categorias,
 CantidadMeses,
 AniosCabecera,
-this.Registros,
+this.RegistrosPlanesBack,
 [],
-this.DataByEmpresa.SaldosIniciales,
+[],
 this.Items
 )
 
@@ -514,23 +525,25 @@ this.DataTreeTableReal.forEach(dataTree => {
   });
 });
 
+console.log('DataTreeTableReal',this.DataTreeTableReal)
+
 if(this.DataTreeTableReal.length>0){
   this.enviarDatosReal()
   this.cargar=false
+
 }
 }
 
 enviarDatosReal(){
-console.log('Categorias1',this.Categorias)
   let _Data={
-"Categorias":this.Categorias.filter((cat:any)=>cat.Orden!=13 && cat.Orden!=14),
-
-"DataTreeTableReal":this.DataTreeTableReal,
+"Categorias":this.Categorias,
+// "Categorias":this.Categorias.filter((cat:any)=>cat.Orden!=13 && cat.Orden!=14),
+"FlujoEfectivoValores":this.DataTreeTableReal[9].data.valores,
 "Items":this.Items,
 "Proyectos":this.ProyectoSeleccionado.length==0 ? this.Proyectos :this.ProyectoSeleccionado,
 "Sucursales":this.SucursalSeleccionada.length==0 ? this.Sucursales :this.SucursalSeleccionada,
 "Cabecera":this.Cabecera,
-"DataPlanesByEmpresa":this.DataPlanesByEmpresa
+"Registros":this.Registros
 
 }
 this.conS.enviarDataPlaneadoFinanciera(_Data)
@@ -1119,8 +1132,70 @@ getMesesBySemestre(idSemestre:any){
 
 
 
+guardarValorPlan(data:any,anio:any,mes:any,mesRegistro:any){
+  let Valor:number=0
 
-buidDataPlanesGeneral(){
+  Valor=Number(data.valores[data.idItem + '-' + mes + '-' + anio].ValorNumero)
+
+
+  // if(data.TipoCateg==1 && Valor<0){
+  //   Swal.fire({
+  //     position: 'center',
+  //     icon: 'warning',
+  //     title: 'El Valor debe ser positivo',
+  //     showConfirmButton: false,
+  //     timer: 1500
+  //   });
+  // }
+  // else if(data.TipoCateg==2 && Valor>0){
+  //   Swal.fire({
+  //     position: 'center',
+  //     icon: 'warning',
+  //     title: 'El Valor debe ser negativo',
+  //     showConfirmButton: false,
+  //     timer: 1500
+  //   });
+  // }
+  //else {
+    let dataPlaneacion={
+      "idItem":data.idItem,
+      "idCategoria":data.idCategoria,
+      "idEmpresa":this.usuario.idEmpresa,
+      "idMatriz":this.usuario.idMatriz,
+      "Valor":data.TipoCateg==2? Math.abs(Valor)*-1:Valor,
+      "Anio":anio,
+      "NumMes":mes,
+      "MesRegistro":mesRegistro,
+    }
+
+    // Update local array
+    const index = this.RegistrosPlanesBack.findIndex((reg: any) =>
+       reg.idItem === dataPlaneacion.idItem &&
+       reg.Anio === dataPlaneacion.Anio &&
+       reg.Mes === dataPlaneacion.NumMes 
+    );
+    if (index !== -1) {
+      // If exists, update
+      this.RegistrosPlanesBack[index] = dataPlaneacion;
+      this.conS.ActualizarValorPlan(dataPlaneacion).then((resp:any)=>{
+        this.toastr.success('Registro actualizado', '¡Éxito!', {
+            timeOut: 2000,
+            positionClass: 'toast-center-center'
+        });
+      })
+    } else {
+      // If doesn't exist, add
+      this.RegistrosPlanesBack.push(dataPlaneacion);
+      this.conS.crearValorPlan(dataPlaneacion).then((resp:any)=>{
+          this.toastr.success('Registro creado', '¡Éxito!', {
+            timeOut: 2000,
+            positionClass: 'toast-center-center'
+        });
+      })
+    }
+    this.RegistrosPlanes=this.RegistrosPlanesBack
+
+  //}
 
 }
 
