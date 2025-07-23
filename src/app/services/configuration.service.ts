@@ -23,7 +23,8 @@ export class ConfigurationService {
   dataPlaneadoFinanciera$ = this.dataPlaneadoFinanciera.asObservable();
 
   private idEmpresaSource = new BehaviorSubject<any>(null)
-  linkApiMejorada = 'http://localhost:3000/'
+  //linkApiMejorada = 'http://localhost:3000/'
+  linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
   DataTreeTable: any = []
   Semestres: any = []
   SemestresBack: any = []
