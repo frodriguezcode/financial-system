@@ -596,10 +596,10 @@ const filtrados = this.ItemsBack.filter((cuenta:any) => {
 });
 
 this.Items=filtrados
-this.enviarDatosReal()
 
 
 this.DataTreeTableReal=this.conS.filtrarDatos(false,resultado,this.AniosBack,CantidadMeses,this.RegistrosPlanesBack,[]).filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
+this.enviarDatosReal()
 }
 filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {
   return estructura.map(padre => {
@@ -1205,6 +1205,7 @@ guardarValorPlan(data:any,anio:any,mes:any,mesRegistro:any){
             timeOut: 2000,
             positionClass: 'toast-center-center'
         });
+        this.filtrado()
       })
     } else {
       // If doesn't exist, add
@@ -1213,7 +1214,8 @@ guardarValorPlan(data:any,anio:any,mes:any,mesRegistro:any){
           this.toastr.success('Registro creado', '¡Éxito!', {
             timeOut: 2000,
             positionClass: 'toast-center-center'
-        });
+          });
+          this.filtrado()
       })
     }
     this.RegistrosPlanes=this.RegistrosPlanesBack
