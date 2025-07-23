@@ -107,7 +107,10 @@
 </div>
 
 
-<p-treeTable [value]="DataTreeTableReal" [columns]="Cabecera" [scrollable]="true" scrollHeight="800px"
+<p-treeTable 
+*ngIf="this.cargar==false" 
+[value]="DataTreeTableReal" 
+[columns]="Cabecera" [scrollable]="true" scrollHeight="800px"
   [styleClass]="selectedSize" [resizableColumns]="true" [tableStyle]="{'min-width': (Cabecera.length * 150) + 'px'}"
   #table>
   <ng-template pTemplate="header" let-columns>

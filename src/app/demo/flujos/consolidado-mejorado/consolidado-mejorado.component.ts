@@ -549,7 +549,7 @@ this.SaldoInicialBack.filter(item =>
 );
 
 
-this.DataTreeTable=this.conS.filtrarDatos(resultado,this.AniosBack,CantidadMeses,this.Registros,this.SaldoInicial)
+this.DataTreeTable=this.conS.filtrarDatos(true,resultado,this.AniosBack,CantidadMeses,this.Registros,this.SaldoInicial)
 //console.log('DataTreeTableReal',this.DataTreeTableReal)
 }
 filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {

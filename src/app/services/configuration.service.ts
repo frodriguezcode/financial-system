@@ -2471,6 +2471,7 @@ export class ConfigurationService {
   }
 
   filtrarDatos(
+    real: boolean,
     DataTreeTable: any,
     AniosSeleccionados: any,
     CantMeses: any,
@@ -2480,7 +2481,12 @@ export class ConfigurationService {
     this.DataTreeTable = DataTreeTable
 
     this.SaldoInicial = SaldosIniciales
-    return this.construirValores(AniosSeleccionados, CantMeses, Registros,[])
+    if(real==true){
+      return this.construirValores(AniosSeleccionados, CantMeses, Registros,[])
+    }
+    else{     
+      return this.construirValoresPlaneado(AniosSeleccionados, CantMeses, Registros, [])   
+    }
   }
 
 

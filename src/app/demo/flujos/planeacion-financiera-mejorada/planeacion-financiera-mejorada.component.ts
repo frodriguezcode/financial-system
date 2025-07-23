@@ -573,10 +573,34 @@ let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:thi
 let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
 
+const filtrados = this.ItemsBack.filter((cuenta:any) => {
+  // Si ambos filtros están vacíos, devolver todos los registros
+  const sinFiltros =
+    idProyectos.length === 0 &&
+    idSucursales.length === 0;
+
+  if (sinFiltros) return true;
+
+  const tieneSucursal = idSucursales.length > 0
+    ? cuenta.idSucursales.some(id =>
+        idSucursales.includes(id)
+      )
+    : false;
+
+  const tieneProyecto = idProyectos.length > 0
+    ? cuenta.idProyectos.some(id =>
+        idProyectos.includes(id)
+      )
+    : false;
+
+  return tieneSucursal || tieneProyecto;
+});
+
+this.Items=filtrados
+this.enviarDatosReal()
 
 
-this.DataTreeTableReal=this.conS.filtrarDatos(resultado,this.AniosBack,CantidadMeses,this.Registros,[]).filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
-//console.log('DataTreeTableReal',this.DataTreeTableReal)
+this.DataTreeTableReal=this.conS.filtrarDatos(false,resultado,this.AniosBack,CantidadMeses,this.RegistrosPlanesBack,[]).filter(obj => obj.data.orden !== 0 && obj.data.orden !== 11);
 }
 filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {
   return estructura.map(padre => {
