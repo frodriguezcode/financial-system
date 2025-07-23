@@ -193,7 +193,6 @@ this.TrimestresBack= this.Trimestres
 this.SemestresBack=this.Semestres
 this.AniosBack=this.Anios
   this.confS.dataPlaneadoFinanciera$.subscribe((data:any)=>{
-    console.log('data',data)
     if(data!=null){
       this.Categorias=[]
       this.Categorias=data.Categorias.filter((data:any)=>data.Orden!=13)

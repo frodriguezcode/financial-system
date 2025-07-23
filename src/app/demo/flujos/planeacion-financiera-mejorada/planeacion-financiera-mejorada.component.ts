@@ -525,7 +525,6 @@ this.DataTreeTableReal.forEach(dataTree => {
   });
 });
 
-console.log('DataTreeTableReal',this.DataTreeTableReal)
 
 if(this.DataTreeTableReal.length>0){
   this.enviarDatosReal()
