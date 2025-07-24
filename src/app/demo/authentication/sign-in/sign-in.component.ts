@@ -46,9 +46,12 @@ ngOnInit(): void {
       Subscription.unsubscribe()
       localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0])); 
       if(resp.length>0){  
+        console.log('idMatriz',resp[0].idMatriz)
       SubscriptionEmpresa=  
          this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((empresa:any)=>{
           SubscriptionEmpresa.unsubscribe()
+          console.log('empresa',empresa)
+          empresa[0].ConfigInicial==undefined ? false:empresa[0].ConfigInicial
            if(empresa[0].ConfigInicial==false){
              this.router.navigate(['/empresas'])
              Swal.close()
