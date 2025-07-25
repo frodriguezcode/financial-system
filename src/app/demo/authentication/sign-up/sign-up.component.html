@@ -52,7 +52,13 @@
 
               <div class="input-group mb-4">
                 <span class="input-group-text" id="basic-addon3"><i class="fa-solid fa-user-tie"></i></span>
-                <input formControlName="Usuario" type="text" class="form-control" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon3" />
+                <input 
+                (input)="verificarNombreUser()"
+                formControlName="Usuario" type="text" class="form-control" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon3" />
+                <p style="color: red;" 
+                  *ngIf="usuarioFound==true">
+                  Este nombre de usuario ya existe en la plataforma
+                </p>
               </div>
 
               <p style="color: red;  display: block; margin-top: -7px;" 
@@ -92,7 +98,11 @@
             </div>
 
             <div class="d-grid mt-2">
-              <button (click)="guardarUsuario()" class="btn btn-primary btn-block mb-4 btn-custom">Registrarse</button>
+              <button
+              [disabled]="usuarioFound"
+              (click)="guardarUsuario()"
+              
+              class="btn btn-primary btn-block mb-4 btn-custom">Registrarse</button>
             </div>
             <p class="mb-2">¿Ya tiene cuenta? <a [routerLink]="['/auth/signin']" class="f-w-400">Inicie sesión</a></p>
           </div>

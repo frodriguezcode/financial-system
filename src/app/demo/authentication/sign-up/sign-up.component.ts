@@ -24,6 +24,8 @@ export default class SignUpComponent implements OnInit {
     private fb: FormBuilder
   ) {}
   usuarioForm!: FormGroup;
+  NombresUsuarios:any=[]
+  usuarioFound:boolean=false
   visible: boolean = false;
   Fecha: any = new Date();
   Atributos:any=[]
@@ -41,7 +43,7 @@ export default class SignUpComponent implements OnInit {
   MesesTodos: any = [];
   ngOnInit() {
     this.idPlan= this.rutaActiva.snapshot.paramMap.get('idPlan')!;
-    console.log('idPlan',this.idPlan)
+    this.obtenerNombresUsuario()
 this. obtenerAtributos()
     this.MesesTodos = [
       {
@@ -114,6 +116,18 @@ this. obtenerAtributos()
 
   }
 
+  obtenerNombresUsuario(){
+    this.authS.obtenerNombresUsuario().subscribe((user:any)=>{
+      this.NombresUsuarios=user[0].Usuarios
+    })
+  }
+verificarNombreUser(){
+    let NombreEncontrado=this.NombresUsuarios.filter((nombre:any)=>nombre== this.usuarioForm.controls['Usuario'].value)
+    this.usuarioFound=NombreEncontrado.length>0?true:false
+   
+   
+  }
+
   obtenerAtributos(){
     this.authS.obtenerAtributos().subscribe((data:any)=>{
       this.Atributos=data.map((atributo: any) => {
@@ -155,7 +169,6 @@ formatFechaVencimiento(event: Event) {
     // *Formulario de usuario
     let Fecha:any
     Fecha=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
-    console.log('Fecha',this.getMonthName(Fecha))
     this.usuarioForm = new FormGroup({
       Nombres: new FormControl('', [Validators.required]),
       Password: new FormControl('', [Validators.required]),

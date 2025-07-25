@@ -51,6 +51,7 @@ SucursalesTodasBack: any = [];
 Proyectos: any = [];
 ProyectosBack: any = [];
 ProyectoSeleccionados: any = [];
+NombresUsuarios: any = [];
 Empresas: any = [];
 EmpresasBack: any = [];
 Usuarios: any = [];
@@ -60,8 +61,10 @@ usuario:any
 visible: boolean = false;
 visibleSucursal: boolean = false;
 visibleProyecto: boolean = false;
+usuarioFound: boolean = false;
 claseTabla:string='p-datatable-sm'
 ngOnInit(): void {
+  this.obtenerNombresUsuario()
   this.conS.usuario$.subscribe(usuario => {
     if (usuario) {
     this.usuario=usuario
@@ -151,6 +154,17 @@ ngOnInit(): void {
     }
   ];
 
+}
+
+obtenerNombresUsuario(){
+this.authS.obtenerNombresUsuario().subscribe((user:any)=>{
+  this.NombresUsuarios=user[0].Usuarios
+})
+}
+verificarNombreUser(){
+  let NombreEncontrado=this.NombresUsuarios.filter((nombre:any)=>nombre== this.usuarioForm.controls['Usuario'].value)
+  this.usuarioFound=NombreEncontrado.length>0?true:false
+    
 }
 
 obtenerProyectosByMatriz(){

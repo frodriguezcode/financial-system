@@ -144,10 +144,10 @@
               <div class="col-12 col-lg-6 col-md-6">
                 <div class="form-group">
                   <label for="exampleInputPassword1">Usuario</label>
-                  <input (input)="verifyUser()" type="text" formControlName="Usuario" class="form-control" id="exampleInputPassword1"
+                  <input (input)="verificarNombreUser()" type="text" formControlName="Usuario" class="form-control" id="exampleInputPassword1"
                     placeholder="Escriba un nombre de usuario" />
                 </div>
-                <span style="color:red" *ngIf="verifyUser()==true">Este usuario ya existe en su organización</span>
+                <span style="color:red" *ngIf="usuarioFound==true">Este usuario ya existe</span>
               </div>
   
               <div class="col-12 col-lg-6 col-md-6">
@@ -273,7 +273,7 @@
   
           </div>
     
-          <button [disabled]="this.usuarioForm.invalid || verifyUser()==true || verifyPassw()==true" (click)="crearUsuario()" type="button"
+          <button [disabled]="this.usuarioForm.invalid || usuarioFound==true || verifyPassw()==true" (click)="crearUsuario()" type="button"
             class="btn btn-primary">Guardar</button>
         </form>
       </div>

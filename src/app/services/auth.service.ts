@@ -116,6 +116,12 @@ export class AuthService {
     .ref.set(Object.assign(empresa, {id: idEmpresa}))
 }
 
+  obtenerNombresUsuario() {
+    return this.afs
+      .collection('NombresUsuarios')
+      .valueChanges();
+  }
+
   crearEmpresabyMatriz(empresa: any) {
     const id = this.afs.createId();
   
