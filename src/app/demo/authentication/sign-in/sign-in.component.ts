@@ -24,6 +24,7 @@ export default class SignInComponent implements OnInit {
   Password:FormControl=new FormControl('');
   Empresas:any=[]
   Roles:any=[]
+  mostrarContrasenia = false;
   Correo:FormControl=new FormControl('');
   UsuarioRecover:any=[]
   visible: boolean = false;
@@ -32,6 +33,9 @@ ngOnInit(): void {
   localStorage.removeItem('usuarioFinancialSystems');
 }
 
+    cambiarMostrarContrasenia() {
+      this.mostrarContrasenia = !this.mostrarContrasenia;
+    }
 
   login(){
     
@@ -47,6 +51,7 @@ ngOnInit(): void {
       localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0])); 
       if(resp.length>0){  
         console.log('idMatriz',resp[0].idMatriz)
+        console.log('resp',resp)
       SubscriptionEmpresa=  
          this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((empresa:any)=>{
           SubscriptionEmpresa.unsubscribe()

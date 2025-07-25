@@ -1185,7 +1185,7 @@ export class ConfigurationService {
 
                     dataTree.data.valores[claveMensual] =
                     {
-                      "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": valor,
                       "Color": valor < 0 ? '#ff3200' : '#000000',
                     }
@@ -1193,13 +1193,13 @@ export class ConfigurationService {
 
                     dataTree.data.valores[claveAnual] =
                     {
-                      "Valor": valorAnual < 0 ? ('-$' + (valorAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": valorAnual < 0 ? ('-$' + (valorAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnual).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": valorAnual,
                       "Color": valorAnual < 0 ? '#ff3200' : '#000000',
                     }
                     dataTree.data.valores[claveAnualPromedio] =
                     {
-                      "Valor": valorAnualPromedio < 0 ? ('-$' + (valorAnualPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnualPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": valorAnualPromedio < 0 ? ('-$' + (valorAnualPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnualPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": valorAnualPromedio,
                       "Color": valorAnualPromedio < 0 ? '#ff3200' : '#000000',
                     }
@@ -1220,13 +1220,13 @@ export class ConfigurationService {
 
                     dataTree.data.valores[claveMensual] =
                     {
-                      "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": valor,
                       "Color": valor < 0 ? '#ff3200' : '#000000',
                     }
                     dataTree.data.valores[claveAnual] =
                     {
-                      "Valor": valorAnual < 0 ? ('-$' + (valorAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": valorAnual < 0 ? ('-$' + (valorAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnual).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": valorAnual,
                       "Color": valorAnual < 0 ? '#ff3200' : '#000000',
                     }
@@ -1239,7 +1239,7 @@ export class ConfigurationService {
 
                     dataTree.data.valores[claveAnualPromedio] =
                     {
-                      "Valor": valorAnualPromedio < 0 ? ('-$' + (valorAnualPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnualPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": valorAnualPromedio < 0 ? ('-$' + (valorAnualPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnualPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": valorAnualPromedio,
                       "Color": valorAnualPromedio < 0 ? '#ff3200' : '#000000',
                     }
@@ -1248,15 +1248,17 @@ export class ConfigurationService {
 
                   else if (dataTree.data.tipo == 'Abuelo' || dataTree.data.tipo == 'Comparativa') {
                     let valor = 0
+                  
                    if (dataTree.data.orden == 1) {
                       let DataTreeTableHijo = this.DataTreeTable
                         .filter((data: any) => data.OrdenData == 1 || data.OrdenData == 2)
                       DataTreeTableHijo.forEach(dataHijo => {
                         valor += dataHijo.data.valores[`${dataHijo.data.idCategoria}-${mes.NumMes}-${anio.Anio}`].ValorNumero || 0
                       });
+
                       dataTree.data.valores[claveMensual] =
                       {
-                        "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valor,
                         "Color": valor < 0 ? '#ff3200' : '#000000',
                       }
@@ -1264,14 +1266,14 @@ export class ConfigurationService {
 
                       dataTree.data.valores[claveAnual] =
                       {
-                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": totalAnual,
                         "Color": totalAnual < 0 ? '#ff3200' : '#000000',
                       }
                       const ValorPromedio = Number((totalAnual / CantidadMeses).toFixed(0))
                       dataTree.data.valores[claveAnualPromedio] =
                       {
-                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": ValorPromedio,
                         "Color": ValorPromedio < 0 ? '#ff3200' : '#000000',
                       }
@@ -1291,14 +1293,14 @@ export class ConfigurationService {
 
                       dataTree.data.valores[claveMensual] =
                       {
-                        "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valor,
                         "Color": valor < 0 ? '#ff3200' : '#000000',
                       }
                       totalAnual += valor;
                       dataTree.data.valores[claveAnual] =
                       {
-                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": totalAnual,
                         "Color": totalAnual < 0 ? '#ff3200' : '#000000',
                       }
@@ -1306,7 +1308,7 @@ export class ConfigurationService {
                       const ValorPromedio = Number((totalAnual / CantidadMeses).toFixed(0))
                       dataTree.data.valores[claveAnualPromedio] =
                       {
-                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": ValorPromedio,
                         "Color": ValorPromedio < 0 ? '#ff3200' : '#000000',
                       }
@@ -1321,14 +1323,14 @@ export class ConfigurationService {
                       //const valor = this.getDataFlujoFinancieroMensual(mes.NumMes,anio.Anio,Registros) || 0;
                       dataTree.data.valores[claveMensual] =
                       {
-                        "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valor,
                         "Color": valor < 0 ? '#ff3200' : '#000000',
                       }
                       totalAnual += valor;
                       dataTree.data.valores[claveAnual] =
                       {
-                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": totalAnual,
                         "Color": totalAnual < 0 ? '#ff3200' : '#000000',
                       }
@@ -1336,7 +1338,7 @@ export class ConfigurationService {
                       const ValorPromedio = Number((totalAnual / CantidadMeses).toFixed(0))
                       dataTree.data.valores[claveAnualPromedio] =
                       {
-                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": ValorPromedio,
                         "Color": ValorPromedio < 0 ? '#ff3200' : '#000000',
                       }
@@ -1352,14 +1354,14 @@ export class ConfigurationService {
 
                       dataTree.data.valores[claveMensual] =
                       {
-                        "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valor,
                         "Color": valor < 0 ? '#ff3200' : '#000000',
                       }
                       totalAnual += valor;
                       dataTree.data.valores[claveAnual] =
                       {
-                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": totalAnual,
                         "Color": totalAnual < 0 ? '#ff3200' : '#000000',
                       }
@@ -1367,7 +1369,7 @@ export class ConfigurationService {
                       const ValorPromedio = Number((totalAnual / CantidadMeses).toFixed(0))
                       dataTree.data.valores[claveAnualPromedio] =
                       {
-                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": ValorPromedio,
                         "Color": ValorPromedio < 0 ? '#ff3200' : '#000000',
                       }
@@ -1379,14 +1381,14 @@ export class ConfigurationService {
                       (DataFlujoEfectivo[`VmmQpdpunMTqkoSjhzzj-${mes.NumMes}-${anio.Anio}`].ValorNumero || 0)
                       dataTree.data.valores[claveMensual] =
                       {
-                        "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valor,
                         "Color": valor < 0 ? '#ff3200' : '#000000',
                       }
                       totalAnual += valor;
                       dataTree.data.valores[claveAnual] =
                       {
-                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": totalAnual,
                         "Color": totalAnual < 0 ? '#ff3200' : '#000000',
                       }
@@ -1394,7 +1396,7 @@ export class ConfigurationService {
                       const ValorPromedio = Number((totalAnual / CantidadMeses).toFixed(0))
                       dataTree.data.valores[claveAnualPromedio] =
                       {
-                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": ValorPromedio,
                         "Color": ValorPromedio < 0 ? '#ff3200' : '#000000',
                       }
@@ -1416,14 +1418,14 @@ export class ConfigurationService {
                       let valor = ValorFlujoEfectivo + ValorAcumuladoMesAnterior
                       dataTree.data.valores[claveMensual] =
                       {
-                        "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valor,
                         "Color": valor < 0 ? '#ff3200' : '#000000',
                       }
                       totalAnual += valor;
                       dataTree.data.valores[claveAnual] =
                       {
-                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": totalAnual < 0 ? ('-$' + (totalAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": totalAnual,
                         "Color": totalAnual < 0 ? '#ff3200' : '#000000',
                       }
@@ -1431,7 +1433,7 @@ export class ConfigurationService {
                       const ValorPromedio = Number((totalAnual / CantidadMeses).toFixed(0))
                       dataTree.data.valores[claveAnualPromedio] =
                       {
-                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": ValorPromedio < 0 ? ('-$' + (ValorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": ValorPromedio,
                         "Color": ValorPromedio < 0 ? '#ff3200' : '#000000',
                       }
@@ -1456,13 +1458,13 @@ export class ConfigurationService {
                       const valorAnual = this.getValorItemAnual(cuenta.data.idItem, anio.Anio, Registros) || 0;
                       cuenta.data.valores[claveMensualHijo] =
                       {
-                        "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valor,
                         "Color": valor < 0 ? '#ff3200' : '#000000'
                       }
                       cuenta.data.valores[claveAnualHijo] =
                       {
-                        "Valor": valorAnual < 0 ? ('-$ ' + (valorAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valorAnual < 0 ? ('-$ ' + (valorAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorAnual).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valorAnual,
                         "Color": valorAnual < 0 ? '#ff3200' : '#000000'
                       }
@@ -1470,7 +1472,7 @@ export class ConfigurationService {
                       const ValorPromedio = Number((valorAnual / CantidadMeses).toFixed(0))
                       cuenta.data.valores[claveAnualHijoProm] =
                       {
-                        "Valor": ValorPromedio < 0 ? ('-$ ' + (ValorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": ValorPromedio < 0 ? ('-$ ' + (ValorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": ValorPromedio,
                         "Color": ValorPromedio < 0 ? '#ff3200' : '#000000',
                       }
@@ -1487,21 +1489,21 @@ export class ConfigurationService {
                           const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.id, anio.Anio, Registros) || 0;
                           subCuenta.data.valores[claveMensualHijo] =
                           {
-                            "Valor": valorNieto < 0 ? ('-$ ' + (valorNieto * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                            "Valor": valorNieto < 0 ? ('-$ ' + (valorNieto * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorNieto).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                             "ValorNumero": valorNieto,
                             "Color": valorNieto < 0 ? '#ff3200' : '#000000'
                           }
 
                           subCuenta.data.valores[claveAnualNieto] =
                           {
-                            "Valor": valorNietoAnual < 0 ? ('-$ ' + (valorNietoAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorNietoAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                            "Valor": valorNietoAnual < 0 ? ('-$ ' + (valorNietoAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorNietoAnual).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                             "ValorNumero": valorNietoAnual,
                             "Color": valorNietoAnual < 0 ? '#ff3200' : '#000000'
                           }
                           const ValorPromedio = Number((valorNietoAnual / CantidadMeses).toFixed(0))
                           subCuenta.data.valores[claveAnualNietoProm] =
                           {
-                            "Valor": ValorPromedio < 0 ? ('-$ ' + (ValorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                            "Valor": ValorPromedio < 0 ? ('-$ ' + (ValorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                             "ValorNumero": ValorPromedio,
                             "Color": ValorPromedio < 0 ? '#ff3200' : '#000000'
                           }
@@ -1527,21 +1529,21 @@ export class ConfigurationService {
                     // const valor = this.getValorCategoriaMensual(dataTree.data.idCategoria,mes.NumMes,anio.Anio,Registros) || 0;
                     const valor = ValorAcumulado || 0;
                     dataTree.data.valores[claveMensual] = {
-                      "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": valor,
                       "Color": valor < 0 ? '#ff3200' : '#000000'
                     }
                     totalAnual += valor;
                     dataTree.data.valores[claveAnual] =
                     {
-                      "Valor": totalAnual < 0 ? ('-$ ' + (totalAnual * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": totalAnual < 0 ? ('-$ ' + (totalAnual * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (totalAnual).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": totalAnual,
                       "Color": totalAnual < 0 ? '#ff3200' : '#000000',
                     }
                     const ValorPromedio = Number((totalAnual / CantidadMeses).toFixed(0))
                     dataTree.data.valores[claveAnualPromedio] =
                     {
-                      "Valor": ValorPromedio < 0 ? ('-$ ' + (ValorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": ValorPromedio < 0 ? ('-$ ' + (ValorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": ValorPromedio,
                       "Color": ValorPromedio < 0 ? '#ff3200' : '#000000',
                     }
@@ -1559,13 +1561,13 @@ export class ConfigurationService {
 
                   dataTree.data.valores[claveTrimestral] =
                   {
-                    "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": valor,
                     "Color": valor < 0 ? '#ff3200' : '#000000',
                   }
                   dataTree.data.valores[claveTrimestralPromedio] =
                   {
-                    "Valor": valorPromedio < 0 ? ('-$ ' + (valorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": valorPromedio < 0 ? ('-$ ' + (valorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": valorPromedio,
                     "Color": valorPromedio < 0 ? '#ff3200' : '#000000',
                   }
@@ -1578,13 +1580,13 @@ export class ConfigurationService {
 
                   dataTree.data.valores[claveTrimestral] =
                   {
-                    "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": valor,
                     "Color": valor < 0 ? '#ff3200' : '#000000',
                   }
                   dataTree.data.valores[claveTrimestralPromedio] =
                   {
-                    "Valor": valorPromedio < 0 ? ('-$ ' + (valorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": valorPromedio < 0 ? ('-$ ' + (valorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": valorPromedio,
                     "Color": valorPromedio < 0 ? '#ff3200' : '#000000',
                   }
@@ -1606,7 +1608,7 @@ export class ConfigurationService {
 
                     dataTree.data.valores[claveTrimestral] =
                     {
-                      "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": ValorAcumulado,
                       "Color": ValorAcumulado < 0 ? '#ff3200' : '#000000',
                     }
@@ -1634,7 +1636,7 @@ export class ConfigurationService {
 
                     dataTree.data.valores[claveTrimestral] =
                     {
-                      "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": ValorAcumulado,
                       "Color": ValorAcumulado < 0 ? '#ff3200' : '#000000',
                     }
@@ -1642,7 +1644,7 @@ export class ConfigurationService {
 
                     dataTree.data.valores[claveTrimestralPromedio] =
                     {
-                      "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": ValorAcumuladoPromedio,
                       "Color": ValorAcumuladoPromedio < 0 ? '#ff3200' : '#000000',
                     }
@@ -1660,7 +1662,7 @@ export class ConfigurationService {
 
                     dataTree.data.valores[claveTrimestral] =
                     {
-                      "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": ValorAcumulado,
                       "Color": ValorAcumulado < 0 ? '#ff3200' : '#000000',
                     }
@@ -1668,7 +1670,7 @@ export class ConfigurationService {
 
                     dataTree.data.valores[claveTrimestralPromedio] =
                     {
-                      "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": ValorAcumuladoPromedio,
                       "Color": ValorAcumuladoPromedio < 0 ? '#ff3200' : '#000000',
                     }
@@ -1692,7 +1694,7 @@ export class ConfigurationService {
 
                   dataTree.data.valores[claveTrimestral] =
                   {
-                    "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": ValorAcumulado,
                     "Color": ValorAcumulado < 0 ? '#ff3200' : '#000000'
                   }
@@ -1700,7 +1702,7 @@ export class ConfigurationService {
                   ValorAcumuladoPromedio = Number((ValorAcumulado / 3).toFixed(1))
                   dataTree.data.valores[claveTrimestralPromedio] =
                   {
-                    "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": ValorAcumuladoPromedio,
                     "Color": ValorAcumuladoPromedio < 0 ? '#ff3200' : '#000000',
                   }
@@ -1724,7 +1726,7 @@ export class ConfigurationService {
 
                     cuenta.data.valores[claveTrimestralHijo] =
                     {
-                      "Valor": valorTrimestralHijo < 0 ? ('-$ ' + (valorTrimestralHijo * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorTrimestralHijo)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                      "Valor": valorTrimestralHijo < 0 ? ('-$ ' + (valorTrimestralHijo * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorTrimestralHijo).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                       "ValorNumero": valorTrimestralHijo,
                       "Color": valorTrimestralHijo < 0 ? '#ff3200' : '#000000'
                     }
@@ -1759,14 +1761,14 @@ export class ConfigurationService {
 
                         subCuenta.data.valores[claveTrimestralHijo] =
                         {
-                          "Valor": valorTrimestralNieto < 0 ? ('-$ ' + (valorTrimestralNieto * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorTrimestralNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                          "Valor": valorTrimestralNieto < 0 ? ('-$ ' + (valorTrimestralNieto * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorTrimestralNieto).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                           "ValorNumero": valorTrimestralNieto,
                           "Color": valorTrimestralNieto < 0 ? '#ff3200' : '#000000'
                         }
 
                         subCuenta.data.valores[clavePromedioTrimestralHijo] =
                         {
-                          "Valor": valorTrimestralPromedioNieto < 0 ? ('-$ ' + (valorTrimestralPromedioNieto * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorTrimestralPromedioNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                          "Valor": valorTrimestralPromedioNieto < 0 ? ('-$ ' + (valorTrimestralPromedioNieto * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorTrimestralPromedioNieto).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                           "ValorNumero": valorTrimestralPromedioNieto,
                           "Color": valorTrimestralPromedioNieto < 0 ? '#ff3200' : '#000000'
                         }
@@ -1789,13 +1791,13 @@ export class ConfigurationService {
                 let valorPromedio = valor / 2
                 dataTree.data.valores[claveSemestral] =
                 {
-                  "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                   "ValorNumero": valor,
                   "Color": valor < 0 ? '#ff3200' : '#000000',
                 }
                 dataTree.data.valores[claveSemestralPromedio] =
                 {
-                  "Valor": valorPromedio < 0 ? ('-$ ' + (valorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  "Valor": valorPromedio < 0 ? ('-$ ' + (valorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                   "ValorNumero": valorPromedio,
                   "Color": valorPromedio < 0 ? '#ff3200' : '#000000',
                 }
@@ -1807,13 +1809,13 @@ export class ConfigurationService {
                 let valorPromedio = valor / 2
                 dataTree.data.valores[claveSemestral] =
                 {
-                  "Valor": valor < 0 ? ('-$ ' + (valor * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  "Valor": valor < 0 ? ('-$ ' + (valor * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valor).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                   "ValorNumero": valor,
                   "Color": valor < 0 ? '#ff3200' : '#000000',
                 }
                 dataTree.data.valores[claveSemestralPromedio] =
                 {
-                  "Valor": valorPromedio < 0 ? ('-$ ' + (valorPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  "Valor": valorPromedio < 0 ? ('-$ ' + (valorPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                   "ValorNumero": valorPromedio,
                   "Color": valorPromedio < 0 ? '#ff3200' : '#000000',
                 }
@@ -1831,7 +1833,7 @@ export class ConfigurationService {
                   })
                   dataTree.data.valores[claveSemestral] =
                   {
-                    "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": ValorAcumulado,
                     "Color": ValorAcumulado < 0 ? '#ff3200' : '#000000',
                   }
@@ -1839,7 +1841,7 @@ export class ConfigurationService {
 
                   dataTree.data.valores[claveSemestralPromedio] =
                   {
-                    "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": ValorAcumuladoPromedio,
                     "Color": ValorAcumuladoPromedio < 0 ? '#ff3200' : '#000000',
                   }
@@ -1856,7 +1858,7 @@ export class ConfigurationService {
                   })
                   dataTree.data.valores[claveSemestral] =
                   {
-                    "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": ValorAcumulado,
                     "Color": ValorAcumulado < 0 ? '#ff3200' : '#000000',
                   }
@@ -1864,7 +1866,7 @@ export class ConfigurationService {
 
                   dataTree.data.valores[claveSemestralPromedio] =
                   {
-                    "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": ValorAcumuladoPromedio,
                     "Color": ValorAcumuladoPromedio < 0 ? '#ff3200' : '#000000',
                   }
@@ -1881,7 +1883,7 @@ export class ConfigurationService {
                   })
                   dataTree.data.valores[claveSemestral] =
                   {
-                    "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": ValorAcumulado,
                     "Color": ValorAcumulado < 0 ? '#ff3200' : '#000000',
                   }
@@ -1889,7 +1891,7 @@ export class ConfigurationService {
 
                   dataTree.data.valores[claveSemestralPromedio] =
                   {
-                    "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": ValorAcumuladoPromedio,
                     "Color": ValorAcumuladoPromedio < 0 ? '#ff3200' : '#000000',
                   }
@@ -1906,14 +1908,14 @@ export class ConfigurationService {
                 })
                 dataTree.data.valores[claveSemestral] =
                 {
-                  "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  "Valor": ValorAcumulado < 0 ? ('-$ ' + (ValorAcumulado * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumulado).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                   "ValorNumero": ValorAcumulado,
                   "Color": ValorAcumulado < 0 ? '#ff3200' : '#000000'
                 }
                 ValorAcumuladoPromedio = ValorAcumulado / 2
                 dataTree.data.valores[claveSemestralPromedio] =
                 {
-                  "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  "Valor": ValorAcumuladoPromedio < 0 ? ('-$ ' + (ValorAcumuladoPromedio * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (ValorAcumuladoPromedio).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                   "ValorNumero": ValorAcumuladoPromedio,
                   "Color": ValorAcumuladoPromedio < 0 ? '#ff3200' : '#000000',
                 }
@@ -1937,7 +1939,7 @@ export class ConfigurationService {
 
                   cuenta.data.valores[claveSemestralHijo] =
                   {
-                    "Valor": valorSemestralHijo < 0 ? ('-$ ' + (valorSemestralHijo * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorSemestralHijo)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": valorSemestralHijo < 0 ? ('-$ ' + (valorSemestralHijo * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorSemestralHijo).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": valorSemestralHijo,
                     "Color": valorSemestralHijo < 0 ? '#ff3200' : '#000000'
                   }
@@ -1945,7 +1947,7 @@ export class ConfigurationService {
 
                   cuenta.data.valores[clavePromedioSemestralHijo] =
                   {
-                    "Valor": valorSemestralPromedioHijo < 0 ? ('-$ ' + (valorSemestralPromedioHijo * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorSemestralPromedioHijo)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    "Valor": valorSemestralPromedioHijo < 0 ? ('-$ ' + (valorSemestralPromedioHijo * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorSemestralPromedioHijo).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     "ValorNumero": valorSemestralPromedioHijo,
                     "Color": valorSemestralPromedioHijo < 0 ? '#ff3200' : '#000000'
                   }
@@ -1971,14 +1973,14 @@ export class ConfigurationService {
 
                       subCuenta.data.valores[claveSemestralHijo] =
                       {
-                        "Valor": valorSemestralNieto < 0 ? ('-$ ' + (valorSemestralNieto * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorSemestralNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valorSemestralNieto < 0 ? ('-$ ' + (valorSemestralNieto * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorSemestralNieto).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valorSemestralNieto,
                         "Color": valorSemestralNieto < 0 ? '#ff3200' : '#000000'
                       }
 
                       subCuenta.data.valores[clavePromedioSemestralHijo] =
                       {
-                        "Valor": valorSemestralPromedioNieto < 0 ? ('-$ ' + (valorSemestralPromedioNieto * -1)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorSemestralPromedioNieto)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                        "Valor": valorSemestralPromedioNieto < 0 ? ('-$ ' + (valorSemestralPromedioNieto * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorSemestralPromedioNieto).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                         "ValorNumero": valorSemestralPromedioNieto,
                         "Color": valorSemestralPromedioNieto < 0 ? '#ff3200' : '#000000'
                       }

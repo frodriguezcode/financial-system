@@ -447,7 +447,6 @@ this.Sucursales=this.DataByEmpresa.Sucursales
 this.Items=this.DataByEmpresa.CuentasContables
 this.ItemsBack=this.DataByEmpresa.CuentasContables
 this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
-console.log('CuentasBancarias',this.CuentasBancarias)
 this.Registros=this.DataByEmpresa.Registros
 this.Categorias=[]
    this.Categorias.push(
@@ -501,7 +500,6 @@ this.Registros,
 this.DataByEmpresa.SaldosIniciales,
 this.Items
 )
-
 
 
 
