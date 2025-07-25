@@ -1300,44 +1300,36 @@ salvarRegistro(Registro: any, Valor: any) {
       Registro.idAbuelo = Registro.CuentaSeleccionada.idAbuelo
       Registro.idHijo = Registro.CuentaSeleccionada.ItemId || ""
     }
-    
-    // Set other required fields
     Registro.NumCuenta = Registro.Cuenta?.Cuenta || ""
     Registro.Valor = ValorRegistro
     Registro.idUsuario = this.usuario.id
     Registro.Tipo= this.idTipoRegistro==1 ? 'Ingreso' : 'Egreso'
-    // Remove unnecessary properties before saving
     if (Registro.CuentaSeleccionada) {
       delete Registro.CuentaSeleccionada.parent
     }
-    
-    // Prepare a clean object for Firebase update
     const registroToUpdate = { ...Registro };
     
-    // Ensure all fields have valid values for Firebase
-    // Remove any undefined values that Firebase doesn't accept
     Object.keys(registroToUpdate).forEach(key => {
       if (registroToUpdate[key] === undefined) {
-        registroToUpdate[key] = null; // Convert undefined to null
+        registroToUpdate[key] = null;
       }
     });
-    
-    // Update local array
     const index = this.registrosBackUp.findIndex((reg: any) => reg.id === Registro.id);
     if (index !== -1) {
-      // If exists, update
       this.registrosBackUp[index] = registroToUpdate;
     } else {
-      // If doesn't exist, add
       this.registrosBackUp.push(registroToUpdate);
     }
-    
-    //this.Registros = this.registrosBackUp;
-    
-    // Save to Firebase with the cleaned object
 
+    registroToUpdate.MesRegistro=this.MesesTodos[this.getMonthName(registroToUpdate.FechaRegistro)].Mes
+    registroToUpdate.NumMes=this.getMonthName(registroToUpdate.FechaRegistro)
+    registroToUpdate.AnioRegistro= parseInt(registroToUpdate.FechaRegistro.substring(0, 4))
+    
     this.conS.updateRegistro(registroToUpdate).then(resp => {
-      this.toastr.success('Guardado', '¡Exito!');
+      this.toastr.success('Registro actualizado', '¡Éxito!', {
+            timeOut: 2000,
+            positionClass: 'toast-center-center'
+      });
       this.calcularImporteTotal(this.Registros);
       this.calcularImporteSubTotal(this.Registros);
       this.refreshRegistros();
