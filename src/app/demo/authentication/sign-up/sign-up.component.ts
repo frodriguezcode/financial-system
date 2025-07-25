@@ -208,7 +208,6 @@ formatFechaVencimiento(event: Event) {
 
   // Enviar correo electrónico
   this.authS.sendMail(this.usuarioCreado).subscribe();
-
     this.authS.crearUsuarioRegistro(this.usuarioForm.value,this.Atributos).then((resp:any)=>{
       this.router.navigate(['/auth/signin'])
       Swal.fire({
