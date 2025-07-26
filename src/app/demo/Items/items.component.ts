@@ -221,6 +221,7 @@ borrarCuenta(idCuenta:string){
     const ProyectosIds = 
      item.Proyectos==undefined ? item.idProyectos
      : item.Proyectos.map(proyecto => proyecto.id)
+
       let _Item ={
         "id":item.id,
         "name":item.Nombre,
@@ -252,6 +253,7 @@ borrarCuenta(idCuenta:string){
     this.ItemsGroup=this.ItemsGroup.sort((a, b) => a.Orden - b.Orden);
 
     console.log('ItemsGroup',this.ItemsGroup)
+    //console.log('ItemsGroup',this.ItemsGroup.filter((item:any)=>item.idCategoria=='JeFc3TNWBgrgubNPmDYU') )
  this.cargando=false
   }
 
@@ -1327,7 +1329,7 @@ console.log('hijos',hijos)
       
       ItemForm.TipoRubro=this.TipoRubro
       ItemForm.Orden=this.getOrdenItem(ItemForm.idCategoria)
-      ItemForm.OrdenReal=this.MaxOrden
+      ItemForm.OrdenReal=this.MaxOrden+1
   
       if(this.TipoRubro==1 && ItemForm.Sucursales.length==0 ){
             Swal.fire({
