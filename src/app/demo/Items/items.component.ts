@@ -252,7 +252,6 @@ borrarCuenta(idCuenta:string){
     });
     this.ItemsGroup=this.ItemsGroup.sort((a, b) => a.Orden - b.Orden);
 
-    console.log('ItemsGroup',this.ItemsGroup)
     //console.log('ItemsGroup',this.ItemsGroup.filter((item:any)=>item.idCategoria=='JeFc3TNWBgrgubNPmDYU') )
  this.cargando=false
   }
@@ -538,7 +537,6 @@ borrarCuenta(idCuenta:string){
     this.conS.obtenerCategorias().subscribe(resp=>{
       this.Categorias=resp
       this.CategoriasBack=resp
-      console.log('Categorias',this.Categorias)
 
     })
   }
@@ -637,7 +635,6 @@ borrarCuenta(idCuenta:string){
 
 
   agregarHijo(item:any){
-    console.log('item',item)
     const texto = item.name 
     const patron = /^(\d+(?:\.\d+)*)/;
     const resultado = texto.match(patron);
@@ -659,8 +656,6 @@ borrarCuenta(idCuenta:string){
 
     const ItemsBack = [...this.ItemsBack]
     let ItemEncontrado=ItemsBack.filter((it:any)=>it.id==child.ItemId)
-    console.log(' child', child)
-    console.log(' ItemEncontrado[0]', ItemEncontrado[0])
     if(ItemEncontrado.length>0){
       ItemEncontrado[0].CuentasHijos.push( 
         {
@@ -1171,7 +1166,6 @@ borrarCuenta(idCuenta:string){
         this.MaxOrden=1
       
       }
-      console.log('Items',this.ItemsBack)
       this.getItemsGroup()
 
     })
@@ -1380,9 +1374,9 @@ console.log('hijos',hijos)
           "idAbuelo":this.getIdAbuelo(ItemForm.idCategoria),
           "idEmpresa":this.idEmpresa,
           "idMatriz":this.usuario.idMatriz,
-          "Orden":this.getOrdenItem(ItemForm.idCategoria),
-          "TipoRubro":this.TipoRubro,
-          "OrdenReal":this.MaxOrden,
+          "TipoRubro":ItemForm.TipoRubro,
+          "Orden":ItemForm.Orden,
+          "OrdenReal":ItemForm.OrdenReal,
           "CuentasHijos":[],
           "Tipo":this.getTipo(ItemForm.idCategoria),
           "Nombre":this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre,
@@ -1391,20 +1385,20 @@ console.log('hijos',hijos)
         this.Items.push(CuentaContable)
         this.ItemsBack.push(CuentaContable)
         this.getItemsGroup()
-  
-          this.conS.crearItem(CuentaContable).then(resp=>{
-            let SucursalesSeleccionadas:any=ItemForm.Sucursales
-            let ProyectosSeleccionados:any=ItemForm.Proyectos
-            let idCategoria:any=ItemForm.idCategoria
-            this.toastr.success('Cuenta  Creada', '¡Exito!');
-            this.ItemForm.get('Nombre').setValue('');
-            this.ItemForm.get('Sucursales').setValue(SucursalesSeleccionadas);
-            this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
-            this.ItemForm.get('Usuarios').setValue(this.UsuariosSeleccionados);
-            this.ItemForm.get('idCategoria').setValue(idCategoria);
+        console.log('CuentaContable',CuentaContable)
+          // this.conS.crearItem(CuentaContable).then(resp=>{
+          //   let SucursalesSeleccionadas:any=ItemForm.Sucursales
+          //   let ProyectosSeleccionados:any=ItemForm.Proyectos
+          //   let idCategoria:any=ItemForm.idCategoria
+          //   this.toastr.success('Cuenta  Creada', '¡Exito!');
+          //   this.ItemForm.get('Nombre').setValue('');
+          //   this.ItemForm.get('Sucursales').setValue(SucursalesSeleccionadas);
+          //   this.ItemForm.get('Proyectos').setValue(ProyectosSeleccionados);
+          //   this.ItemForm.get('Usuarios').setValue(this.UsuariosSeleccionados);
+          //   this.ItemForm.get('idCategoria').setValue(idCategoria);
             
      
-          })
+          // })
   
       }
       
@@ -1432,15 +1426,15 @@ console.log('hijos',hijos)
 getOrdenItem(idCategoria:any){
   let _Items:any=[]
   let MaxOrden:number=0
-  _Items=this.Items.filter((i:any)=>i.idEmpresa==this.idEmpresa && i.idCategoria==idCategoria)
+  _Items=this.Items.filter((i:any)=>i.idEmpresa==this.idEmpresa && i.idPadre==idCategoria)
   if(_Items.length>0){
-    MaxOrden=Math.max(..._Items.map(obj => obj.Orden))+1
+   return _Items.length+1
 
   }
   else{
-    MaxOrden=1
+   return MaxOrden=1
   }
-  return MaxOrden
+ 
 }
 
 getIdCategoria(idCategoria:string){
@@ -1495,7 +1489,6 @@ getIdCategoria(idCategoria:string){
     const index = this.ItemsBack.findIndex((item:any) =>
       item.id === itemEncontrado[0].id
       );
-      console.log('index',index)
        if (index !== -1) {
     
         this.ItemsBack[index] = itemEncontrado[0];
