@@ -1264,6 +1264,32 @@ formatearNumero(input: HTMLInputElement, Tipo: any) {
 }
 
 
+esFechaValida(fechaStr: string): boolean {
+  if (!fechaStr) return false;
+
+  const fecha = new Date(fechaStr);
+  const esValida = !isNaN(fecha.getTime());
+
+  // También puedes controlar rango de años aceptables
+  const anio = fecha.getFullYear();
+  if (!esValida || anio < 1900 || anio > 2100) {
+    return false;
+  }
+
+  // Opcional: Validar fecha exacta (por ejemplo 2024-02-30 no existe)
+  const [anioStr, mesStr, diaStr] = fechaStr.split('-');
+  const anioNum = +anioStr;
+  const mesNum = +mesStr - 1; // Mes en Date() es base 0
+  const diaNum = +diaStr;
+
+  const fechaComprobacion = new Date(anioNum, mesNum, diaNum);
+  return (
+    fechaComprobacion.getFullYear() === anioNum &&
+    fechaComprobacion.getMonth() === mesNum &&
+    fechaComprobacion.getDate() === diaNum
+  );
+}
+
 
 salvarRegistro(Registro: any, Valor: any) {
   let ValorRegistro: any = 0
@@ -1321,22 +1347,35 @@ salvarRegistro(Registro: any, Valor: any) {
       this.registrosBackUp.push(registroToUpdate);
     }
 
-    registroToUpdate.MesRegistro=this.MesesTodos[this.getMonthName(registroToUpdate.FechaRegistro)].Mes
-    registroToUpdate.NumMes=this.getMonthName(registroToUpdate.FechaRegistro)
-    registroToUpdate.AnioRegistro= parseInt(registroToUpdate.FechaRegistro.substring(0, 4))
-    
-    this.conS.updateRegistro(registroToUpdate).then(resp => {
-      this.toastr.success('Registro actualizado', '¡Éxito!', {
-            timeOut: 2000,
+    console.log('FechaRegistro1',this.esFechaValida(registroToUpdate.FechaRegistro) )
+    console.log('FechaRegistro2', new Date(registroToUpdate.FechaRegistro))
+
+    if(this.esFechaValida(registroToUpdate.FechaRegistro) ==false){
+      this.toastr.error(`Fecha inválida en el registro con orden # ${registroToUpdate.Orden}`, '¡Error!', {
+            timeOut: 3000,
             positionClass: 'toast-center-center'
       });
-      this.calcularImporteTotal(this.Registros);
-      this.calcularImporteSubTotal(this.Registros);
-      this.refreshRegistros();
-    }).catch(error => {
-      console.error('Error al guardar:', error);
-      this.toastr.error('Error al guardar el registro', 'Error');
-    });
+    }
+
+    else {
+      registroToUpdate.MesRegistro=this.MesesTodos[this.getMonthName(registroToUpdate.FechaRegistro)].Mes
+      registroToUpdate.NumMes=this.getMonthName(registroToUpdate.FechaRegistro)
+      registroToUpdate.AnioRegistro= parseInt(registroToUpdate.FechaRegistro.substring(0, 4))
+      this.conS.updateRegistro(registroToUpdate).then(resp => {
+        this.toastr.success('Registro actualizado', '¡Éxito!', {
+              timeOut: 2000,
+              positionClass: 'toast-center-center'
+        });
+        this.calcularImporteTotal(this.Registros);
+        this.calcularImporteSubTotal(this.Registros);
+        this.refreshRegistros();
+      }).catch(error => {
+        console.error('Error al guardar:', error);
+        this.toastr.error('Error al guardar el registro', 'Error');
+      });
+
+    }
+
   }
 
 
