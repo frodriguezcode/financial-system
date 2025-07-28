@@ -693,7 +693,7 @@ getCategorias(){
         "Nombre":"(-) Cobros",
         "id":'04-02',
         "Moneda":true,
-        "Simbolo":1,
+        "Simbolo":2,
         "idPadre":'04',
         "Orden":2,
         "Editable":true,
@@ -2085,7 +2085,7 @@ construirData(){
               "Valor":Valor,
               "TipoNumero":2,
               "ValorMostrar":
-              Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
+              Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '-$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US'),
               "Lectura":false
             })
                     
