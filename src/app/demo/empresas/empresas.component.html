@@ -105,6 +105,7 @@
 
   </div>
   <div *ngIf="MostrarEmpresas==false" class="card flex justify-content-center animate__animated animate__fadeIn">
+    <h5 class="text-center">Empresa {{NombreEmpresa}}</h5>
     <p-stepper [(activeStep)]="active" (activeStepChange)="onPasoCambiado($event)">
       <p-stepperPanel *ngFor="let flujo of FlujoConfiguracion" [header]="flujo.Nombre">
         <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback"
@@ -120,7 +121,7 @@
               </ng-container>
               <ng-template #finalizarBoton>
                 <p-button label="Finalizar" icon="pi pi-check" iconPos="right"
-                  class="p-button-secondary p-button-sm boton-pequeno" (onClick)="irAlSiguientePaso(flujo.Orden)" />
+                  class="p-button-secondary p-button-sm boton-pequeno" (onClick)="terminarConfigInicial()" />
               </ng-template>
             </div>
             <!-- 🔽 Contenido dinámico del paso -->

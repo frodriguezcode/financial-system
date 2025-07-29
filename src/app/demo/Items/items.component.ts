@@ -1138,6 +1138,7 @@ borrarCuenta(idCuenta:string){
           this.conS.crearItem(CuentaCostoOperacion).then(resp=>{
           })
         }
+        
 
 
   
@@ -1376,7 +1377,7 @@ console.log('hijos',hijos)
           "idMatriz":this.usuario.idMatriz,
           "TipoRubro":ItemForm.TipoRubro,
           "Orden":ItemForm.Orden,
-          "OrdenReal":ItemForm.OrdenReal,
+          "OrdenReal":this.Items.length+1,
           "CuentasHijos":[],
           "Tipo":this.getTipo(ItemForm.idCategoria),
           "Nombre":this.getIdCategoria(ItemForm.idCategoria) + '.' + this.getOrdenItem(ItemForm.idCategoria) + ' '+ ItemForm.Nombre,
@@ -1436,6 +1437,7 @@ getOrdenItem(idCategoria:any){
   }
  
 }
+
 
 getIdCategoria(idCategoria:string){
   let _CategoriaFound:any=[]

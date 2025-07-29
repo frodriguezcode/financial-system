@@ -17,12 +17,19 @@ import SucursalesComponent from '../sucursales/sucursales.component';
 import ProyectosComponent from '../proyectos/proyectos.component';
 import { CalendarModule } from 'primeng/calendar';
 import { PrimeNGConfig } from 'primeng/api';
+import { AccordionModule } from 'primeng/accordion';
 import Swal from 'sweetalert2'
 @Component({
   selector: 'app-crear-usuario',
   standalone: true,
   imports: [CommonModule, SharedModule, RouterModule,
-     FormsModule, ReactiveFormsModule,TableModule,DialogModule,MultiSelectModule,CalendarModule],
+     FormsModule, 
+     ReactiveFormsModule,
+     TableModule,
+     DialogModule,
+     AccordionModule,
+     MultiSelectModule,
+     CalendarModule],
   templateUrl: './crear-usuario.component.html',
   styleUrls: ['./crear-usuario.component.scss']
 })

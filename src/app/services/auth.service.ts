@@ -116,6 +116,13 @@ export class AuthService {
     .ref.set(Object.assign(empresa, {id: idEmpresa}))
 }
 
+actualizarConfigInicialEmpresa(idEmpresa:any){
+    return this.afs
+     .collection('Empresa')
+     .doc(idEmpresa)
+     .ref.update({ConfigInicial:true});
+  }
+
   obtenerNombresUsuario() {
     return this.afs
       .collection('NombresUsuarios')

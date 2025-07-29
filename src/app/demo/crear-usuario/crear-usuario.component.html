@@ -208,6 +208,7 @@
             
                 
               </div>
+
               <div *ngIf="this.usuario.Rol=='Super Usuario'" class="col-12 col-lg-6 col-md-6">
                 <div class="form-group">
                   <label for="exampleInputPassword1">Empresa</label>
@@ -233,9 +234,9 @@
                 </div>
               </div>
      
-              
-          
-
+    <p-accordion >
+        <p-accordionTab header="Campos opcionales">
+  
               <div class="col-12 col-lg-12 col-md-12">
                 <div class="form-group">
                   <label for="exampleInputPassword1">Asignar sucursales</label>
@@ -270,6 +271,10 @@
                 <button type="button" [disabled]="this.idEmpresa=='' || this.idEmpresa== '0' " (click)="showCrearProyecto()" class="btn btn-success">Crear Proyecto</button>
 
               </div>
+        </p-accordionTab>
+    </p-accordion>              
+          
+
   
           </div>
     

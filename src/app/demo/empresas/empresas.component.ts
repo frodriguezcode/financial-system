@@ -23,6 +23,7 @@ import BancosComponent from '../bancos/bancos.component';
 import SocioNegocioComponent from '../socios/socios.component';
 import { MultiSelectModule } from 'primeng/multiselect';
 import SaldosInicialesComponent from '../saldos-iniciales/saldos-iniciales.component';
+
 @Component({
   selector: 'app-empresas',
   standalone: true,
@@ -68,7 +69,7 @@ export default class EmpresasComponent implements OnInit {
   PasoAnterior: any
   Meses: any = []
   MesSeleccionado: any
-
+  NombreEmpresa: string = ''
   SaldoInicialValor: FormControl = new FormControl(0)
   AnioSaldoInicial: FormControl = new FormControl(0)
   constructor(
@@ -265,8 +266,8 @@ export default class EmpresasComponent implements OnInit {
     }
 
     this.Matrices[0].Empresas.push(_Empresa)
-      const { id, result } = this.authS.crearEmpresabyMatriz(_Empresa);
-    
+    const { id, result } = this.authS.crearEmpresabyMatriz(_Empresa);
+
     this.idEmpresaCreada = id;
 
     result
@@ -294,8 +295,8 @@ export default class EmpresasComponent implements OnInit {
         });
         //this.router.navigate([`config-inicial/${id}`]);
 
-        setTimeout(()=>{ 
-        this.MostrarEmpresas = false;
+        setTimeout(() => {
+          this.MostrarEmpresas = false;
         }, 4005);
 
       })
@@ -304,6 +305,31 @@ export default class EmpresasComponent implements OnInit {
       });
 
 
+  }
+
+  terminarConfigInicial() {
+    Swal.fire({
+      title: "¿Desea terminar la configuración inicial de esta empresa?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.authS.actualizarConfigInicialEmpresa(this.idEmpresaCreada).then((resp: any) => {
+          Swal.fire({
+            title: "Hecho",
+            text: "Configuración terminada",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 2000
+          });
+         this.obtenerEmpresas()
+        })
+      }
+    });
   }
   // ~Crear empresa
 
@@ -327,13 +353,14 @@ export default class EmpresasComponent implements OnInit {
   }
 
   obtenerEmpresas() {
-    let Subsciption:Subscription
-  Subsciption=  this.empS.obtenerEmpresa(this.usuario.idMatriz).subscribe(resp => {
+    let Subsciption: Subscription
+    Subsciption = this.empS.obtenerEmpresa(this.usuario.idMatriz).subscribe(resp => {
       Subsciption.unsubscribe()
-     this.Empresas = resp   
-    let EmpresaSinConfigInicial=this.Empresas.filter((emp:any)=>emp.ConfigInicial==false)
-    if(EmpresaSinConfigInicial.length>0){
-      this.idEmpresaCreada=EmpresaSinConfigInicial[0].id
+      this.Empresas = resp
+      let EmpresaSinConfigInicial = this.Empresas.filter((emp: any) => emp.ConfigInicial == false)
+      if (EmpresaSinConfigInicial.length > 0) {
+        this.idEmpresaCreada = EmpresaSinConfigInicial[0].id
+        this.NombreEmpresa = EmpresaSinConfigInicial[0].Nombre
         Swal.fire({
           title: `Recordatorio:`,
           text: 'Aun tienes empresas que les falta la configuración inicial, cargando.....',
@@ -355,25 +382,41 @@ export default class EmpresasComponent implements OnInit {
           timerProgressBar: true, // Muestra una barra de tiempo opcional
           showConfirmButton: false // Oculta el botón de confirmación
         });
-        setTimeout(()=>{ 
-        if (this.obtenerRolesByEmpresa().length == 0) {
-        this.active=0
-        }  
-        else if (this.obtenerUsuariosByEmpresa().length == 0) {
-        this.active=3
-        }         
-        else if (this.obtenerSaldosInicialesByEmpresa().length == 0) {
-        this.active=7
-        }   
-        else {
-          this.active=4
-        }      
-        this.MostrarEmpresas = false;
+        setTimeout(() => {
+          if (this.obtenerRolesByEmpresa().length == 0) {
+            this.active = 0
+            this.toastr.success('Te quedaste en la sección de Roles', 'Bienvenido de nuevo!', {
+              timeOut: 2000,
+              positionClass: 'toast-center-center'
+            });
+          }
+          else if (this.obtenerUsuariosByEmpresa().length == 0) {
+            this.active = 3
+            this.toastr.success('Te quedaste en la sección de Usuarios', 'Bienvenido de nuevo!', {
+              timeOut: 2000,
+              positionClass: 'toast-center-center'
+            });
+          }
+          else if (this.obtenerSaldosInicialesByEmpresa().length == 0) {
+            this.active = 7
+            this.toastr.success('Te quedaste en la sección de Saldos Iniciales', 'Bienvenido de nuevo!', {
+              timeOut: 2000,
+              positionClass: 'toast-center-center'
+            });
+          }
+          else {
+            this.active = 4
+          }
+          this.MostrarEmpresas = false;
         }, 4005);
 
 
       }
-    
+      else {
+        this.MostrarEmpresas = true;
+      }
+      
+
       this.cargarFormulario()
     })
   }
@@ -524,8 +567,8 @@ export default class EmpresasComponent implements OnInit {
           confirmButtonText: "Si",
           denyButtonText: `No, ir al home`
         }).then((result) => {
-           this.conS.ActualizarEmpresa(this.idEmpresaCreada).then(resp=>{
-            
+          this.conS.ActualizarEmpresa(this.idEmpresaCreada).then(resp => {
+
           })
           if (result.isConfirmed) {
             this.router.navigate([`auth/signin`]);
