@@ -2,7 +2,7 @@
   <div class="col-sm-12">
     <app-card cardTitle="Store Manager Recapt Mensual" [options]="false">
       <div class="row">
-        <div class="col-2">
+        <!-- <div class="col-2">
           <button type="button" 
           (click)="expandir()"
           class="btn btn-success m-1">Expandir todo <i class="fa-solid fa-chevron-up"></i>
@@ -12,6 +12,17 @@
           <button type="button"
           (click)="contraer()"
           class="btn btn-danger m-1">Contraer todo <i class="fa-solid fa-chevron-down"></i></button>
+        </div> -->
+
+
+        <div class="col-4">
+          <p-multiSelect class="m-1" 
+          [options]="CabecerasCatalogos"
+          [(ngModel)]="CabecerasCatalogosSeleccionados"
+          [style]="{'width':'300px'}"
+          [panelStyle]="{'width':'300px'}"
+          (onChange)="seleccionarCabeceras()"
+          optionLabel="Nombre" placeholder="Secciones" />
         </div>
         <div class="col-4">
           <p-multiSelect class="m-1" 
@@ -88,9 +99,11 @@
                 <tr   *ngFor="let element of catalogo.Elementos">
                   <!-- <td style="margin-right: -50px; background-color: rgb(245, 245, 245)" >{{ element.Nombre }}</td> -->
                   <td 
+                    class="filas-row"
                     [ngClass]="{ 
-                    'editable': element.Editable,                   
-                    'no-editable': !element.Editable }">
+                    'editable': element.Editable,    
+                    'sangria': element.Sangria, 
+                    'negrita': element.Negrita}">
                     <span
                   >
                     {{ element.Nombre }}
@@ -99,6 +112,7 @@
                   <ng-container *ngFor="let cab of Cabecera">
                      <ng-container *ngIf="cab.Tipo==2">
                         <td 
+                        class="filas-row"
                         [ngClass]="{ 
                     'editable': element.Editable,                   
                     'no-editable': !element.Editable }"
@@ -145,6 +159,7 @@
                        </ng-container>
                        <ng-container *ngIf="cab.Tipo==3">
                            <td 
+                           class="filas-row"
                            class="text-center"
                            [ngStyle]="DatosElementosAcumulados[cab.Anio + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}">
                            {{
@@ -154,7 +169,7 @@
                        </ng-container>
                        <ng-container *ngIf="cab.Tipo==4">
                            <td 
-                           class="text-center"
+                           class="filas-row text-center"
                            [ngStyle]="DatosElementosPromedios[cab.Anio + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}">
                            {{
                            (DatosElementosPromedios[cab.Anio + '-' + element.id]?.[0]?.ValorMostrar || 0)}}

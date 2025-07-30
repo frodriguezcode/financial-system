@@ -48,6 +48,23 @@
     align-self: start;
     table-layout: fixed;
   }
+
+
+.sangria {
+  padding-left: 40px; /* o el valor que necesites */
+}
+
+.negrita {
+  font-weight: 500;       /* Menos pesado que el 700 (bold clásico) */
+  letter-spacing: 0.5px;  /* Aumenta el espaciado entre letras */
+}
+
+
+.filas-row td {
+  height: 2px !important;
+//  font-family: 'Open Sans Condensed', sans-serif;
+  padding: 0 !important; /* También puede ayudarte a reducir el alto */
+}
   
   
   
