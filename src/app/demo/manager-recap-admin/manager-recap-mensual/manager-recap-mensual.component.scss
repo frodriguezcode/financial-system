@@ -194,18 +194,34 @@
         left: 3.5%;
     }
   }
-  
+.sticky-header-row td {
+  height: 2px !important;
+//  font-family: 'Open Sans Condensed', sans-serif;
+  padding: 0 !important; /* También puede ayudarte a reducir el alto */
+}
   .sticky-area{
     position: sticky;
     top: 0; 
     left: -1;
     z-index: 4; 
-    background-color: rgb(175, 207, 207);
-
+    background-color: rgb(255, 255, 255);
     font-weight: bold;
     padding: 8px;
     white-space: nowrap;
   }
+
+  .editable{
+    background-color: rgb(243, 243, 243);
+    color: black;
+    margin-right: -50px
+  }
+
+  .no-editable{
+    background-color: rgb(255, 255, 255);
+    color: black;
+    margin-right: -50px
+  }
+
 
   .container-table {
     max-height: 50rem; 

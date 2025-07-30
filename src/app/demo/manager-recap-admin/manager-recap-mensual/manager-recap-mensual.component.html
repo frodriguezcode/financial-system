@@ -47,12 +47,12 @@
       <div class="contenedor-main">
         <div *ngIf="!cargando" #containerTable class="container-table table-responsive">
           <!-- Scroll horizontal superior sincronizado -->
-          <table #dataTable style="table-layout: fixed; width: 100%;" class="table table-100">
+          <table #dataTable style="table-layout: fixed; width: 100%;" class="table table-100 table-bordered">
             <thead class="cabecera">
               <tr>
                 <th class="text-left"
-                    style="width: 400px; padding: 0.5rem; background-color: #0c8c86;
-                    color: white;
+                    style="width: 400px; padding: 0.5rem; background-color: #d6d6d6;
+                    color: rgb(0, 0, 0);
                      text-transform: uppercase; position: sticky; top: 0; z-index: 3;">
                   Catálogo
                 </th>
@@ -60,7 +60,7 @@
                   <th *ngIf="cab.Mostrar==true && cab.Tipo!=1"
                       class="text-center"
                       style="width: 200px; 
-                      color: white;
+                      color: rgb(0, 0, 0);
                       padding: 0.5rem; font-weight:
                        500; text-transform: uppercase; position: sticky; top: 0; z-index: 1;">
                     {{ cab.Nombre }}
@@ -72,8 +72,7 @@
             <tbody *ngFor="let catalogo of CatalogoElementos">
               <!-- Fila para el título del catálogo con botón de toggle -->
               <tr class="sticky-header-row" >
-                <td class="sticky-area" 
-               >
+                <td class="sticky-area" >
                 <button (click)="catalogo.Mostrar = !catalogo.Mostrar" class="toggle-btn">
               <i class="fas" 
                 [class.fa-chevron-down]="!catalogo.Mostrar" 
@@ -88,23 +87,21 @@
               <ng-container *ngIf="catalogo.Mostrar">
                 <tr   *ngFor="let element of catalogo.Elementos">
                   <!-- <td style="margin-right: -50px; background-color: rgb(245, 245, 245)" >{{ element.Nombre }}</td> -->
-                  <td style="margin-right: -50px; background-color:  rgb(245, 245, 245)" >
+                  <td 
+                    [ngClass]="{ 
+                    'editable': element.Editable,                   
+                    'no-editable': !element.Editable }">
                     <span
-                    [ngStyle]="{
-                    'background-color': 'rgb(245, 245, 245)',
-                    'margin-left': (
-                    element.id === '03-5' || 
-                    element.id === '03-6' || 
-                    element.id === '03-7' 
-                    ) ? '20px' : '0',
-                    'display': 'block' 
-                    }">
+                  >
                     {{ element.Nombre }}
                     </span>
                   </td>
                   <ng-container *ngFor="let cab of Cabecera">
-                      <ng-container *ngIf="cab.Tipo==2">
+                     <ng-container *ngIf="cab.Tipo==2">
                         <td 
+                        [ngClass]="{ 
+                    'editable': element.Editable,                   
+                    'no-editable': !element.Editable }"
                           class="text-center"
                           [ngStyle]="DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}"
                           *ngIf="cab.Mostrar==true 
@@ -114,6 +111,9 @@
                           (DatosElementos[cab.Anio + '-' + cab.NumMes + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
                         </td>
                         <td 
+                        [ngClass]="{ 
+                    'editable': element.Editable,                   
+                    'no-editable': !element.Editable }"
                           class="text-center"
                           *ngIf="cab.Mostrar==true 
                           && cab.Tipo!=1
@@ -141,25 +141,27 @@
                           class="form-control text-center" 
                           >
                         </td>
-                      </ng-container>
-                      <ng-container *ngIf="cab.Tipo==3">
-                          <td 
-                          class="text-center"
-                          [ngStyle]="DatosElementosAcumulados[cab.Anio + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}">
-                          {{
-                          (DatosElementosAcumulados[cab.Anio + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
-                        </td>
-              
-                      </ng-container>
-                      <ng-container *ngIf="cab.Tipo==4">
-                          <td 
-                          class="text-center"
-                          [ngStyle]="DatosElementosPromedios[cab.Anio + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}">
-                          {{
-                          (DatosElementosPromedios[cab.Anio + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
-                        </td>
-              
-                      </ng-container>
+
+                       </ng-container>
+                       <ng-container *ngIf="cab.Tipo==3">
+                           <td 
+                           class="text-center"
+                           [ngStyle]="DatosElementosAcumulados[cab.Anio + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}">
+                           {{
+                           (DatosElementosAcumulados[cab.Anio + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
+                         </td>
+               
+                       </ng-container>
+                       <ng-container *ngIf="cab.Tipo==4">
+                           <td 
+                           class="text-center"
+                           [ngStyle]="DatosElementosPromedios[cab.Anio + '-' + element.id]?.[0]?.TipoNumero == 2?{'color': 'black'} : {'color': 'red'}">
+                           {{
+                           (DatosElementosPromedios[cab.Anio + '-' + element.id]?.[0]?.ValorMostrar || 0)}}
+                         </td>
+               
+                       </ng-container>
+    
                   </ng-container>
                 </tr>
 

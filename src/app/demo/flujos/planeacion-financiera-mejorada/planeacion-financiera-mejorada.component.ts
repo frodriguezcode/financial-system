@@ -717,7 +717,7 @@ else {
                   "Mes":mes.Mes,
                   "NumMes":mes.NumMes,
                   "Anio":anio.Anio,
-                  "Color":'#a2d7b4',
+                  "Color":'#d6d6d6',
                   "Tipo":3,
                   "Mostrar":true
                 })
@@ -726,7 +726,7 @@ else {
                   "Nombre":"Total Trimestre 1",
                   "NumTrim":1,
                   "Anio":anio.Anio,
-                  "Color":'#4fd37c',
+                  "Color":'#d6d6d6',
                   "Tipo":6,
                   "Mostrar":false
                 })
@@ -734,7 +734,7 @@ else {
                   "Nombre":"Promedio Trimestre 1",
                   "NumTrim":1,
                   "Anio":anio.Anio,
-                  "Color":'#4fd37c',
+                  "Color":'#d6d6d6',
                   "Tipo":8,
                   "Mostrar":false
                 })
@@ -744,7 +744,7 @@ else {
                   "Nombre":"Total Trimestre 2",
                   "NumTrim":2,
                   "Anio":anio.Anio,
-                  "Color":'#4fd37c',
+                  "Color":'#d6d6d6',
                   "Tipo":6,
                   "Mostrar":false
                 })
@@ -752,7 +752,7 @@ else {
                   "Nombre":"Promedio Trimestre 2",
                   "NumTrim":2,
                   "Anio":anio.Anio,
-                  "Color":'#4fd37c',
+                  "Color":'#d6d6d6',
                   "Tipo":8,
                   "Mostrar":false
                 })
@@ -760,7 +760,7 @@ else {
                   "Nombre":"Total Semestre 1",
                   "NumSem":1,
                   "Anio":anio.Anio,
-                  "Color":'#2ac25e',
+                  "Color":'#d6d6d6',
                   "Tipo":7,
                   "Mostrar":false
                 })
@@ -768,7 +768,7 @@ else {
                   "Nombre":"Promedio Semestre 1",
                   "NumSem":1,
                   "Anio":anio.Anio,
-                  "Color":'#2ac25e',
+                  "Color":'#d6d6d6',
                   "Tipo":9,
                   "Mostrar":false
                 })
@@ -778,7 +778,7 @@ else {
                   "Nombre":"Total Trimestre 3",
                   "NumTrim":3,
                   "Anio":anio.Anio,
-                  "Color":'#4fd37c',
+                  "Color":'#d6d6d6',
                   "Tipo":6,
                   "Mostrar":false
                 })
@@ -786,7 +786,7 @@ else {
                   "Nombre":"Promedio Trimestre 3",
                   "NumTrim":3,
                   "Anio":anio.Anio,
-                  "Color":'#4fd37c',
+                  "Color":'#d6d6d6',
                   "Tipo":8,
                   "Mostrar":false
                 })
@@ -796,7 +796,7 @@ else {
                   "Nombre":"Total Trimestre 4",
                   "NumTrim":4,
                   "Anio":anio.Anio,
-                  "Color":'#4fd37c',
+                  "Color":'#d6d6d6',
                   "Tipo":6,
                   "Mostrar":false
                 })
@@ -805,7 +805,7 @@ else {
                   "Nombre":"Promedio Trimestre 4",
                   "NumTrim":4,
                   "Anio":anio.Anio,
-                  "Color":'#4fd37c',
+                  "Color":'#d6d6d6',
                   "Tipo":8,
                   "Mostrar":false
                 })
@@ -813,7 +813,7 @@ else {
                   "Nombre":"Total Semestre 2",
                   "NumSem":2,
                   "Anio":anio.Anio,
-                  "Color":'#2ac25e',
+                  "Color":'#d6d6d6',
                   "Tipo":7,
                   "Mostrar":false
                 })
@@ -821,7 +821,7 @@ else {
                   "Nombre":"Promedio Semestre 2",
                   "NumSem":2,
                   "Anio":anio.Anio,
-                  "Color":'#2ac25e',
+                  "Color":'#d6d6d6',
                   "Tipo":9,
                   "Mostrar":false
                 })
@@ -983,7 +983,7 @@ construirCabecera(){
                 "Mes":mes.Mes,
                 "NumMes":mes.NumMes,
                 "Anio":anio.Anio,
-                "Color":'#a2d7b4',
+                "Color":'#d6d6d6',
                 "Tipo":3,
                 "Mostrar":true
               })
@@ -992,7 +992,7 @@ construirCabecera(){
                 "Nombre":"Total Trimestre 1" + ' (' + anio.Anio + ')',
                 "NumTrim":1,
                 "Anio":anio.Anio,
-                "Color":'#4fd37c',
+                "Color":'#d6d6d6',
                 "Tipo":6,
                 "Mostrar":false
               })
@@ -1000,7 +1000,7 @@ construirCabecera(){
                 "Nombre":"Promedio Trimestre 1" + ' (' + anio.Anio + ')',
                 "NumTrim":1,
                 "Anio":anio.Anio,
-                "Color":'#4fd37c',
+                "Color":'#d6d6d6',
                 "Tipo":8,
                 "Mostrar":false
               })
@@ -1010,7 +1010,7 @@ construirCabecera(){
                 "Nombre":"Total Trimestre 2" + ' (' + anio.Anio + ')',
                 "NumTrim":2,
                 "Anio":anio.Anio,
-                "Color":'#4fd37c',
+                "Color":'#d6d6d6',
                 "Tipo":6,
                 "Mostrar":false
               })
@@ -1018,7 +1018,7 @@ construirCabecera(){
                 "Nombre":"Promedio Trimestre 2" + ' (' + anio.Anio + ')',
                 "NumTrim":2,
                 "Anio":anio.Anio,
-                "Color":'#4fd37c',
+                "Color":'#d6d6d6',
                 "Tipo":8,
                 "Mostrar":false
               })
@@ -1026,7 +1026,7 @@ construirCabecera(){
                 "Nombre":"Total Semestre 1" + ' (' + anio.Anio + ')',
                 "NumSem":1,
                 "Anio":anio.Anio,
-                "Color":'#2ac25e',
+                "Color":'#d6d6d6',
                 "Tipo":7,
                 "Mostrar":false
               })
@@ -1034,7 +1034,7 @@ construirCabecera(){
                 "Nombre":"Promedio Semestre 1" + ' (' + anio.Anio + ')',
                 "NumSem":1,
                 "Anio":anio.Anio,
-                "Color":'#2ac25e',
+                "Color":'#d6d6d6',
                 "Tipo":9,
                 "Mostrar":false
               })
@@ -1044,7 +1044,7 @@ construirCabecera(){
                 "Nombre":"Total Trimestre 3" + ' (' + anio.Anio + ')',
                 "NumTrim":3,
                 "Anio":anio.Anio,
-                "Color":'#4fd37c',
+                "Color":'#d6d6d6',
                 "Tipo":6,
                 "Mostrar":false
               })
@@ -1052,7 +1052,7 @@ construirCabecera(){
                 "Nombre":"Promedio Trimestre 3" + ' (' + anio.Anio + ')',
                 "NumTrim":3,
                 "Anio":anio.Anio,
-                "Color":'#4fd37c',
+                "Color":'#d6d6d6',
                 "Tipo":8,
                 "Mostrar":false
               })
@@ -1062,7 +1062,7 @@ construirCabecera(){
                 "Nombre":"Total Trimestre 4" + ' (' + anio.Anio + ')',
                 "NumTrim":4,
                 "Anio":anio.Anio,
-                "Color":'#4fd37c',
+                "Color":'#d6d6d6',
                 "Tipo":6,
                 "Mostrar":false
               })
@@ -1071,7 +1071,7 @@ construirCabecera(){
                 "Nombre":"Promedio Trimestre 4" + ' (' + anio.Anio + ')',
                 "NumTrim":4,
                 "Anio":anio.Anio,
-                "Color":'#4fd37c',
+                "Color":'#d6d6d6',
                 "Tipo":8,
                 "Mostrar":false
               })
@@ -1079,7 +1079,7 @@ construirCabecera(){
                 "Nombre":"Total Semestre 2" + ' (' + anio.Anio + ')',
                 "NumSem":2,
                 "Anio":anio.Anio,
-                "Color":'#2ac25e',
+                "Color":'#d6d6d6',
                 "Tipo":7,
                 "Mostrar":false
               })
@@ -1087,7 +1087,7 @@ construirCabecera(){
                 "Nombre":"Promedio Semestre 2" + ' (' + anio.Anio + ')', 
                 "NumSem":2,
                 "Anio":anio.Anio,
-                "Color":'#2ac25e',
+                "Color":'#d6d6d6',
                 "Tipo":9,
                 "Mostrar":false
               })
@@ -1107,7 +1107,7 @@ construirCabecera(){
         "Mes":"",
         "NumMes":"",
         "Anio":anio.Anio,
-        "Color":'#58d683',
+        "Color":'#d6d6d6',
         "Tipo":4,
         "Mostrar":true
       })
@@ -1115,7 +1115,7 @@ construirCabecera(){
         "Nombre":"Promedio " + anio.Anio,
         "Mes":"",
         "NumMes":"",
-        "Color":'#58d683',
+        "Color":'#d6d6d6',
         "Anio":anio.Anio,
         "Tipo":5,
         "Mostrar":true
