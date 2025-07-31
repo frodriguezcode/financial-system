@@ -30,6 +30,7 @@ export default class ListaRolesComponent implements OnInit {
   AtributosSistema:any=[]
   Modulos:any=[]
   ItemsModulosAtributos: TreeNode[]=[]
+
   metaKeySelection: boolean = false;
   constructor(private authS:AuthService,private toastr: ToastrService, 
     private conS:ConfigurationService,

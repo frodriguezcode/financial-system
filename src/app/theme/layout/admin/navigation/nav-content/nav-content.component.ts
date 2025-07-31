@@ -26,6 +26,7 @@ export class NavContentComponent implements OnInit {
   ) {
     this.windowWidth = window.innerWidth;
     this.navigations = NavigationItems;
+   
   }
 
   // life cycle event

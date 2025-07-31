@@ -84,7 +84,7 @@ const routes: Routes = [
       },
       {
         path: 'roles',
-        loadComponent: () => import('./demo/roles/roles.component')
+        loadComponent: () => import('./demo/roles/lista-roles/lista-roles.component')
       },
       {
         path: 'planeacion',

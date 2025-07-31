@@ -21,6 +21,7 @@ export class NavGroupComponent implements OnInit {
   // life cycle event
   ngOnInit() {
     // at reload time active and trigger link
+     console.log('item',this.item)
     let current_url = this.location.path();
     const baseHref = this.locationStrategy.getBaseHref();
     if (baseHref) {

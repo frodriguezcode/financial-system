@@ -74,20 +74,8 @@ export const NavigationItems: NavigationItem[] = [
           icon: 'fa-solid fa-chart-line',
        
           breadcrumbs: false
-        },
-    
-        {
-          id: 'roles',
-          title: 'Roles',
-          type: 'item',
-          url: '/roles',
-          // icon: 'feather icon-log-in',
-          icon: 'fa-solid fa-lock',
-          target: false,
-          breadcrumbs: false
-        }
-    
-    ,
+        }   
+        ,
         {
           id: 'signin',
           title: 'Salir',
@@ -143,6 +131,19 @@ export const NavigationItems: NavigationItem[] = [
         target: false,
         breadcrumbs: false
       }
+
+      ,
+    
+        {
+          id: 'roles',
+          title: 'Roles',
+          type: 'item',
+          url: '/roles',
+          // icon: 'feather icon-log-in',
+          icon: 'fa-solid fa-lock',
+          target: false,
+          breadcrumbs: false
+        }
       ,
       {
         id: 'cuenta_contable',

@@ -13,10 +13,12 @@ import { ChangeDetectorRef } from '@angular/core';
 import { TabViewModule } from 'primeng/tabview';
 import ListaRolesComponent from './lista-roles/lista-roles.component';
 import { ConfigurationService } from 'src/app/services/configuration.service';
+import { StepperModule } from 'primeng/stepper';
+import Swal from 'sweetalert2'
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, SharedModule,TreeModule,InputSwitchModule,TabViewModule,ListaRolesComponent],
+  imports: [CommonModule, SharedModule,TreeModule,InputSwitchModule,TabViewModule,ListaRolesComponent,StepperModule],
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss']
 })
@@ -37,10 +39,31 @@ export default class RolesComponent implements OnInit {
   selectedNodes:any=[]
   ItemsModulosAtributos: TreeNode[]=[]
   nombreRol:FormControl=new FormControl('')
+  FlujoConfiguracion: any = [];
   usuario:any
   Fecha:any= new Date();
   metaKeySelection: boolean = false;
+  active: number = 0;
+  PasoAnterior: number = 0;
   ngOnInit(): void {
+ this.FlujoConfiguracion.push(
+        {
+          Nombre: 'Nombre del Rol',
+          Descripcion: 'Asignaremos un nombre al rol',
+          Opcional: false,
+          Visitado: false,
+          Orden: 1,
+          OrdenAnterior: 0
+        },
+        {
+          Nombre: 'Elección de los módulos',
+          Descripcion: 'A continuación elegiremos los módulos autorizados en este rol ',
+          Opcional: false,
+          Visitado: false,
+          Orden: 2,
+          OrdenAnterior: 0
+        }
+      );
     this.conS.usuario$.subscribe(usuario => {
       if (usuario) {
       this.usuario=usuario
@@ -57,6 +80,27 @@ export default class RolesComponent implements OnInit {
     console.log('idEmpresa',this.idEmpresa)
    
       this.obtenerAtributos()
+      Swal.fire({
+        title: `Bienvenido a la creación de roles del sistema`,
+        text: 'Comenzaremos asignando un nombre al rol que crearemos a continuación',
+        showClass: {
+          popup: `
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+        },
+        hideClass: {
+          popup: `
+          animate__animated
+          animate__fadeOutDown
+          animate__faster
+        `
+        },
+        timer: 5000, // 5 segundos
+        timerProgressBar: true, // Muestra una barra de tiempo opcional
+        showConfirmButton: false // Oculta el botón de confirmación
+      });
     });
   }
 
@@ -233,6 +277,63 @@ private expandRecursive(node: TreeNode, isExpand: boolean) {
       });
   }
 }
+
+
+ onPasoCambiado(nuevoPaso: number) {
+    this.irAlSiguientePaso(nuevoPaso);
+  }
+
+  irAlSiguientePaso(orden: any) {
+    if (orden == 1) {
+      if (this.nombreRol.value == '') {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Debe asignar un nombre al rol',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        setTimeout(() => {
+          this.active = orden - 1;
+        }, 250);
+      } else {
+        this.actualizarEstadoFlujo(orden);
+        this.active = orden;
+        //nextCallback.emit();
+      }
+    }
+    else {
+      this.actualizarEstadoFlujo(orden);
+      this.active = orden;
+    }
+    this.PasoAnterior = orden;
+  }
+  actualizarEstadoFlujo(orden: any) {
+    const paso = this.FlujoConfiguracion.find((item: any) => item.Orden === orden + 1);
+    if (paso) {
+      paso.Visitado = true;
+      Swal.fire({
+        title: `${paso.Descripcion}`,
+        showClass: {
+          popup: `
+      animate__animated
+      animate__fadeInUp
+      animate__faster
+    `
+        },
+        hideClass: {
+          popup: `
+      animate__animated
+      animate__fadeOutDown
+      animate__faster
+    `
+        },
+        timer: 3000, // 5 segundos
+        timerProgressBar: true, // Muestra una barra de tiempo opcional
+        showConfirmButton: false // Oculta el botón de confirmación
+      });
+    }
+  }
 
 
 }
