@@ -1,0 +1,88 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Hello Card" [options]="false">
+<p-treeTable 
+  *ngIf="CatalogoCuentas.length>0"
+  [value]="CatalogoCuentas" 
+  [scrollable]="true" 
+  [tableStyle]="{'min-width':'50rem'}">
+
+  <ng-template pTemplate="header">
+    <tr style="background-color: white;">
+      <th>Nombre</th>
+      <th class="text-center">Añadir Cuenta</th>
+      <th class="text-center">Editar</th>
+      <th class="text-center">Borrar</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+    <tr style="background-color: white;" [ttRow]="rowNode">
+      <!-- Nombre con toggler -->
+       
+      <td *ngIf="!rowData.Editable">
+        <p-treeTableToggler [rowNode]="rowNode" />
+        {{rowData.name}}
+      </td>
+      <td *ngIf="rowData.Editable==true">
+        <p-treeTableToggler [rowNode]="rowNode" />
+        <input type="text"
+        [(ngModel)]="rowData.Alias"
+        class="form-control">
+      </td>
+
+      <!-- Botón Añadir -->
+      <td
+      *ngIf="rowData.tipo=='Padre'"
+      class="text-center">
+        <button (click)="AddCuentaHijo(rowData.idPadre,rowData.idAbuelo,rowData.idCateg)" pButton type="button" icon="pi pi-plus" 
+                class="p-button-rounded p-button-text p-button-sm"
+                >
+        </button>
+      </td>
+      <td
+      *ngIf="rowData.tipo=='Hijo'"
+      class="text-center">
+        <button pButton type="button" icon="pi pi-plus" 
+                class="p-button-rounded p-button-text p-button-sm"
+                >
+        </button>
+      </td>
+      <td
+      *ngIf="rowData.tipo=='Abuelo'"
+      class="text-center">
+      </td>
+
+      <!-- Botón editar -->
+      <td 
+      *ngIf="rowData.tipo=='Nieto' || rowData.tipo=='Hijo'"
+      class="text-center">
+        <button pButton type="button" icon="pi pi-pencil" 
+                class="p-button-rounded p-button-text p-button-sm"
+                >
+        </button>
+      </td>
+      <td
+      *ngIf="rowData.tipo=='Abuelo'"
+      class="text-center">
+      </td>
+
+      <!-- Botón borrar -->
+      <td 
+      *ngIf="rowData.tipo=='Nieto' || rowData.tipo=='Hijo'"
+      class="text-center">
+        <button pButton type="button" icon="pi pi-trash" 
+                class="p-button-rounded p-button-text p-button-danger p-button-sm"
+               >
+        </button>
+      </td>
+            <td
+      *ngIf="rowData.tipo=='Abuelo'"
+      class="text-center">
+      </td>
+    </tr>
+  </ng-template>
+</p-treeTable>
+    </app-card>
+  </div>
+</div>
