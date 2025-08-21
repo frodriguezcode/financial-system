@@ -103,7 +103,6 @@ export default class ItemsComponent implements OnInit {
   }
 
   onNodeExpand(event: any) {
-    console.log('event', event.node.key);
     this.expandedKeys.push(event.node.key);
     this.expandedNodes[event.node.key] = true;
   }
@@ -116,8 +115,6 @@ export default class ItemsComponent implements OnInit {
   obtenerAbuelos() {
     this.conS.obtenerCategoriasFlujos().subscribe((resp: any) => {
       this.Abuelos = resp;
-
-      console.log('Categorias', this.Abuelos);
       this.obtenerItems();
     });
   }
@@ -191,7 +188,6 @@ export default class ItemsComponent implements OnInit {
         children: this.ObtenerPadres(flujo.id, cargaInicial)
       });
     });
-    console.log('CatalogoCuentas', this.CatalogoCuentas);
   }
 
   verificarExpanded(idElemento: any) {
@@ -302,6 +298,5 @@ export default class ItemsComponent implements OnInit {
       });
     }
 
-    console.log('hijo', hijo);
   }
 }
