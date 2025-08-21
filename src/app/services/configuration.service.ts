@@ -2966,6 +2966,7 @@ export class ConfigurationService {
   //!------------Items------------
   crearItem(Item: any) {
     const id = this.afs.createId();
+    Item.idHijo=id
     return this.afs
       .collection('Items')
       .doc(id)

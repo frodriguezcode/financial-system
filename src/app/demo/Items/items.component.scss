@@ -36,3 +36,14 @@
 .fixed-width-input {
   width: 10px; /* Ajusta el valor según necesites */
 }
+
+.editar{
+  color: green;
+}
+
+.toast-center-center {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+  position: fixed !important;
+}

@@ -1,88 +1,92 @@
 <div class="row">
   <div class="col-sm-12">
     <app-card cardTitle="Hello Card" [options]="false">
-<p-treeTable 
-  *ngIf="CatalogoCuentas.length>0"
-  [value]="CatalogoCuentas" 
-  [scrollable]="true" 
-  [tableStyle]="{'min-width':'50rem'}">
+      <p-treeTable
+        *ngIf="CatalogoCuentas.length > 0"
+        [value]="CatalogoCuentas"
+        (onNodeExpand)="onNodeExpand($event)"
+        (onNodeCollapse)="onNodeCollapse($event)"
+        [scrollable]="true"
+        [tableStyle]="{ 'min-width': '50rem' }"
+      >
+        <ng-template pTemplate="header">
+          <tr style="background-color: white">
+            <th>Nombre</th>
+            <th class="text-center">Añadir Cuenta</th>
+            <th class="text-center">Editar</th>
+            <th class="text-center">Borrar</th>
+          </tr>
+        </ng-template>
 
-  <ng-template pTemplate="header">
-    <tr style="background-color: white;">
-      <th>Nombre</th>
-      <th class="text-center">Añadir Cuenta</th>
-      <th class="text-center">Editar</th>
-      <th class="text-center">Borrar</th>
-    </tr>
-  </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr style="background-color: white" [ttRow]="rowNode">
+            <!-- Nombre con toggler -->
 
-  <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-    <tr style="background-color: white;" [ttRow]="rowNode">
-      <!-- Nombre con toggler -->
-       
-      <td *ngIf="!rowData.Editable">
-        <p-treeTableToggler [rowNode]="rowNode" />
-        {{rowData.name}}
-      </td>
-      <td *ngIf="rowData.Editable==true">
-        <p-treeTableToggler [rowNode]="rowNode" />
-        <input type="text"
-        [(ngModel)]="rowData.Alias"
-        class="form-control">
-      </td>
+            <td  *ngIf="rowData.Editable == false">
+              <p-treeTableToggler [rowNode]="rowNode" />
+              {{ rowData.name }}
+            </td>
+            <td *ngIf="rowData.Editable == true">
+              <div style="margin-top: -35px;margin-left: 50px;">
+                <p-treeTableToggler [rowNode]="rowNode" />
+                  <p-floatLabel >
+                    <input class="text-center" pInputText id="username" [(ngModel)]="rowData.Alias" />
+                    <label for="username">Nombre cuenta</label>
+                  </p-floatLabel>             
 
-      <!-- Botón Añadir -->
-      <td
-      *ngIf="rowData.tipo=='Padre'"
-      class="text-center">
-        <button (click)="AddCuentaHijo(rowData.idPadre,rowData.idAbuelo,rowData.idCateg)" pButton type="button" icon="pi pi-plus" 
+              </div>
+            </td>
+
+            <!-- Botón Añadir -->
+            <td *ngIf="rowData.Tipo == 'Padre'" class="text-center">
+              <button
+                (click)="AddCuentaHijo(rowData.idPadre, rowData.idAbuelo, rowData.idCateg)"
+                pButton
+                type="button"
+                label="Cuenta Hijo"
+                icon="pi pi-plus"
                 class="p-button-rounded p-button-text p-button-sm"
-                >
-        </button>
-      </td>
-      <td
-      *ngIf="rowData.tipo=='Hijo'"
-      class="text-center">
-        <button pButton type="button" icon="pi pi-plus" 
-                class="p-button-rounded p-button-text p-button-sm"
-                >
-        </button>
-      </td>
-      <td
-      *ngIf="rowData.tipo=='Abuelo'"
-      class="text-center">
-      </td>
+              >
+              </button>
+            </td>
+            <td *ngIf="rowData.Tipo == 'Hijo'" class="text-center">
+              <button pButton type="button" [disabled]="rowData.Editable == true" icon="pi pi-plus" 
+              label="Cuenta Nieto"
+              class="p-button-rounded p-button-text p-button-sm"> </button>
+            </td>
+            <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center">
+              <button
+              
+              pButton type="button"
+              label="Cuenta Padre"
+              icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm"> </button>
+            </td>
 
-      <!-- Botón editar -->
-      <td 
-      *ngIf="rowData.tipo=='Nieto' || rowData.tipo=='Hijo'"
-      class="text-center">
-        <button pButton type="button" icon="pi pi-pencil" 
-                class="p-button-rounded p-button-text p-button-sm"
-                >
-        </button>
-      </td>
-      <td
-      *ngIf="rowData.tipo=='Abuelo'"
-      class="text-center">
-      </td>
 
-      <!-- Botón borrar -->
-      <td 
-      *ngIf="rowData.tipo=='Nieto' || rowData.tipo=='Hijo'"
-      class="text-center">
-        <button pButton type="button" icon="pi pi-trash" 
-                class="p-button-rounded p-button-text p-button-danger p-button-sm"
-               >
-        </button>
-      </td>
-            <td
-      *ngIf="rowData.tipo=='Abuelo'"
-      class="text-center">
-      </td>
-    </tr>
-  </ng-template>
-</p-treeTable>
+
+            <!-- Botón editar -->
+            <td *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo') && rowData.Editable == false" class="text-center">
+              <button pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm"> </button>
+            </td>
+            <!-- Botón guardar -->
+            <td *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo') && rowData.Editable == true"
+             class="text-center">
+              <button pButton
+              (click)="guardarHijo(rowData)"
+              type="button" icon="pi pi-check" class="p-button-rounded editar p-button-text p-button-sm"> </button>
+            </td>
+
+
+            <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center"> </td>
+
+            <!-- Botón borrar -->
+            <td *ngIf="rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo'" class="text-center">
+              <button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm"> </button>
+            </td>
+            <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center"> </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
     </app-card>
   </div>
 </div>
