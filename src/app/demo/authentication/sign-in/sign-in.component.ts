@@ -48,13 +48,13 @@ ngOnInit(): void {
  
      Subscription=  this.autS.obtenerUsuarioLogin(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
       Subscription.unsubscribe()
-      localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0])); 
       if(resp.length>0){  
-        console.log('idMatriz',resp[0].idMatriz)
-        console.log('resp',resp)
-      SubscriptionEmpresa=  
-         this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((empresa:any)=>{
+        SubscriptionEmpresa=  
+        this.conS.obtenerEmpresas(resp[0].idMatriz).subscribe((empresa:any)=>{
           SubscriptionEmpresa.unsubscribe()
+          resp[0].CuentasConfig=empresa[0].CuentasConfig
+          resp[0].ConfigInicial=empresa[0].ConfigInicial
+          localStorage.setItem('usuarioFinancialSystems', JSON.stringify(resp[0])); 
           console.log('empresa',empresa)
           empresa[0].ConfigInicial==undefined ? false:empresa[0].ConfigInicial
            if(empresa[0].ConfigInicial==false){

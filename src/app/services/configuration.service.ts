@@ -2833,6 +2833,12 @@ export class ConfigurationService {
       .doc(idEmpresa)
       .ref.update({ ConfigInicial: true });
   }
+  ActualizarConfigEmpresa(idEmpresa: string) {
+    return this.afs
+      .collection('Empresa')
+      .doc(idEmpresa)
+      .ref.update({ CuentasConfig: true });
+  }
 
   //?------------SUCURSALES------------
   obtenerAniosPlaneacion(idEmpresa: any) {
@@ -2968,14 +2974,156 @@ export class ConfigurationService {
     const id = this.afs.createId();
     Item.idHijo=id
     return this.afs
-      .collection('Items')
+      .collection('CuentasHijos')
+      .doc(id)
+      .ref.set(Object.assign(Item, { id: id }));
+  }
+
+  async guardarCuentasEnLote(cuentasHijos: any[],idEmpresa:any): Promise<void> {
+  try {
+    let CuentasNietos=[]
+    // Crear un batch
+    const batch = this.afs.firestore.batch();
+    
+    // Referencia a la colección
+    const collectionRef = this.afs.collection('CuentasHijos').ref;
+    
+    // Agregar cada documento al batch
+    cuentasHijos.forEach(cuenta => {
+      // Crear un ID único para cada documento
+      const id = this.afs.createId();
+      if(cuenta.Prefijo== "1.2.1"){
+      CuentasNietos.push(
+        {
+          Nombre: "1.2.1.1 Facturas vencidas en el mes",
+          Alias: "Facturas vencidas en el mes",
+          Prefijo: "1.2.1.1",
+          idHijo: id,
+          idPadre: "KtA2Cxpd79TJrW9afqR9",
+          PrefijoPadre: 1.2,
+          PrefijoHijo: 1,
+          Editable: false,
+          Orden: 1,
+          OrdenReal: 1,
+          idAbuelo: "od11V2OHVgaLG1RiXMiz",
+          Tipo: 'Nieto',
+          idEmpresa: cuenta.idEmpresa,
+          idCorporacion: cuenta.idCorporacion
+        },
+        {
+          Nombre: "1.2.1.2 Facturas vencidas en meses anteriores",
+          Alias: "Facturas vencidas en meses anteriores",
+          Prefijo: "1.2.1.2",
+          idHijo: id,
+          idPadre: "KtA2Cxpd79TJrW9afqR9",
+          PrefijoPadre: 1.2,
+          PrefijoHijo: 1,
+          Editable: false,
+          Orden: 2,
+          OrdenReal: 2,
+          idAbuelo: "od11V2OHVgaLG1RiXMiz",
+          Tipo: 'Nieto',
+          idEmpresa: cuenta.idEmpresa,
+          idCorporacion: cuenta.idCorporacion
+        },
+        {
+          Nombre: "1.2.1.3 Facturas con vencimientos en meses futuros",
+          Alias: "Facturas con vencimientos en meses futuros",
+          Prefijo: "1.2.1.3",
+          idHijo: id,
+          idPadre: "KtA2Cxpd79TJrW9afqR9",
+          PrefijoPadre: 1.2,
+          PrefijoHijo: 1,
+          Editable: false,
+          Orden: 3,
+          OrdenReal: 4,
+          idAbuelo: "od11V2OHVgaLG1RiXMiz",
+          Tipo: 'Nieto',
+          idEmpresa: cuenta.idEmpresa,
+          idCorporacion: cuenta.idCorporacion
+        }
+       
+        )
+
+    }
+      
+      // Crear la referencia del documento con el ID generado
+      const docRef = collectionRef.doc(id);
+      
+      // Agregar el campo id al objeto y luego guardar
+      const cuentaConId = { ...cuenta, id: id,idHijo:id };
+      
+      // Agregar la operación de escritura al batch
+      batch.set(docRef, cuentaConId);
+    });
+    
+    // Ejecutar el batch
+    await batch.commit();
+    this.guardarCuentasNietosEnLote(CuentasNietos,idEmpresa).then(resp=>{
+
+    })
+    
+    console.log('Todas las cuentas se guardaron exitosamente en lote');
+  } catch (error) {
+    console.error('Error al guardar en lote:', error);
+    throw error;
+  }
+}
+
+  async guardarCuentasNietosEnLote(cuentasHijos: any[],idEmpresa:any): Promise<void> {
+  try {
+    // Crear un batch
+    const batch = this.afs.firestore.batch();
+    
+    // Referencia a la colección
+    const collectionRef = this.afs.collection('CuentasNietos').ref;
+    
+    // Agregar cada documento al batch
+    cuentasHijos.forEach(cuenta => {
+      // Crear un ID único para cada documento
+      const id = this.afs.createId();
+      
+      
+      // Crear la referencia del documento con el ID generado
+      const docRef = collectionRef.doc(id);
+      
+      // Agregar el campo id al objeto y luego guardar
+      const cuentaConId = { ...cuenta, id: id,idNieto:id };
+      
+      // Agregar la operación de escritura al batch
+      batch.set(docRef, cuentaConId);
+    });
+    
+    // Ejecutar el batch
+    await batch.commit();
+
+    this.ActualizarConfigEmpresa(idEmpresa).then((resp:any)=>{
+
+    })
+    
+    console.log('Todas las cuentas se guardaron exitosamente en lote');
+  } catch (error) {
+    console.error('Error al guardar en lote:', error);
+    throw error;
+  }
+}
+  crearCuentaNieto(Item: any) {
+    const id = this.afs.createId();
+    Item.idNieto=id
+    return this.afs
+      .collection('CuentasNietos')
       .doc(id)
       .ref.set(Object.assign(Item, { id: id }));
   }
 
   obtenerItems(idEmpresa: any) {
     return this.afs
-      .collection('Items', (ref) => ref.where('idEmpresa', '==', idEmpresa).orderBy('Orden', 'asc'))
+      .collection('CuentasHijos', (ref) => ref.where('idEmpresa', '==', idEmpresa).orderBy('Orden', 'asc'))
+      .valueChanges();
+  }
+  obtenerCuentasNietos(idEmpresa: any) {
+    return this.afs
+      .collection('CuentasNietos', (ref) => ref.where('idEmpresa', '==', idEmpresa).orderBy('Orden', 'asc'))
       .valueChanges();
   }
   obtenerCuentas(idEmpresa: any) {

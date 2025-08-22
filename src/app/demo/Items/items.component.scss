@@ -54,3 +54,26 @@
   font-size: 14px;   /* ajusta tamaño de texto */
   padding: 2px 6px;  /* controla espacio interno */
 }
+
+
+    /* Estilo para mantener el texto en una línea */
+    .single-line-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 250px;
+      display: block;
+    }
+    
+    /* Para los inputs en modo edición */
+    .custom-input {
+      width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Asegurar que los togglers estén alineados correctamente */
+    .p-treetable-toggler {
+      margin-right: 5px;
+    }

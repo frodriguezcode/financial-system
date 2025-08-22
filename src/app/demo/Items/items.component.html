@@ -7,38 +7,48 @@
         (onNodeExpand)="onNodeExpand($event)"
         (onNodeCollapse)="onNodeCollapse($event)"
         [scrollable]="true"
-        [tableStyle]="{ 'min-width': '50rem' }"
+        [tableStyle]="{ 'min-width': anchoTabla }"
       >
         <ng-template pTemplate="header">
           <tr style="background-color: white">
-            <th>Nombre</th>
-            <th class="text-center">Añadir Cuenta</th>
-            <th class="text-center">Editar</th>
-            <th class="text-center">Borrar</th>
+            <th style="width: 50%">Nombre</th>
+            <th class="text-center" style="width: 22%">Añadir Cuenta</th>
+            <th class="text-center" style="width: 13%">Editar</th>
+            <th class="text-center" style="width: 14%">Borrar</th>
           </tr>
         </ng-template>
 
-        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData" >
           <tr style="background-color: white" [ttRow]="rowNode">
             <!-- Nombre con toggler -->
 
-            <td *ngIf="rowData.Editable == false">
+            <td *ngIf="rowData.Editable == false" style="width: 50%">
               <p-treeTableToggler [rowNode]="rowNode" />
-              {{ rowData.name }}
+              <span >{{ rowData.name }}</span>
             </td>
-            <td *ngIf="rowData.Editable == true">
+            <td *ngIf="rowData.Editable == true && rowData.Tipo == 'Hijo'" style="width: 13%">
               <div style="margin-top: -35px; margin-left: 50px">
                 <p-treeTableToggler [rowNode]="rowNode" />
                 <p-floatLabel>
                   <input class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
-                  <label for="username">Nombre cuenta</label>
+                  <label for="username">Nombre cuenta hijo</label>
+                </p-floatLabel>
+              </div>
+            </td>
+            <td *ngIf="rowData.Editable == true && rowData.Tipo == 'Nieto'" style="width: 13%">
+              <div style="margin-top: -35px; margin-left: 60px">
+                <p-treeTableToggler [rowNode]="rowNode" />
+                <p-floatLabel>
+                  <input class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
+                  <label for="username">Nombre cuenta nieto</label>
                 </p-floatLabel>
               </div>
             </td>
 
             <!-- Botón Añadir -->
-            <td *ngIf="rowData.Tipo == 'Padre'" class="text-center">
+            <td *ngIf="rowData.Tipo == 'Padre'" class="text-center" style="width: 22%">
               <button
+                [disabled]="rowData.Customizable==false"
                 (click)="AddCuentaHijo(rowData.idPadre, rowData.idAbuelo, rowData.idCateg)"
                 pButton
                 type="button"
@@ -48,27 +58,39 @@
               >
               </button>
             </td>
-            <td *ngIf="rowData.Tipo == 'Hijo'" class="text-center">
+            <td *ngIf="rowData.Tipo == 'Nieto'" class="text-center" style="width: 22%">
+            </td>
+            <td *ngIf="rowData.Tipo == 'Hijo'" class="text-center" style="width: 22%">
+           
               <button
                 pButton
                 type="button"
-                [disabled]="rowData.Editable == true"
+                (click)="AddCuentaNieto(rowData)"
+                [disabled]="rowData.Editable == true || rowData.Customizable==false"
                 icon="pi pi-plus"
                 label="Cuenta Nieto"
                 class="p-button-rounded p-button-text p-button-sm"
               >
               </button>
             </td>
-            <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center">
+            <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center" style="width: 22%">
               <button pButton type="button" label="Cuenta Padre" icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm">
               </button>
             </td>
 
             <!-- Botón editar -->
-            <td *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo') && rowData.Editable == false" class="text-center">
+            <td *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo') && rowData.Editable == false"
+            style="width: 13%"
+            class="text-center">
               <button
                 pButton
                 type="button"
+              [disabled]="rowData.Customizable==false 
+              || rowData.Prefijo=='1.2.2' 
+              || rowData.Prefijo=='1.2.1.1' 
+              || rowData.Prefijo=='1.2.1.2' 
+              || rowData.Prefijo=='1.2.1.3' 
+              || rowData.Prefijo=='1.1.1'"
                 icon="pi pi-pencil"
                 (click)="rowData.Editable = !rowData.Editable"
                 class="p-button-rounded p-button-text p-button-sm"
@@ -76,7 +98,9 @@
               </button>
             </td>
             <!-- Botón guardar -->
-            <td *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo') && rowData.Editable == true" class="text-center">
+            <td *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo') && rowData.Editable == true" 
+            style="width: 13%"
+            class="text-center">
               <button
                 pButton
                 (click)="guardarHijo(rowData)"
@@ -90,10 +114,18 @@
             <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center"> </td>
 
             <!-- Botón borrar -->
-            <td *ngIf="rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo'" class="text-center">
-              <button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm"> </button>
+            <td *ngIf="rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo'" class="text-center" style="width: 14%">
+              <button 
+              [disabled]="rowData.Customizable==false 
+              || rowData.Prefijo=='1.2.2' 
+              || rowData.Prefijo=='1.2.1.1' 
+              || rowData.Prefijo=='1.2.1.2' 
+              || rowData.Prefijo=='1.2.1.3' 
+              || rowData.Prefijo=='1.1.1'"
+              pButton type="button" icon="pi pi-trash" 
+              class="p-button-rounded p-button-text p-button-danger p-button-sm"> </button>
             </td>
-            <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center"> </td>
+            <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center" style="width: 14%"> </td>
           </tr>
         </ng-template>
       </p-treeTable>

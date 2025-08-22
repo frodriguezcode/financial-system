@@ -63,18 +63,22 @@ export default class ItemsComponent implements OnInit {
   ) {}
   usuario: any;
   Items: any = [];
+  CuentasNietos: any = [];
   Abuelos: any = [];
   Padres: any = [];
   Hijos: any = [];
+  Nietos: any = [];
   CatalogoCuentas: any = [];
   idEmpresa: string = '';
   expandedKeys: any = [];
   expandedNodes: Set<string> = new Set();
   Sucursales: any = [];
   Proyectos: any = [];
+  anchoTabla: string = '50rem';
   @Input() empresaID: string = '';
   ngOnInit(): void {
     this.conS.usuario$.subscribe((usuario) => {
+      console.log('anchoTabla',this.anchoTabla)
       if (usuario) {
         this.usuario = usuario;
       } else {
@@ -86,36 +90,108 @@ export default class ItemsComponent implements OnInit {
       } else {
         this.idEmpresa = this.usuario.idEmpresa;
       }
-      this.obtenerProyectos();
-      this.obtenerSucursales();
+      this.crearCuentasFijas(this.usuario.CuentasConfig)
+    });
+  }
+
+  ajustarAnchoTabla() {
+  setTimeout(() => {
+    const colNombre = document.querySelector('.col-nombre span');
+
+    if (colNombre) {
+      const anchoTexto = (colNombre as HTMLElement).scrollWidth;
+      // Sumo un margen adicional para botones y paddings
+      this.anchoTabla = 90 + 'rem';
+          console.log('anchoTabla',this.anchoTabla)
+    }
+  });
+}
+
+  crearCuentasFijas(CuentasConfig:any){
+    if(CuentasConfig==false){
+     let CuentasHijos=[]
+
+     CuentasHijos.push(
+      {
+      Nombre: '1.1.1 Cobros por ventas de contado',
+      Prefijo: "1.1.1",
+      PrefijoPadre: 1.1,
+      PrefijoHijo: 1,
+      Customizable:true,
+      Alias: 'Cobros por ventas de contado',
+      Tipo: 'Hijo',
+      idPadre: 'od11V2OHVgaLG1RiXMiz',
+      idAbuelo: 'EESGPM4hWXvDlXSRnCwA',
+      Editable: false,
+      Orden:1,
+      OrdenReal: 1,
+      idEmpresa: this.idEmpresa,
+      idCorporacion: this.usuario.idMatriz
+    },
+    {
+      Nombre: '1.2.1 Pagos a proveedores (Costo de Operación)',
+      Prefijo: "1.2.1",
+      PrefijoPadre: 1.2,
+      Customizable:false,
+      PrefijoHijo: 1,
+      Alias: 'Pagos a proveedores (Costo de Operación)',
+      Tipo: 'Hijo',
+      idPadre: 'KtA2Cxpd79TJrW9afqR9',
+      idAbuelo: 'od11V2OHVgaLG1RiXMiz',
+      Editable: false,
+      Orden:1,
+      OrdenReal: 2,
+      idEmpresa: this.idEmpresa,
+      idCorporacion: this.usuario.idMatriz
+    },
+    {
+      Nombre: '1.2.2 Gastos de Operación',
+      Prefijo: "1.2.2",
+      PrefijoPadre: 1.2,
+      PrefijoHijo: 2,
+      Customizable:true,
+      Alias: 'Gastos de Operación',
+      Tipo: 'Hijo',
+      idPadre: 'KtA2Cxpd79TJrW9afqR9',
+      idAbuelo: 'EESGPM4hWXvDlXSRnCwA',
+      Editable: false,
+      Orden:2,
+      OrdenReal: 3,
+      idEmpresa: this.idEmpresa,
+      idCorporacion: this.usuario.idMatriz
+    },
+     )   
+
+     this.conS.guardarCuentasEnLote(CuentasHijos,this.idEmpresa).then((resp:any)=>{
       this.obtenerAbuelos();
-    });
-  }
-  obtenerProyectos() {
-    this.conS.obtenerProyectos(this.idEmpresa).subscribe((proyectos: any) => {
-      this.Proyectos = proyectos;
-    });
-  }
-  obtenerSucursales() {
-    this.conS.obtenerSucursales(this.idEmpresa).subscribe((sucursales: any) => {
-      this.Sucursales = sucursales;
-    });
+      this.usuario.CuentasConfig=true
+      localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario)); 
+
+     })
+
+    }
+    else {
+      this.obtenerAbuelos();
+    }
   }
 
   onNodeExpand(event: any) {
     this.expandedKeys.push(event.node.key);
     this.expandedNodes[event.node.key] = true;
+   
   }
 
   onNodeCollapse(event: any) {
     this.expandedKeys = this.expandedKeys.filter((exp: any) => exp != event.node.key);
     delete this.expandedNodes[event.node.key];
+    
   }
 
   obtenerAbuelos() {
     this.conS.obtenerCategoriasFlujos().subscribe((resp: any) => {
-      this.Abuelos = resp;
-      this.obtenerItems();
+      console.log('resp',resp)
+      this.Abuelos = resp.filter((r:any)=>r.id!='VmmQpdpunMTqkoSjhzzj');
+      this.obtenerCuentasNietos();
     });
   }
 
@@ -128,6 +204,7 @@ export default class ItemsComponent implements OnInit {
           name: hij.Nombre,
           Alias: hij.Alias,
           Prefijo: hij.Prefijo,
+          Customizable:hij.Customizable,
           idHijo: hij.idHijo == undefined ? '' : hij.idHijo,
           idPadre: idPadre,
           PrefijoPadre: hij.PrefijoPadre,
@@ -138,13 +215,39 @@ export default class ItemsComponent implements OnInit {
           idAbuelo: idAbuelo,
           Tipo: 'Hijo'
         },
-        expanded: cargaInicial == true ? false : this.verificarExpanded(hij.id)
+        expanded: cargaInicial == true ? false : this.verificarExpanded(hij.id),
+        children:this.ObtenerNietos(hij,cargaInicial)
       });
     });
     return this.Hijos;
   }
-  ObtenerNietos(idAbuelo: any) {
-    return this.Abuelos.filter((abuelo: any) => abuelo.idAbuelo == idAbuelo);
+
+
+  ObtenerNietos(rowData:any,cargaInicial:boolean) {
+  this.Nietos = [];
+    this.CuentasNietos.filter((nieto: any) => nieto.idHijo == rowData.idHijo).forEach((niet: any) => {
+      this.Nietos.push({
+        key: rowData.idHijo + '-' + this.Nietos.length + 1,
+        data: {
+          name: niet.Nombre,
+          Alias: niet.Alias,
+          Prefijo: niet.Prefijo,
+          idNieto: niet.idNieto == undefined ? '' : niet.idNieto,
+          idHijo: niet.idHijo == undefined ? '' : niet.idHijo,
+          idPadre: rowData.idPadre,
+          PrefijoPadre: niet.PrefijoPadre,
+          PrefijoHijo: niet.PrefijoHijo,
+          Editable: niet.Editable,
+          Orden: niet.Orden,
+          OrdenReal: niet.OrdenReal,
+          idAbuelo: rowData.idAbuelo,
+          Tipo: 'Nieto'
+        },
+        expanded: cargaInicial == true ? false : this.verificarExpanded(niet.id)
+
+      });
+    });
+    return this.Nietos;
   }
   obtenerItems() {
     let Subscripcion:Subscription
@@ -153,6 +256,14 @@ export default class ItemsComponent implements OnInit {
       this.Items = items;
       this.construirCatalogoItems(true);
     });
+  }
+
+  obtenerCuentasNietos(){
+    let Subscripcion: Subscription
+    Subscripcion=this.conS.obtenerCuentasNietos(this.idEmpresa).subscribe((cuentas:any)=>{
+      this.CuentasNietos=cuentas
+      this.obtenerItems()
+    })
   }
 
   guardarExpandibles(nodos: any[], abiertos: Set<string>) {
@@ -202,6 +313,7 @@ export default class ItemsComponent implements OnInit {
           name: padre.Nombre,
           Tipo: 'Padre',
           idPadre: padre.id,
+          Customizable:true,
           Editable: false,
           idCateg: padre.idCateg,
           idAbuelo: idAbuelo
@@ -223,6 +335,7 @@ export default class ItemsComponent implements OnInit {
       PrefijoHijo: Orden + 1,
       Alias: '',
       Tipo: 'Hijo',
+      Customizable:true,
       idPadre: idPadre,
       idAbuelo: idAbuelo,
       Editable: true,
@@ -237,6 +350,32 @@ export default class ItemsComponent implements OnInit {
     this.construirCatalogoItems(false);
   }
 
+  AddCuentaNieto(rowData:any) {
+    let Orden: any = this.CuentasNietos.filter((it: any) => it.idHijo == rowData.idHijo).length;
+    this.CuentasNietos.push({
+      Nombre: '',
+      Prefijo: rowData.PrefijoPadre + '.' + rowData.PrefijoHijo + '.' + (Orden + 1),
+      PrefijoPadre: Number(rowData.PrefijoPadre),
+      PrefijoHijo: Number(rowData.PrefijoHijo),
+      PrefijoNieto: (Orden + 1),
+      Alias: '',
+      Tipo: 'Nieto',
+      idPadre: rowData.idPadre,
+      idAbuelo: rowData.idAbuelo,
+      idHijo: rowData.idHijo,
+      Editable: true,
+      Orden: Orden + 1,
+      OrdenReal: this.CuentasNietos.length + 1,
+      idEmpresa: this.idEmpresa,
+      idCorporacion: this.usuario.idMatriz
+    });
+
+    this.expandedKeys.push(rowData.idAbuelo);
+    this.expandedKeys.push(rowData.idPadre);
+    this.expandedKeys.push(rowData.idHijo);
+    this.construirCatalogoItems(false);
+  }
+
   guardarHijo(hijo: any) {
         Swal.fire({
       title: 'Cargando...'
@@ -245,15 +384,89 @@ export default class ItemsComponent implements OnInit {
     const index = this.Items.findIndex(
       (item: any) => item.idHijo === hijo.idHijo
     );
+  
+    if(hijo.Tipo=='Hijo'){
+      if (index !== -1) {
+        this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
+        this.Items[index].Alias = `${hijo.Alias}`;
+        this.Items[index].Editable = false;
+  
+        this.conS.ActualizarItem(this.Items[index]).then(resp=>{
+                  this.expandedKeys.push(hijo.idAbuelo);
+          this.expandedKeys.push(hijo.idPadre);
+    
+          Swal.close();
+          this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+            timeOut: 1000,
+            positionClass: 'toast-center-center'
+          });
+          this.construirCatalogoItems(false);
+        })
+      }
+      else {
+  
+      let Item=  {
+        Nombre: `${hijo.Prefijo} ${hijo.Alias}` ,
+        Prefijo: hijo.Prefijo,
+        PrefijoPadre: hijo.PrefijoPadre,
+        PrefijoHijo: hijo.PrefijoHijo,
+        Alias:hijo.Alias,
+        Tipo: 'Hijo',
+        idPadre: hijo.idPadre,
+        idAbuelo: hijo.idAbuelo,
+        Customizable:true,
+        Editable: true,
+        Orden: hijo.Orden,
+        OrdenReal: hijo.OrdenReal,
+        idEmpresa: this.idEmpresa,
+        idCorporacion: this.usuario.idMatriz,
+        Created_User:this.usuario.id
+      }
+        
+        this.conS.crearItem(Item).then((resp: any) => {
+          hijo.Editable = false;
+          hijo.name = `${hijo.Prefijo} ${hijo.Alias}`;
+          hijo.Alias = `${hijo.Alias}`;
+          this.expandedKeys.push(hijo.idAbuelo);
+          this.expandedKeys.push(hijo.idPadre);
+    
+          Swal.close();
+          this.toastr.success('Cuenta guardada', '¡Éxito!', {
+            timeOut: 1000,
+            positionClass: 'toast-center-center'
+          });
+          this.construirCatalogoItems(false);
+        });
+      }
+
+    }
+
+    else {
+      this.guardarNieto(hijo)
+    }
+
+
+  }
+
+  guardarNieto(nieto: any) {
+    console.log('nieto',nieto)
+        Swal.fire({
+      title: 'Cargando...'
+    });
+    Swal.showLoading();
+    const index = this.CuentasNietos.findIndex(
+      (item: any) => item.idNieto === nieto.idNieto
+    );
 
     if (index !== -1) {
-      this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
-      this.Items[index].Alias = `${hijo.Alias}`;
-      this.Items[index].Editable = false;
+      this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
+      this.CuentasNietos[index].Alias = `${nieto.Alias}`;
+      this.CuentasNietos[index].Editable = false;
 
       this.conS.ActualizarItem(this.Items[index]).then(resp=>{
-                this.expandedKeys.push(hijo.idAbuelo);
-        this.expandedKeys.push(hijo.idPadre);
+        this.expandedKeys.push(nieto.idAbuelo);
+        this.expandedKeys.push(nieto.idPadre);
+        this.expandedKeys.push(nieto.idHijo);
   
         Swal.close();
         this.toastr.success('Cuenta actualizada', '¡Éxito!', {
@@ -265,29 +478,30 @@ export default class ItemsComponent implements OnInit {
     }
     else {
 
-    let Item=  {
-      Nombre: `${hijo.Prefijo} ${hijo.Alias}` ,
-      Prefijo: hijo.Prefijo,
-      PrefijoPadre: hijo.PrefijoPadre,
-      PrefijoHijo: hijo.PrefijoHijo,
-      Alias:hijo.Alias,
-      Tipo: 'Hijo',
-      idPadre: hijo.idPadre,
-      idAbuelo: hijo.idAbuelo,
+    let CuentaNieto=  {
+      Nombre: `${nieto.Prefijo} ${nieto.Alias}` ,
+      Prefijo: nieto.Prefijo,
+      PrefijoPadre: nieto.PrefijoPadre,
+      PrefijoHijo: nieto.PrefijoHijo,
+      Alias:nieto.Alias,
+      Tipo: 'Nieto',
+      idPadre: nieto.idPadre,
+      idAbuelo: nieto.idAbuelo,
+      idHijo: nieto.idHijo,
       Editable: true,
-      Orden: hijo.Orden,
-      OrdenReal: hijo.OrdenReal,
+      Orden: nieto.Orden,
+      OrdenReal: nieto.OrdenReal,
       idEmpresa: this.idEmpresa,
       idCorporacion: this.usuario.idMatriz,
       Created_User:this.usuario.id
     }
-      
-      this.conS.crearItem(Item).then((resp: any) => {
-        hijo.Editable = false;
-        hijo.name = `${hijo.Prefijo} ${hijo.Alias}`;
-        hijo.Alias = `${hijo.Alias}`;
-        this.expandedKeys.push(hijo.idAbuelo);
-        this.expandedKeys.push(hijo.idPadre);
+      this.conS.crearItem(CuentaNieto).then((resp: any) => {
+        nieto.Editable = false;
+        nieto.name = `${nieto.Prefijo} ${nieto.Alias}`;
+        nieto.Alias = `${nieto.Alias}`;
+        this.expandedKeys.push(nieto.idAbuelo);
+        this.expandedKeys.push(nieto.idPadre);
+        this.expandedKeys.push(nieto.idHijo);
   
         Swal.close();
         this.toastr.success('Cuenta guardada', '¡Éxito!', {
@@ -299,4 +513,5 @@ export default class ItemsComponent implements OnInit {
     }
 
   }
+
 }
