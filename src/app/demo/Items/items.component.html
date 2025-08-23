@@ -24,6 +24,7 @@
 
             <td *ngIf="rowData.Editable == false " style="width: 50%">
               <p-treeTableToggler [rowNode]="rowNode" />
+
               <span >{{ rowData.name }}</span>
             </td>
             <td *ngIf="rowData.Editable == true && rowData.Tipo == 'Hijo'" style="width: 13%">
@@ -78,7 +79,10 @@
               </button>
             </td>
             <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center" style="width: 22%">
-              <button pButton type="button" label="Cuenta Padre" icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm">
+              <button pButton type="button"
+              severity="success"
+
+              label="Cuenta Padre" icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm">
               </button>
             </td>
 
@@ -107,6 +111,9 @@
             class="text-center">
               <button
                 pButton
+                pTooltip="Confirm to proceed" 
+              showDelay="1000" 
+              hideDelay="300" 
                 (click)="guardarHijo(rowData)"
                 type="button"
                 icon="pi pi-check"
