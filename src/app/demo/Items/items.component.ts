@@ -106,8 +106,15 @@ export default class ItemsComponent implements OnInit {
     }
   });
 }
-
+  padZero(num: number): string {
+    return (num < 10 ? '0' : '') + num;
+  }
   crearCuentasFijas(CuentasConfig:any){
+      const currentDate = new Date();
+      const hours = currentDate.getHours();
+      const minutes = currentDate.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHour = hours % 12 || 12;
     if(CuentasConfig==false){
      let CuentasHijos=[]
 
@@ -115,6 +122,8 @@ export default class ItemsComponent implements OnInit {
       {
       Nombre: '1.1.1 Cobros por ventas de contado',
       Prefijo: "1.1.1",
+      FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+      HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
       PrefijoPadre: 1.1,
       PrefijoHijo: 1,
       Customizable:true,
@@ -133,6 +142,8 @@ export default class ItemsComponent implements OnInit {
       Prefijo: "1.2.1",
       PrefijoPadre: 1.2,
       Customizable:false,
+      FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+      HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
       PrefijoHijo: 1,
       Alias: 'Pagos a proveedores (Costo de Operación)',
       Tipo: 'Hijo',
@@ -150,6 +161,8 @@ export default class ItemsComponent implements OnInit {
       PrefijoPadre: 1.2,
       PrefijoHijo: 2,
       Customizable:true,
+      FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+      HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,      
       Alias: 'Gastos de Operación',
       Tipo: 'Hijo',
       idPadre: 'KtA2Cxpd79TJrW9afqR9',
@@ -261,6 +274,7 @@ export default class ItemsComponent implements OnInit {
   obtenerCuentasNietos(){
     let Subscripcion: Subscription
     Subscripcion=this.conS.obtenerCuentasNietos(this.idEmpresa).subscribe((cuentas:any)=>{
+      Subscripcion.unsubscribe()
       this.CuentasNietos=cuentas
       this.obtenerItems()
     })
@@ -299,6 +313,7 @@ export default class ItemsComponent implements OnInit {
         children: this.ObtenerPadres(flujo.id, cargaInicial)
       });
     });
+    console.log('CatalogoCuentas',this.CatalogoCuentas)
   }
 
   verificarExpanded(idElemento: any) {
@@ -404,6 +419,11 @@ export default class ItemsComponent implements OnInit {
         })
       }
       else {
+      const currentDate = new Date();
+      const hours = currentDate.getHours();
+      const minutes = currentDate.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHour = hours % 12 || 12; 
   
       let Item=  {
         Nombre: `${hijo.Prefijo} ${hijo.Alias}` ,
@@ -411,22 +431,28 @@ export default class ItemsComponent implements OnInit {
         PrefijoPadre: hijo.PrefijoPadre,
         PrefijoHijo: hijo.PrefijoHijo,
         Alias:hijo.Alias,
+        FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+        HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,        
         Tipo: 'Hijo',
         idPadre: hijo.idPadre,
         idAbuelo: hijo.idAbuelo,
         Customizable:true,
-        Editable: true,
+        Editable: false,
         Orden: hijo.Orden,
         OrdenReal: hijo.OrdenReal,
         idEmpresa: this.idEmpresa,
         idCorporacion: this.usuario.idMatriz,
         Created_User:this.usuario.id
       }
-        
+    
         this.conS.crearItem(Item).then((resp: any) => {
-          hijo.Editable = false;
-          hijo.name = `${hijo.Prefijo} ${hijo.Alias}`;
-          hijo.Alias = `${hijo.Alias}`;
+
+          const index = this.Items.findIndex(
+          (item: any) => item.Prefijo === hijo.Prefijo
+          );
+          this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
+          this.Items[index].Alias = `${hijo.Alias}`;
+          this.Items[index].Editable = false;
           this.expandedKeys.push(hijo.idAbuelo);
           this.expandedKeys.push(hijo.idPadre);
     
@@ -449,7 +475,6 @@ export default class ItemsComponent implements OnInit {
   }
 
   guardarNieto(nieto: any) {
-    console.log('nieto',nieto)
         Swal.fire({
       title: 'Cargando...'
     });
@@ -464,6 +489,10 @@ export default class ItemsComponent implements OnInit {
       this.CuentasNietos[index].Editable = false;
 
       this.conS.ActualizarItem(this.Items[index]).then(resp=>{
+        
+     
+
+
         this.expandedKeys.push(nieto.idAbuelo);
         this.expandedKeys.push(nieto.idPadre);
         this.expandedKeys.push(nieto.idHijo);
@@ -477,6 +506,11 @@ export default class ItemsComponent implements OnInit {
       })
     }
     else {
+      const currentDate = new Date();
+      const hours = currentDate.getHours();
+      const minutes = currentDate.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHour = hours % 12 || 12;      
 
     let CuentaNieto=  {
       Nombre: `${nieto.Prefijo} ${nieto.Alias}` ,
@@ -484,21 +518,27 @@ export default class ItemsComponent implements OnInit {
       PrefijoPadre: nieto.PrefijoPadre,
       PrefijoHijo: nieto.PrefijoHijo,
       Alias:nieto.Alias,
+      FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+      HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,       
       Tipo: 'Nieto',
       idPadre: nieto.idPadre,
       idAbuelo: nieto.idAbuelo,
       idHijo: nieto.idHijo,
-      Editable: true,
+      Editable: false,
       Orden: nieto.Orden,
       OrdenReal: nieto.OrdenReal,
       idEmpresa: this.idEmpresa,
       idCorporacion: this.usuario.idMatriz,
       Created_User:this.usuario.id
     }
-      this.conS.crearItem(CuentaNieto).then((resp: any) => {
-        nieto.Editable = false;
-        nieto.name = `${nieto.Prefijo} ${nieto.Alias}`;
-        nieto.Alias = `${nieto.Alias}`;
+      this.conS.crearCuentaNieto(CuentaNieto).then((resp: any) => {
+
+        const index = this.CuentasNietos.findIndex(
+        (item: any) => item.Prefijo === nieto.Prefijo
+        );
+        this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
+        this.CuentasNietos[index].Alias = `${nieto.Alias}`;
+        this.CuentasNietos[index].Editable = false;
         this.expandedKeys.push(nieto.idAbuelo);
         this.expandedKeys.push(nieto.idPadre);
         this.expandedKeys.push(nieto.idHijo);

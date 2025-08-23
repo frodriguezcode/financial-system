@@ -22,7 +22,7 @@
           <tr style="background-color: white" [ttRow]="rowNode">
             <!-- Nombre con toggler -->
 
-            <td *ngIf="rowData.Editable == false" style="width: 50%">
+            <td *ngIf="rowData.Editable == false " style="width: 50%">
               <p-treeTableToggler [rowNode]="rowNode" />
               <span >{{ rowData.name }}</span>
             </td>
@@ -30,16 +30,20 @@
               <div style="margin-top: -35px; margin-left: 50px">
                 <p-treeTableToggler [rowNode]="rowNode" />
                 <p-floatLabel>
-                  <input class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
+                  <input
+                  (keyup.enter)="guardarHijo(rowData)"
+                  class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
                   <label for="username">Nombre cuenta hijo</label>
                 </p-floatLabel>
               </div>
             </td>
             <td *ngIf="rowData.Editable == true && rowData.Tipo == 'Nieto'" style="width: 13%">
-              <div style="margin-top: -35px; margin-left: 60px">
+              <div style="margin-top: -35px; margin-left: 70px">
                 <p-treeTableToggler [rowNode]="rowNode" />
                 <p-floatLabel>
-                  <input class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
+                  <input 
+                  (keyup.enter)="guardarHijo(rowData)"
+                  class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
                   <label for="username">Nombre cuenta nieto</label>
                 </p-floatLabel>
               </div>
