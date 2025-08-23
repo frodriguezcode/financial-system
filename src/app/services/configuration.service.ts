@@ -3140,13 +3140,19 @@ export class ConfigurationService {
 
   ActualizarItem(items: any) {
     return this.afs
-      .collection('Items')
+      .collection('CuentasHijos')
       .doc(items.id)
       .ref.update(items);
   }
+  ActualizarCuentaNieto(cuenta: any) {
+    return this.afs
+      .collection('CuentasNietos')
+      .doc(cuenta.id)
+      .ref.update(cuenta);
+  }
   ActualizarItemEstado(Items: any, Activo: boolean) {
     return this.afs
-      .collection('Items')
+      .collection('CuentasHijos')
       .doc(Items.id)
       .ref.update({ Activo: Activo });
   }
@@ -3287,7 +3293,7 @@ export class ConfigurationService {
     return this.afs.collection('Registro').doc(id).delete();
   }
   borrarItem(id: string) {
-    return this.afs.collection('Items').doc(id).delete();
+    return this.afs.collection('CuentasHijos').doc(id).delete();
   }
   borrarRegistroFactura(id: string) {
     return this.afs.collection('RegistrosFacturas').doc(id).delete();

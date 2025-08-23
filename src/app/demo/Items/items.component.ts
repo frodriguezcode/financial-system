@@ -399,13 +399,13 @@ export default class ItemsComponent implements OnInit {
     const index = this.Items.findIndex(
       (item: any) => item.idHijo === hijo.idHijo
     );
-  
+   console.log('hijo',hijo)
+
     if(hijo.Tipo=='Hijo'){
       if (index !== -1) {
         this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
         this.Items[index].Alias = `${hijo.Alias}`;
         this.Items[index].Editable = false;
-  
         this.conS.ActualizarItem(this.Items[index]).then(resp=>{
                   this.expandedKeys.push(hijo.idAbuelo);
           this.expandedKeys.push(hijo.idPadre);
@@ -488,11 +488,7 @@ export default class ItemsComponent implements OnInit {
       this.CuentasNietos[index].Alias = `${nieto.Alias}`;
       this.CuentasNietos[index].Editable = false;
 
-      this.conS.ActualizarItem(this.Items[index]).then(resp=>{
-        
-     
-
-
+      this.conS.ActualizarCuentaNieto(this.CuentasNietos[index]).then(resp=>{
         this.expandedKeys.push(nieto.idAbuelo);
         this.expandedKeys.push(nieto.idPadre);
         this.expandedKeys.push(nieto.idHijo);
