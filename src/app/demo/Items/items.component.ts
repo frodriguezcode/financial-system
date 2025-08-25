@@ -74,11 +74,12 @@ export default class ItemsComponent implements OnInit {
   expandedNodes: Set<string> = new Set();
   Sucursales: any = [];
   Proyectos: any = [];
+  Empresas: any = [];
   anchoTabla: string = '50rem';
   @Input() empresaID: string = '';
   ngOnInit(): void {
     this.conS.usuario$.subscribe((usuario) => {
-      console.log('anchoTabla',this.anchoTabla)
+     
       if (usuario) {
         this.usuario = usuario;
       } else {
@@ -90,8 +91,16 @@ export default class ItemsComponent implements OnInit {
       } else {
         this.idEmpresa = this.usuario.idEmpresa;
       }
-      this.crearCuentasFijas(this.usuario.CuentasConfig)
+
+      this.obtenerEmpresas()
     });
+  }
+
+  obtenerEmpresas(){
+    this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp:any)=>{
+      this.Empresas=resp
+      this.crearCuentasFijas()
+    })
   }
 
   ajustarAnchoTabla() {
@@ -109,13 +118,17 @@ export default class ItemsComponent implements OnInit {
   padZero(num: number): string {
     return (num < 10 ? '0' : '') + num;
   }
-  crearCuentasFijas(CuentasConfig:any){
+  crearCuentasFijas(){
+      let ConfigCuentas:boolean
+      let EmpresaUsuario=this.Empresas.filter((emp:any)=>emp.id==this.idEmpresa)[0]
+      ConfigCuentas=EmpresaUsuario.CuentasConfig
       const currentDate = new Date();
       const hours = currentDate.getHours();
       const minutes = currentDate.getMinutes();
       const ampm = hours >= 12 ? 'PM' : 'AM';
       const formattedHour = hours % 12 || 12;
-    if(CuentasConfig==false){
+
+    if(ConfigCuentas==false){
      let CuentasHijos=[]
 
      CuentasHijos.push(
@@ -251,10 +264,10 @@ export default class ItemsComponent implements OnInit {
           PrefijoPadre: niet.PrefijoPadre,
           PrefijoHijo: niet.PrefijoHijo,
           Editable: niet.Editable,
+          Tipo:niet.Tipo,
           Orden: niet.Orden,
           OrdenReal: niet.OrdenReal,
-          idAbuelo: rowData.idAbuelo,
-          Tipo: 'Nieto'
+          idAbuelo: rowData.idAbuelo
         },
         expanded: cargaInicial == true ? false : this.verificarExpanded(niet.id)
 
@@ -483,70 +496,71 @@ export default class ItemsComponent implements OnInit {
       (item: any) => item.idNieto === nieto.idNieto
     );
 
-    if (index !== -1) {
-      this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
-      this.CuentasNietos[index].Alias = `${nieto.Alias}`;
-      this.CuentasNietos[index].Editable = false;
+    console.log('nieto',nieto)
+    // if (index !== -1) {
+    //   this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
+    //   this.CuentasNietos[index].Alias = `${nieto.Alias}`;
+    //   this.CuentasNietos[index].Editable = false;
 
-      this.conS.ActualizarCuentaNieto(this.CuentasNietos[index]).then(resp=>{
-        this.expandedKeys.push(nieto.idAbuelo);
-        this.expandedKeys.push(nieto.idPadre);
-        this.expandedKeys.push(nieto.idHijo);
+    //   this.conS.ActualizarCuentaNieto(this.CuentasNietos[index]).then(resp=>{
+    //     this.expandedKeys.push(nieto.idAbuelo);
+    //     this.expandedKeys.push(nieto.idPadre);
+    //     this.expandedKeys.push(nieto.idHijo);
   
-        Swal.close();
-        this.toastr.success('Cuenta actualizada', '¡Éxito!', {
-          timeOut: 1000,
-          positionClass: 'toast-center-center'
-        });
-        this.construirCatalogoItems(false);
-      })
-    }
-    else {
-      const currentDate = new Date();
-      const hours = currentDate.getHours();
-      const minutes = currentDate.getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const formattedHour = hours % 12 || 12;      
+    //     Swal.close();
+    //     this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+    //       timeOut: 1000,
+    //       positionClass: 'toast-center-center'
+    //     });
+    //     this.construirCatalogoItems(false);
+    //   })
+    // }
+    // else {
+    //   const currentDate = new Date();
+    //   const hours = currentDate.getHours();
+    //   const minutes = currentDate.getMinutes();
+    //   const ampm = hours >= 12 ? 'PM' : 'AM';
+    //   const formattedHour = hours % 12 || 12;      
 
-    let CuentaNieto=  {
-      Nombre: `${nieto.Prefijo} ${nieto.Alias}` ,
-      Prefijo: nieto.Prefijo,
-      PrefijoPadre: nieto.PrefijoPadre,
-      PrefijoHijo: nieto.PrefijoHijo,
-      Alias:nieto.Alias,
-      FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
-      HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,       
-      Tipo: 'Nieto',
-      idPadre: nieto.idPadre,
-      idAbuelo: nieto.idAbuelo,
-      idHijo: nieto.idHijo,
-      Editable: false,
-      Orden: nieto.Orden,
-      OrdenReal: nieto.OrdenReal,
-      idEmpresa: this.idEmpresa,
-      idCorporacion: this.usuario.idMatriz,
-      Created_User:this.usuario.id
-    }
-      this.conS.crearCuentaNieto(CuentaNieto).then((resp: any) => {
+    // let CuentaNieto=  {
+    //   Nombre: `${nieto.Prefijo} ${nieto.Alias}` ,
+    //   Prefijo: nieto.Prefijo,
+    //   PrefijoPadre: nieto.PrefijoPadre,
+    //   PrefijoHijo: nieto.PrefijoHijo,
+    //   Alias:nieto.Alias,
+    //   FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+    //   HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,       
+    //   Tipo: 'Nieto',
+    //   idPadre: nieto.idPadre,
+    //   idAbuelo: nieto.idAbuelo,
+    //   idHijo: nieto.idHijo,
+    //   Editable: false,
+    //   Orden: nieto.Orden,
+    //   OrdenReal: nieto.OrdenReal,
+    //   idEmpresa: this.idEmpresa,
+    //   idCorporacion: this.usuario.idMatriz,
+    //   Created_User:this.usuario.id
+    // }
+    //   this.conS.crearCuentaNieto(CuentaNieto).then((resp: any) => {
 
-        const index = this.CuentasNietos.findIndex(
-        (item: any) => item.Prefijo === nieto.Prefijo
-        );
-        this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
-        this.CuentasNietos[index].Alias = `${nieto.Alias}`;
-        this.CuentasNietos[index].Editable = false;
-        this.expandedKeys.push(nieto.idAbuelo);
-        this.expandedKeys.push(nieto.idPadre);
-        this.expandedKeys.push(nieto.idHijo);
+    //     const index = this.CuentasNietos.findIndex(
+    //     (item: any) => item.Prefijo === nieto.Prefijo
+    //     );
+    //     this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
+    //     this.CuentasNietos[index].Alias = `${nieto.Alias}`;
+    //     this.CuentasNietos[index].Editable = false;
+    //     this.expandedKeys.push(nieto.idAbuelo);
+    //     this.expandedKeys.push(nieto.idPadre);
+    //     this.expandedKeys.push(nieto.idHijo);
   
-        Swal.close();
-        this.toastr.success('Cuenta guardada', '¡Éxito!', {
-          timeOut: 1000,
-          positionClass: 'toast-center-center'
-        });
-        this.construirCatalogoItems(false);
-      });
-    }
+    //     Swal.close();
+    //     this.toastr.success('Cuenta guardada', '¡Éxito!', {
+    //       timeOut: 1000,
+    //       positionClass: 'toast-center-center'
+    //     });
+    //     this.construirCatalogoItems(false);
+    //   });
+    // }
 
   }
 
