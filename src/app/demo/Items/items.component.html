@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-sm-12">
-    <app-card cardTitle="Hello Card" [options]="false">
+    <app-card cardTitle="Catálogo de Cuentas Contables" [options]="false">
       <p-treeTable
         *ngIf="CatalogoCuentas.length > 0"
         [value]="CatalogoCuentas"
@@ -97,11 +97,7 @@
             </td>
             <td            
             *ngIf="rowData.Tipo == 'Abuelo'" class="text-center" style="width: 22%">
-              <button pButton type="button"
-              severity="success"
-
-              label="Cuenta Padre" icon="pi pi-plus" class="p-button-rounded p-button-text p-button-sm">
-              </button>
+            Desglose para ver las cuentas
             </td>
 
             <!-- Botón editar -->

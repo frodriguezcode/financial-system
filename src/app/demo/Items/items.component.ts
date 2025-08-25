@@ -79,7 +79,6 @@ export default class ItemsComponent implements OnInit {
   @Input() empresaID: string = '';
   ngOnInit(): void {
     this.conS.usuario$.subscribe((usuario) => {
-     
       if (usuario) {
         this.usuario = usuario;
       } else {
@@ -92,111 +91,108 @@ export default class ItemsComponent implements OnInit {
         this.idEmpresa = this.usuario.idEmpresa;
       }
 
-      this.obtenerEmpresas()
+      this.obtenerEmpresas();
     });
   }
 
-  obtenerEmpresas(){
-    this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp:any)=>{
-      this.Empresas=resp
-      this.crearCuentasFijas()
-    })
+  obtenerEmpresas() {
+    this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp: any) => {
+      this.Empresas = resp;
+      this.crearCuentasFijas();
+    });
   }
 
   ajustarAnchoTabla() {
-  setTimeout(() => {
-    const colNombre = document.querySelector('.col-nombre span');
+    setTimeout(() => {
+      const colNombre = document.querySelector('.col-nombre span');
 
-    if (colNombre) {
-      const anchoTexto = (colNombre as HTMLElement).scrollWidth;
-      // Sumo un margen adicional para botones y paddings
-      this.anchoTabla = 90 + 'rem';
-          console.log('anchoTabla',this.anchoTabla)
-    }
-  });
-}
+      if (colNombre) {
+        const anchoTexto = (colNombre as HTMLElement).scrollWidth;
+        // Sumo un margen adicional para botones y paddings
+        this.anchoTabla = 90 + 'rem';
+        console.log('anchoTabla', this.anchoTabla);
+      }
+    });
+  }
   padZero(num: number): string {
     return (num < 10 ? '0' : '') + num;
   }
-  crearCuentasFijas(){
-      let ConfigCuentas:boolean
-      let EmpresaUsuario=this.Empresas.filter((emp:any)=>emp.id==this.idEmpresa)[0]
-      ConfigCuentas=EmpresaUsuario.CuentasConfig
-      const currentDate = new Date();
-      const hours = currentDate.getHours();
-      const minutes = currentDate.getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const formattedHour = hours % 12 || 12;
+  crearCuentasFijas() {
+    let ConfigCuentas: boolean;
+    let EmpresaUsuario = this.Empresas.filter((emp: any) => emp.id == this.idEmpresa)[0];
+    ConfigCuentas = EmpresaUsuario.CuentasConfig;
+    const currentDate = new Date();
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHour = hours % 12 || 12;
 
-    if(ConfigCuentas==false){
-     let CuentasHijos=[]
+    if (ConfigCuentas == false) {
+      let CuentasHijos = [];
 
-     CuentasHijos.push(
-      {
-      Nombre: '1.1.1 Cobros por ventas de contado',
-      Prefijo: "1.1.1",
-      FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
-      HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
-      PrefijoPadre: 1.1,
-      PrefijoHijo: 1,
-      Customizable:true,
-      Alias: 'Cobros por ventas de contado',
-      Tipo: 'Hijo',
-      idPadre: 'od11V2OHVgaLG1RiXMiz',
-      idAbuelo: 'EESGPM4hWXvDlXSRnCwA',
-      Editable: false,
-      Orden:1,
-      OrdenReal: 1,
-      idEmpresa: this.idEmpresa,
-      idCorporacion: this.usuario.idMatriz
-    },
-    {
-      Nombre: '1.2.1 Pagos a proveedores (Costo de Operación)',
-      Prefijo: "1.2.1",
-      PrefijoPadre: 1.2,
-      Customizable:false,
-      FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
-      HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
-      PrefijoHijo: 1,
-      Alias: 'Pagos a proveedores (Costo de Operación)',
-      Tipo: 'Hijo',
-      idPadre: 'KtA2Cxpd79TJrW9afqR9',
-      idAbuelo: 'od11V2OHVgaLG1RiXMiz',
-      Editable: false,
-      Orden:1,
-      OrdenReal: 2,
-      idEmpresa: this.idEmpresa,
-      idCorporacion: this.usuario.idMatriz
-    },
-    {
-      Nombre: '1.2.2 Gastos de Operación',
-      Prefijo: "1.2.2",
-      PrefijoPadre: 1.2,
-      PrefijoHijo: 2,
-      Customizable:true,
-      FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
-      HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,      
-      Alias: 'Gastos de Operación',
-      Tipo: 'Hijo',
-      idPadre: 'KtA2Cxpd79TJrW9afqR9',
-      idAbuelo: 'EESGPM4hWXvDlXSRnCwA',
-      Editable: false,
-      Orden:2,
-      OrdenReal: 3,
-      idEmpresa: this.idEmpresa,
-      idCorporacion: this.usuario.idMatriz
-    },
-     )   
+      CuentasHijos.push(
+        {
+          Nombre: '1.1.1 Cobros por ventas de contado',
+          Prefijo: '1.1.1',
+          FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+          HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+          PrefijoPadre: 1.1,
+          PrefijoHijo: 1,
+          Customizable: true,
+          Alias: 'Cobros por ventas de contado',
+          Tipo: 'Hijo',
+          idPadre: 'od11V2OHVgaLG1RiXMiz',
+          idAbuelo: 'EESGPM4hWXvDlXSRnCwA',
+          Editable: false,
+          Orden: 1,
+          OrdenReal: 1,
+          idEmpresa: this.idEmpresa,
+          idCorporacion: this.usuario.idMatriz
+        },
+        {
+          Nombre: '1.2.1 Pagos a proveedores (Costo de Operación)',
+          Prefijo: '1.2.1',
+          PrefijoPadre: 1.2,
+          Customizable: false,
+          FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+          HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+          PrefijoHijo: 1,
+          Alias: 'Pagos a proveedores (Costo de Operación)',
+          Tipo: 'Hijo',
+          idPadre: 'KtA2Cxpd79TJrW9afqR9',
+          idAbuelo: 'od11V2OHVgaLG1RiXMiz',
+          Editable: false,
+          Orden: 1,
+          OrdenReal: 2,
+          idEmpresa: this.idEmpresa,
+          idCorporacion: this.usuario.idMatriz
+        },
+        {
+          Nombre: '1.2.2 Gastos de Operación',
+          Prefijo: '1.2.2',
+          PrefijoPadre: 1.2,
+          PrefijoHijo: 2,
+          Customizable: true,
+          FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+          HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+          Alias: 'Gastos de Operación',
+          Tipo: 'Hijo',
+          idPadre: 'KtA2Cxpd79TJrW9afqR9',
+          idAbuelo: 'EESGPM4hWXvDlXSRnCwA',
+          Editable: false,
+          Orden: 2,
+          OrdenReal: 3,
+          idEmpresa: this.idEmpresa,
+          idCorporacion: this.usuario.idMatriz
+        }
+      );
 
-     this.conS.guardarCuentasEnLote(CuentasHijos,this.idEmpresa).then((resp:any)=>{
-      this.obtenerAbuelos();
-      this.usuario.CuentasConfig=true
-      localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario)); 
-
-     })
-
-    }
-    else {
+      this.conS.guardarCuentasEnLote(CuentasHijos, this.idEmpresa).then((resp: any) => {
+        this.obtenerAbuelos();
+        this.usuario.CuentasConfig = true;
+        localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
+      });
+    } else {
       this.obtenerAbuelos();
     }
   }
@@ -204,19 +200,17 @@ export default class ItemsComponent implements OnInit {
   onNodeExpand(event: any) {
     this.expandedKeys.push(event.node.key);
     this.expandedNodes[event.node.key] = true;
-   
   }
 
   onNodeCollapse(event: any) {
     this.expandedKeys = this.expandedKeys.filter((exp: any) => exp != event.node.key);
     delete this.expandedNodes[event.node.key];
-    
   }
 
   obtenerAbuelos() {
     this.conS.obtenerCategoriasFlujos().subscribe((resp: any) => {
-      console.log('resp',resp)
-      this.Abuelos = resp.filter((r:any)=>r.id!='VmmQpdpunMTqkoSjhzzj');
+      console.log('resp', resp);
+      this.Abuelos = resp.filter((r: any) => r.id != 'VmmQpdpunMTqkoSjhzzj');
       this.obtenerCuentasNietos();
     });
   }
@@ -230,7 +224,7 @@ export default class ItemsComponent implements OnInit {
           name: hij.Nombre,
           Alias: hij.Alias,
           Prefijo: hij.Prefijo,
-          Customizable:hij.Customizable,
+          Customizable: hij.Customizable,
           idHijo: hij.idHijo == undefined ? '' : hij.idHijo,
           idPadre: idPadre,
           PrefijoPadre: hij.PrefijoPadre,
@@ -242,15 +236,14 @@ export default class ItemsComponent implements OnInit {
           Tipo: 'Hijo'
         },
         expanded: cargaInicial == true ? false : this.verificarExpanded(hij.id),
-        children:this.ObtenerNietos(hij,cargaInicial)
+        children: this.ObtenerNietos(hij, cargaInicial)
       });
     });
     return this.Hijos;
   }
 
-
-  ObtenerNietos(rowData:any,cargaInicial:boolean) {
-  this.Nietos = [];
+  ObtenerNietos(rowData: any, cargaInicial: boolean) {
+    this.Nietos = [];
     this.CuentasNietos.filter((nieto: any) => nieto.idHijo == rowData.idHijo).forEach((niet: any) => {
       this.Nietos.push({
         key: rowData.idHijo + '-' + this.Nietos.length + 1,
@@ -264,33 +257,32 @@ export default class ItemsComponent implements OnInit {
           PrefijoPadre: niet.PrefijoPadre,
           PrefijoHijo: niet.PrefijoHijo,
           Editable: niet.Editable,
-          Tipo:niet.Tipo,
+          Tipo: niet.Tipo,
           Orden: niet.Orden,
           OrdenReal: niet.OrdenReal,
           idAbuelo: rowData.idAbuelo
         },
         expanded: cargaInicial == true ? false : this.verificarExpanded(niet.id)
-
       });
     });
     return this.Nietos;
   }
   obtenerItems() {
-    let Subscripcion:Subscription
-  Subscripcion=  this.conS.obtenerItems(this.idEmpresa).subscribe((items: any) => {
-    Subscripcion.unsubscribe()
+    let Subscripcion: Subscription;
+    Subscripcion = this.conS.obtenerItems(this.idEmpresa).subscribe((items: any) => {
+      Subscripcion.unsubscribe();
       this.Items = items;
       this.construirCatalogoItems(true);
     });
   }
 
-  obtenerCuentasNietos(){
-    let Subscripcion: Subscription
-    Subscripcion=this.conS.obtenerCuentasNietos(this.idEmpresa).subscribe((cuentas:any)=>{
-      Subscripcion.unsubscribe()
-      this.CuentasNietos=cuentas
-      this.obtenerItems()
-    })
+  obtenerCuentasNietos() {
+    let Subscripcion: Subscription;
+    Subscripcion = this.conS.obtenerCuentasNietos(this.idEmpresa).subscribe((cuentas: any) => {
+      Subscripcion.unsubscribe();
+      this.CuentasNietos = cuentas;
+      this.obtenerItems();
+    });
   }
 
   guardarExpandibles(nodos: any[], abiertos: Set<string>) {
@@ -326,7 +318,7 @@ export default class ItemsComponent implements OnInit {
         children: this.ObtenerPadres(flujo.id, cargaInicial)
       });
     });
-    console.log('CatalogoCuentas',this.CatalogoCuentas)
+    console.log('CatalogoCuentas', this.CatalogoCuentas);
   }
 
   verificarExpanded(idElemento: any) {
@@ -341,7 +333,7 @@ export default class ItemsComponent implements OnInit {
           name: padre.Nombre,
           Tipo: 'Padre',
           idPadre: padre.id,
-          Customizable:true,
+          Customizable: true,
           Editable: false,
           idCateg: padre.idCateg,
           idAbuelo: idAbuelo
@@ -363,7 +355,7 @@ export default class ItemsComponent implements OnInit {
       PrefijoHijo: Orden + 1,
       Alias: '',
       Tipo: 'Hijo',
-      Customizable:true,
+      Customizable: true,
       idPadre: idPadre,
       idAbuelo: idAbuelo,
       Editable: true,
@@ -378,14 +370,14 @@ export default class ItemsComponent implements OnInit {
     this.construirCatalogoItems(false);
   }
 
-  AddCuentaNieto(rowData:any) {
+  AddCuentaNieto(rowData: any) {
     let Orden: any = this.CuentasNietos.filter((it: any) => it.idHijo == rowData.idHijo).length;
     this.CuentasNietos.push({
       Nombre: '',
       Prefijo: rowData.PrefijoPadre + '.' + rowData.PrefijoHijo + '.' + (Orden + 1),
       PrefijoPadre: Number(rowData.PrefijoPadre),
       PrefijoHijo: Number(rowData.PrefijoHijo),
-      PrefijoNieto: (Orden + 1),
+      PrefijoNieto: Orden + 1,
       Alias: '',
       Tipo: 'Nieto',
       idPadre: rowData.idPadre,
@@ -405,70 +397,155 @@ export default class ItemsComponent implements OnInit {
   }
 
   guardarHijo(hijo: any) {
-        Swal.fire({
+    Swal.fire({
       title: 'Cargando...'
     });
     Swal.showLoading();
-    const index = this.Items.findIndex(
-      (item: any) => item.idHijo === hijo.idHijo
-    );
-   console.log('hijo',hijo)
+    const index = this.Items.findIndex((item: any) => item.idHijo === hijo.idHijo);
+    if (hijo.Tipo == 'Hijo') {
+      if(hijo.Alias==''){
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Debe colocar un nombre a la cuenta',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      }
+      else {
+        if (index !== -1) {
+          this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
+          this.Items[index].Alias = `${hijo.Alias}`;
+          this.Items[index].Editable = false;
+          this.conS.ActualizarItem(this.Items[index]).then((resp) => {
+            this.expandedKeys.push(hijo.idAbuelo);
+            this.expandedKeys.push(hijo.idPadre);
+  
+            Swal.close();
+            this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+              timeOut: 1000,
+              positionClass: 'toast-center-center'
+            });
+            this.construirCatalogoItems(false);
+          });
+        } else {
+          const currentDate = new Date();
+          const hours = currentDate.getHours();
+          const minutes = currentDate.getMinutes();
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          const formattedHour = hours % 12 || 12;
+  
+          let Item = {
+            Nombre: `${hijo.Prefijo} ${hijo.Alias}`,
+            Prefijo: hijo.Prefijo,
+            PrefijoPadre: hijo.PrefijoPadre,
+            PrefijoHijo: hijo.PrefijoHijo,
+            Alias: hijo.Alias,
+            FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+            HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+            Tipo: 'Hijo',
+            idPadre: hijo.idPadre,
+            idAbuelo: hijo.idAbuelo,
+            Customizable: true,
+            Editable: false,
+            Orden: hijo.Orden,
+            OrdenReal: hijo.OrdenReal,
+            idEmpresa: this.idEmpresa,
+            idCorporacion: this.usuario.idMatriz,
+            Created_User: this.usuario.id
+          };
+  
+          this.conS.crearItem(Item).then((resp: any) => {
+            const index = this.Items.findIndex((item: any) => item.Prefijo === hijo.Prefijo);
+            this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
+            this.Items[index].Alias = `${hijo.Alias}`;
+            this.Items[index].Editable = false;
+            this.expandedKeys.push(hijo.idAbuelo);
+            this.expandedKeys.push(hijo.idPadre);
+  
+            Swal.close();
+            this.toastr.success('Cuenta guardada', '¡Éxito!', {
+              timeOut: 1000,
+              positionClass: 'toast-center-center'
+            });
+            this.construirCatalogoItems(false);
+          });
+        }
+        
+      }
+    } else {
+      this.guardarNieto(hijo);
+    }
+  }
 
-    if(hijo.Tipo=='Hijo'){
+  guardarNieto(nieto: any) {
+    if (nieto.Alias == '') {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Debe colocar un nombre a la cuenta',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    } 
+    else {
+      Swal.fire({
+        title: 'Cargando...'
+      });
+      Swal.showLoading();
+      const index = this.CuentasNietos.findIndex((item: any) => item.idNieto === nieto.idNieto);
       if (index !== -1) {
-        this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
-        this.Items[index].Alias = `${hijo.Alias}`;
-        this.Items[index].Editable = false;
-        this.conS.ActualizarItem(this.Items[index]).then(resp=>{
-                  this.expandedKeys.push(hijo.idAbuelo);
-          this.expandedKeys.push(hijo.idPadre);
-    
+        this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
+        this.CuentasNietos[index].Alias = `${nieto.Alias}`;
+        this.CuentasNietos[index].Editable = false;
+
+        this.conS.ActualizarCuentaNieto(this.CuentasNietos[index]).then((resp) => {
+          this.expandedKeys.push(nieto.idAbuelo);
+          this.expandedKeys.push(nieto.idPadre);
+          this.expandedKeys.push(nieto.idHijo);
+
           Swal.close();
           this.toastr.success('Cuenta actualizada', '¡Éxito!', {
             timeOut: 1000,
             positionClass: 'toast-center-center'
           });
           this.construirCatalogoItems(false);
-        })
-      }
-      else {
-      const currentDate = new Date();
-      const hours = currentDate.getHours();
-      const minutes = currentDate.getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const formattedHour = hours % 12 || 12; 
-  
-      let Item=  {
-        Nombre: `${hijo.Prefijo} ${hijo.Alias}` ,
-        Prefijo: hijo.Prefijo,
-        PrefijoPadre: hijo.PrefijoPadre,
-        PrefijoHijo: hijo.PrefijoHijo,
-        Alias:hijo.Alias,
-        FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
-        HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,        
-        Tipo: 'Hijo',
-        idPadre: hijo.idPadre,
-        idAbuelo: hijo.idAbuelo,
-        Customizable:true,
-        Editable: false,
-        Orden: hijo.Orden,
-        OrdenReal: hijo.OrdenReal,
-        idEmpresa: this.idEmpresa,
-        idCorporacion: this.usuario.idMatriz,
-        Created_User:this.usuario.id
-      }
-    
-        this.conS.crearItem(Item).then((resp: any) => {
+        });
+      } else {
+        const currentDate = new Date();
+        const hours = currentDate.getHours();
+        const minutes = currentDate.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHour = hours % 12 || 12;
 
-          const index = this.Items.findIndex(
-          (item: any) => item.Prefijo === hijo.Prefijo
-          );
-          this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
-          this.Items[index].Alias = `${hijo.Alias}`;
-          this.Items[index].Editable = false;
-          this.expandedKeys.push(hijo.idAbuelo);
-          this.expandedKeys.push(hijo.idPadre);
-    
+        let CuentaNieto = {
+          Nombre: `${nieto.Prefijo} ${nieto.Alias}`,
+          Prefijo: nieto.Prefijo,
+          PrefijoPadre: nieto.PrefijoPadre,
+          PrefijoHijo: nieto.PrefijoHijo,
+          Alias: nieto.Alias,
+          FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+          HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+          Tipo: 'Nieto',
+          idPadre: nieto.idPadre,
+          idAbuelo: nieto.idAbuelo,
+          idHijo: nieto.idHijo,
+          Editable: false,
+          Orden: nieto.Orden,
+          OrdenReal: nieto.OrdenReal,
+          idEmpresa: this.idEmpresa,
+          idCorporacion: this.usuario.idMatriz,
+          Created_User: this.usuario.id
+        };
+        this.conS.crearCuentaNieto(CuentaNieto).then((resp: any) => {
+          const index = this.CuentasNietos.findIndex((item: any) => item.Prefijo === nieto.Prefijo);
+          this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
+          this.CuentasNietos[index].Alias = `${nieto.Alias}`;
+          this.CuentasNietos[index].Editable = false;
+          this.expandedKeys.push(nieto.idAbuelo);
+          this.expandedKeys.push(nieto.idPadre);
+          this.expandedKeys.push(nieto.idHijo);
+
           Swal.close();
           this.toastr.success('Cuenta guardada', '¡Éxito!', {
             timeOut: 1000,
@@ -477,91 +554,6 @@ export default class ItemsComponent implements OnInit {
           this.construirCatalogoItems(false);
         });
       }
-
     }
-
-    else {
-      this.guardarNieto(hijo)
-    }
-
-
   }
-
-  guardarNieto(nieto: any) {
-        Swal.fire({
-      title: 'Cargando...'
-    });
-    Swal.showLoading();
-    const index = this.CuentasNietos.findIndex(
-      (item: any) => item.idNieto === nieto.idNieto
-    );
-
-    console.log('nieto',nieto)
-    // if (index !== -1) {
-    //   this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
-    //   this.CuentasNietos[index].Alias = `${nieto.Alias}`;
-    //   this.CuentasNietos[index].Editable = false;
-
-    //   this.conS.ActualizarCuentaNieto(this.CuentasNietos[index]).then(resp=>{
-    //     this.expandedKeys.push(nieto.idAbuelo);
-    //     this.expandedKeys.push(nieto.idPadre);
-    //     this.expandedKeys.push(nieto.idHijo);
-  
-    //     Swal.close();
-    //     this.toastr.success('Cuenta actualizada', '¡Éxito!', {
-    //       timeOut: 1000,
-    //       positionClass: 'toast-center-center'
-    //     });
-    //     this.construirCatalogoItems(false);
-    //   })
-    // }
-    // else {
-    //   const currentDate = new Date();
-    //   const hours = currentDate.getHours();
-    //   const minutes = currentDate.getMinutes();
-    //   const ampm = hours >= 12 ? 'PM' : 'AM';
-    //   const formattedHour = hours % 12 || 12;      
-
-    // let CuentaNieto=  {
-    //   Nombre: `${nieto.Prefijo} ${nieto.Alias}` ,
-    //   Prefijo: nieto.Prefijo,
-    //   PrefijoPadre: nieto.PrefijoPadre,
-    //   PrefijoHijo: nieto.PrefijoHijo,
-    //   Alias:nieto.Alias,
-    //   FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
-    //   HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,       
-    //   Tipo: 'Nieto',
-    //   idPadre: nieto.idPadre,
-    //   idAbuelo: nieto.idAbuelo,
-    //   idHijo: nieto.idHijo,
-    //   Editable: false,
-    //   Orden: nieto.Orden,
-    //   OrdenReal: nieto.OrdenReal,
-    //   idEmpresa: this.idEmpresa,
-    //   idCorporacion: this.usuario.idMatriz,
-    //   Created_User:this.usuario.id
-    // }
-    //   this.conS.crearCuentaNieto(CuentaNieto).then((resp: any) => {
-
-    //     const index = this.CuentasNietos.findIndex(
-    //     (item: any) => item.Prefijo === nieto.Prefijo
-    //     );
-    //     this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
-    //     this.CuentasNietos[index].Alias = `${nieto.Alias}`;
-    //     this.CuentasNietos[index].Editable = false;
-    //     this.expandedKeys.push(nieto.idAbuelo);
-    //     this.expandedKeys.push(nieto.idPadre);
-    //     this.expandedKeys.push(nieto.idHijo);
-  
-    //     Swal.close();
-    //     this.toastr.success('Cuenta guardada', '¡Éxito!', {
-    //       timeOut: 1000,
-    //       positionClass: 'toast-center-center'
-    //     });
-    //     this.construirCatalogoItems(false);
-    //   });
-    // }
-
-  }
-
 }
