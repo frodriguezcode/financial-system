@@ -34,22 +34,30 @@
         </div>
         <div class="col-2">
           <label for="username">Valor</label>
-          <input (keyup.enter)="guardarRegistro()" class="text-center form-control custom-input mt-1" pInputText
+          <input (keyup.enter)="guardarRegistro()" 
+          [(ngModel)]="Valor"
+          class="text-center form-control custom-input mt-1" pInputText
             id="username" />
         </div>
         <div class="col-2">
           <label for="username">Fecha</label>
-          <input (keyup.enter)="guardarRegistro()" type="date" class="text-center form-control custom-input mt-1"
+          <input
+          [(ngModel)]="Fecha"
+          (keyup.enter)="guardarRegistro()" type="date" class="text-center form-control custom-input mt-1"
             pInputText id="username" />
         </div>
         <div class="col-4">
           <label for="username">Comentarios</label>
-            <textarea class="form-control" placeholder="Escriba un comentario acerca de este registro" id="floatingTextarea2"
+            <textarea
+            [(ngModel)]="Comentarios"
+            class="form-control" placeholder="Escriba un comentario acerca de este registro" id="floatingTextarea2"
               ></textarea>
          
         </div>
         <div class="col-4">
-         <button type="button" class="btn btn-success mt-3">
+         <button 
+         (click)="guardarRegistro()"
+         type="button" class="btn btn-success mt-3">
           Guardar Registro
           <i class="fa-solid fa-floppy-disk"></i></button>
          
@@ -85,6 +93,15 @@
           </div>
         </p-accordionTab>
       </p-accordion>
+<ag-grid-angular
+  style="width: 100%; height: 500px;"
+  class="ag-theme-alpine"
+  [rowData]="rowData"
+  [columnDefs]="columnDefs"
+  [localeText]="localeText"
+  [defaultColDef]="{ resizable: true, sortable: true, filter: true }"
+  (gridReady)="onGridReady($event)">
+</ag-grid-angular>
 
     </app-card>
   </div>
