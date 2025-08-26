@@ -96,7 +96,7 @@ const routes: Routes = [
       },
       {
         path: 'registros',
-        loadComponent: () => import('./demo/registros/panel-registros/panel-registros.component')
+        loadComponent: () => import('./demo/modulo-registros/crear-registros/crear-registros.component')
       },
       {
         path: 'tables',
