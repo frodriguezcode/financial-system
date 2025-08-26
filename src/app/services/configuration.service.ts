@@ -3220,9 +3220,9 @@ export class ConfigurationService {
       .ref.set(Object.assign(Registro, { id: id }));
   }
 
-  obtenerRegistros(idEmpresa: any): Observable<Registro[]> {
+  obtenerRegistros(idEmpresa: any): Observable<any[]> {
     return this.afs
-      .collection('Registro', (ref) => ref.where('idEmpresa', '==', idEmpresa).orderBy('FechaRegistro', 'desc'))
+      .collection('Registro', (ref) => ref.where('idEmpresa', '==', idEmpresa))
       .valueChanges();
   }
   obtenerRegistrosbyCuenta(idElemento: any) {
@@ -3414,6 +3414,7 @@ export class ConfigurationService {
       .doc(id)
       .ref.set(Object.assign(Valor, { id: id }));
   }
+
   ActualizarValorPlanItem(Valor: any) {
 
     return this.afs

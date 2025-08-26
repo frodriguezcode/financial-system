@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-sm-12">
-    <app-card cardTitle="Modulo Registros Contables" [options]="false">
+    <app-card *ngIf="cargando==false" cardTitle="Modulo Registros Contables" [options]="false">
       <div class="row">
         <div *ngIf="this.SocioNegocios.length>0" class="col-4">
           <span *ngFor="let opcion of OpcionesSociosNegocio" class="form-check form-check-inline">
@@ -90,6 +90,14 @@
                 placeholder="Seleccione una sucursal" [(ngModel)]="SucursalSeleccionada">
               </ng-select>
             </div>
+            <div class="col-2">
+              <label for="username"># Documento o Factura</label>
+              <input (keyup.enter)="guardarRegistro()" 
+              type="text"
+              [(ngModel)]="NumeroDocumento"
+              class="text-center form-control custom-input mt-1" pInputText
+              id="username" />
+            </div>
           </div>
         </p-accordionTab>
       </p-accordion>
@@ -98,8 +106,10 @@
   class="ag-theme-alpine"
   [rowData]="rowData"
   [columnDefs]="columnDefs"
+  rowSelection="single"
   [localeText]="localeText"
   [defaultColDef]="{ resizable: true, sortable: true, filter: true }"
+  (rowClicked)="onRowClicked($event)"
   (gridReady)="onGridReady($event)">
 </ag-grid-angular>
 

@@ -11,6 +11,8 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
 import { AgGridAngular, AgGridModule } from 'ag-grid-angular';
 import type { CellValueChangedEvent, ColDef, GridOptions, RowClassRules } from 'ag-grid-community';
 import { ModuleRegistry, AllCommunityModule, RowStyle, RowClassParams } from 'ag-grid-community';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 ModuleRegistry.registerModules([ AllCommunityModule ]); 
 @Component({
   selector: 'app-crear-registros',
@@ -24,12 +26,13 @@ ModuleRegistry.registerModules([ AllCommunityModule ]);
   styleUrls: ['./crear-registros.component.scss']
 })
 export default class CrearRegistrosComponent implements OnInit {
-constructor(private conS:ConfigurationService){}
+constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 Valor:number=0
 Fecha:any
 Comentarios:string=''
+NumeroDocumento:string=''
 Registros:any=[]
-
+cargando:boolean=true
 SocioNegocios:any=[]
 ColsCabecera: ColDef[] = [];
 CatalogoSocios:any=[]
@@ -53,6 +56,7 @@ SucursalSeleccionada:any
 usuario: any;
 idEmpresa:string=''
 empresaID:string=''
+idRegistro:string=''
 columnDefs: ColDef[] = []
 rowData :any=[]
  gridApi: any;
@@ -63,7 +67,37 @@ localeText:any
 onGridReady(params:any) {
   this.gridApi = params.api;
 }
+
+private gridOptions = {
+    rowSelection: 'single',
+    
+    // Evento cuando se selecciona una fila
+    onRowSelected: (event) => {
+        if (event.node.isSelected()) {
+            const selectedData = event.data;
+            console.log('Fila seleccionada:', selectedData);
+        }
+    },
+    
+    // Evento cuando cambia la selección
+    onSelectionChanged: (event) => {
+        const selectedRows = event.api.getSelectedRows();
+        console.log('Filas seleccionadas:', selectedRows);
+    }
+};
+
+private onSelectionChanged = () => {
+        const selectedRows = this.gridApi.getSelectedRows();
+        console.log('Filas seleccionadas:', selectedRows);
+        
+        // También puedes guardarlas en un estado
+        // setSelectedData(selectedRows);
+};
 ngOnInit(): void {
+      Swal.fire({
+        title: 'Cargando módulo...'
+      });
+      Swal.showLoading();
 this.localeText = {
   // Textos comunes
   page: 'Página',
@@ -116,10 +150,11 @@ this.localeText = {
 
 this.columnDefs=
 [
-  { field: "Socio de Negocio" },
+  { field: "Socio de Negocio", },
   { field: "Cuenta Contable" },
   { field: "Sub Cuenta Contable" },
   { field: "Cuenta Nieto" },
+  { field: "Num Documento o Factura" },
   { field: "Valor" },
   { field: "Fecha" },
   { field: "Proyecto" },
@@ -157,13 +192,29 @@ this.conS.usuario$.subscribe((usuario) => {
         this.idEmpresa = this.usuario.idEmpresa;
       }
       this.obtenerCuentasBancarias()
-      this.obtenerProyectos()
-      this.obtenerSucursales()
+
       
 
 });
 
+
+  
+}
+
+onRowClicked(event: any) {
+  console.log("Fila seleccionada:", event.data);
+  // Puedes asignarlo a una variable para usarlo en formularios o acciones
+
+
+ 
+}
+
+obtenerRegistros(){
+  this.conS.obtenerRegistros(this.idEmpresa).subscribe((resp:any)=>{
+    this.Registros=resp 
+    console.log('Registros',this.Registros)
 this.Registros.forEach(reg => {
+  console.log('reg',reg.NumeroDocumento)
   this.rowData.push(
     {
     "Socio de Negocio": reg.Cliente!='' ? reg.Cliente : reg.Proveedor !='' ? reg.Proveedor : '-',
@@ -174,52 +225,86 @@ this.Registros.forEach(reg => {
     "Cuenta Nieto": 
     this.getNombreCuentaContableNieto(reg.idCuentaContableNieto),
     "Valor": reg.Valor,
+    "Num Documento o Factura": reg.NumeroDocumento,
     "Fecha": reg.Fecha,
     "Proyecto": reg.idProyecto,
-    "Sucursal": reg.idSucursal
+    "Sucursal": reg.idSucursal,
+    "idRegistro":reg.id
     }
 )
   
 });
-  
+
+Swal.close();
+this.cargando=false
+  })
+
 }
 
+
 guardarRegistro() {
-  const nuevo = {
-    "Valor": Number(this.Valor),
-    "idCuentaContablePadre": this.PadreSeleccionado?.id || '',
-    "idCuentaContableHijo": this.CuentaHijoSeleccionado?.id || '',
-    "idCuentaContableNieto": this.CuentaNietoSeleccionado?.id || '',
-    "Fecha": this.Fecha,
-    "Comentarios": this.Comentarios,
-    "idProyecto": this.ProyectoSeleccionado?.id || '',
-    "idSucursal": this.SucursalSeleccionada?.id || '',
-    "CuentaBancaria": this.CatalogoSocioSeleccionado?.Tipo == '3' ? this.CatalogoSocioSeleccionado.Cuenta : '',
-    "idCuentaBancaria": this.CatalogoSocioSeleccionado?.Tipo == '3' ? this.CatalogoSocioSeleccionado.id : '',
-    "Cliente": this.CatalogoSocioSeleccionado?.Tipo == '1' ? this.CatalogoSocioSeleccionado.Nombre : '',
-    "idCliente": this.CatalogoSocioSeleccionado?.Tipo == '1' ? this.CatalogoSocioSeleccionado.id : '',
-    "Proveedor": this.CatalogoSocioSeleccionado?.Tipo == '2' ? this.CatalogoSocioSeleccionado.Nombre : '',
-    "idProveedor": this.CatalogoSocioSeleccionado?.Tipo == '2' ? this.CatalogoSocioSeleccionado.id : ''
-  };
 
-  // Guardar en la lista "real"
-  this.Registros.push(nuevo);
+    Swal.fire({
+        title: 'Cargando...'
+      });
+      Swal.showLoading();
 
-  // Convertir al formato de la grid
-  const filaGrid = {
-    "Socio de Negocio": nuevo.Cliente != '' ? nuevo.Cliente : nuevo.Proveedor != '' ? nuevo.Proveedor : '-',
-    "Cuenta Contable":this.getNombreCuentaContable(nuevo.idCuentaContablePadre!=''? nuevo.idCuentaContablePadre : ''),
-    "Sub Cuenta Contable": this.getNombreSubCuentaContable(nuevo.idCuentaContableHijo),
-    "Cuenta Nieto": nuevo.idCuentaContableNieto,
-    "Valor": nuevo.Valor,
-    "Fecha": nuevo.Fecha,
-    "Proyecto": nuevo.idProyecto,
-    "Sucursal": nuevo.idSucursal
-  };
+  const index = this.Registros.findIndex((reg: any) => reg.id === this.idRegistro);
+   if (index !== -1) {
 
-  console.log('filaGrid',filaGrid)
-  // Insertar directamente en la grid
-  this.gridApi.applyTransaction({ add: [filaGrid] });
+   }
+
+   else {
+     const nuevo:any = {
+       "Valor": Number(this.Valor),
+       "idCuentaContablePadre": this.PadreSeleccionado?.id || '',
+       "idCuentaContableHijo": this.CuentaHijoSeleccionado?.id || '',
+       "idCuentaContableNieto": this.CuentaNietoSeleccionado?.id || '',
+       "Fecha": this.Fecha,
+       "NumeroDocumento":this.NumeroDocumento,
+       "idEmpresa":this.idEmpresa,
+       "idMatriz":this.usuario.idMatriz,
+       "Comentarios": this.Comentarios,
+       "idProyecto": this.ProyectoSeleccionado?.id || '',
+       "idSucursal": this.SucursalSeleccionada?.id || '',
+       "CuentaBancaria": this.CatalogoSocioSeleccionado?.Tipo == '3' ? this.CatalogoSocioSeleccionado.Cuenta : '',
+       "idCuentaBancaria": this.CatalogoSocioSeleccionado?.Tipo == '3' ? this.CatalogoSocioSeleccionado.id : '',
+       "Cliente": this.CatalogoSocioSeleccionado?.Tipo == '1' ? this.CatalogoSocioSeleccionado.Nombre : '',
+       "idCliente": this.CatalogoSocioSeleccionado?.Tipo == '1' ? this.CatalogoSocioSeleccionado.id : '',
+       "Proveedor": this.CatalogoSocioSeleccionado?.Tipo == '2' ? this.CatalogoSocioSeleccionado.Nombre : '',
+       "idProveedor": this.CatalogoSocioSeleccionado?.Tipo == '2' ? this.CatalogoSocioSeleccionado.id : ''
+     };
+
+     this.conS.crearRegistro(nuevo).then((id:any)=>{
+       
+          nuevo.id=id
+         // Guardar en la lista "real"
+         this.Registros.push(nuevo);
+       
+       
+         // Convertir al formato de la grid
+         const filaGrid = {
+           "Socio de Negocio": nuevo.Cliente != '' ? nuevo.Cliente : nuevo.Proveedor != '' ? nuevo.Proveedor : '-',
+           "Cuenta Contable":this.getNombreCuentaContable(nuevo.idCuentaContablePadre!=''? nuevo.idCuentaContablePadre : ''),
+           "Sub Cuenta Contable": this.getNombreSubCuentaContable(nuevo.idCuentaContableHijo),
+           "Cuenta Nieto": this.getNombreCuentaContableNieto(nuevo.idCuentaContableNieto), 
+           "Valor": nuevo.Valor,
+           "NumeroDocumento": nuevo.NumeroDocumento,
+           "Fecha": nuevo.Fecha,
+           "Proyecto": nuevo.idProyecto,
+           "Sucursal": nuevo.idSucursal,
+           "idRegistro":id
+         };
+         // Insertar directamente en la grid
+         this.gridApi.applyTransaction({ add: [filaGrid] });
+         Swal.close();
+         this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+           timeOut: 1000,
+           positionClass: 'toast-center-center'
+         });
+
+     })
+   }
 }
 
 getNombreCuentaContable(idCuenta:string){
@@ -274,6 +359,8 @@ obtenerProyectos()
 {
   this.conS.obtenerProyectos(this.idEmpresa).subscribe((resp:any)=>{
     this.Proyectos=resp
+      this.obtenerSucursales()
+
   })
 
 }
@@ -281,6 +368,7 @@ obtenerSucursales()
 {
   this.conS.obtenerSucursales(this.idEmpresa).subscribe((resp:any)=>{
     this.Sucursales=resp
+    this.obtenerRegistros()    
   })
 
 }
@@ -321,6 +409,8 @@ obtenerCuentasHijos(){
 obtenerCuentasNieto(){
   this.conS.obtenerCuentasNietos(this.idEmpresa).subscribe((resp: any) => {
     this.CuentasNietos=resp
+      this.obtenerProyectos()
+
     
 
   })
