@@ -278,6 +278,21 @@ getProyecto(idProyecto:string){
 
 onRowClicked(registro: any,copiar:any) {
   this.copiadoRegistro=copiar
+
+  if(this.copiadoRegistro==true){
+    this.toastr.success('Si guarda este registro se creará como nuevo', '!Registro copiado!', {
+      timeOut: 3000,
+      positionClass: 'toast-center-center'
+    }); 
+  }
+  else{
+    this.toastr.success('Si guarda este registro se editarán sus valores', '!Registro copiado!', {
+      timeOut: 3000,
+      positionClass: 'toast-center-center'
+    });     
+  }
+
+
   if(registro.TipoSocioNegocio==1){
     this.opcionSocioSelect='Cliente'
     this.CatalogoSocios=this.SocioNegocios.filter((r:any)=>r.Tipo=='1')
