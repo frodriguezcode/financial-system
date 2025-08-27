@@ -28,13 +28,13 @@
           </ng-select>
         </div>
         <div class="col-4">
-          <label *ngIf="!this.PadreSeleccionado" for="username">Sub Cuenta Contable <span style="color: red;">(Seleccione una cuenta contable)</span> </label>
-          <label *ngIf="this.PadreSeleccionado" for="username">Sub Cuenta Contable </label>
+          <label for="username">Sub Cuenta Contable </label>
           <ng-select [disabled]="!this.PadreSeleccionado" (change)="obtenerCuentasNietoByHijo()"
             loadingText="Cargando cuentas..." notFoundText="No hay sub cuentas disponibles" class="mt-1"
             [items]="CatalogoCuentasHijos" [multiple]="false" [closeOnSelect]="false" [searchable]="true"
             bindLabel="Nombre" placeholder="Selec. una sub cuenta contable" [(ngModel)]="CuentaHijoSeleccionado">
           </ng-select>
+          <label *ngIf="!this.PadreSeleccionado" for="username"> <span style="color: red;">Seleccione una cuenta contable</span> </label>
         </div>
         <div class="col-2">
           <label for="username">Valor</label>
@@ -120,7 +120,7 @@
   
   (gridReady)="onGridReady($event)">
 </ag-grid-angular>
-  <h6>Total:  {{Total}}</h6>
+  <h6 [style.color]="Total.Color" >Total:  {{Total.Valor}}</h6>
     </app-card>
   </div>
 </div>

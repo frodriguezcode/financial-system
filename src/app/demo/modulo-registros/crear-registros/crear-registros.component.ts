@@ -28,7 +28,7 @@ ModuleRegistry.registerModules([ AllCommunityModule ]);
 export default class CrearRegistrosComponent implements OnInit {
 constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 Valor:number=0
-Total:string=''
+Total:any
 paginationPageSize = 20;
 cacheBlockSize = 10;
 Fecha:any
@@ -145,6 +145,7 @@ this.columnDefs=
      <button type="button"
      class="btn btn-success"><i class="fa-solid fa-copy"></i></button>`,
     width: 100,
+    pinned: 'left',
     filter: false,
     sortable: false,
     onCellClicked: (params: any) => {
@@ -157,6 +158,7 @@ this.columnDefs=
      <button type="button"
      class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i></button>`,
     width: 100,
+    pinned: 'left',
     filter: false,
     sortable: false,
     onCellClicked: (params: any) => {
@@ -170,6 +172,12 @@ this.columnDefs=
   { field: "Num Documento o Factura" },
   {
     field: "Valor",
+    cellStyle: params => {
+      if (params.value && params.value.toString().startsWith("-$")) {
+        return { color: "red"};
+      }
+      return { color: "black" };
+    }
   },
   { field: "Fecha" },
   { field: "Proyecto" },
@@ -320,7 +328,7 @@ this.Registros.forEach(reg => {
     "Cuenta Contable":this.getNombreCuentaContable(reg.idCuentaContablePadre!=''? reg.idCuentaContablePadre : ''),
     "Sub Cuenta Contable": this.getNombreSubCuentaContable(reg.idCuentaContableHijo),
     "Cuenta Nieto": this.getNombreCuentaContableNieto(reg.idCuentaContableNieto), 
-    "Valor": reg.TipoRegistro == 1 ? '$ ' + reg.Valor : '-$ ' + reg.Valor,
+    "Valor": reg.TipoRegistro == 1 ? '$ ' + reg.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '-$ ' + reg.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     "ValorNumero": reg.Valor,    
     "NumeroDocumento": reg.NumeroDocumento,       
     "TipoRegistro": reg.TipoRegistro,           
@@ -340,7 +348,19 @@ this.Registros.forEach(reg => {
 )
 Total+=reg.TipoRegistro == 1 ?  (reg.Valor) : (reg.Valor*-1)
 });
-this.Total=Total<0? '-$ ' + (Total*-1):'$ ' + Total
+this.Total=Total<0? 
+
+{
+  'Valor':'-$ ' + (Total*-1).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  'Color':'red'
+  
+}:
+
+{
+  'Valor':'$ ' + (Total).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  'Color':'black'
+  
+}
 
 
 // const total = this.rowData.reduce((acc, fila) => acc + (fila.ValorNumero || 0), 0);
@@ -439,7 +459,7 @@ else  if(this.Valor==0){
              "Cuenta Contable":this.getNombreCuentaContable(this.Registros[index].idCuentaContablePadre!=''? this.Registros[index].idCuentaContablePadre : ''),
              "Sub Cuenta Contable": this.getNombreSubCuentaContable(this.Registros[index].idCuentaContableHijo),
              "Cuenta Nieto": this.getNombreCuentaContableNieto(this.Registros[index].idCuentaContableNieto), 
-             "Valor": this.Registros[index].TipoRegistro == 1 ? '$ ' + this.Registros[index].Valor : '-$ ' + this.Registros[index].Valor,
+             "Valor": this.Registros[index].TipoRegistro == 1 ? '$ ' + this.Registros[index].Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '-$ ' + this.Registros[index].Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
              "ValorNumero": Math.abs(this.Registros[index].Valor),    
              "NumeroDocumento": this.Registros[index].NumeroDocumento,       
              "TipoRegistro": this.Registros[index].TipoRegistro,           
@@ -509,7 +529,7 @@ else  if(this.Valor==0){
              "Cuenta Contable":this.getNombreCuentaContable(nuevo.idCuentaContablePadre!=''? nuevo.idCuentaContablePadre : ''),
              "Sub Cuenta Contable": this.getNombreSubCuentaContable(nuevo.idCuentaContableHijo),
              "Cuenta Nieto": this.getNombreCuentaContableNieto(nuevo.idCuentaContableNieto), 
-             "Valor": nuevo.TipoRegistro == 1 ? '$ ' + nuevo.Valor : '-$ ' + nuevo.Valor,
+             "Valor": nuevo.TipoRegistro == 1 ? '$ ' + nuevo.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '-$ ' + nuevo.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
              "ValorNumero": nuevo.Valor,    
              "NumeroDocumento": nuevo.NumeroDocumento,       
              "TipoRegistro": nuevo.TipoRegistro,           
@@ -537,7 +557,19 @@ else  if(this.Valor==0){
      }
   let Total:number=0
   Total=this.Registros.reduce((acc, fila) => acc + ( fila.TipoRegistro == 1? fila.ValorNumero :(fila.ValorNumero*-1) || 0), 0);
-  this.Total=Total<0? '-$ ' + (Total*-1):'$ ' + Total
+  this.Total=Total<0? 
+
+{
+  'Valor':'-$ ' + (Total*-1).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  'Color':'red'
+  
+}:
+
+{
+  'Valor':'$ ' + (Total).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  'Color':'black'
+  
+}
 
   }
 }
