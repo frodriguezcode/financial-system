@@ -91,13 +91,17 @@ export default class ItemsComponent implements OnInit {
         this.idEmpresa = this.usuario.idEmpresa;
       }
 
-      this.obtenerEmpresas();
+      this.obtenerProyectos()
+
+      
     });
   }
 
   obtenerEmpresas() {
-    this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp: any) => {
-      this.Empresas = resp;
+    let Subscribe:Subscription
+   Subscribe= this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp: any) => {
+     Subscribe.unsubscribe()
+    this.Empresas = resp;
       this.crearCuentasFijas();
     });
   }
@@ -129,7 +133,8 @@ export default class ItemsComponent implements OnInit {
 
     if (ConfigCuentas == false) {
       let CuentasHijos = [];
-
+      let idsProyectos=this.Proyectos.map((proyect:any)=>proyect.id)
+      let idsSucursales=this.Sucursales.map((sucursal:any)=>sucursal.id)
       CuentasHijos.push(
         {
           Nombre: '1.1.1 Cobros por ventas de contado',
@@ -139,6 +144,8 @@ export default class ItemsComponent implements OnInit {
           PrefijoPadre: 1.1,
           PrefijoHijo: 1,
           Customizable: true,
+          idsProyectos:idsProyectos,
+          idsSucursales:idsSucursales,
           Alias: 'Cobros por ventas de contado',
           Tipo: 'Hijo',
           idPadre: 'od11V2OHVgaLG1RiXMiz',
@@ -154,6 +161,8 @@ export default class ItemsComponent implements OnInit {
           Prefijo: '1.2.1',
           PrefijoPadre: 1.2,
           Customizable: false,
+          idsProyectos:idsProyectos,
+          idsSucursales:idsSucursales,          
           FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
           HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
           PrefijoHijo: 1,
@@ -172,6 +181,8 @@ export default class ItemsComponent implements OnInit {
           Prefijo: '1.2.2',
           PrefijoPadre: 1.2,
           PrefijoHijo: 2,
+          idsProyectos:idsProyectos,
+          idsSucursales:idsSucursales,          
           Customizable: true,
           FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
           HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
@@ -186,12 +197,12 @@ export default class ItemsComponent implements OnInit {
           idCorporacion: this.usuario.idMatriz
         }
       );
-
-      this.conS.guardarCuentasEnLote(CuentasHijos, this.idEmpresa).then((resp: any) => {
-        this.obtenerAbuelos();
-        this.usuario.CuentasConfig = true;
-        localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
-      });
+      console.log('CuentasHijos',CuentasHijos)
+      // this.conS.guardarCuentasEnLote(CuentasHijos, this.idEmpresa).then((resp: any) => {
+      //   this.obtenerAbuelos();
+      //   this.usuario.CuentasConfig = true;
+      //   localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
+      // });
     } else {
       this.obtenerAbuelos();
     }
@@ -213,6 +224,23 @@ export default class ItemsComponent implements OnInit {
       this.Abuelos = resp.filter((r: any) => r.id != 'VmmQpdpunMTqkoSjhzzj');
       this.obtenerCuentasNietos();
     });
+  }
+
+  obtenerProyectos(){
+     let Subscribe:Subscription
+ Subscribe=   this.conS.obtenerProyectos(this.idEmpresa).subscribe((resp:any)=>{
+      Subscribe.unsubscribe()
+      this.Proyectos=resp
+      this.obtenerSucursales()
+    })
+  }
+  obtenerSucursales(){
+    let Subscribe:Subscription
+  Subscribe=  this.conS.obtenerSucursales(this.idEmpresa).subscribe((resp:any)=>{
+      this.Sucursales=resp
+      Subscribe.unsubscribe()
+      this.obtenerEmpresas();
+    })
   }
 
   ObtenerHijos(idPadre: any, idAbuelo: any, cargaInicial: boolean) {

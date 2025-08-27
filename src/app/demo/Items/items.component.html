@@ -1,176 +1,185 @@
 <div class="row">
   <div class="col-sm-12">
     <app-card cardTitle="Catálogo de Cuentas Contables" [options]="false">
-      <p-treeTable
-        *ngIf="CatalogoCuentas.length > 0"
-        [value]="CatalogoCuentas"
-        (onNodeExpand)="onNodeExpand($event)"
-        (onNodeCollapse)="onNodeCollapse($event)"
-        [scrollable]="true"
-        [tableStyle]="{ 'min-width': anchoTabla }"
-      >
-        <ng-template pTemplate="header">
-          <tr style="background-color: white">
-            <th style="width: 50%">Nombre</th>
-            <th class="text-center" style="width: 22%">Añadir Cuenta</th>
-            <th class="text-center" style="width: 13%">Editar</th>
-            <th class="text-center" style="width: 14%">Borrar</th>
-          </tr>
-        </ng-template>
+<p-treeTable
+  *ngIf="CatalogoCuentas.length > 0"
+  [value]="CatalogoCuentas"
+  (onNodeExpand)="onNodeExpand($event)"
+  (onNodeCollapse)="onNodeCollapse($event)"
+  [scrollable]="true"
+  [tableStyle]="{ 'min-width': anchoTabla }"
+>
+  <ng-template pTemplate="header">
+    <tr style="background-color: white">
+      <th style="width: 30%">Nombre</th>
+      <th style="width: 12%" class="text-center">Añadir Cuenta</th>
+      <th style="width: 12%" class="text-center">Proyectos</th>
+      <th style="width: 12%" class="text-center">Sucursales</th>
+      <th style="width: 17%" class="text-center">Editar</th>
+      <th style="width: 17%" class="text-center">Borrar</th>
+    </tr>
+  </ng-template>
 
-        <ng-template 
-        
-        pTemplate="body" let-rowNode let-rowData="rowData" >
-          <tr 
-          [ngClass]="
-          rowData.Tipo === 'Abuelo' ? 'fila-abuelo' : 
-          rowData.Tipo === 'Padre' ? 'fila-padre' :
-          rowData.Tipo === 'Hijo' ? 'fila-hijo' :
-          rowData.Tipo === 'Nieto' ? 'fila-nieto' : 'fila-padre' " 
+  <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+    <tr 
+      [ngClass]="
+        rowData.Tipo === 'Abuelo' ? 'fila-abuelo' : 
+        rowData.Tipo === 'Padre' ? 'fila-padre' :
+        rowData.Tipo === 'Hijo' ? 'fila-hijo' :
+        rowData.Tipo === 'Nieto' ? 'fila-nieto' : 'fila-padre'" 
+      [ttRow]="rowNode">
+      
+      <!-- Nombre con toggler -->
+      <td *ngIf="rowData.Editable == false" style="width: 30%">
+        <p-treeTableToggler [rowNode]="rowNode" />
+        <span>{{ rowData.name }}</span>
+      </td>
+      
+      <td *ngIf="rowData.Editable == true && rowData.Tipo == 'Hijo'" style="width: 30%">
+        <div style="margin-top: -35px; margin-left: 50px">
+          <p-treeTableToggler [rowNode]="rowNode" />
+          <p-floatLabel>
+            <input
+              (keyup.enter)="guardarHijo(rowData)"
+              class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
+            <label for="username">Nombre cuenta hijo</label>
+          </p-floatLabel>
+        </div>
+      </td>
+      
+      <td *ngIf="rowData.Editable == true && rowData.Tipo == 'Nieto'" style="width: 30%">
+        <div style="margin-top: -35px; margin-left: 70px">
+          <p-treeTableToggler [rowNode]="rowNode" />
+          <p-floatLabel>
+            <input 
+              (keyup.enter)="guardarHijo(rowData)"
+              class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
+            <label for="username">Nombre cuenta nieto</label>
+          </p-floatLabel>
+        </div>
+      </td>
 
-           [ttRow]="rowNode">
-            <!-- Nombre con toggler -->
+      <!-- Botón Añadir -->
+      <td *ngIf="rowData.Tipo == 'Padre'" class="text-center" style="width: 12%">
+        <button
+          [disabled]="rowData.Customizable==false"
+          (click)="AddCuentaHijo(rowData.idPadre, rowData.idAbuelo, rowData.idCateg)"
+          pButton
+          severity="info"
+          type="button"
+          label="Hijo"
+          icon="pi pi-plus"
+          class="p-button-rounded p-button-text p-button-sm"
+        ></button>
+      </td>
+      
+      <td *ngIf="rowData.Tipo == 'Nieto'" class="text-center" style="width: 12%">
+        <!-- Celda vacía para mantener la alineación -->
+      </td>
+      
+      <td *ngIf="rowData.Tipo == 'Hijo'" class="text-center" style="width: 12%">
+        <button
+          pButton
+          type="button"
+          severity="warning"
+          (click)="AddCuentaNieto(rowData)"
+          [disabled]="(rowData.Editable == true || rowData.Customizable==false) || rowData.Prefijo!='1.2.2'"
+          icon="pi pi-plus"
+          label="Nieto"
+          class="p-button-rounded p-button-text p-button-sm"
+        ></button>
+      </td>
+      
+      <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center" style="width: 12%">
+        Desglose para ver las cuentas
+      </td>
 
-            <td *ngIf="rowData.Editable == false "
-            style="width: 50%">
-              <p-treeTableToggler [rowNode]="rowNode" />
+      <!-- Columna Proyectos -->
+      <td class="text-center" style="width: 12%">
+        <!-- Aquí va el contenido de proyectos según el tipo de fila -->
+        <span *ngIf="rowData.Tipo == 'Abuelo' || rowData.Tipo == 'Padre'">-</span>
+        <span *ngIf="rowData.Tipo == 'Hijo'|| rowData.Tipo == 'Nieto'">Proyectos</span>
+        <!-- Agrega más lógica según necesites -->
+      </td>
 
-              <span >{{ rowData.name }}</span>
-            </td>
-            <td                       
-            *ngIf="rowData.Editable == true && rowData.Tipo == 'Hijo'" style="width: 13%">
-              <div style="margin-top: -35px; margin-left: 50px">
-                <p-treeTableToggler [rowNode]="rowNode" />
-                <p-floatLabel>
-                  <input
-                  (keyup.enter)="guardarHijo(rowData)"
-                  class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
-                  <label for="username">Nombre cuenta hijo</label>
-                </p-floatLabel>
-              </div>
-            </td>
-            <td 
-            *ngIf="rowData.Editable == true && rowData.Tipo == 'Nieto'" style="width: 13%">
-              <div style="margin-top: -35px; margin-left: 70px">
-                <p-treeTableToggler [rowNode]="rowNode" />
-                <p-floatLabel>
-                  <input 
-                  (keyup.enter)="guardarHijo(rowData)"
-                  class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
-                  <label for="username">Nombre cuenta nieto</label>
-                </p-floatLabel>
-              </div>
-            </td>
+      <!-- Columna Sucursales -->
+      <td class="text-center" style="width: 12%">
+        <!-- Aquí va el contenido de sucursales según el tipo de fila -->
+        <span *ngIf="rowData.Tipo == 'Abuelo' || rowData.Tipo == 'Padre'">-</span>
+        <span *ngIf="rowData.Tipo == 'Hijo'|| rowData.Tipo == 'Nieto'">Sucursales</span>
+        <!-- Agrega más lógica según necesites -->
+      </td>
 
-            <!-- Botón Añadir -->
-            <td             
-            *ngIf="rowData.Tipo == 'Padre'" class="text-center " style="width: 22%">
-              <button
-                [disabled]="rowData.Customizable==false"
-                (click)="AddCuentaHijo(rowData.idPadre, rowData.idAbuelo, rowData.idCateg)"
-                pButton
-                severity="info"
-                type="button"
-                label="Cuenta Hijo"
-                icon="pi pi-plus"
-                class="p-button-rounded p-button-text p-button-sm"
-              >
-              </button>
-            </td>
-            <td                     
-            *ngIf="rowData.Tipo == 'Nieto'" class="text-center" style="width: 22%">
-            </td>
-            <td            
-            *ngIf="rowData.Tipo == 'Hijo'" class="text-center" style="width: 22%">
-           
-              <button
-                pButton
-                type="button"
-                severity="warning"
-                (click)="AddCuentaNieto(rowData)"
-                [disabled]="rowData.Editable == true || rowData.Customizable==false"
-                icon="pi pi-plus"
-                label="Cuenta Nieto"
-                class="p-button-rounded p-button-text p-button-sm"
-              >
-              </button>
-            </td>
-            <td            
-            *ngIf="rowData.Tipo == 'Abuelo'" class="text-center" style="width: 22%">
-            Desglose para ver las cuentas
-            </td>
+      <!-- Botón editar -->
+      <td *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo' || rowData.Tipo == 'Padre') && rowData.Editable == false"
+          style="width: 17%" class="text-center">
+        <button
+          pButton
+          type="button"
+          [disabled]="rowData.Customizable==false 
+            || rowData.idCateg=='1.1' 
+            || rowData.idCateg=='1.2'                
+            || rowData.idCateg=='2.1' 
+            || rowData.idCateg=='2.2'                
+            || rowData.idCateg=='3.1' 
+            || rowData.idCateg=='3.2' 
+            || rowData.Prefijo=='1.2.2' 
+            || rowData.Prefijo=='1.2.1.1' 
+            || rowData.Prefijo=='1.2.1.2' 
+            || rowData.Prefijo=='1.2.1.3' 
+            || rowData.Prefijo=='1.1.1'"
+          icon="pi pi-pencil"
+          (click)="rowData.Editable = !rowData.Editable"
+          class="p-button-rounded p-button-text p-button-sm"
+        ></button>
+      </td>
+      
+      <!-- Botón guardar -->
+      <td *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo' || rowData.Tipo == 'Padre') && rowData.Editable == true" 
+          style="width: 17%" class="text-center">
+        <button
+          pButton
+          pTooltip="Confirm to proceed" 
+          showDelay="1000" 
+          hideDelay="300" 
+          (click)="guardarHijo(rowData)"
+          type="button"
+          icon="pi pi-check"
+          class="p-button-rounded editar p-button-text p-button-sm"
+        ></button>
+      </td>
 
-            <!-- Botón editar -->
+      <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center" style="width: 17%"> 
+        <!-- Celda vacía para mantener la alineación -->
+      </td>
 
-            <td          
-            *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo' || rowData.Tipo == 'Padre') && rowData.Editable == false"
-            style="width: 13%"
-            class="text-center">
-              <button
-                pButton
-                type="button"
-              [disabled]="rowData.Customizable==false 
-              || rowData.idCateg=='1.1' 
-              || rowData.idCateg=='1.2'                
-              || rowData.idCateg=='2.1' 
-              || rowData.idCateg=='2.2'                
-              || rowData.idCateg=='3.1' 
-              || rowData.idCateg=='3.2' 
-              || rowData.Prefijo=='1.2.2' 
-              || rowData.Prefijo=='1.2.1.1' 
-              || rowData.Prefijo=='1.2.1.2' 
-              || rowData.Prefijo=='1.2.1.3' 
-              || rowData.Prefijo=='1.1.1'"
-                icon="pi pi-pencil"
-                (click)="rowData.Editable = !rowData.Editable"
-                class="p-button-rounded p-button-text p-button-sm"
-              >
-              </button>
-            </td>
-            <!-- Botón guardar -->
-            <td 
-            *ngIf="(rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo' || rowData.Tipo == 'Padre') && rowData.Editable == true" 
-            style="width: 13%"
-            class="text-center">
-              <button
-                pButton
-                pTooltip="Confirm to proceed" 
-              showDelay="1000" 
-              hideDelay="300" 
-                (click)="guardarHijo(rowData)"
-                type="button"
-                icon="pi pi-check"
-                class="p-button-rounded editar p-button-text p-button-sm"
-              >
-              </button>
-            </td>
-
-            <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center"> </td>
-
-            <!-- Botón borrar -->
-            <td            
-            *ngIf="rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo' || rowData.Tipo=='Padre'" class="text-center" style="width: 14%">
-              <button 
-              [disabled]="rowData.Customizable==false 
-              || rowData.idCateg=='1.1' 
-              || rowData.idCateg=='1.2'                
-              || rowData.idCateg=='2.1' 
-              || rowData.idCateg=='2.2'                
-              || rowData.idCateg=='3.1' 
-              || rowData.idCateg=='3.2'                
-              || rowData.Prefijo=='1.2.2' 
-              || rowData.Prefijo=='1.2.1.1' 
-              || rowData.Prefijo=='1.2.1.2' 
-              || rowData.Prefijo=='1.2.1.3' 
-              || rowData.Prefijo=='1.1.1'"
-              pButton type="button" icon="pi pi-trash" 
-              class="p-button-rounded p-button-text p-button-danger p-button-sm"> </button>
-            </td>
-            <td           
-            *ngIf="rowData.Tipo == 'Abuelo'" class="text-center" style="width: 14%"> </td>
-          </tr>
-        </ng-template>
-      </p-treeTable>
+      <!-- Botón borrar -->
+      <td *ngIf="rowData.Tipo == 'Nieto' || rowData.Tipo == 'Hijo' || rowData.Tipo=='Padre'" 
+          class="text-center" style="width: 17%">
+        <button 
+          [disabled]="rowData.Customizable==false 
+            || rowData.idCateg=='1.1' 
+            || rowData.idCateg=='1.2'                
+            || rowData.idCateg=='2.1' 
+            || rowData.idCateg=='2.2'                
+            || rowData.idCateg=='3.1' 
+            || rowData.idCateg=='3.2'                
+            || rowData.Prefijo=='1.2.2' 
+            || rowData.Prefijo=='1.2.1.1' 
+            || rowData.Prefijo=='1.2.1.2' 
+            || rowData.Prefijo=='1.2.1.3' 
+            || rowData.Prefijo=='1.1.1'"
+          pButton type="button" icon="pi pi-trash" 
+          class="p-button-rounded p-button-text p-button-danger p-button-sm">
+        </button>
+      </td>
+      
+      <td *ngIf="rowData.Tipo == 'Abuelo'" class="text-center" style="width: 17%">
+        <!-- Celda vacía para mantener la alineación -->
+      </td>
+    </tr>
+  </ng-template>
+</p-treeTable>
     </app-card>
   </div>
 </div>
