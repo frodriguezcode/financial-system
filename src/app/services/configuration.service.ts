@@ -3194,17 +3194,35 @@ export class ConfigurationService {
       .ref.update({ Activo: Activo });
   }
 
+  crearLogRegistro(Registro: any) {
+    const id = this.afs.createId();
+    return this.afs
+      .collection('LogRegistros')
+      .doc(id)
+      .ref.set(Object.assign(Registro, { id: id }));
+  }
 
 
   // !Registros
-  crearRegistro(Registro: any): Promise<string> {
-
-    return this.afs
-      .collection('Registro')
-      .doc(Registro.id)
-      .ref.set({ ...Registro }) // Usa spread operator para añadir el id al objeto
-      .then(() => Registro.id); // Retorna el ID una vez que se complete la operación
+async crearRegistro(Registro: any): Promise<string> {
+  const id = this.afs.createId();
+  let LogRegistros={
+    'Fecha':Registro.Fecha,
+    'Hora':Registro.Hora,
+    'idUsuario':Registro.idUsuario,
+    'idEmpresa':Registro.idEmpresa,
+    'idRegistro':id,
+    'Valor':Registro.Valor,
+    'Accion':'Creado'
   }
+  this.crearLogRegistro(LogRegistros)
+
+  await this.afs
+    .collection('Registros')
+    .doc(id)
+    .ref.set(Object.assign(Registro, { id: id }));
+  return id;
+}
   copiarRegistro(Registro: any) {
     return this.afs
       .collection('Registro')
@@ -3222,12 +3240,12 @@ export class ConfigurationService {
 
   obtenerRegistros(idEmpresa: any): Observable<any[]> {
     return this.afs
-      .collection('Registro', (ref) => ref.where('idEmpresa', '==', idEmpresa))
+      .collection('Registros', (ref) => ref.where('idEmpresa', '==', idEmpresa))
       .valueChanges();
   }
   obtenerRegistrosbyCuenta(idElemento: any) {
     return this.afs
-      .collection('Registro', (ref) => ref.where('Elemento.id', '==', idElemento))
+      .collection('Registros', (ref) => ref.where('Elemento.id', '==', idElemento))
       .valueChanges();
   }
 
@@ -3275,11 +3293,29 @@ export class ConfigurationService {
     });
   }
 
-
+  padZero(num: number): string {
+    return (num < 10 ? '0' : '') + num;
+  }
 
   updateRegistro(Registro: any) {
+  const currentDate = new Date();
+  const hours = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const formattedHour = hours % 12 || 12;  
+
+  let LogRegistros={
+    'Fecha':currentDate.toISOString().slice(0, 10),
+    'Hora':formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+    'idUsuario':Registro.idUsuario,
+    'idEmpresa':Registro.idEmpresa,
+    'idRegistro':Registro.id,
+    'Valor':Registro.Valor,
+    'Accion':'Actualizado'
+  }
+  this.crearLogRegistro(LogRegistros)
     return this.afs
-      .collection('Registro')
+      .collection('Registros')
       .doc(Registro.id)
       .ref.update(Registro);
   }
