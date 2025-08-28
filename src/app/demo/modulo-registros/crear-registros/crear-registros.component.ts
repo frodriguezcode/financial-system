@@ -29,6 +29,7 @@ ModuleRegistry.registerModules([ AllCommunityModule ]);
 export default class CrearRegistrosComponent implements OnInit {
 constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 Valor:number=0
+TipoEntidad:number=1
 Total:any
 paginationPageSize = 20;
 cacheBlockSize = 10;
@@ -79,7 +80,9 @@ onGridReady(params:any) {
 }
 getRowId = (params: any) => params.data.idRegistro;
 
-
+choiceTipoEntidad(tipo:number){
+this.TipoEntidad=tipo
+}
 ngOnInit(): void {
 
 

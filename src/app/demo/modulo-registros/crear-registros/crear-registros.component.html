@@ -5,13 +5,19 @@
         <div class="col-3">
           <div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" checked name="inlineRadioOptions" id="inlineRadio1" value="option1" />
+              <input class="form-check-input" type="radio"
+              (change)="choiceTipoEntidad(1)"
+               [checked]="TipoEntidad==1" 
+               name="inlineRadioOptions" id="inlineRadio1" value="option1" />
               <label class="form-check-label" 
               
               for="inlineRadio1">Sucursal</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
+              <input 
+              (change)="choiceTipoEntidad(2)"
+              [checked]="TipoEntidad==2"
+              class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
               <label class="form-check-label" for="inlineRadio2">Proyecto</label>
             </div>
 
@@ -19,6 +25,7 @@
        
        
           <ng-select
+            *ngIf="TipoEntidad==2"
             loadingText="Cargando cuentas..."
             notFoundText="No hay sub cuentas disponibles"
             class="mt-1"
@@ -34,6 +41,7 @@
 
  
           <ng-select
+            *ngIf="TipoEntidad==1"
             loadingText="Cargando cuentas..."
             notFoundText="No hay sub cuentas disponibles"
             class="mt-1"
