@@ -1,5 +1,5 @@
 // angular import
-import { Component, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TabViewModule } from 'primeng/tabview';
 
@@ -53,7 +53,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
 })
-export default class ItemsComponent implements OnInit {
+export default class ItemsComponent implements OnInit,AfterViewInit  {
+   @ViewChild('InputCuentaHijo', { static: false }) InputCuentaHijo!: ElementRef;
+   @ViewChild('InputCuentaNieto', { static: false }) InputCuentaNieto!: ElementRef;
   constructor(
     private datePipe: DatePipe,
     private conS: ConfigurationService,
@@ -83,6 +85,12 @@ export default class ItemsComponent implements OnInit {
   Empresas: any = [];
   anchoTabla: string = '50rem';
   @Input() empresaID: string = '';
+
+   ngAfterViewInit() {
+    this.focusInput();
+    this.focusInputCuentaNieto();
+  }
+
   ngOnInit(): void {
     this.conS.usuario$.subscribe((usuario) => {
       if (usuario) {
@@ -102,6 +110,21 @@ export default class ItemsComponent implements OnInit {
 
     });
   }
+
+focusInput() {
+  setTimeout(() => {
+    if (this.InputCuentaHijo?.nativeElement) {
+      this.InputCuentaHijo.nativeElement.focus();
+    }
+  });
+}
+focusInputCuentaNieto() {
+  setTimeout(() => {
+    if (this.InputCuentaNieto?.nativeElement) {
+      this.InputCuentaNieto.nativeElement.focus();
+    }
+  });
+}
 
   showDialogProyecto(proyectosSeleccionados: any, cuenta: any) {
     this.ProyectosSeleccionadosCuenta = proyectosSeleccionados
@@ -396,6 +419,7 @@ export default class ItemsComponent implements OnInit {
           Customizable: hij.Customizable,
           idHijo: hij.idHijo == undefined ? '' : hij.idHijo,
           idPadre: idPadre,
+          id:hij.id,
           CuentasNieto:hij.CuentasNieto,
           CuentaFija:hij.CuentaFija,
           PrefijoPadre: hij.PrefijoPadre,
@@ -426,6 +450,7 @@ export default class ItemsComponent implements OnInit {
           Prefijo: niet.Prefijo,
           CuentaFija:niet.CuentaFija,
           idNieto: niet.idNieto == undefined ? '' : niet.idNieto,
+          id: niet.id == undefined ? '' : niet.id,
           idHijo: niet.idHijo == undefined ? '' : niet.idHijo,
           idPadre: rowData.idPadre,
           PrefijoPadre: niet.PrefijoPadre,
@@ -551,6 +576,7 @@ export default class ItemsComponent implements OnInit {
     this.expandedKeys.push(idAbuelo);
     this.expandedKeys.push(idPadre);
     this.construirCatalogoItems(false);
+    this.focusInput();
   }
 
   AddCuentaNieto(rowData: any) {
@@ -584,6 +610,7 @@ export default class ItemsComponent implements OnInit {
     this.expandedKeys.push(rowData.idPadre);
     this.expandedKeys.push(rowData.idHijo);
     this.construirCatalogoItems(false);
+    this.focusInputCuentaNieto();
   }
 
   guardarHijo(hijo: any) {
@@ -652,13 +679,15 @@ export default class ItemsComponent implements OnInit {
             Created_User: this.usuario.id
           };
 
-          this.conS.crearItem(Item).then((resp: any) => {
+          this.conS.crearItem(Item).then((id:any)=>{ 
             const index = this.Items.findIndex((item: any) => item.Prefijo === hijo.Prefijo);
             this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
             this.Items[index].Alias = `${hijo.Alias}`;
             this.Items[index].Editable = false;
             this.Items[index].idsSucursales = idsSucursales;
             this.Items[index].idsProyectos = idsProyectos;
+            this.Items[index].idHijo = id;
+            this.Items[index].id = id;
             this.expandedKeys.push(hijo.idAbuelo);
             this.expandedKeys.push(hijo.idPadre);
 
@@ -752,6 +781,8 @@ export default class ItemsComponent implements OnInit {
           this.CuentasNietos[index].Editable = false;
           this.CuentasNietos[index].idsSucursales = idsSucursales;
           this.CuentasNietos[index].idsProyectos = idsProyectos;
+          this.CuentasNietos[index].id = resp;
+          this.CuentasNietos[index].idNieto = resp;
           this.expandedKeys.push(nieto.idAbuelo);
           this.expandedKeys.push(nieto.idPadre);
           this.expandedKeys.push(nieto.idHijo);

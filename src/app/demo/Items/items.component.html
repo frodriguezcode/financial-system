@@ -40,9 +40,10 @@
           <p-treeTableToggler [rowNode]="rowNode" />
           <p-floatLabel>
             <input
+              #InputCuentaHijo
               (keyup.enter)="guardarHijo(rowData)"
               class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
-            <label for="username">Nombre cuenta hijo</label>
+            <label for="username">Nombre cuenta hijo (Enter para guardar)</label>
           </p-floatLabel>
         </div>
       </td>
@@ -52,6 +53,7 @@
           <p-treeTableToggler [rowNode]="rowNode" />
           <p-floatLabel>
             <input 
+            #InputCuentaNieto              
               (keyup.enter)="guardarHijo(rowData)"
               class="text-center custom-input" pInputText id="username" [(ngModel)]="rowData.Alias" />
             <label for="username">Nombre cuenta nieto</label>

@@ -2970,13 +2970,14 @@ export class ConfigurationService {
   }
 
   //!------------Items------------
-  crearItem(Item: any) {
+async crearItem(Item: any) : Promise<string> {
     const id = this.afs.createId();
     Item.idHijo=id
-    return this.afs
+    await this.afs
       .collection('CuentasHijos')
       .doc(id)
       .ref.set(Object.assign(Item, { id: id }));
+      return id;
   }
 
   async guardarCuentasEnLote(cuentasHijos: any[],idEmpresa:any): Promise<void> {
@@ -3122,13 +3123,14 @@ export class ConfigurationService {
     throw error;
   }
 }
-  crearCuentaNieto(Item: any) {
+async  crearCuentaNieto(Item: any): Promise<string> {
     const id = this.afs.createId();
     Item.idNieto=id
-    return this.afs
+    await this.afs
       .collection('CuentasNietos')
       .doc(id)
       .ref.set(Object.assign(Item, { id: id }));
+      return id;
   }
 
   obtenerItems(idEmpresa: any) {

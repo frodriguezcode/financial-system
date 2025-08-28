@@ -13,6 +13,7 @@ import type { CellValueChangedEvent, ColDef, GridOptions, RowClassRules } from '
 import { ModuleRegistry, AllCommunityModule, RowStyle, RowClassParams } from 'ag-grid-community';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
+import { FieldsetModule } from 'primeng/fieldset';
 ModuleRegistry.registerModules([ AllCommunityModule ]); 
 @Component({
   selector: 'app-crear-registros',
@@ -20,7 +21,7 @@ ModuleRegistry.registerModules([ AllCommunityModule ]);
   imports: [CommonModule, SharedModule,FloatLabelModule,NgSelectModule,AccordionModule,
     AgGridAngular, 
     AgGridModule,
-
+    FieldsetModule
   ],
   templateUrl: './crear-registros.component.html',
   styleUrls: ['./crear-registros.component.scss']
