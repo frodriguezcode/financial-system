@@ -60,7 +60,13 @@ export default class ItemsComponent implements OnInit {
     private authS: AuthService,
     private toastr: ToastrService,
     private renderer: Renderer2
-  ) {}
+  ) { }
+  visibleProyecto: boolean = false;
+  visibleSucursal: boolean = false;
+  NombresProyectos: any
+  ProyectosSeleccionadosCuenta: any
+  SucursalesSeleccionadasCuenta: any
+  CuentaSeleccionada: any
   usuario: any;
   Items: any = [];
   CuentasNietos: any = [];
@@ -93,15 +99,137 @@ export default class ItemsComponent implements OnInit {
 
       this.obtenerProyectos()
 
-      
+
     });
   }
 
+  showDialogProyecto(proyectosSeleccionados: any, cuenta: any) {
+    this.ProyectosSeleccionadosCuenta = proyectosSeleccionados
+    this.CuentaSeleccionada = cuenta
+
+    this.visibleProyecto = true;
+  }
+  showDialogSucursal(sucursalesSeleccionadas: any, cuenta: any) {
+    this.SucursalesSeleccionadasCuenta = sucursalesSeleccionadas
+    this.CuentaSeleccionada = cuenta
+
+    this.visibleSucursal = true;
+  }
+
+  editarProyectos() {
+    let idsProyectos = this.ProyectosSeleccionadosCuenta.map((proyecto: any) => proyecto.id)
+    if (this.CuentaSeleccionada.Tipo == 'Hijo') {
+      const index = this.Items.findIndex((item: any) => item.idHijo === this.CuentaSeleccionada.idHijo);
+      this.Items[index].idsProyectos = idsProyectos
+     
+      this.expandedKeys.push(this.CuentaSeleccionada.idAbuelo);
+      this.expandedKeys.push(this.CuentaSeleccionada.idPadre);
+      this.construirCatalogoItems(false);
+    }
+    else {
+      const index = this.CuentasNietos.findIndex((item: any) => item.idNieto === this.CuentaSeleccionada.idNieto);
+      this.CuentasNietos[index].idsProyectos = idsProyectos
+     
+      this.expandedKeys.push(this.CuentaSeleccionada.idAbuelo);
+      this.expandedKeys.push(this.CuentaSeleccionada.idPadre);
+      this.expandedKeys.push(this.CuentaSeleccionada.idHijo);
+      this.construirCatalogoItems(false); 
+    }
+  }
+
+  guardarEdicionProyecto() {
+    if (this.CuentaSeleccionada.Tipo == 'Hijo') {
+      const index = this.Items.findIndex((item: any) => item.idHijo === this.CuentaSeleccionada.idHijo);
+      this.conS.ActualizarItem(this.Items[index]).then((resp) => {
+         this.expandedKeys=[]
+        this.expandedKeys.push(this.Items[index].idAbuelo);
+        this.expandedKeys.push(this.Items[index].idPadre);
+        Swal.close();
+        this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+          timeOut: 1000,
+          positionClass: 'toast-center-center'
+        });
+        this.construirCatalogoItems(false);
+        this.visibleProyecto=false
+      });
+
+    }
+    else {
+      const index = this.CuentasNietos.findIndex((item: any) => item.idNieto === this.CuentaSeleccionada.idNieto);
+      this.conS.ActualizarCuentaNieto(this.CuentasNietos[index]).then((resp) => {
+        this.expandedKeys.push(this.CuentasNietos[index].idAbuelo);
+        this.expandedKeys.push(this.CuentasNietos[index].idPadre);
+        this.expandedKeys.push(this.CuentasNietos[index].idHijo);
+        Swal.close();
+        this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+          timeOut: 1000,
+          positionClass: 'toast-center-center'
+        });
+        this.construirCatalogoItems(false);
+        this.visibleProyecto=false
+      });      
+    }
+  }
+
+  editarSucursales() {
+    let idsSucursales = this.SucursalesSeleccionadasCuenta.map((sucursal: any) => sucursal.id)
+    if (this.CuentaSeleccionada.Tipo == 'Hijo') {
+      const index = this.Items.findIndex((item: any) => item.idHijo === this.CuentaSeleccionada.idHijo);
+      this.Items[index].idsSucursales = idsSucursales
+      this.expandedKeys.push(this.CuentaSeleccionada.idAbuelo);
+      this.expandedKeys.push(this.CuentaSeleccionada.idPadre);
+      this.construirCatalogoItems(false);
+    }
+    else {
+      const index = this.CuentasNietos.findIndex((item: any) => item.idNieto === this.CuentaSeleccionada.idNieto);
+      this.CuentasNietos[index].idsSucursales = idsSucursales
+     
+      this.expandedKeys.push(this.CuentaSeleccionada.idAbuelo);
+      this.expandedKeys.push(this.CuentaSeleccionada.idPadre);
+      this.expandedKeys.push(this.CuentaSeleccionada.idHijo);
+      this.construirCatalogoItems(false); 
+    } 
+  }
+
+  guardarEdicionSucursal() {
+
+    if (this.CuentaSeleccionada.Tipo == 'Hijo') {
+      const index = this.Items.findIndex((item: any) => item.idHijo === this.CuentaSeleccionada.idHijo);
+      this.conS.ActualizarItem(this.Items[index]).then((resp) => {
+        this.expandedKeys.push(this.Items[index].idAbuelo);
+        this.expandedKeys.push(this.Items[index].idPadre);
+        Swal.close();
+        this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+          timeOut: 1000,
+          positionClass: 'toast-center-center'
+        });
+        this.construirCatalogoItems(false);
+        this.visibleSucursal=false
+      });
+    }
+    else {
+      const index = this.CuentasNietos.findIndex((item: any) => item.idNieto === this.CuentaSeleccionada.idNieto);
+      this.conS.ActualizarCuentaNieto(this.CuentasNietos[index]).then((resp) => {
+        this.expandedKeys.push(this.CuentasNietos[index].idAbuelo);
+        this.expandedKeys.push(this.CuentasNietos[index].idPadre);
+        this.expandedKeys.push(this.CuentasNietos[index].idHijo);
+        Swal.close();
+        this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+          timeOut: 1000,
+          positionClass: 'toast-center-center'
+        });
+        this.construirCatalogoItems(false);
+        this.visibleProyecto=false
+      });      
+    }  
+
+  }
+
   obtenerEmpresas() {
-    let Subscribe:Subscription
-   Subscribe= this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp: any) => {
-     Subscribe.unsubscribe()
-    this.Empresas = resp;
+    let Subscribe: Subscription
+    Subscribe = this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp: any) => {
+      Subscribe.unsubscribe()
+      this.Empresas = resp;
       this.crearCuentasFijas();
     });
   }
@@ -133,8 +261,8 @@ export default class ItemsComponent implements OnInit {
 
     if (ConfigCuentas == false) {
       let CuentasHijos = [];
-      let idsProyectos=this.Proyectos.map((proyect:any)=>proyect.id)
-      let idsSucursales=this.Sucursales.map((sucursal:any)=>sucursal.id)
+      let idsProyectos = this.Proyectos.map((proyect: any) => proyect.id)
+      let idsSucursales = this.Sucursales.map((sucursal: any) => sucursal.id)
       CuentasHijos.push(
         {
           Nombre: '1.1.1 Cobros por ventas de contado',
@@ -143,9 +271,11 @@ export default class ItemsComponent implements OnInit {
           HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
           PrefijoPadre: 1.1,
           PrefijoHijo: 1,
-          Customizable: true,
-          idsProyectos:idsProyectos,
-          idsSucursales:idsSucursales,
+          Customizable: false,
+          CuentasNieto:false,
+          CuentaFija:true,
+          idsProyectos: idsProyectos,
+          idsSucursales: idsSucursales,
           Alias: 'Cobros por ventas de contado',
           Tipo: 'Hijo',
           idPadre: 'od11V2OHVgaLG1RiXMiz',
@@ -161,15 +291,17 @@ export default class ItemsComponent implements OnInit {
           Prefijo: '1.2.1',
           PrefijoPadre: 1.2,
           Customizable: false,
-          idsProyectos:idsProyectos,
-          idsSucursales:idsSucursales,          
+          CuentasNieto:false,
+          CuentaFija:true,
+          idsProyectos: idsProyectos,
+          idsSucursales: idsSucursales,
           FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
           HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
           PrefijoHijo: 1,
           Alias: 'Pagos a proveedores (Costo de Operación)',
           Tipo: 'Hijo',
           idPadre: 'KtA2Cxpd79TJrW9afqR9',
-          idAbuelo: 'od11V2OHVgaLG1RiXMiz',
+          idAbuelo: 'EESGPM4hWXvDlXSRnCwA',
           Editable: false,
           Orden: 1,
           OrdenReal: 2,
@@ -181,8 +313,10 @@ export default class ItemsComponent implements OnInit {
           Prefijo: '1.2.2',
           PrefijoPadre: 1.2,
           PrefijoHijo: 2,
-          idsProyectos:idsProyectos,
-          idsSucursales:idsSucursales,          
+          CuentasNieto:true,
+          CuentaFija:true,
+          idsProyectos: idsProyectos,
+          idsSucursales: idsSucursales,
           Customizable: true,
           FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
           HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
@@ -197,12 +331,12 @@ export default class ItemsComponent implements OnInit {
           idCorporacion: this.usuario.idMatriz
         }
       );
-      console.log('CuentasHijos',CuentasHijos)
-      // this.conS.guardarCuentasEnLote(CuentasHijos, this.idEmpresa).then((resp: any) => {
-      //   this.obtenerAbuelos();
-      //   this.usuario.CuentasConfig = true;
-      //   localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
-      // });
+
+      this.conS.guardarCuentasEnLote(CuentasHijos, this.idEmpresa).then((resp: any) => {
+        this.obtenerAbuelos();
+        this.usuario.CuentasConfig = true;
+        localStorage.setItem('usuarioFinancialSystems', JSON.stringify(this.usuario));
+      });
     } else {
       this.obtenerAbuelos();
     }
@@ -220,27 +354,34 @@ export default class ItemsComponent implements OnInit {
 
   obtenerAbuelos() {
     this.conS.obtenerCategoriasFlujos().subscribe((resp: any) => {
-      console.log('resp', resp);
       this.Abuelos = resp.filter((r: any) => r.id != 'VmmQpdpunMTqkoSjhzzj');
       this.obtenerCuentasNietos();
     });
   }
 
-  obtenerProyectos(){
-     let Subscribe:Subscription
- Subscribe=   this.conS.obtenerProyectos(this.idEmpresa).subscribe((resp:any)=>{
+  obtenerProyectos() {
+    let Subscribe: Subscription
+    Subscribe = this.conS.obtenerProyectos(this.idEmpresa).subscribe((resp: any) => {
       Subscribe.unsubscribe()
-      this.Proyectos=resp
+      this.Proyectos = resp
       this.obtenerSucursales()
     })
   }
-  obtenerSucursales(){
-    let Subscribe:Subscription
-  Subscribe=  this.conS.obtenerSucursales(this.idEmpresa).subscribe((resp:any)=>{
-      this.Sucursales=resp
+  obtenerSucursales() {
+    let Subscribe: Subscription
+    Subscribe = this.conS.obtenerSucursales(this.idEmpresa).subscribe((resp: any) => {
+      this.Sucursales = resp
       Subscribe.unsubscribe()
       this.obtenerEmpresas();
     })
+  }
+
+
+  obtenerProyectosbyCuenta(idsProyectos: any) {
+    return this.Proyectos.filter((proy: any) => idsProyectos.includes(proy.id))
+  }
+  obtenerSucursalesbyCuenta(idsSucursales: any) {
+    return this.Sucursales.filter((sucursal: any) => idsSucursales.includes(sucursal.id))
   }
 
   ObtenerHijos(idPadre: any, idAbuelo: any, cargaInicial: boolean) {
@@ -255,8 +396,12 @@ export default class ItemsComponent implements OnInit {
           Customizable: hij.Customizable,
           idHijo: hij.idHijo == undefined ? '' : hij.idHijo,
           idPadre: idPadre,
+          CuentasNieto:hij.CuentasNieto,
+          CuentaFija:hij.CuentaFija,
           PrefijoPadre: hij.PrefijoPadre,
           PrefijoHijo: hij.PrefijoHijo,
+          ProyectosSeleccionados: this.obtenerProyectosbyCuenta(hij.idsProyectos),
+          SucursalesSeleccionadas: this.obtenerSucursalesbyCuenta(hij.idsSucursales),
           Editable: hij.Editable,
           Orden: hij.Orden,
           OrdenReal: hij.OrdenReal,
@@ -279,11 +424,14 @@ export default class ItemsComponent implements OnInit {
           name: niet.Nombre,
           Alias: niet.Alias,
           Prefijo: niet.Prefijo,
+          CuentaFija:niet.CuentaFija,
           idNieto: niet.idNieto == undefined ? '' : niet.idNieto,
           idHijo: niet.idHijo == undefined ? '' : niet.idHijo,
           idPadre: rowData.idPadre,
           PrefijoPadre: niet.PrefijoPadre,
           PrefijoHijo: niet.PrefijoHijo,
+          ProyectosSeleccionados: this.obtenerProyectosbyCuenta(niet.idsProyectos),
+          SucursalesSeleccionadas: this.obtenerSucursalesbyCuenta(niet.idsSucursales),
           Editable: niet.Editable,
           Tipo: niet.Tipo,
           Orden: niet.Orden,
@@ -346,7 +494,6 @@ export default class ItemsComponent implements OnInit {
         children: this.ObtenerPadres(flujo.id, cargaInicial)
       });
     });
-    console.log('CatalogoCuentas', this.CatalogoCuentas);
   }
 
   verificarExpanded(idElemento: any) {
@@ -374,6 +521,8 @@ export default class ItemsComponent implements OnInit {
   }
 
   AddCuentaHijo(idPadre: any, idAbuelo: any, idCateg: any) {
+    let idsProyectos = this.Proyectos.map((proyect: any) => proyect.id)
+    let idsSucursales = this.Sucursales.map((sucursal: any) => sucursal.id)
     let Orden: any = this.Items.filter((it: any) => it.idPadre == idPadre).length;
 
     this.Items.push({
@@ -383,7 +532,13 @@ export default class ItemsComponent implements OnInit {
       PrefijoHijo: Orden + 1,
       Alias: '',
       Tipo: 'Hijo',
+      CuentasNieto:false,
+      CuentaFija:false,
       Customizable: true,
+      idsSucursales: idsSucursales,
+      idsProyectos: idsProyectos,
+      ProyectosSeleccionados: this.obtenerProyectosbyCuenta(idsProyectos),
+      SucursalesSeleccionadas: this.obtenerSucursalesbyCuenta(idsSucursales),
       idPadre: idPadre,
       idAbuelo: idAbuelo,
       Editable: true,
@@ -399,6 +554,8 @@ export default class ItemsComponent implements OnInit {
   }
 
   AddCuentaNieto(rowData: any) {
+    let idsProyectos = this.Proyectos.map((proyect: any) => proyect.id)
+    let idsSucursales = this.Sucursales.map((sucursal: any) => sucursal.id)
     let Orden: any = this.CuentasNietos.filter((it: any) => it.idHijo == rowData.idHijo).length;
     this.CuentasNietos.push({
       Nombre: '',
@@ -408,6 +565,11 @@ export default class ItemsComponent implements OnInit {
       PrefijoNieto: Orden + 1,
       Alias: '',
       Tipo: 'Nieto',
+      CuentaFija:false,
+      idsSucursales: idsSucursales,
+      idsProyectos: idsProyectos,
+      ProyectosSeleccionados: this.obtenerProyectosbyCuenta(idsProyectos),
+      SucursalesSeleccionadas: this.obtenerSucursalesbyCuenta(idsSucursales),
       idPadre: rowData.idPadre,
       idAbuelo: rowData.idAbuelo,
       idHijo: rowData.idHijo,
@@ -431,24 +593,28 @@ export default class ItemsComponent implements OnInit {
     Swal.showLoading();
     const index = this.Items.findIndex((item: any) => item.idHijo === hijo.idHijo);
     if (hijo.Tipo == 'Hijo') {
-      if(hijo.Alias==''){
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'Debe colocar un nombre a la cuenta',
-        showConfirmButton: false,
-        timer: 1500
-      });
+      let idsProyectos = hijo.ProyectosSeleccionados.map((proyect: any) => proyect.id)
+      let idsSucursales = hijo.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
+      if (hijo.Alias == '') {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Debe colocar un nombre a la cuenta',
+          showConfirmButton: false,
+          timer: 1500
+        });
       }
       else {
         if (index !== -1) {
           this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
           this.Items[index].Alias = `${hijo.Alias}`;
           this.Items[index].Editable = false;
+          this.Items[index].idsProyectos = idsProyectos;
+          this.Items[index].idsSucursales = idsSucursales;
           this.conS.ActualizarItem(this.Items[index]).then((resp) => {
             this.expandedKeys.push(hijo.idAbuelo);
             this.expandedKeys.push(hijo.idPadre);
-  
+
             Swal.close();
             this.toastr.success('Cuenta actualizada', '¡Éxito!', {
               timeOut: 1000,
@@ -462,17 +628,20 @@ export default class ItemsComponent implements OnInit {
           const minutes = currentDate.getMinutes();
           const ampm = hours >= 12 ? 'PM' : 'AM';
           const formattedHour = hours % 12 || 12;
-  
+
           let Item = {
             Nombre: `${hijo.Prefijo} ${hijo.Alias}`,
             Prefijo: hijo.Prefijo,
             PrefijoPadre: hijo.PrefijoPadre,
             PrefijoHijo: hijo.PrefijoHijo,
+            CuentaFija:false,
             Alias: hijo.Alias,
             FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
             HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
             Tipo: 'Hijo',
             idPadre: hijo.idPadre,
+            idsSucursales: idsSucursales,
+            idsProyectos: idsProyectos,
             idAbuelo: hijo.idAbuelo,
             Customizable: true,
             Editable: false,
@@ -482,15 +651,17 @@ export default class ItemsComponent implements OnInit {
             idCorporacion: this.usuario.idMatriz,
             Created_User: this.usuario.id
           };
-  
+
           this.conS.crearItem(Item).then((resp: any) => {
             const index = this.Items.findIndex((item: any) => item.Prefijo === hijo.Prefijo);
             this.Items[index].Nombre = `${hijo.Prefijo} ${hijo.Alias}`;
             this.Items[index].Alias = `${hijo.Alias}`;
             this.Items[index].Editable = false;
+            this.Items[index].idsSucursales = idsSucursales;
+            this.Items[index].idsProyectos = idsProyectos;
             this.expandedKeys.push(hijo.idAbuelo);
             this.expandedKeys.push(hijo.idPadre);
-  
+
             Swal.close();
             this.toastr.success('Cuenta guardada', '¡Éxito!', {
               timeOut: 1000,
@@ -499,7 +670,7 @@ export default class ItemsComponent implements OnInit {
             this.construirCatalogoItems(false);
           });
         }
-        
+
       }
     } else {
       this.guardarNieto(hijo);
@@ -515,17 +686,21 @@ export default class ItemsComponent implements OnInit {
         showConfirmButton: false,
         timer: 1500
       });
-    } 
+    }
     else {
       Swal.fire({
         title: 'Cargando...'
       });
       Swal.showLoading();
       const index = this.CuentasNietos.findIndex((item: any) => item.idNieto === nieto.idNieto);
+      let idsProyectos = nieto.ProyectosSeleccionados.map((proyect: any) => proyect.id)
+      let idsSucursales = nieto.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
       if (index !== -1) {
         this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
         this.CuentasNietos[index].Alias = `${nieto.Alias}`;
         this.CuentasNietos[index].Editable = false;
+        this.CuentasNietos[index].idsProyectos = idsProyectos;
+        this.CuentasNietos[index].idsSucursales = idsSucursales;
 
         this.conS.ActualizarCuentaNieto(this.CuentasNietos[index]).then((resp) => {
           this.expandedKeys.push(nieto.idAbuelo);
@@ -552,12 +727,17 @@ export default class ItemsComponent implements OnInit {
           PrefijoPadre: nieto.PrefijoPadre,
           PrefijoHijo: nieto.PrefijoHijo,
           Alias: nieto.Alias,
+          CuentaFija:false,
           FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
           HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
           Tipo: 'Nieto',
           idPadre: nieto.idPadre,
           idAbuelo: nieto.idAbuelo,
           idHijo: nieto.idHijo,
+          idsProyectos: idsProyectos,
+          idsSucursales: idsSucursales,
+          ProyectosSeleccionados: this.obtenerProyectosbyCuenta(idsProyectos),
+          SucursalesSeleccionadas: this.obtenerSucursalesbyCuenta(idsSucursales),
           Editable: false,
           Orden: nieto.Orden,
           OrdenReal: nieto.OrdenReal,
@@ -570,6 +750,8 @@ export default class ItemsComponent implements OnInit {
           this.CuentasNietos[index].Nombre = `${nieto.Prefijo} ${nieto.Alias}`;
           this.CuentasNietos[index].Alias = `${nieto.Alias}`;
           this.CuentasNietos[index].Editable = false;
+          this.CuentasNietos[index].idsSucursales = idsSucursales;
+          this.CuentasNietos[index].idsProyectos = idsProyectos;
           this.expandedKeys.push(nieto.idAbuelo);
           this.expandedKeys.push(nieto.idPadre);
           this.expandedKeys.push(nieto.idHijo);

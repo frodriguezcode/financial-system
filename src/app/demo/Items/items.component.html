@@ -13,8 +13,8 @@
     <tr style="background-color: white">
       <th style="width: 30%">Nombre</th>
       <th style="width: 12%" class="text-center">Añadir Cuenta</th>
-      <th style="width: 12%" class="text-center">Proyectos</th>
-      <th style="width: 12%" class="text-center">Sucursales</th>
+      <th style="width: 12%" class="text-center">Proyectos Asig.</th>
+      <th style="width: 12%" class="text-center">Sucursales Asig.</th>
       <th style="width: 17%" class="text-center">Editar</th>
       <th style="width: 17%" class="text-center">Borrar</th>
     </tr>
@@ -83,7 +83,7 @@
           type="button"
           severity="warning"
           (click)="AddCuentaNieto(rowData)"
-          [disabled]="(rowData.Editable == true || rowData.Customizable==false) || rowData.Prefijo!='1.2.2'"
+          [disabled]="(rowData.Editable == true || rowData.CuentasNieto==false) || rowData.Prefijo!='1.2.2'"
           icon="pi pi-plus"
           label="Nieto"
           class="p-button-rounded p-button-text p-button-sm"
@@ -98,7 +98,18 @@
       <td class="text-center" style="width: 12%">
         <!-- Aquí va el contenido de proyectos según el tipo de fila -->
         <span *ngIf="rowData.Tipo == 'Abuelo' || rowData.Tipo == 'Padre'">-</span>
-        <span *ngIf="rowData.Tipo == 'Hijo'|| rowData.Tipo == 'Nieto'">Proyectos</span>
+       
+        <span *ngIf=" (rowData.Tipo == 'Hijo'|| rowData.Tipo == 'Nieto') && (rowData.CuentaFija==false)">
+          <button
+          [disabled]="rowData.Editable == true"
+          type="button" 
+          (click)="showDialogProyecto(rowData.ProyectosSeleccionados,rowData)" 
+          style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+          class="btn btn-success">Ver Proyectos</button>
+        </span>
+        <span *ngIf=" (rowData.Tipo == 'Hijo'|| rowData.Tipo == 'Nieto') && (rowData.CuentaFija==true)">
+          Todos
+        </span>
         <!-- Agrega más lógica según necesites -->
       </td>
 
@@ -106,7 +117,16 @@
       <td class="text-center" style="width: 12%">
         <!-- Aquí va el contenido de sucursales según el tipo de fila -->
         <span *ngIf="rowData.Tipo == 'Abuelo' || rowData.Tipo == 'Padre'">-</span>
-        <span *ngIf="rowData.Tipo == 'Hijo'|| rowData.Tipo == 'Nieto'">Sucursales</span>
+        <span *ngIf=" (rowData.Tipo == 'Hijo'|| rowData.Tipo == 'Nieto') && (rowData.CuentaFija==false)">
+          <button type="button" 
+          [disabled]="rowData.Editable == true"
+          (click)="showDialogSucursal(rowData.SucursalesSeleccionadas,rowData)" 
+          style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+          class="btn btn-info">Ver Sucursales</button>
+        </span>
+        <span *ngIf=" (rowData.Tipo == 'Hijo'|| rowData.Tipo == 'Nieto') && (rowData.CuentaFija==true)">
+          Todas
+        </span>
         <!-- Agrega más lógica según necesites -->
       </td>
 
@@ -183,3 +203,45 @@
     </app-card>
   </div>
 </div>
+
+<p-dialog 
+        header="Proyectos en esta cuenta" 
+        (onHide)="guardarEdicionProyecto()"
+        [modal]="true" 
+        [(visible)]="visibleProyecto" 
+        [style]="{ width: '60rem',height:'20rem' }" 
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+        [maximizable]="true">
+        <ng-select loadingText="Cargando cuentas..." 
+        (change)="editarProyectos()"
+        notFoundText="No hay sub cuentas disponibles" class="mt-1"
+          [items]="Proyectos" [multiple]="true" [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre"
+          placeholder="Seleccione un proyecto" [(ngModel)]="this.ProyectosSeleccionadosCuenta">
+        </ng-select>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button type="button" (click)="guardarEdicionProyecto()" class="btn btn-success mt-2">Guardar</button>
+  </div>      
+      
+</p-dialog>
+
+<p-dialog 
+        header="Sucursales en esta cuenta" 
+        (onHide)="guardarEdicionSucursal()"
+        [modal]="true" 
+        [(visible)]="visibleSucursal" 
+        [style]="{ width: '60rem',height:'20rem' }" 
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+        [maximizable]="true">
+        <ng-select loadingText="Cargando cuentas..." 
+        (change)="editarSucursales()"
+        notFoundText="No hay sucursales disponibles" class="mt-1"
+          [items]="Sucursales" [multiple]="true" [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre"
+          placeholder="Seleccione una sucursal" [(ngModel)]="this.SucursalesSeleccionadasCuenta">
+        </ng-select>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button type="button" (click)="guardarEdicionSucursal()" class="btn btn-success mt-2">Guardar</button>
+  </div>      
+      
+</p-dialog>
+
+
