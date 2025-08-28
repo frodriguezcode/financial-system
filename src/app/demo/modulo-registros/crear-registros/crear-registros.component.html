@@ -5,27 +5,33 @@
         <div class="col-3">
           <div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio"
-              (change)="choiceTipoEntidad(1)"
-               [checked]="TipoEntidad==1" 
-               name="inlineRadioOptions" id="inlineRadio1" value="option1" />
-              <label class="form-check-label" 
-              
-              for="inlineRadio1">Sucursal</label>
+              <input
+                class="form-check-input"
+                type="radio"
+                (change)="choiceTipoEntidad(1)"
+                [checked]="TipoEntidad == 1"
+                name="inlineRadioOptions"
+                [id]="TipoEntidad+'Entidad'"
+                [value]="TipoEntidad"
+              />
+              <label class="form-check-label" for="inlineRadio1">Sucursal</label>
             </div>
             <div class="form-check form-check-inline">
-              <input 
-              (change)="choiceTipoEntidad(2)"
-              [checked]="TipoEntidad==2"
-              class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
+              <input
+                (change)="choiceTipoEntidad(2)"
+                [checked]="TipoEntidad == 2"
+                class="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                [id]="TipoEntidad+'Entidad'"
+                [value]="TipoEntidad"
+              />
               <label class="form-check-label" for="inlineRadio2">Proyecto</label>
             </div>
-
           </div>
-       
-       
+
           <ng-select
-            *ngIf="TipoEntidad==2"
+            *ngIf="TipoEntidad == 2"
             loadingText="Cargando cuentas..."
             notFoundText="No hay sub cuentas disponibles"
             class="mt-1"
@@ -39,9 +45,8 @@
           >
           </ng-select>
 
- 
           <ng-select
-            *ngIf="TipoEntidad==1"
+            *ngIf="TipoEntidad == 1"
             loadingText="Cargando cuentas..."
             notFoundText="No hay sub cuentas disponibles"
             class="mt-1"
@@ -55,8 +60,10 @@
           >
           </ng-select>
 
+          <div 
+          *ngIf="TipoEntidad == 0"
+          class="alert alert-warning" role="alert"> Seleccione una sucursal o proyecto </div>
         </div>
-  
 
         <div *ngIf="this.SocioNegocios.length > 0" class="col-4">
           <span *ngFor="let opcion of OpcionesSociosNegocio" class="form-check form-check-inline">

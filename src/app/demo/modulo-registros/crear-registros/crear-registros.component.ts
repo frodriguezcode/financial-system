@@ -29,7 +29,7 @@ ModuleRegistry.registerModules([ AllCommunityModule ]);
 export default class CrearRegistrosComponent implements OnInit {
 constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 Valor:number=0
-TipoEntidad:number=1
+TipoEntidad:number=0
 Total:any
 paginationPageSize = 20;
 cacheBlockSize = 10;
@@ -81,6 +81,10 @@ onGridReady(params:any) {
 getRowId = (params: any) => params.data.idRegistro;
 
 choiceTipoEntidad(tipo:number){
+  this.CatalogoSocioSeleccionado={}
+  this.PadreSeleccionado={}
+  this.CuentaHijoSeleccionado={}
+  this.CuentaNietoSeleccionado={}
 this.TipoEntidad=tipo
 }
 ngOnInit(): void {
@@ -726,7 +730,13 @@ obtenerCuentasNieto(){
 obtenerCuentasHijosByPadre(){
 this.CuentaHijoSeleccionado={}  
 if(this.PadreSeleccionado){
-  this.CatalogoCuentasHijos=this.CuentasHijos.filter((cuenta:any)=>cuenta.idPadre==this.PadreSeleccionado.id)
+  this.CatalogoCuentasHijos=
+
+  this.TipoEntidad==2 ?
+  this.CuentasHijos.filter((cuenta:any)=>cuenta.idPadre==this.PadreSeleccionado.id
+   && cuenta.idsProyectos.includes(this.ProyectoSeleccionado.id)) :
+   this.CuentasHijos.filter((cuenta:any)=>cuenta.idPadre==this.PadreSeleccionado.id
+   && cuenta.idsProyectos.includes(this.SucursalSeleccionada.id))
 }
 else {
   this.CatalogoCuentasHijos=[]
@@ -736,7 +746,11 @@ else {
 obtenerCuentasNietoByHijo(){
 this.CuentaNietoSeleccionado={}  
 if(this.CuentaHijoSeleccionado){
-  this.CatalogoCuentasNieto=this.CuentasNietos.filter((cuenta:any)=>cuenta.idHijo==this.CuentaHijoSeleccionado.id)
+  this.TipoEntidad==2 ?
+  this.CatalogoCuentasNieto=this.CuentasNietos.filter((cuenta:any)=>cuenta.idHijo==this.CuentaHijoSeleccionado.id
+  && cuenta.idsProyectos.includes(this.ProyectoSeleccionado.id)):
+  this.CatalogoCuentasNieto=this.CuentasNietos.filter((cuenta:any)=>cuenta.idHijo==this.CuentaHijoSeleccionado.id
+  && cuenta.idsProyectos.includes(this.SucursalSeleccionada.id))
 }
 else {
   this.CatalogoCuentasNieto=[]
