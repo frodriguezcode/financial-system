@@ -33,7 +33,7 @@ TipoEntidad:number=0
 Total:any
 paginationPageSize = 20;
 cacheBlockSize = 10;
-Fecha:any
+Fecha:any=''
 Comentarios:string=''
 NumeroDocumento:string=''
 Registros:any=[]
@@ -42,23 +42,23 @@ copiadoRegistro:boolean=false
 SocioNegocios:any=[]
 ColsCabecera: ColDef[] = [];
 CatalogoSocios:any=[]
-CatalogoSocioSeleccionado:any
+CatalogoSocioSeleccionado:any=null
 CuentasBancarias:any=[]
 OpcionesSociosNegocio:any=[]
 opcionSocioSelect:any=[]
 Categorias: any = [];
 Padres: any = [];
-PadreSeleccionado: any 
+PadreSeleccionado: any = null
 CuentasHijos: any = [];
-CuentaHijoSeleccionado: any 
+CuentaHijoSeleccionado: any = null
 CatalogoCuentasHijos: any = [];
 CuentasNietos: any = [];
 CatalogoCuentasNieto: any = [];
-CuentaNietoSeleccionado: any
+CuentaNietoSeleccionado: any = null
 Proyectos:any=[]
-ProyectoSeleccionado:any
+ProyectoSeleccionado: any = null;
 Sucursales:any=[]
-SucursalSeleccionada:any
+SucursalSeleccionada: any = null;
 usuario: any;
 idEmpresa:string=''
 empresaID:string=''
@@ -77,14 +77,17 @@ statusBar = {
 };
 onGridReady(params:any) {
   this.gridApi = params.api;
+  this.gridColumnApi = params.columnApi;
 }
 getRowId = (params: any) => params.data.idRegistro;
 
 choiceTipoEntidad(tipo:number){
-  this.CatalogoSocioSeleccionado={}
-  this.PadreSeleccionado={}
-  this.CuentaHijoSeleccionado={}
-  this.CuentaNietoSeleccionado={}
+  this.CatalogoSocioSeleccionado=null
+  this.ProyectoSeleccionado=null
+  this.SucursalSeleccionada=null
+  this.PadreSeleccionado=null
+  this.CuentaHijoSeleccionado=null
+  this.CuentaNietoSeleccionado=null
 this.TipoEntidad=tipo
 }
 ngOnInit(): void {
@@ -98,6 +101,7 @@ ngOnInit(): void {
 this.localeText = {
   // Textos comunes
   page: 'Página',
+  pagesize:'Cantidad de registros',
   more: 'Más',
   to: 'a',
   of: 'de',
@@ -123,7 +127,7 @@ this.localeText = {
   blank:'En blanco',
   notBlank:'No en blanco',
   after:'Después de',
-  noRowsToShow: 'No hay datos para mostrar, seleccione un socio de negocio o cree un registro nuevo',
+  noRowsToShow: 'No hay datos para mostrar, cree un registro nuevo',
   // Encabezados del menú de filtro
   filterOoo: 'Filtrar...',
   applyFilter: 'Aplicar',
@@ -271,7 +275,7 @@ getSucursal(idSucursal:string){
     return _Sucursal
   }
   else {
-    return {}
+    return null
   }
 }
 getProyecto(idProyecto:string){
@@ -280,7 +284,16 @@ getProyecto(idProyecto:string){
     return _Proyecto
   }
   else {
-    return {}
+    return null
+  }
+}
+getCuentaBancaria(cuentaBancaria:string){
+  let _Cuenta=this.CuentasBancarias.filter((cuenta:any)=>cuenta.Cuenta==cuentaBancaria)[0]
+  if(_Cuenta){
+    return _Cuenta
+  }
+  else {
+    return {"Nombre":''}
   }
 }
 
@@ -327,10 +340,13 @@ onRowClicked(registro: any,copiar:any) {
   this.Valor=registro.ValorNumero
   this.Fecha=registro.Fecha
   this.Comentarios=registro.Comentarios || ''
+  this.TipoEntidad=registro.idSucursal!='' ? 1 :registro.idProyecto!='' ? 2 : 0
   this.ProyectoSeleccionado=this.getProyecto(registro.idProyecto)
-  this.SucursalSeleccionada=this.getProyecto(registro.idsucursal)
+  this.SucursalSeleccionada=this.getSucursal(registro.idSucursal)
   this.NumeroDocumento=registro.NumeroDocumento
   this.idRegistro=registro.idRegistro
+  
+  
 
 
 
@@ -341,18 +357,19 @@ onRowClicked(registro: any,copiar:any) {
 
 obtenerRegistros(){
   this.conS.obtenerRegistros(this.idEmpresa).subscribe((resp:any)=>{
-  this.Registros=resp 
+  this.Registros=resp.sort((a: any, b: any) => b.Orden - a.Orden) 
   let Total:number=0
 this.Registros.forEach(reg => {
   this.rowData.push(
 {
-    "Socio de Negocio": reg.Cliente!='' ? reg.Cliente : reg.Proveedor !='' ? reg.Proveedor : reg.CuentaBancaria!='' ? reg.CuentaBancaria:   '-',
+    "Socio de Negocio": reg.Cliente!='' ? reg.Cliente : reg.Proveedor !='' ? reg.Proveedor : reg.CuentaBancaria!='' ? this.getCuentaBancaria(reg.CuentaBancaria).Nombre :   '-',
     "idSocioNegocio": reg.idCliente!='' ? reg.idCliente : reg.idProveedor !='' ? reg.idProveedor : reg.idCuentaBancaria!='' ? reg.idCuentaBancaria:'-',
     "Cuenta Contable":this.getNombreCuentaContable(reg.idCuentaContablePadre!=''? reg.idCuentaContablePadre : ''),
     "Sub Cuenta Contable": this.getNombreSubCuentaContable(reg.idCuentaContableHijo),
     "Cuenta Nieto": this.getNombreCuentaContableNieto(reg.idCuentaContableNieto), 
     "Valor": reg.TipoRegistro == 1 ? '$ ' + reg.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '-$ ' + reg.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-    "ValorNumero": reg.Valor,    
+    "ValorNumero": reg.Valor,  
+    "Orden": reg.Orden,  
     "NumeroDocumento": reg.NumeroDocumento,       
     "TipoRegistro": reg.TipoRegistro,           
     "Comentarios": reg.Comentarios,           
@@ -412,9 +429,6 @@ this.cargando=false
   }
 
 guardarRegistro() {
-
-
-
     Swal.fire({
         title: 'Cargando...'
       });
@@ -443,6 +457,13 @@ else  if(!this.CuentaHijoSeleccionado){
   }
 else  if(this.Valor==0){
     this.toastr.warning('Debe colocar un valor diferente de cero', '¡Alerta!', {
+      timeOut: 2000,
+      positionClass: 'toast-center-center'
+    }); 
+    Swal.close();
+  }
+else  if(this.Fecha==''){
+    this.toastr.warning('Debe seleccionar una fecha', '¡Alerta!', {
       timeOut: 2000,
       positionClass: 'toast-center-center'
     }); 
@@ -477,7 +498,7 @@ else  if(this.Valor==0){
       this.conS.updateRegistro(this.Registros[index]).then(resp=>{
   
       const filaGrid = {
-             "Socio de Negocio": this.Registros[index].Cliente!='' ? this.Registros[index].Cliente : this.Registros[index].Proveedor !='' ? this.Registros[index].Proveedor : this.Registros[index].CuentaBancaria!='' ? this.Registros[index].CuentaBancaria:   '-',
+             "Socio de Negocio": this.Registros[index].Cliente!='' ? this.Registros[index].Cliente : this.Registros[index].Proveedor !='' ? this.Registros[index].Proveedor : this.Registros[index].CuentaBancaria!='' ? this.getCuentaBancaria(this.Registros[index].CuentaBancaria).Nombre :   '-',
              "idSocioNegocio": this.Registros[index].idCliente!='' ? this.Registros[index].idCliente : this.Registros[index].idProveedor !='' ? this.Registros[index].idProveedor : this.Registros[index].idCuentaBancaria!='' ? this.Registros[index].idCuentaBancaria:'-',
              "Cuenta Contable":this.getNombreCuentaContable(this.Registros[index].idCuentaContablePadre!=''? this.Registros[index].idCuentaContablePadre : ''),
              "Sub Cuenta Contable": this.getNombreSubCuentaContable(this.Registros[index].idCuentaContableHijo),
@@ -490,6 +511,7 @@ else  if(this.Valor==0){
              "TipoSocioNegocio": this.Registros[index].TipoSocioNegocio,           
              "Num Documento o Factura": this.Registros[index].NumeroDocumento,
              "Fecha": this.Registros[index].Fecha,
+             "Orden": this.Registros[index].Orden,
              "idProyecto": this.Registros[index].idProyecto,
              "idSucursal": this.Registros[index].idSucursal,
              "Proyecto":this.getNombreProyecto(this.Registros[index].idProyecto) ,
@@ -547,13 +569,14 @@ else  if(this.Valor==0){
           
            this.Registros.push(nuevo);
            const filaGrid = {
-             "Socio de Negocio": nuevo.Cliente!='' ? nuevo.Cliente : nuevo.Proveedor !='' ? nuevo.Proveedor : nuevo.CuentaBancaria!='' ? nuevo.CuentaBancaria:   '-',
+             "Socio de Negocio": nuevo.Cliente!='' ? nuevo.Cliente : nuevo.Proveedor !='' ? nuevo.Proveedor : nuevo.CuentaBancaria!='' ? this.getCuentaBancaria(nuevo.CuentaBancaria).Nombre :   '-',
              "idSocioNegocio": nuevo.idCliente!='' ? nuevo.idCliente : nuevo.idProveedor !='' ? nuevo.idProveedor : nuevo.idCuentaBancaria!='' ? nuevo.idCuentaBancaria:'-',
              "Cuenta Contable":this.getNombreCuentaContable(nuevo.idCuentaContablePadre!=''? nuevo.idCuentaContablePadre : ''),
              "Sub Cuenta Contable": this.getNombreSubCuentaContable(nuevo.idCuentaContableHijo),
              "Cuenta Nieto": this.getNombreCuentaContableNieto(nuevo.idCuentaContableNieto), 
              "Valor": nuevo.TipoRegistro == 1 ? '$ ' + nuevo.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '-$ ' + nuevo.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-             "ValorNumero": nuevo.Valor,    
+             "ValorNumero": nuevo.Valor,  
+             "Orden":nuevo.Orden,  
              "NumeroDocumento": nuevo.NumeroDocumento,       
              "TipoRegistro": nuevo.TipoRegistro,           
              "Comentarios": nuevo.Comentarios,           
@@ -570,6 +593,7 @@ else  if(this.Valor==0){
              "idCuentaNieto":nuevo.idCuentaContableNieto,
            };
            this.gridApi.applyTransaction({ add: [filaGrid] });
+           this.gridApi.setSortModel([{ colId: "Orden", sort: "desc" }]);
            Swal.close();
            this.toastr.success('Cuenta actualizada', '¡Éxito!', {
              timeOut: 1000,
@@ -647,7 +671,11 @@ getNombreProyecto(idProyecto:string){
 }
 
 cambiarTipoSocio(){
-  this.CatalogoSocioSeleccionado={}
+  this.CatalogoSocioSeleccionado=null
+  this.PadreSeleccionado=null
+  this.CuentaHijoSeleccionado=null
+  this.CuentaNietoSeleccionado=null
+
   if(this.opcionSocioSelect=='Proveedor'){
     this.CatalogoSocios=this.SocioNegocios.filter((r:any)=>r.Tipo=='2')
 
@@ -728,23 +756,27 @@ obtenerCuentasNieto(){
 }
 
 obtenerCuentasHijosByPadre(){
-this.CuentaHijoSeleccionado={}  
+this.CuentaHijoSeleccionado=null 
 if(this.PadreSeleccionado){
   this.CatalogoCuentasHijos=
 
   this.TipoEntidad==2 ?
   this.CuentasHijos.filter((cuenta:any)=>cuenta.idPadre==this.PadreSeleccionado.id
    && cuenta.idsProyectos.includes(this.ProyectoSeleccionado.id)) :
+
    this.CuentasHijos.filter((cuenta:any)=>cuenta.idPadre==this.PadreSeleccionado.id
-   && cuenta.idsProyectos.includes(this.SucursalSeleccionada.id))
+   && cuenta.idsSucursales.includes(this.SucursalSeleccionada.id))
+
+
 }
 else {
   this.CatalogoCuentasHijos=[]
 
 }
+
 }
 obtenerCuentasNietoByHijo(){
-this.CuentaNietoSeleccionado={}  
+this.CuentaNietoSeleccionado=null  
 if(this.CuentaHijoSeleccionado){
   this.TipoEntidad==2 ?
   this.CatalogoCuentasNieto=this.CuentasNietos.filter((cuenta:any)=>cuenta.idHijo==this.CuentaHijoSeleccionado.id

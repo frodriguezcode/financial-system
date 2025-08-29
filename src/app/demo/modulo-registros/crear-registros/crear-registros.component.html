@@ -5,220 +5,128 @@
         <div class="col-3">
           <div>
             <div class="form-check form-check-inline">
-              <input
-                class="form-check-input"
-                type="radio"
-                (change)="choiceTipoEntidad(1)"
-                [checked]="TipoEntidad == 1"
-                name="inlineRadioOptions"
-                [id]="TipoEntidad+'Entidad'"
-                [value]="TipoEntidad"
-              />
-              <label class="form-check-label" for="inlineRadio1">Sucursal</label>
+              <input class="form-check-input" type="radio" (change)="choiceTipoEntidad(1)" [checked]="TipoEntidad == 1"
+                name="tipoEntidadGroup" id="radioSucursal" value="1" />
+              <label class="form-check-label" for="radioSucursal">Sucursal</label>
             </div>
             <div class="form-check form-check-inline">
-              <input
-                (change)="choiceTipoEntidad(2)"
-                [checked]="TipoEntidad == 2"
-                class="form-check-input"
-                type="radio"
-                name="inlineRadioOptions"
-                [id]="TipoEntidad+'Entidad'"
-                [value]="TipoEntidad"
-              />
-              <label class="form-check-label" for="inlineRadio2">Proyecto</label>
+              <input (change)="choiceTipoEntidad(2)" [checked]="TipoEntidad == 2" class="form-check-input" type="radio"
+                name="tipoEntidadGroup" id="radioProyecto" value="2" />
+              <label class="form-check-label" for="radioProyecto">Proyecto</label>
             </div>
           </div>
 
-          <ng-select
-            *ngIf="TipoEntidad == 2"
-            loadingText="Cargando cuentas..."
-            notFoundText="No hay sub cuentas disponibles"
-            class="mt-1"
-            [items]="Proyectos"
-            [multiple]="false"
-            [closeOnSelect]="false"
-            [searchable]="true"
-            bindLabel="Nombre"
-            placeholder="Seleccione un proyecto"
-            [(ngModel)]="ProyectoSeleccionado"
-          >
+          <ng-select *ngIf="TipoEntidad == 2" loadingText="Cargando cuentas..."
+            notFoundText="No hay sub cuentas disponibles" class="mt-1" [items]="Proyectos" [multiple]="false"
+            [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre" placeholder="Seleccione un proyecto"
+            [(ngModel)]="ProyectoSeleccionado">
           </ng-select>
 
-          <ng-select
-            *ngIf="TipoEntidad == 1"
-            loadingText="Cargando cuentas..."
-            notFoundText="No hay sub cuentas disponibles"
-            class="mt-1"
-            [items]="Sucursales"
-            [multiple]="false"
-            [closeOnSelect]="false"
-            [searchable]="true"
-            bindLabel="Nombre"
-            placeholder="Seleccione una sucursal"
-            [(ngModel)]="SucursalSeleccionada"
-          >
+          <ng-select *ngIf="TipoEntidad == 1" loadingText="Cargando cuentas..."
+            notFoundText="No hay sub cuentas disponibles" class="mt-1" [items]="Sucursales" [multiple]="false"
+            [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre" placeholder="Seleccione una sucursal"
+            [(ngModel)]="SucursalSeleccionada">
           </ng-select>
 
-          <div 
-          *ngIf="TipoEntidad == 0"
-          class="alert alert-warning" role="alert"> Seleccione una sucursal o proyecto </div>
+          <div *ngIf="TipoEntidad == 0" class="alert alert-warning" role="alert"> Seleccione una sucursal o proyecto
+          </div>
         </div>
 
         <div *ngIf="this.SocioNegocios.length > 0" class="col-4">
           <span *ngFor="let opcion of OpcionesSociosNegocio" class="form-check form-check-inline">
-            <input
-              (change)="cambiarTipoSocio()"
-              [(ngModel)]="opcionSocioSelect"
-              class="form-check-input"
-              type="radio"
-              [checked]="opcion.Seleccionado"
-              name="inlineRadioOptions"
-              [id]="'inlineRadio' + opcion.id"
-              [value]="opcion.Nombre"
-            />
+            <input (change)="cambiarTipoSocio()" [(ngModel)]="opcionSocioSelect" class="form-check-input" type="radio"
+              [checked]="opcion.Seleccionado" name="tipoSocioGroup" [id]="'inlineRadio' + opcion.id"
+              [value]="opcion.Nombre" />
             <label class="form-check-label" [for]="'inlineRadio' + opcion.id">
               {{ opcion.Nombre }}
             </label>
           </span>
 
-          <ng-select
-            [disabled]="opcionSocioSelect.length == 0"
-            [items]="CatalogoSocios"
-            [multiple]="false"
-            [closeOnSelect]="false"
-            [searchable]="true"
-            bindLabel="Nombre"
-            placeholder="Seleccione un socio de negocios"
-            [(ngModel)]="CatalogoSocioSeleccionado"
-          >
+          <ng-select [disabled]="opcionSocioSelect.length == 0" [items]="CatalogoSocios" [multiple]="false"
+            [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre" placeholder="Seleccione un socio de negocios"
+            [(ngModel)]="CatalogoSocioSeleccionado">
           </ng-select>
           <p style="color: red" *ngIf="opcionSocioSelect.length == 0">Seleccione un tipo de socio de negocio</p>
         </div>
         <div class="col-4">
           <label for="username">Cuenta Contable</label>
-          <ng-select
-            class="mt-1"
-            (change)="obtenerCuentasHijosByPadre()"
-            [items]="Padres"
-            [multiple]="false"
-            [closeOnSelect]="false"
-            [searchable]="true"
-            bindLabel="Nombre"
-            placeholder="Selec. una cuenta contable"
-            [(ngModel)]="PadreSeleccionado"
-          >
+          <ng-select [disabled]="
+          TipoEntidad == 0 || 
+          (ProyectoSeleccionado == null && SucursalSeleccionada == null) || 
+          CatalogoSocioSeleccionado == null" 
+            class="mt-1" (change)="obtenerCuentasHijosByPadre()" [items]="Padres" [multiple]="false" [closeOnSelect]="false"
+            [searchable]="true" bindLabel="Nombre" placeholder="Selec. una cuenta contable"
+            [(ngModel)]="PadreSeleccionado">
           </ng-select>
+          <p style="color: red" *ngIf="TipoEntidad==0 ||(!this.ProyectoSeleccionado && !this.SucursalSeleccionada)">
+            Seleccione una sucursal o proyecto
+          </p>
+          <p style="color: red"
+            *ngIf="(this.ProyectoSeleccionado || this.SucursalSeleccionada) && !this.CatalogoSocioSeleccionado">
+            Seleccione un socio de negocios
+          </p>
+
+
         </div>
         <div class="col-4">
           <label for="username">Sub Cuenta Contable </label>
-          <ng-select
-            [disabled]="!this.PadreSeleccionado"
-            (change)="obtenerCuentasNietoByHijo()"
-            loadingText="Cargando cuentas..."
-            notFoundText="No hay sub cuentas disponibles"
-            class="mt-1"
-            [items]="CatalogoCuentasHijos"
-            [multiple]="false"
-            [closeOnSelect]="false"
-            [searchable]="true"
-            bindLabel="Nombre"
-            placeholder="Selec. una sub cuenta contable"
-            [(ngModel)]="CuentaHijoSeleccionado"
-          >
+          <ng-select [disabled]="!this.PadreSeleccionado" (change)="obtenerCuentasNietoByHijo()"
+            loadingText="Cargando cuentas..." notFoundText="No hay sub cuentas disponibles" class="mt-1"
+            [items]="CatalogoCuentasHijos" [multiple]="false" [closeOnSelect]="false" [searchable]="true"
+            bindLabel="Nombre" placeholder="Selec. una sub cuenta contable" [(ngModel)]="CuentaHijoSeleccionado">
           </ng-select>
-          <label *ngIf="!this.PadreSeleccionado" for="username"> <span style="color: red">Seleccione una cuenta contable</span> </label>
+          <label *ngIf="!this.PadreSeleccionado" for="username"> <span style="color: red">Seleccione una cuenta
+              contable</span> </label>
         </div>
         <div class="col-2">
           <label for="username">Valor</label>
-          <input
-            (keyup.enter)="guardarRegistro()"
-            [(ngModel)]="Valor"
-            class="text-center form-control custom-input mt-1"
-            pInputText
-            id="username"
-          />
+          <input (keyup.enter)="guardarRegistro()" [(ngModel)]="Valor"
+            class="text-center form-control custom-input mt-1" pInputText id="username" />
         </div>
         <div class="col-2">
           <label for="username">Fecha</label>
-          <input
-            [(ngModel)]="Fecha"
-            (keyup.enter)="guardarRegistro()"
-            type="date"
-            class="text-center form-control custom-input mt-1"
-            pInputText
-            id="username"
-          />
+          <input [(ngModel)]="Fecha" (keyup.enter)="guardarRegistro()" type="date"
+            class="text-center form-control custom-input mt-1" pInputText id="username" />
         </div>
 
         <div class="col-4">
           <button (click)="guardarRegistro()" type="button" class="btn btn-success mt-3">
             Guardar Registro
-            <i class="fa-solid fa-floppy-disk"></i
-          ></button>
+            <i class="fa-solid fa-floppy-disk"></i></button>
         </div>
       </div>
       <p-accordion>
         <p-accordionTab header="Más opciones">
           <div class="row">
             <div class="col-4">
-              <label *ngIf="!this.CuentaHijoSeleccionado" for="username"
-                >Cuenta Nieto <span style="color: red">(Seleccione una sub cuenta contable)</span>
+              <label *ngIf="!this.CuentaHijoSeleccionado" for="username">Cuenta Nieto <span
+                  style="color: red">(Seleccione una sub cuenta contable)</span>
               </label>
               <label *ngIf="this.CuentaHijoSeleccionado" for="username">Cuenta Nieto </label>
-              <ng-select
-                [disabled]="!this.CuentaHijoSeleccionado"
-                loadingText="Cargando cuentas..."
-                notFoundText="No hay sub cuentas disponibles"
-                class="mt-1"
-                [items]="CatalogoCuentasNieto"
-                [multiple]="false"
-                [closeOnSelect]="false"
-                [searchable]="true"
-                bindLabel="Nombre"
-                placeholder="Selec. una sub cuenta contable"
-                [(ngModel)]="CuentaNietoSeleccionado"
-              >
+              <ng-select [disabled]="!this.CuentaHijoSeleccionado" loadingText="Cargando cuentas..."
+                notFoundText="No hay sub cuentas disponibles" class="mt-1" [items]="CatalogoCuentasNieto"
+                [multiple]="false" [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre"
+                placeholder="Selec. una sub cuenta contable" [(ngModel)]="CuentaNietoSeleccionado">
               </ng-select>
             </div>
 
             <div class="col-2">
               <label for="username"># Documento o Factura</label>
-              <input
-                (keyup.enter)="guardarRegistro()"
-                type="text"
-                [(ngModel)]="NumeroDocumento"
-                class="text-center form-control custom-input mt-1"
-                pInputText
-                id="username"
-              />
+              <input (keyup.enter)="guardarRegistro()" type="text" [(ngModel)]="NumeroDocumento"
+                class="text-center form-control custom-input mt-1" pInputText id="username" />
             </div>
             <div class="col-4">
               <label for="username">Comentarios</label>
-              <textarea
-                [(ngModel)]="Comentarios"
-                class="form-control"
-                placeholder="Escriba un comentario acerca de este registro"
-                id="floatingTextarea2"
-              ></textarea>
+              <textarea [(ngModel)]="Comentarios" class="form-control"
+                placeholder="Escriba un comentario acerca de este registro" id="floatingTextarea2"></textarea>
             </div>
           </div>
         </p-accordionTab>
       </p-accordion>
-      <ag-grid-angular
-        style="width: 100%; height: 500px"
-        class="ag-theme-alpine"
-        [rowData]="rowData"
-        [getRowId]="getRowId"
-        [pagination]="true"
-        [paginationPageSize]="paginationPageSize"
-        [cacheBlockSize]="cacheBlockSize"
-        [columnDefs]="columnDefs"
-        rowSelection="single"
-        [localeText]="localeText"
-        [defaultColDef]="{ resizable: true, sortable: true, filter: true }"
-        (gridReady)="onGridReady($event)"
-      >
+      <ag-grid-angular style="width: 100%; height: 500px" class="ag-theme-alpine" [rowData]="rowData"
+        [getRowId]="getRowId" [pagination]="true" [paginationPageSize]="paginationPageSize"
+        [cacheBlockSize]="cacheBlockSize" [columnDefs]="columnDefs" rowSelection="single" [localeText]="localeText"
+        [defaultColDef]="{ resizable: true, sortable: true, filter: true }" (gridReady)="onGridReady($event)">
       </ag-grid-angular>
       <h6 [style.color]="Total.Color">Total: {{ Total.Valor }}</h6>
     </app-card>
