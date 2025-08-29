@@ -126,9 +126,12 @@
       <ag-grid-angular style="width: 100%; height: 500px" class="ag-theme-alpine" [rowData]="rowData"
         [getRowId]="getRowId" [pagination]="true" [paginationPageSize]="paginationPageSize"
         [cacheBlockSize]="cacheBlockSize" [columnDefs]="columnDefs" rowSelection="single" [localeText]="localeText"
-        [defaultColDef]="{ resizable: true, sortable: true, filter: true }" (gridReady)="onGridReady($event)">
+        [defaultColDef]="{ resizable: true, sortable: true, filter: true }" 
+        (filterChanged)="onFilterChanged($event)"
+        (gridReady)="onGridReady($event)">
       </ag-grid-angular>
-      <h6 [style.color]="Total.Color">Total: {{ Total.Valor }}</h6>
+      <p *ngIf="SubTotal!=null" [style.color]="SubTotal.Color">Sub-Total: {{ SubTotal.Valor }}</p>
+      <p [style.color]="Total.Color">Total: {{ Total.Valor }}</p>
     </app-card>
   </div>
 </div>

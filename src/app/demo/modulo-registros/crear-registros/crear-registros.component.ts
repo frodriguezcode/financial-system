@@ -31,6 +31,7 @@ constructor(private conS:ConfigurationService,private toastr: ToastrService){}
 Valor:number=0
 TipoEntidad:number=0
 Total:any
+SubTotal:any=null
 paginationPageSize = 20;
 cacheBlockSize = 10;
 Fecha:any=''
@@ -78,6 +79,7 @@ statusBar = {
 onGridReady(params:any) {
   this.gridApi = params.api;
   this.gridColumnApi = params.columnApi;
+  this.recalcularTotal();
 }
 getRowId = (params: any) => params.data.idRegistro;
 
@@ -91,9 +93,6 @@ choiceTipoEntidad(tipo:number){
 this.TipoEntidad=tipo
 }
 ngOnInit(): void {
-
-
-
       Swal.fire({
         title: 'Cargando módulo...'
       });
@@ -194,6 +193,8 @@ this.columnDefs=
   { field: "Fecha" },
   { field: "Proyecto" },
   { field: "Sucursal" },
+  { field: "Orden", sort: "desc" }
+
 ]
 
 this.OpcionesSociosNegocio.push(
@@ -234,6 +235,34 @@ this.conS.usuario$.subscribe((usuario) => {
 
 
   
+}
+
+
+
+onFilterChanged(event: any) {
+  this.recalcularTotal();
+}
+
+recalcularTotal() {
+  let total = 0;
+  this.gridApi.forEachNodeAfterFilter((node: any) => {
+    // ⚡ aquí sumas el campo que quieras (ej: "ValorNumero")
+    total += node.data.TipoRegistro==1 ? node.data.ValorNumero : node.data.ValorNumero*-1;
+  });
+  this.SubTotal = total<0? 
+
+{
+  'Valor':'-$ ' + (total*-1).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  'Color':'red'
+  
+}:
+
+{
+  'Valor':'$ ' + (total).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  'Color':'black'
+  
+}
+
 }
 
 
@@ -593,7 +622,7 @@ else  if(this.Fecha==''){
              "idCuentaNieto":nuevo.idCuentaContableNieto,
            };
            this.gridApi.applyTransaction({ add: [filaGrid] });
-           this.gridApi.setSortModel([{ colId: "Orden", sort: "desc" }]);
+          //  this.gridApi.setSortModel([{ colId: "Orden", sort: "desc" }]);
            Swal.close();
            this.toastr.success('Cuenta actualizada', '¡Éxito!', {
              timeOut: 1000,
