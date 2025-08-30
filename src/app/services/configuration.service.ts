@@ -23,8 +23,8 @@ export class ConfigurationService {
   dataPlaneadoFinanciera$ = this.dataPlaneadoFinanciera.asObservable();
 
   private idEmpresaSource = new BehaviorSubject<any>(null)
-  //linkApiMejorada = 'http://localhost:3000/'
-  linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
+  linkApiMejorada = 'http://localhost:3000/'
+  //linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
   DataTreeTable: any = []
   Semestres: any = []
   SemestresBack: any = []
@@ -2036,17 +2036,18 @@ export class ConfigurationService {
               valores: {},
             },
             children:
-              item.CuentasHijos === undefined ? [] : item.CuentasHijos.map(hijo => ({
+              item.CuentasNieto === undefined ? [] : item.CuentasNieto.map(nieto => ({
                 data: {
-                  ...hijo,
-                  idPadre: item.id,
+                  ...nieto,
+                  idPadre: item.idPadre,
                   valores: {},
                   tipo: 'Nieto',
-                  Orden: hijo.Orden
+                  Orden: nieto.Orden
                 }
               }))
           });
       })
+      console.log('ItemsEncontrados',ItemsEncontrados)
       return ItemsEncontrados
     }
     else {

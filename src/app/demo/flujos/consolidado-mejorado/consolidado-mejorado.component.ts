@@ -432,9 +432,11 @@ capturarCambio() {
 }
 obtenerDataEmpresa(){
   this.cargar=true
+  console.log('usuario',this.usuario)
   this.conS.obtenerDataEmpresa(this.usuario.idMatriz).subscribe(resp=>{
-    this.construirCabecera()
     this.DataByMatriz=resp
+   
+    
     this.construirData()
   })
 }
@@ -442,10 +444,11 @@ obtenerDataEmpresa(){
 construirData(){
 this.cargar=true
 this.DataByEmpresa=this.DataByMatriz.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
+console.log('DataByEmpresa',this.DataByEmpresa)
 this.Proyectos=this.DataByEmpresa.Proyectos
 this.Sucursales=this.DataByEmpresa.Sucursales
-this.Items=this.DataByEmpresa.CuentasContables
-this.ItemsBack=this.DataByEmpresa.CuentasContables
+this.Items=this.DataByEmpresa._CuentasContables
+this.ItemsBack=this.DataByEmpresa._CuentasContables
 this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
 this.Registros=this.DataByEmpresa.Registros
 this.Categorias=[]
@@ -506,6 +509,7 @@ this.Items
 this.DataTreeTable = this.DataTreeTableRealBack
 
 
+this.construirCabecera()
 if(this.DataTreeTable.length>0){
   this.cargar=false
 }
@@ -1597,43 +1601,8 @@ obtenerRegistros(){
   _subscribe=  this.conS.obtenerRegistros(this.usuario.idEmpresa).subscribe((resp:any)=>{
     _subscribe.unsubscribe()
     this.Registros=[]  
-        resp.filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
-          let _Registro={
-            "Activo":element.Activo,
-            "AnioRegistro":element.AnioRegistro,
-            "TipoCuentaSeleccionada":element.CuentaSeleccionada.Tipo,
-            "Trimestre":this.setTrim(element.MesRegistro), 
-            "Semestre":this.setSemestre(element.NumMes),
-            "Cuenta":element.Cuenta.Cuenta,
-            "Editando":element.Editando,
-            "FechaRegistro":element.FechaRegistro,
-            "MesRegistro":element.MesRegistro,
-            "NumMes":element.NumMes,
-            "Orden":element.Orden,
-            "Valor":element.Valor,
-            "id":element.id,
-            "CuentasHijos":element.CuentasHijos || [] ,
-            "Tipo":element.Tipo || '',
-            "idCategoria":element.idPadre,
-            "idEmpresa":element.idEmpresa,
-            "idFlujo":element.idAbuelo,
-            "idUsuario":element.idUsuario,
-            "idMatriz":element.idMatriz,
-            "idSocioNegocio":element.idSocioNegocio.id,
-            "idSucursal":element.idSucursal,
-            "idHijo":element.idHijo,
-            "idProyecto":element.idProyecto,
-            "idSubCuentaContable":element.idNieto || '',
-            "NumCuenta":element.Cuenta.Cuenta || ''
-          }
-          this.Registros.push(_Registro)
-          });
-
-         
-          this.RegistrosBackUp=this.Registros
-   
-
-
+    this.Registros=resp
+    this.RegistrosBackUp=this.Registros
           const obtenerAniosUnicos = (registros1: any[], registros2: any[]) => {
             const aniosUnicos = new Map();
           
@@ -1966,27 +1935,7 @@ getValorCategoriaMensual(idCategoria:any,Mes:any,Anio:any){
     return 0
   }
 }
-getValorCategoriaAnual(idCategoria:any,Anio:any){
-  let _Data: any=[];
-  _Data=this.Registros.filter((registro:any)=>registro
-  .idCategoria.id==idCategoria
-  && registro.AnioRegistro==Anio
-  )
-  if(_Data.length>0){
-    let Valor:number=0
-    _Data.forEach((data:any) => {
-        Valor+=Number(data.Valor)
-    });
-    if(_Data[0].Tipo=='Egreso')
-      {
-        Valor=Valor*-1;
-      }
-    return Valor
-  }
-  else {
-    return 0
-  }
-}
+
 
 getDataCategorias(){
 this.DataCategorias=[]
@@ -2132,69 +2081,69 @@ this.Categorias.forEach((categ:any) => {
 });
 
 }
-getDataCategoriasAnual(){
-  this.DataCategoriasAnual=[]
-this.Categorias.forEach((categ:any) => {
-  this.Anios.forEach((anio:any) => {
-        const key = `${anio.Anio}-${categ.id}`;  
-        if (!this.DataCategoriasAnual[key]) {
-          this.DataCategoriasAnual[key] =[];
-        }
+// getDataCategoriasAnual(){
+//   this.DataCategoriasAnual=[]
+// this.Categorias.forEach((categ:any) => {
+//   this.Anios.forEach((anio:any) => {
+//         const key = `${anio.Anio}-${categ.id}`;  
+//         if (!this.DataCategoriasAnual[key]) {
+//           this.DataCategoriasAnual[key] =[];
+//         }
 
-        if(categ.Orden==0) {
-          this.DataCategoriasAnual[key].push({
-            "Valor": 0,
-            "Tipo":1
-          });
-        }
+//         if(categ.Orden==0) {
+//           this.DataCategoriasAnual[key].push({
+//             "Valor": 0,
+//             "Tipo":1
+//           });
+//         }
 
-      else if(categ.Orden==1) {
+//       else if(categ.Orden==1) {
           
-          this.DataCategoriasAnual[key].push({
-            "Valor": this.getDataFlujoOperativoAnual(anio.Anio),
-            "Tipo":this.getDataFlujoOperativoAnual(anio.Anio)<0 ? 2 : 1
+//           this.DataCategoriasAnual[key].push({
+//             "Valor": this.getDataFlujoOperativoAnual(anio.Anio),
+//             "Tipo":this.getDataFlujoOperativoAnual(anio.Anio)<0 ? 2 : 1
   
-          });
-      }
-      else if(categ.Orden==4) {
+//           });
+//       }
+//       else if(categ.Orden==4) {
           
-          this.DataCategoriasAnual[key].push({
-            "Valor": this.getDataFlujoInversionAnual(anio.Anio),
-            "Tipo":this.getDataFlujoInversionAnual(anio.Anio)<0 ? 2 : 1
+//           this.DataCategoriasAnual[key].push({
+//             "Valor": this.getDataFlujoInversionAnual(anio.Anio),
+//             "Tipo":this.getDataFlujoInversionAnual(anio.Anio)<0 ? 2 : 1
   
-          });
-      }
-      else if(categ.Orden==7) {
+//           });
+//       }
+//       else if(categ.Orden==7) {
           
-          this.DataCategoriasAnual[key].push({
-            "Valor": this.getDataFlujoFinancieroAnual(anio.Anio),
-            "Tipo":this.getDataFlujoFinancieroAnual(anio.Anio)<0 ? 2 : 1
+//           this.DataCategoriasAnual[key].push({
+//             "Valor": this.getDataFlujoFinancieroAnual(anio.Anio),
+//             "Tipo":this.getDataFlujoFinancieroAnual(anio.Anio)<0 ? 2 : 1
   
-          });
-      }
+//           });
+//       }
 
-      else if(categ.Orden==10) {     
-        this.DataCategoriasAnual[key].push({
-          "Valor": this.getDataFlujoLibreAnual(anio.Anio),
-          "Tipo":this.getDataFlujoLibreAnual(anio.Anio)<0 ? 2 : 1
+//       else if(categ.Orden==10) {     
+//         this.DataCategoriasAnual[key].push({
+//           "Valor": this.getDataFlujoLibreAnual(anio.Anio),
+//           "Tipo":this.getDataFlujoLibreAnual(anio.Anio)<0 ? 2 : 1
 
-        });
-      }
+//         });
+//       }
 
-      else  if(categ.Orden==11) {
-          this.DataCategoriasAnual[key].push({
-            "Valor": this.obtenerValorSaldoFinalAnual(anio.Anio),
-            "Tipo":this.obtenerValorSaldoFinalAnual(anio.Anio)<0 ? 2 : 1
-          });
-        }
-        else {
-          this.DataCategoriasAnual[key].push({
-            "Valor": this.getValorCategoriaAnual(categ.id,anio.Anio),
-            "Tipo":this.getValorCategoriaAnual(categ.id,anio.Anio)<0 ? 2 : 1
+//       else  if(categ.Orden==11) {
+//           this.DataCategoriasAnual[key].push({
+//             "Valor": this.obtenerValorSaldoFinalAnual(anio.Anio),
+//             "Tipo":this.obtenerValorSaldoFinalAnual(anio.Anio)<0 ? 2 : 1
+//           });
+//         }
+//         else {
+//           this.DataCategoriasAnual[key].push({
+//             "Valor": this.getValorCategoriaAnual(categ.id,anio.Anio),
+//             "Tipo":this.getValorCategoriaAnual(categ.id,anio.Anio)<0 ? 2 : 1
   
-          });
+//           });
 
-        }
+//         }
 
 
 
@@ -2203,11 +2152,11 @@ this.Categorias.forEach((categ:any) => {
 
        
     
-    })
+//     })
   
-});
+// });
 
-}
+// }
 
 getValorItem(idElemento:any,NumSemana:any,Mes:any,Anio:any){
   let _Data: any=[];
@@ -3567,7 +3516,7 @@ construirCabecera(){
     // })      
     this.getDataCategorias()
     this.getDataCategoriasMensual()
-    this.getDataCategoriasAnual()
+    //this.getDataCategoriasAnual()
  
 
 
