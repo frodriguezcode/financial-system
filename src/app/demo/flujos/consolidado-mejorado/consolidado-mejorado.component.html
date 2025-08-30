@@ -198,7 +198,7 @@
     >
         <ng-template pTemplate="header" let-columns>
             <tr >
-                <th style="width: 450px;position: sticky; left: 0; background: #F9FAFB; z-index: 1;">Nombre</th>
+                <th style="width: 500px;position: sticky; left: 0; background: #F9FAFB; z-index: 1;">Nombre</th>
                 <th style="width: 250px; background: #F9FAFB" 
                 class="text-center" 
                 [style.background-color]="col?.Color || ''" 
@@ -215,7 +215,7 @@
                       'Saldos': rowData.tipo=='Saldo Inicial' || rowData.tipo=='Saldo Final'     
                       }"
             [ttRow]="rowNode">
-                <td style="width: 450px; position: sticky; left: 0; background: inherit;">
+                <td style="width: 500px; position: sticky; left: 0; background: inherit;">
                      <p-treeTableToggler [rowNode]="rowNode" />                
                        {{rowData.Nombre}}        
                 </td>

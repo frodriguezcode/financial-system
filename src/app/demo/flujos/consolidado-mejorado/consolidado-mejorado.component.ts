@@ -3514,8 +3514,8 @@ construirCabecera(){
 
     //   })      
     // })      
-    this.getDataCategorias()
-    this.getDataCategoriasMensual()
+    // this.getDataCategorias()
+    // this.getDataCategoriasMensual()
     //this.getDataCategoriasAnual()
  
 
