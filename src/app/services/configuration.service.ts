@@ -1148,6 +1148,7 @@ export class ConfigurationService {
     let AniosCabecera = AniosSeleccionados.length > 0 ? AniosSeleccionados : this.Anios
     let CantidadMeses: number = 0
     CantidadMeses = MesesSeleccionados
+  
     this.RegistrosSaldosFinalesMensuales = []
     let DataTreeTable = [...this.DataTreeTable]
     DataTreeTable
@@ -1481,12 +1482,13 @@ export class ConfigurationService {
 
                       if (cuenta.children != undefined) {
                         cuenta.children.forEach(subCuenta => {
+                         // console.log('subCuenta',subCuenta)
 
-                          const claveMensualHijo = `${subCuenta.data.id}-${mes.NumMes}-${anio.Anio}`;
-                          claveAnualNieto = `${subCuenta.data.id}-${anio.Anio}`;
-                          claveAnualNietoProm = `Prom-${subCuenta.data.id}-${anio.Anio}`;
-                          const valorNieto = this.getValorSubItemMensual(subCuenta.data.id, mes.NumMes, anio.Anio, Registros) || 0;
-                          const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.id, anio.Anio, Registros) || 0;
+                          const claveMensualHijo = `${subCuenta.data.idNieto}-${mes.NumMes}-${anio.Anio}`;
+                          claveAnualNieto = `${subCuenta.data.idNieto}-${anio.Anio}`;
+                          claveAnualNietoProm = `Prom-${subCuenta.data.idNieto}-${anio.Anio}`;
+                          const valorNieto = this.getValorSubItemMensual(subCuenta.data.idNieto, mes.NumMes, anio.Anio, Registros) || 0;
+                          const valorNietoAnual = this.getValorSubItemAnual(subCuenta.data.idNieto, anio.Anio, Registros) || 0;
                           subCuenta.data.valores[claveMensualHijo] =
                           {
                             "Valor": valorNieto < 0 ? ('-$ ' + (valorNieto * -1).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ('$ ' + (valorNieto).toFixed(0)).replace(/\B(?=(\d{3})+(?!\d))/g, ","),
@@ -1722,7 +1724,7 @@ export class ConfigurationService {
                       })
                     })
 
-                    valorTrimestralPromedioHijo = Number((valorTrimestralHijo / 4).toFixed(0));
+                    valorTrimestralPromedioHijo = Number((valorTrimestralHijo / 3).toFixed(0));
 
                     cuenta.data.valores[claveTrimestralHijo] =
                     {
@@ -1757,7 +1759,7 @@ export class ConfigurationService {
 
                         })
 
-                        valorTrimestralPromedioNieto = Number((valorTrimestralNieto / 4).toFixed(0));
+                        valorTrimestralPromedioNieto = Number((valorTrimestralNieto / 3).toFixed(0));
 
                         subCuenta.data.valores[claveTrimestralHijo] =
                         {
@@ -2267,7 +2269,7 @@ export class ConfigurationService {
     let _Data: any = [];
     let Valor: number = 0
     _Data = Registros.filter((registro: any) =>
-      registro.idHijo == idElemento
+      registro.idCuentaContableHijo == idElemento
       && registro.NumMes == Mes
       && registro.AnioRegistro == Anio
     )
@@ -2275,12 +2277,6 @@ export class ConfigurationService {
       _Data.forEach((element: any) => {
         Valor += Number(element.Valor);
       });
-
-
-      if (_Data[0].Tipo == 'Egreso') {
-        Valor = Valor * -1;
-      }
-
       return Number(Valor)
     }
     else {
@@ -2311,7 +2307,7 @@ export class ConfigurationService {
     let _Data: any = [];
     let Valor: number = 0
     _Data = Registros.filter((registro: any) =>
-      registro.idHijo == idElemento
+      registro.idCuentaContableHijo == idElemento
       && registro.AnioRegistro == Anio
     )
 
@@ -2319,9 +2315,7 @@ export class ConfigurationService {
       _Data.forEach((element: any) => {
         Valor += Number(element.Valor);
       });
-      if (_Data[0].Tipo == 'Egreso') {
-        Valor = Valor * -1;
-      }
+
       return Number(Valor)
     }
     else {
@@ -2355,20 +2349,14 @@ export class ConfigurationService {
     let _Data: any = [];
     let Valor: number = 0
     _Data = Registros.filter((registro: any) =>
-      registro.idSubCuentaContable == idElemento
+      registro.idCuentaContableNieto == idElemento
       && registro.NumMes == Mes
       && registro.AnioRegistro == Anio
-      && registro.TipoCuentaSeleccionada == "Hijo"
     )
     if (_Data.length > 0) {
       _Data.forEach((element: any) => {
         Valor += Number(element.Valor);
       });
-
-
-      if (_Data[0].Tipo == 'Egreso') {
-        Valor = Valor * -1;
-      }
 
       return Number(Valor)
     }
@@ -2381,20 +2369,13 @@ export class ConfigurationService {
     let _Data: any = [];
     let Valor: number = 0
     _Data = Registros.filter((registro: any) =>
-      registro.idSubCuentaContable == idElemento
+      registro.idCuentaContableNieto == idElemento
       && registro.AnioRegistro == Anio
-      && registro.TipoCuentaSeleccionada == "Hijo"
     )
     if (_Data.length > 0) {
       _Data.forEach((element: any) => {
         Valor += Number(element.Valor);
       });
-
-
-      if (_Data[0].Tipo == 'Egreso') {
-        Valor = Valor * -1;
-      }
-
       return Number(Valor)
     }
     else {

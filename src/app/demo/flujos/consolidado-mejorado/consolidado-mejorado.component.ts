@@ -492,6 +492,7 @@ this.Categorias=this.Categorias.sort((a:any, b:any) => a.Orden - b.Orden)
 let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
 let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
+console.log('Registros',this.Registros)
 this.DataTreeTableRealBack=
 this.conS.construirItemsCatalogos(
 true,
