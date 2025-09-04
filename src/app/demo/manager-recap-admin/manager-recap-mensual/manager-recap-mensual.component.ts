@@ -1749,8 +1749,8 @@ setTrim(MesRegistro:any){
   }
     
   
-  }
-  setSemestre(NumMes:any){
+}
+setSemestre(NumMes:any){
   
   if(NumMes>=6){
       return 2
@@ -1763,42 +1763,60 @@ setTrim(MesRegistro:any){
   }
     
   
-  }
+}
 
+  
+getIdFlujo(idPadre:any,categorias:any){
+     const objetoEncontrado = categorias.find(item => 
+        item.Categorias && 
+        item.Categorias.some(cat => cat.idCategoria === idPadre)
+    );
+    
+    return objetoEncontrado ? objetoEncontrado.id : '';
+}
 obtenerRegistrosStoreManagerRecapt(){
   let Subscribe:Subscription
+  let Categorias:any=[]
   Subscribe= this.conS.obtenerRegistrosStoreManagerRecapt(this.usuario.idEmpresa).subscribe((resp:any)=>{
     Subscribe.unsubscribe()
     this.Registros=resp[0]
+    Categorias=resp[3]
+    console.log('resp[1]',resp[1])
     resp[1].filter((data:any)=>data.Valor!=0).sort((a:any, b:any) => b.Orden - a.Orden).forEach(element => {
+      
       let _Registro={
-        "Activo":element.Activo,
         "AnioRegistro":element.AnioRegistro,
-        "Trimestre":this.setTrim(element.MesRegistro), 
-        "Semestre":this.setSemestre(element.NumMes),
-        "Cuenta":element.NumCuenta,
-        "Editando":element.Editando,
-        "CuentaSeleccionada":element.CuentaSeleccionada,
-        "FechaRegistro":element.FechaRegistro,
-        "MesRegistro":element.MesRegistro,
-        "NumMes":element.NumMes,
+        "Trimestre":this.setTrim(this.getMonthName(element.Fecha).Mes), 
+        "Semestre":this.setSemestre(this.getMonthName(element.Fecha).NumMes),
+        "Cuenta":element.CuentaBancaria,
+        "idCuentaBancaria":element.idCuentaBancaria,
+        "idCliente":element.idCliente,
+        "idProveedor":element.idProveedor,
+        "FechaRegistro":element.Fecha,
+        "MesRegistro":this.getMonthName(element.Fecha).Mes,
+        "NumMes":this.getMonthName(element.Fecha).NumMes,
         "Orden":element.Orden,
         "Valor":element.Valor,
-        "idAbuelo":element.idAbuelo,
-        "idPadre":element.idPadre,
-        "idHijo":element.idHijo,
-        "idNieto":element.idNieto,
-        "Tipo":element.Tipo || '',
+        "idAbuelo":this.getIdFlujo(element.idCuentaContablePadre,Categorias),
+        "idPadre":element.idCuentaContablePadre,
+        "idHijo":element.idCuentaContableHijo,
+        "idNieto":element.idCuentaContableNieto,
+        "TipoRegistro":element.TipoRegistro || 0,
+        "TipoSocioNegocio":element.TipoSocioNegocio || 0,
         "idEmpresa":element.idEmpresa,
         "idUsuario":element.idUsuario,
         "idMatriz":element.idMatriz,
-        "idSocioNegocio":element.idSocioNegocio.id,
+        "idSocioNegocio":
+         element.idProveedor!=''? element.idProveedor : 
+         element.idCliente!=''? element.idCliente :
+         element.idCuentaBancaria!=''? element.idCuentaBancaria : '',
         "idSucursal":element.idSucursal,
         "idProyecto":element.idProyecto,
 
       }
       this.RegistrosFlujoEfectivo.push(_Registro)
       });
+      console.log('RegistrosFlujoEfectivo',this.RegistrosFlujoEfectivo)
 
     this.RegistrosSaldosIniciales=resp[2]
     this.getCategorias()
@@ -1808,7 +1826,18 @@ obtenerRegistrosStoreManagerRecapt(){
   })
 }
 getMonthName(Fecha: string) {
-  return Number(Fecha.substring(5).substring(0, 2));
+  let MesEncontrado=this.Meses.find(mes=>mes.NumMes==Number((Fecha.substring(5)).substring(0,2)))
+  if(MesEncontrado){
+    return MesEncontrado
+  }
+  else{
+    
+    return {
+       Mes: 'Sin Mes',
+       NumMes:0,
+       seleccionado: false
+     }
+  }
 }
 
 

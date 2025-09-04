@@ -3416,13 +3416,14 @@ async crearRegistro(Registro: any): Promise<string> {
   obtenerRegistrosStoreManagerRecapt(idEmpresa: any) {
 
     const StoreManagerRecapt$ = this.afs.collection('StoreManagerRecapt', (ref) => ref.where('idEmpresa', '==', idEmpresa)).valueChanges();
-    const Registros$ = this.afs.collection('Registro', (ref) => ref.where('idEmpresa', '==', idEmpresa)).valueChanges();
+    const Registros$ = this.afs.collection('Registros', (ref) => ref.where('idEmpresa', '==', idEmpresa)).valueChanges();
     const SaldosIniciales$ = this.afs.collection('SaldosIniciales', (ref) => ref.where('idEmpresa', '==', idEmpresa)).valueChanges();
+    const Categorias$ = this.afs.collection('Naturalezas').valueChanges();
 
-    return combineLatest([StoreManagerRecapt$, Registros$, SaldosIniciales$]).pipe(
-      map(([RegistrosSMR, Registros, SaldosIniciales]) => {
+    return combineLatest([StoreManagerRecapt$, Registros$, SaldosIniciales$,Categorias$]).pipe(
+      map(([RegistrosSMR, Registros, SaldosIniciales,Categorias]) => {
 
-        return [RegistrosSMR, Registros, SaldosIniciales];
+        return [RegistrosSMR, Registros, SaldosIniciales,Categorias];
       })
     );
 
