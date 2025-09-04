@@ -444,13 +444,13 @@ obtenerDataEmpresa(){
 construirData(){
 this.cargar=true
 this.DataByEmpresa=this.DataByMatriz.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
-console.log('DataByEmpresa',this.DataByEmpresa)
 this.Proyectos=this.DataByEmpresa.Proyectos
 this.Sucursales=this.DataByEmpresa.Sucursales
 this.Items=this.DataByEmpresa._CuentasContables
 this.ItemsBack=this.DataByEmpresa._CuentasContables
 this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
 this.Registros=this.DataByEmpresa.Registros
+console.log('Items',this.Items)
 this.Categorias=[]
    this.Categorias.push(
       {
@@ -535,8 +535,6 @@ let idSucursales=
 this.SucursalSeleccionada.map((suc1:any)=>suc1.id)
 const resultado = this.filtrarEstructura(this.DataTreeTableRealBack, idProyectos, idSucursales);
 
-
-let AniosCabecera=this.AniosSeleccionados.length>0 ? this.AniosSeleccionados:this.Anios
 let CantidadMeses:number=0
 CantidadMeses=this.MesesSeleccionados.length==0?12:this.MesesSeleccionados.length
 
@@ -555,31 +553,61 @@ this.SaldoInicialBack.filter(item =>
 this.DataTreeTable=this.conS.filtrarDatos(true,resultado,this.AniosBack,CantidadMeses,this.Registros,this.SaldoInicial)
 //console.log('DataTreeTableReal',this.DataTreeTableReal)
 }
-filtrarEstructura(estructura: any[], proyectosSeleccionados: string[], sucursalesSeleccionadas: string[]) {
+filtrarEstructura(
+  estructura: any[], 
+  proyectosSeleccionados: string[], 
+  sucursalesSeleccionadas: string[]
+) {
   return estructura.map(padre => {
 
-    const hijosFiltrados = padre.children?.filter((hijo: any) => {
+    // Filtramos los hijos del padre
+    const hijosFiltrados = (padre.children || [])
+      .map((hijo: any) => {
 
-      if (proyectosSeleccionados.length > 0) {
-        // Solo filtramos por proyectos, ignoramos sucursales
-        return hijo.data.idProyectos.some((id: string) => proyectosSeleccionados.includes(id));
-      }
+        // Filtramos los nietos de cada hijo
+        const nietosFiltrados = (hijo.children || []).filter((nieto: any) => {
+          if (proyectosSeleccionados.length > 0) {
+            return nieto.data.idsProyectos.some((id: string) =>
+              proyectosSeleccionados.includes(id)
+            );
+          }
+          if (sucursalesSeleccionadas.length > 0) {
+            return nieto.data.idsSucursales.some((id: string) =>
+              sucursalesSeleccionadas.includes(id)
+            );
+          }
+          return true; // Sin filtros, mostramos todo
+        });
 
-      if (sucursalesSeleccionadas.length > 0) {
-        // Solo filtramos por sucursales, ignoramos proyectos
-        return hijo.data.idSucursales.some((id: string) => sucursalesSeleccionadas.includes(id));
-      }
+        // Retornamos el hijo con sus nietos filtrados
+        return {
+          ...hijo,
+          children: nietosFiltrados
+        };
+      })
+      .filter((hijo: any) => {
+        // Filtrado del hijo en sí
+        if (proyectosSeleccionados.length > 0) {
+          return hijo.data.idProyectos.some((id: string) =>
+            proyectosSeleccionados.includes(id)
+          );
+        }
+        if (sucursalesSeleccionadas.length > 0) {
+          return hijo.data.idSucursales.some((id: string) =>
+            sucursalesSeleccionadas.includes(id)
+          );
+        }
+        return true; // Sin filtros, mostramos todo
+      });
 
-      // Si no hay proyectos ni sucursales seleccionados, mostramos todo
-      return true;
-    }) || [];
-
+    // Retornamos el padre con los hijos (y nietos) filtrados
     return {
       ...padre,
       children: hijosFiltrados
     };
   });
 }
+
 
 
 

@@ -23,8 +23,8 @@ export class ConfigurationService {
   dataPlaneadoFinanciera$ = this.dataPlaneadoFinanciera.asObservable();
 
   private idEmpresaSource = new BehaviorSubject<any>(null)
-  //linkApiMejorada = 'http://localhost:3000/'
-  linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
+  linkApiMejorada = 'http://localhost:3000/'
+  //linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
   DataTreeTable: any = []
   Semestres: any = []
   SemestresBack: any = []
@@ -2027,8 +2027,8 @@ export class ConfigurationService {
             data: {
               Nombre: item.Nombre,
               idItem: item.id,
-              idProyectos: item.idProyectos == undefined ? [] : item.idProyectos,
-              idSucursales: item.idSucursales == undefined ? [] : item.idSucursales,
+              idProyectos: item.idsProyectos == undefined ? [] : item.idsProyectos,
+              idSucursales: item.idsSucursales == undefined ? [] : item.idsSucursales,
               size: '200mb',
               type: 'Folder',
               idCategoria: idCategoria,
@@ -2044,6 +2044,8 @@ export class ConfigurationService {
                   idPadre: item.idPadre,
                   valores: {},
                   tipo: 'Nieto',
+                  idProyectos: nieto.idsProyectos == undefined ? [] : nieto.idsProyectos,
+                  idSucursales: nieto.idsSucursales == undefined ? [] : nieto.idsSucursales,
                   Orden: nieto.Orden
                 }
               }))
