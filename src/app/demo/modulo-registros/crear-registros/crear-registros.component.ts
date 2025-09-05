@@ -462,6 +462,8 @@ guardarRegistro() {
         title: 'Cargando...'
       });
       Swal.showLoading();
+
+
   if(!this.CatalogoSocioSeleccionado){
           this.toastr.warning('Debe seleccionar un socio de negocios o cuenta bancaria', '¡Alerta!', {
             timeOut: 2000,
@@ -497,7 +499,15 @@ else  if(this.Fecha==''){
       positionClass: 'toast-center-center'
     }); 
     Swal.close();
-  }
+}
+else  if( (this.CuentaHijoSeleccionado.Prefijo=='1.2.1' || this.CuentaHijoSeleccionado.Prefijo=='1.2.2') 
+   && this.CuentaNietoSeleccionado==null){
+    this.toastr.warning('Debe seleccionar una cuenta nieto', '¡Alerta!', {
+      timeOut: 2000,
+      positionClass: 'toast-center-center'
+    }); 
+    Swal.close();
+}
 
   else {
   if(this.copiadoRegistro==true){
@@ -523,7 +533,8 @@ else  if(this.Fecha==''){
       this.Registros[index].idProveedor=this.CatalogoSocioSeleccionado?.Tipo == '2' ? this.CatalogoSocioSeleccionado.id : ''
       this.Registros[index].idProyecto=this.ProyectoSeleccionado?.id || ''
       this.Registros[index].idSucursal=this.SucursalSeleccionada?.id || ''
-      
+      this.Registros[index].PrefijoNieto=this.CuentaNietoSeleccionado?.Prefijo || ''
+      this.Registros[index].idCuentaContableAbuelo=this.PadreSeleccionado?.idAbuelo || ''
       this.conS.updateRegistro(this.Registros[index]).then(resp=>{
   
       const filaGrid = {
@@ -549,6 +560,8 @@ else  if(this.Fecha==''){
              "idCuentaPadre":this.Registros[index].idCuentaContablePadre,
              "idCuentaHijo":this.Registros[index].idCuentaContableHijo,
              "idCuentaNieto":this.Registros[index].idCuentaContableNieto,
+             "PrefijoNieto":    this.Registros[index].PrefijoNieto,
+             "idCuentaContableAbuelo": this.Registros[index].idCuentaContableAbuelo
         };
   
   
@@ -570,6 +583,7 @@ else  if(this.Fecha==''){
         const formattedHour = hours % 12 || 12;    
        const nuevo:any = {
          "Valor": Number(this.Valor),
+         "idCuentaContableAbuelo": this.PadreSeleccionado?.idAbuelo || '',
          "idCuentaContablePadre": this.PadreSeleccionado?.id || '',
          "idCuentaContableHijo": this.CuentaHijoSeleccionado?.id || '',
          "idCuentaContableNieto": this.CuentaNietoSeleccionado?.id || '',
@@ -586,6 +600,7 @@ else  if(this.Fecha==''){
          "Comentarios": this.Comentarios,
          "idProyecto": this.ProyectoSeleccionado?.id || '',
          "idSucursal": this.SucursalSeleccionada?.id || '',
+         "PrefijoNieto": this.CuentaNietoSeleccionado?.Prefijo || '',
          "CuentaBancaria": this.CatalogoSocioSeleccionado?.Tipo == '3' ? this.CatalogoSocioSeleccionado.Cuenta : '',
          "idCuentaBancaria": this.CatalogoSocioSeleccionado?.Tipo == '3' ? this.CatalogoSocioSeleccionado.id : '',
          "Cliente": this.CatalogoSocioSeleccionado?.Tipo == '1' ? this.CatalogoSocioSeleccionado.Nombre : '',
@@ -620,6 +635,8 @@ else  if(this.Fecha==''){
              "idCuentaPadre":nuevo.idCuentaContablePadre,
              "idCuentaHijo":nuevo.idCuentaContableHijo,
              "idCuentaNieto":nuevo.idCuentaContableNieto,
+             "PrefijoNieto":   nuevo.PrefijoNieto,
+             "idCuentaContableAbuelo": nuevo.idCuentaContableAbuelo
            };
            this.gridApi.applyTransaction({ add: [filaGrid] });
           //  this.gridApi.setSortModel([{ colId: "Orden", sort: "desc" }]);
