@@ -46,7 +46,7 @@ export default class ModuloCatalogosComponent implements OnInit {
     },
     {
       "Nombre":'Proyectos',
-      'icon': 'fa-solid fa-building card-icon',
+      'icon': 'fa-solid fa-diagram-project card-icon',
       'Descripcion': 'Ver informacion de tus proyectos',
       'id':2,
     },

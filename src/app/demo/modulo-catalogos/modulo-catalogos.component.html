@@ -1,22 +1,18 @@
 <div class="row">
   <div class="col-sm-12">
-    <app-card cardTitle="Hello Card" [options]="false">
-<!-- <div *ngIf="Catalogos.length>0" class="row justify-content-center">
+    <app-card cardTitle="Catálogos" [options]="false">
+<div *ngIf="Catalogos.length>0" class="row justify-content-center">
   <div 
     *ngFor="let catalogo of Catalogos"
     class="catalog-card col-12 col-md-3 col-lg-3 m-2 text-center">
     <div routerLink="{{catalogo.url + '/' + idEmpresa}}">
-      <i class="fa fa-user card-icon"></i>
+      <i class="{{catalogo.icon}}"></i>
       <h5 class="card-title">{{catalogo.Nombre}}</h5>
       <p class="card-text">{{catalogo.Descripcion}}</p>
 
     </div>
   </div>
-</div> -->
-    <p-card header="Simple Card">
-  <app-catalogo-cuentas-contables [idEmpresa]="idEmpresa"></app-catalogo-cuentas-contables>
-</p-card>
-
-</app-card>
+</div>
+    </app-card>
   </div>
 </div>
