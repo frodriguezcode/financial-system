@@ -23,7 +23,7 @@ import BancosComponent from '../bancos/bancos.component';
 import SocioNegocioComponent from '../socios/socios.component';
 import { MultiSelectModule } from 'primeng/multiselect';
 import SaldosInicialesComponent from '../saldos-iniciales/saldos-iniciales.component';
-
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-empresas',
   standalone: true,
@@ -42,6 +42,7 @@ import SaldosInicialesComponent from '../saldos-iniciales/saldos-iniciales.compo
     BancosComponent,
     SocioNegocioComponent,
     MultiSelectModule,
+    RouterModule,
     SaldosInicialesComponent
   ],
   templateUrl: './empresas.component.html',

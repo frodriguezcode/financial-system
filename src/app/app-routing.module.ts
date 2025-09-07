@@ -103,6 +103,14 @@ const routes: Routes = [
         loadComponent: () => import('./demo/forms & tables/tbl-bootstrap/tbl-bootstrap.component')
       },
       {
+        path: 'modulo-catalogos/:idEmpresa',
+        loadComponent: () => import('./demo/modulo-catalogos/modulo-catalogos.component')
+      },
+      {
+        path: 'modulo-cuentas-contables/:idEmpresa',
+        loadComponent: () => import('./demo/modulo-catalogos/catalogo-cuentas-contables/catalogo-cuentas-contables.component')
+      },
+      {
         path: 'sample-page',
         loadComponent: () => import('./demo/sample-page/sample-page.component')
       }

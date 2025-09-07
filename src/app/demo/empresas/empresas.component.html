@@ -48,7 +48,7 @@
                 <th class="text-center" scope="row">{{i+1}}</th>
                 <td class="text-center">
                   <ng-container *ngIf="!empresa.Editando; else editarEmpresa">
-                    {{empresa.Nombre}}
+                  <a routerLink="/modulo-catalogos/{{ empresa.id }}" >{{empresa.Nombre}}</a>  
                   </ng-container>
                   <ng-template #editarEmpresa>
                     <input [(ngModel)]="empresa.Nombre" class="form-control text-center col-4">
