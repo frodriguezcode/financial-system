@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // project import
@@ -7,17 +7,17 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { RouterModule,Router, ActivatedRoute } from '@angular/router';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { Subscription } from 'rxjs';
-import { TreeNode } from 'primeng/api';
-import { OrganizationChartModule } from 'primeng/organizationchart';
+import { TreeModule } from 'primeng/tree';
 
 @Component({
   selector: 'app-catalogo-cuentas-contables',
   standalone: true,
-  imports: [CommonModule, SharedModule,OrganizationChartModule],
+  imports: [CommonModule, SharedModule,TreeModule],
   templateUrl: './catalogo-cuentas-contables.component.html',
   styleUrls: ['./catalogo-cuentas-contables.component.scss']
 })
 export default class CatalogoCuentasContablesComponent implements OnInit {
+  @Input() idEmpresa: any;
   CuentasContables:any=[]
   Proyectos:any=[]
   Sucursales:any=[]
@@ -25,12 +25,11 @@ export default class CatalogoCuentasContablesComponent implements OnInit {
   Padres:any=[]
   Items:any=[]
   CuentasNietos:any=[]
-  idEmpresa:any
+
   data: any[] = []
   dataCatalogos: any = []
   constructor(private rutaActiva: ActivatedRoute,private conS:ConfigurationService){}
   ngOnInit(): void {
-    this.idEmpresa=this.rutaActiva.snapshot.paramMap.get('idEmpresa')!;
     this.obtenerProyectos() 
   }
 
@@ -95,25 +94,32 @@ export default class CatalogoCuentasContablesComponent implements OnInit {
  .forEach((abuelo:any) => {
 
   this.data.push({
-    Nombre:abuelo.Nombre,
-    Padres:this.getPadreByAbuelo(abuelo.id)
+    key: abuelo.id,
+    label: abuelo.Nombre,
+    data: '',
+    icon: 'pi pi-list',
+    children:this.getPadreByAbuelo(abuelo.id)
   })
   
   
  });
 
    console.log('data',this.data)
+   console.log('Proyectos',this.Proyectos)
+   console.log('Sucursales',this.Sucursales)
   }
 getPadreByAbuelo(idAbuelo:any){
   let _Padre= []
   this.Padres.filter((padre:any)=>padre.idAbuelo==idAbuelo)
   .forEach((element:any) => {
     _Padre.push(
-      {
-      Nombre:element.Nombre,
-      Hijos:this.getHijosByPadre(element.id)
-
-      }
+   { 
+    key: idAbuelo + '-' + _Padre.length + 1,
+    label: element.Nombre,
+    data: '',
+    icon: 'pi pi-list',
+    children:this.getHijosByPadre(element.id,idAbuelo + '-' + _Padre.length + 1)
+    },
     )
     
   });
@@ -121,14 +127,18 @@ getPadreByAbuelo(idAbuelo:any){
 return _Padre
   
 }
-getHijosByPadre(idPadre:any){
+getHijosByPadre(idPadre:any,key:any){
     let _Hijo= []
   this.Items.filter((padre:any)=>padre.idPadre==idPadre)
   .forEach((element:any) => {
     _Hijo.push(
       {
-      Nombre:element.Nombre,
-      Nietos:this.getNietosByHijo(element.id)
+      key: key + '-' + _Hijo.length + 1,
+      label: element.Nombre,
+      data: '',
+      icon: 'pi pi-list',
+      'Proyectos':this.getProyectosByCuentas(element.idsProyectos),
+      children:this.getNietosByHijo(element.id,key + '-' + _Hijo.length + 1)
       }
     )
     
@@ -136,19 +146,32 @@ getHijosByPadre(idPadre:any){
 return _Hijo
 }
 
-getNietosByHijo(idHijo:any){
+getNietosByHijo(idHijo:any,key:any){
     let _Nieto= []
   this.CuentasNietos.filter((padre:any)=>padre.idHijo==idHijo)
   .forEach((element:any) => {
     _Nieto.push(
       {
-      Nombre:element.Nombre,
+      key: key + '-' + _Nieto.length + 1,
+      label: element.Nombre,
+      data: '',
+      icon: 'pi pi-list',
      
       }
     )
     
   });
 return _Nieto
+}
+
+getProyectosByCuentas(idsProyectos:any){
+
+  let Proyectos:any=[]
+  Proyectos=this.Proyectos.filter((proy:any)=> idsProyectos.includes(proy.id))
+  if(Proyectos.length>0){
+    return Proyectos.map((proyecto:any)=>proyecto.Nombre)
+  }
+  return 'No tiene proyectos asignados'
 }
 
 

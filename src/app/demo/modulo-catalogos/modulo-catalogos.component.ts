@@ -5,10 +5,12 @@ import { CommonModule } from '@angular/common';
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { RouterModule,Router, ActivatedRoute } from '@angular/router';
+import { CardModule } from 'primeng/card';
+import CatalogoCuentasContablesComponent from './catalogo-cuentas-contables/catalogo-cuentas-contables.component';
 @Component({
   selector: 'app-modulo-catalogos',
   standalone: true,
-  imports: [CommonModule, SharedModule, RouterModule],
+  imports: [CommonModule, SharedModule, RouterModule,CardModule,CatalogoCuentasContablesComponent],
   templateUrl: './modulo-catalogos.component.html',
   styleUrls: ['./modulo-catalogos.component.scss']
 })

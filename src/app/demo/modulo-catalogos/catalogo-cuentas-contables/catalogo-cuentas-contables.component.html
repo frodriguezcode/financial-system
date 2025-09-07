@@ -1,39 +1,13 @@
 <div class="row">
   <div class="col-sm-12">
-    <app-card cardTitle="Hello Card" [options]="false">
-<div class="hierarchy-container">
-  <!-- Nivel Abuelos -->
-  <div class="hierarchy-row">
-    <div *ngFor="let abuelo of data" class="hierarchy-card">
-      <h5>{{ abuelo.Nombre }}</h5>
+    <!-- <app-card cardTitle="Hello Card" [options]="false">
 
-      <!-- Padres de cada Abuelo -->
-      <div class="hierarchy-row">
-        <div *ngFor="let padre of abuelo.Padres" class="hierarchy-card">
-          <h6>{{ padre.Nombre }}</h6>
 
-          <!-- Hijos de cada Padre -->
-          <div class="hierarchy-row">
-            <div *ngFor="let hijo of padre.Hijos" class="hierarchy-card">
-              <p>{{ hijo.Nombre }}</p>
-
-              <!-- Nietos de cada Hijo -->
-              <div class="hierarchy-row" *ngIf="hijo.Nietos?.length">
-                <div *ngFor="let nieto of hijo.Nietos" class="hierarchy-card">
-                  <small>{{ nieto.Nombre }}</small>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </div>
-
+      
+      
+    </app-card> -->
+    <div *ngIf="data.length>0" >
+        <p-tree class="w-full md:w-30rem" [value]="data" />
     </div>
-  </div>
-</div>
-
-    </app-card>
   </div>
 </div>
