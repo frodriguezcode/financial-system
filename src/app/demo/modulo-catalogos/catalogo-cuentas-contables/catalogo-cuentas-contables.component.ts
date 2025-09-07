@@ -22,10 +22,12 @@ export default class CatalogoCuentasContablesComponent implements OnInit {
   Proyectos:any=[]
   Sucursales:any=[]
   Abuelos:any=[]
+  Padres:any=[]
   Items:any=[]
   CuentasNietos:any=[]
   idEmpresa:any
-  
+  data: any[] = []
+  dataCatalogos: any = []
   constructor(private rutaActiva: ActivatedRoute,private conS:ConfigurationService){}
   ngOnInit(): void {
     this.idEmpresa=this.rutaActiva.snapshot.paramMap.get('idEmpresa')!;
@@ -50,13 +52,13 @@ export default class CatalogoCuentasContablesComponent implements OnInit {
     })
   }
 
-    obtenerAbuelos() {
+  obtenerAbuelos() {
     this.conS.obtenerCategoriasFlujos().subscribe((resp: any) => {
       this.Abuelos = resp.filter((r: any) => r.id != 'VmmQpdpunMTqkoSjhzzj');
       this.obtenerCuentasNietos();
     });
   }
-    obtenerCuentasNietos() {
+  obtenerCuentasNietos() {
     let Subscripcion: Subscription;
     Subscripcion = this.conS.obtenerCuentasNietos(this.idEmpresa).subscribe((cuentas: any) => {
       Subscripcion.unsubscribe();
@@ -65,19 +67,89 @@ export default class CatalogoCuentasContablesComponent implements OnInit {
     });
   }
 
-    obtenerItems() {
+  obtenerItems() {
     let Subscripcion: Subscription;
     Subscripcion = this.conS.obtenerItems(this.idEmpresa).subscribe((items: any) => {
       Subscripcion.unsubscribe();
       this.Items = items; 
-      this.  construirJerarquia()
+      this.obtenerPadres()
     });
   }
 
-  construirJerarquia(){
-    
+  obtenerPadres(){
+    this.Abuelos.filter((padre:any)=>padre.Tipo==1 || padre.Tipo==2)
+    .forEach(padre2 =>{
+    this.Padres.push(padre2)
+    });
+   
+    this.construirJerarquia()
+  
   }
 
+  construirJerarquia(){
+ console.log('Padres',this.Padres)
+ console.log('Abuelos',this.Abuelos)
+
+ this.Abuelos
+ .filter((abuelo:any)=>abuelo.Tipo==3)
+ .forEach((abuelo:any) => {
+
+  this.data.push({
+    Nombre:abuelo.Nombre,
+    Padres:this.getPadreByAbuelo(abuelo.id)
+  })
+  
+  
+ });
+
+   console.log('data',this.data)
+  }
+getPadreByAbuelo(idAbuelo:any){
+  let _Padre= []
+  this.Padres.filter((padre:any)=>padre.idAbuelo==idAbuelo)
+  .forEach((element:any) => {
+    _Padre.push(
+      {
+      Nombre:element.Nombre,
+      Hijos:this.getHijosByPadre(element.id)
+
+      }
+    )
+    
+  });
+
+return _Padre
+  
+}
+getHijosByPadre(idPadre:any){
+    let _Hijo= []
+  this.Items.filter((padre:any)=>padre.idPadre==idPadre)
+  .forEach((element:any) => {
+    _Hijo.push(
+      {
+      Nombre:element.Nombre,
+      Nietos:this.getNietosByHijo(element.id)
+      }
+    )
+    
+  });
+return _Hijo
+}
+
+getNietosByHijo(idHijo:any){
+    let _Nieto= []
+  this.CuentasNietos.filter((padre:any)=>padre.idHijo==idHijo)
+  .forEach((element:any) => {
+    _Nieto.push(
+      {
+      Nombre:element.Nombre,
+     
+      }
+    )
+    
+  });
+return _Nieto
+}
 
 
 }
