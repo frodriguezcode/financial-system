@@ -22,6 +22,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { Subscription } from 'rxjs';
 import { TreeSelectModule } from 'primeng/treeselect';
 import PlaneadoFinancieroComponent from './planeado-financiero/planeado-financiero.component';
+import { AccordionModule } from 'primeng/accordion';
 
 interface TreeNode {
   label: string;
@@ -54,7 +55,9 @@ interface Column {
     InputGroupAddonModule,
     TreeTableModule,
     TreeSelectModule,
-    SidebarModule],
+    SidebarModule,
+    AccordionModule
+    ],
   templateUrl: './planeacion-financiera-mejorada.component.html',
   styleUrls: ['./planeacion-financiera-mejorada.component.scss']
 })
@@ -445,8 +448,8 @@ this.DataByEmpresa=this.DataByMatriz.filter((data:any)=>data.idEmpresa==this.idE
 this.Proyectos=this.DataByEmpresa.Proyectos
 this.Sucursales=this.DataByEmpresa.Sucursales
 this.RegistrosPlanesBack=this.DataByEmpresa.RegistrosPlanes
-this.Items=this.DataByEmpresa.CuentasContables
-this.ItemsBack=this.DataByEmpresa.CuentasContables
+this.Items=this.DataByEmpresa._CuentasContables
+this.ItemsBack=this.DataByEmpresa._CuentasContables
 this.CuentasBancarias=this.DataByEmpresa.CuentasBancarias
 this.Registros=this.DataByEmpresa.Registros
 this.Categorias=[]
@@ -1156,6 +1159,10 @@ getMesesBySemestre(idSemestre:any){
 
 
 guardarValorPlan(data:any,anio:any,mes:any,mesRegistro:any){
+  Swal.fire({
+      title: 'Cargando...'
+    });
+  Swal.showLoading();
   let Valor:number=0
 
   Valor=Number(data.valores[data.idItem + '-' + mes + '-' + anio].ValorNumero)
@@ -1191,16 +1198,17 @@ guardarValorPlan(data:any,anio:any,mes:any,mesRegistro:any){
       "MesRegistro":mesRegistro,
     }
 
-    // Update local array
+
     const index = this.RegistrosPlanesBack.findIndex((reg: any) =>
        reg.idItem === dataPlaneacion.idItem &&
        reg.Anio === dataPlaneacion.Anio &&
        reg.Mes === dataPlaneacion.NumMes 
     );
     if (index !== -1) {
-      // If exists, update
+     
       this.RegistrosPlanesBack[index] = dataPlaneacion;
       this.conS.ActualizarValorPlan(dataPlaneacion).then((resp:any)=>{
+        Swal.close();
         this.toastr.success('Registro actualizado', '¡Éxito!', {
             timeOut: 2000,
             positionClass: 'toast-center-center'
@@ -1208,9 +1216,10 @@ guardarValorPlan(data:any,anio:any,mes:any,mesRegistro:any){
         this.filtrado()
       })
     } else {
-      // If doesn't exist, add
+
       this.RegistrosPlanesBack.push(dataPlaneacion);
       this.conS.crearValorPlan(dataPlaneacion).then((resp:any)=>{
+         Swal.close();
           this.toastr.success('Registro creado', '¡Éxito!', {
             timeOut: 2000,
             positionClass: 'toast-center-center'
@@ -1220,9 +1229,9 @@ guardarValorPlan(data:any,anio:any,mes:any,mesRegistro:any){
     }
     this.RegistrosPlanes=this.RegistrosPlanesBack
 
-  //}
+  }
 
-}
+
 
 
 

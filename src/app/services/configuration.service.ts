@@ -23,8 +23,8 @@ export class ConfigurationService {
   dataPlaneadoFinanciera$ = this.dataPlaneadoFinanciera.asObservable();
 
   private idEmpresaSource = new BehaviorSubject<any>(null)
-  //linkApiMejorada = 'http://localhost:3000/'
-  linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
+  linkApiMejorada = 'http://localhost:3000/'
+  //linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
   DataTreeTable: any = []
   Semestres: any = []
   SemestresBack: any = []
@@ -2051,7 +2051,6 @@ export class ConfigurationService {
               }))
           });
       })
-      console.log('ItemsEncontrados',ItemsEncontrados)
       return ItemsEncontrados
     }
     else {
