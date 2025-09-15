@@ -28,3 +28,13 @@
    margin-left:-10px;
    
   }
+
+  ::ng-deep .horizontal-tree .p-tree-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+  gap: 1rem;                      /* Espacio entre columnas */
+}
+
+::ng-deep .horizontal-tree .p-treenode {
+  width: 100%;
+}

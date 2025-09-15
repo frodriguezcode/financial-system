@@ -10,11 +10,12 @@ import { ToastrService } from 'ngx-toastr';
 import { TreeModule } from 'primeng/tree';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ConfigurationService } from 'src/app/services/configuration.service';
-
+import { DialogModule } from 'primeng/dialog';
+import RolesComponent from '../roles.component';
 @Component({
   selector: 'app-lista-roles',
   standalone: true,
-  imports: [CommonModule, SharedModule,TreeModule,InputSwitchModule],
+  imports: [CommonModule, SharedModule,TreeModule,InputSwitchModule,DialogModule,RolesComponent],
   templateUrl: './lista-roles.component.html',
   styleUrls: ['./lista-roles.component.scss']
 })
@@ -30,7 +31,7 @@ export default class ListaRolesComponent implements OnInit {
   AtributosSistema:any=[]
   Modulos:any=[]
   ItemsModulosAtributos: TreeNode[]=[]
-
+visibleCrearRol: boolean = false;
   metaKeySelection: boolean = false;
   constructor(private authS:AuthService,private toastr: ToastrService, 
     private conS:ConfigurationService,
@@ -58,6 +59,11 @@ ngOnInit(): void {
  
 
 
+}
+
+
+showCrearRol() {
+  this.visibleCrearRol = true;
 }
 obtenerAtributos(){
   this.authS.obtenerAtributos().subscribe((data:any) => {

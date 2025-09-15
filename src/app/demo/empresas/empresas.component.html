@@ -127,7 +127,12 @@
             <!-- 🔽 Contenido dinámico del paso -->
             <div class="mb-4">
               <div *ngIf="flujo.Orden == 1">
-                <app-roles (rolCreado)="guardarRolByEmpresa($event)" [empresaID]="idEmpresaCreada"></app-roles>
+                <app-roles 
+                (rolCreado)="guardarRolByEmpresa($event)" 
+                [empresaID]="idEmpresaCreada"
+                [ConfigInicial]="true"
+                >
+              </app-roles>
               </div>
               <div *ngIf="flujo.Orden == 2">
                 <app-sucursal (sucursalCreada)="guardarSucursalByEmpresa($event)" [empresaID]="idEmpresaCreada"></app-sucursal>

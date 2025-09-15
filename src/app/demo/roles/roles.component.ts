@@ -11,14 +11,13 @@ import { FormControl } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ChangeDetectorRef } from '@angular/core';
 import { TabViewModule } from 'primeng/tabview';
-import ListaRolesComponent from './lista-roles/lista-roles.component';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { StepperModule } from 'primeng/stepper';
 import Swal from 'sweetalert2'
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, SharedModule,TreeModule,InputSwitchModule,TabViewModule,ListaRolesComponent,StepperModule],
+  imports: [CommonModule, SharedModule,TreeModule,InputSwitchModule,TabViewModule,StepperModule],
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss']
 })
