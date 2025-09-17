@@ -16,11 +16,20 @@ import { DialogModule } from 'primeng/dialog';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-proyectos',
   standalone: true,
-  imports: [CommonModule, SharedModule,FormsModule,ReactiveFormsModule,CalendarModule,TableModule,DialogModule,MultiSelectModule],
+  imports: [CommonModule, 
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CalendarModule,
+    TableModule,
+    NgSelectModule,
+    DialogModule,
+    MultiSelectModule],
   templateUrl: './proyectos.component.html',
   styleUrls: ['./proyectos.component.scss']
 })
@@ -44,6 +53,7 @@ export default class ProyectosComponent implements OnInit {
   CambiarRegistros: boolean = false;
   idEmpresa:string=''
   nombreEmpresa:any
+  
   Sucursal:FormControl=new FormControl ('')
   visibleSucursal: boolean = false;
   constructor(private datePipe: DatePipe,private conS:ConfigurationService,
@@ -89,10 +99,10 @@ ngOnInit(): void {
 
   
 
-    this.obtenerEmpresas()
+  this.obtenerEmpresas()
 
   
-      this.obtenerSucursales()
+  this.obtenerSucursales()
     
   this.obtenerUsuarios()
  
@@ -173,14 +183,14 @@ cargarFormulario(){
   this.ProyectoForm = new FormGroup({
     Nombre: new FormControl('',[Validators.required]), 
     idMatriz: new FormControl(this.usuario.idMatriz,[Validators.required]), 
-    idEmpresa: new FormControl('',[Validators.required]), 
+    idEmpresa: new FormControl(this.idEmpresa,[Validators.required]), 
     Activo: new FormControl(true), 
     Usuarios: new FormControl([]), 
     Editando: new FormControl(false), 
     RangoFechas: new FormControl(null),
     FechaInicio: new FormControl(''),
     FechaFinal: new FormControl(''),
-    idSucursal: new FormControl('0'), 
+    Sucursal: new FormControl(''), 
     FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
 }
@@ -306,14 +316,17 @@ else {
 });
 
 
-
-this.ProyectoForm.value.MesesRango=añosAgrupados
-this.ProyectoForm.value.FechaInicio=FechaInicio
-this.ProyectoForm.value.FechaFinal=FechaFinal
-
-
-
-
+this.ProyectoForm.addControl('idsUsuarios', new FormControl([]));
+this.ProyectoForm.addControl('idSucursal', new FormControl([]));
+this.ProyectoForm.patchValue({
+  MesesRango: añosAgrupados,
+  FechaInicio: FechaInicio,
+  FechaFinal: FechaFinal,
+  idSucursal: (this.ProyectoForm.value.Sucursal== undefined || this.ProyectoForm.value.Sucursal.id==undefined) ?'' :this.ProyectoForm.value.Sucursal.id,
+  idsUsuarios: this.ProyectoForm.value.Usuarios == undefined ? []: this.ProyectoForm.value.Usuarios?.map((user: any) => user.id) || []
+});
+this.ProyectoForm.removeControl('Usuarios')
+this.ProyectoForm.removeControl('Sucursal')
   this.conS.crearProyecto(this.ProyectoForm.value).then((resp: any)=>{
     this.proyectoCreado.emit(this.ProyectoForm.value);
     Swal.fire({
@@ -368,6 +381,26 @@ getNombreEmpresa(idEmpresa){
     return ''
   }
 }
+
+obtenerUsuariosProyectos(idsUsuarios:any){
+  return this.Usuarios.filter((user:any)=>idsUsuarios.includes(user.id))
+}
+obtenerSucursalProyecto(idSucursal:any){
+  return this.Sucursales.filter((sucursal:any)=>sucursal.id==idSucursal)
+}
+
+guardarUsuarios(proyecto:any){
+proyecto.idsUsuarios=proyecto.UsuariosSeleccionados.map((user:any)=>user.id)
+delete proyecto.UsuariosSeleccionados
+delete proyecto.SucursalSeleccionada
+this.conS.ActualizarProyecto(proyecto).then(resp=>{})
+}
+guardarSucursal(proyecto:any){
+proyecto.idSucursal=proyecto.SucursalSeleccionada.id
+delete proyecto.SucursalSeleccionada
+delete proyecto.UsuariosSeleccionados
+this.conS.ActualizarProyecto(proyecto).then(resp=>{})
+}
 obtenerProyectos(){
   this.cargando=true
   // if(this.usuario.isAdmin==true){
@@ -413,6 +446,11 @@ obtenerProyectos(){
         proyect.Empresa =    this.getNombreEmpresa(proyect.idEmpresa)
 
     });
+
+    this.Proyectos.map((proyecto:any)=>proyecto.UsuariosSeleccionados=this.obtenerUsuariosProyectos(proyecto.idsUsuarios))
+    this.Proyectos.map((proyecto:any)=>proyecto.SucursalSeleccionada=this.obtenerSucursalProyecto(proyecto.idSucursal)[0])
+    console.log('Proyectos',this.Proyectos)
+
     this.cargando=false
   
     })

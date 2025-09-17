@@ -1,65 +1,31 @@
-
 <app-card style="height: 1200px;" cardTitle="Módulo Proyectos" [options]="false">
-  <button type="button" (click)="showDialog()" class="btn btn-success">+ Proyecto</button>
-<br>
-<div class="mt-2">
-  <div *ngIf="cargando"  class="d-flex justify-content-center">
-    <div class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
+  <button type="button" (click)="showDialog()" class="btn btn-success m-1">+ Proyecto</button>
+  <button type="button" [disabled]="this.idEmpresa=='' || this.idEmpresa== '0' " (click)="showCrearSucursal()"
+        class="btn btn-info m-1">+ Crear Sucursal
+  </button>
+  <br>
+  <div class="mt-2">
+    <div *ngIf="cargando" class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
-  </div>
-  <p-table  *ngIf="!cargando"  [value]="Proyectos" [tableStyle]="{ 'min-width': '50rem' }">
-    <ng-template pTemplate="header">
+    <p-table *ngIf="!cargando" [value]="Proyectos" [tableStyle]="{ 'min-width': '120rem' }">
+      <ng-template pTemplate="header">
         <tr>
           <th class="text-center">#</th>
-          <th class="text-center">Proyecto</th>
-          <th class="text-center">Rango de Tiempo</th>
-          <th class="text-center">Duración</th>
-          <th class="text-center">Empresa</th>
           <th class="text-center">Editar</th>
           <th class="text-center">Inactivar</th>
+          <th class="text-center">Proyecto</th>
+          <th class="text-center">Usuarios Asignados</th>
+          <th class="text-center">Sucursal Asignada</th>
+          <th class="text-center">Rango de Tiempo</th>
+          <th class="text-center">Duración</th>
         </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-proyecto let-i="rowIndex">
+      </ng-template>
+      <ng-template pTemplate="body" let-proyecto let-i="rowIndex">
         <tr>
           <th class="text-center" scope="row">{{i+1}}</th>
-          <td class="text-center">
-            <ng-container *ngIf="!proyecto.Editando; else editarProyecto">
-              {{proyecto.Nombre}}
-            </ng-container>
-            <ng-template #editarProyecto>
-              <input [(ngModel)]="proyecto.Nombre" class="form-control text-center col-4">
-            </ng-template>
-          </td>
-          
-          
-          
-          <td class="text-center">
-            <ng-container *ngIf="!proyecto.Editando; else editarRango">
-              {{(proyecto.FechaInicio==''?'-':proyecto.FechaInicio) + ' al '
-               + (proyecto.FechaFinal==''?'-':proyecto.FechaFinal)}}
-            </ng-container>
-            <ng-template  #editarRango>
-              
-              <p-calendar 
-              [(ngModel)]="proyecto.RangoFechas"
-              [appendTo]="'body'"
-              [numberOfMonths]="2" 
-              dateFormat="dd/mm/yy"
-              selectionMode="range" 
-              [readonlyInput]="false" />
-              
-              
-            </ng-template>
-          </td>
-          <td class="text-center"> {{proyecto.Duracion}}</td>
-          
-          <td class="text-center">
-            <ng-container>
-              {{proyecto.Empresa}}
-            </ng-container>
-
-          </td>
           <td *ngIf="!proyecto.Editando" class="text-center">
             <!-- Botón de editar -->
             <button (click)="toggleEdicion(proyecto)" type="button" class="btn btn-success text-center">
@@ -73,131 +39,140 @@
             </button>
           </td>
           <td class="text-center" *ngIf="proyecto.Activo"><button (click)="ActualizaEstadoProyecto(proyecto,false)"
-              type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button></td>
+              type="button" class="btn btn-success"><i class="fa-solid fa-toggle-on"></i></button>
+          </td>
           <td class="text-center" *ngIf="!proyecto.Activo"><button (click)="ActualizaEstadoProyecto(proyecto,true)"
-              type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button></td>
+              type="button" class="btn btn-danger"><i class="fa-solid fa-toggle-off"></i></button>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="!proyecto.Editando; else editarProyecto">
+              {{proyecto.Nombre}}
+            </ng-container>
+            <ng-template #editarProyecto>
+              <input [(ngModel)]="proyecto.Nombre" class="form-control text-center col-4">
+            </ng-template>
+          </td>
+
+
+          <td class="text-center">
+            <ng-select loadingText="Cargando cuentas..." (change)="guardarUsuarios(proyecto)"
+              [(ngModel)]="proyecto.UsuariosSeleccionados" name="UsuariosSeleccionados"
+              notFoundText="No hay usuarios disponibles" class="mt-1" [items]="Usuarios" [multiple]="true"
+              [closeOnSelect]="false" [searchable]="true" bindLabel="Nombres" placeholder="Seleccione los usuarios">
+            </ng-select>
+          </td>
+          <td class="text-center">
+            <ng-select loadingText="Cargando cuentas..." (change)="guardarSucursal(proyecto)"
+              [(ngModel)]="proyecto.SucursalSeleccionada" name="SucursalSeleccionada"
+              notFoundText="No hay usuarios disponibles" class="mt-1" [items]="Sucursales" [multiple]="false"
+              [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre" placeholder="Seleccione las sucursales">
+            </ng-select>
+          </td>
+
+          <td class="text-center">
+            <ng-container *ngIf="!proyecto.Editando; else editarRango">
+              {{(proyecto.FechaInicio==''?'-':proyecto.FechaInicio) + ' al '
+              + (proyecto.FechaFinal==''?'-':proyecto.FechaFinal)}}
+            </ng-container>
+            <ng-template #editarRango>
+
+              <p-calendar [(ngModel)]="proyecto.RangoFechas" [appendTo]="'body'" [numberOfMonths]="2"
+                dateFormat="dd/mm/yy" selectionMode="range" [readonlyInput]="false" />
+
+
+            </ng-template>
+          </td>
+          <td class="text-center"> {{proyecto.Duracion}}</td>
+
+  
+
         </tr>
-    </ng-template>
-</p-table>
-
-</div>
-
-<p-dialog 
-header="Crear Proyecto" 
-[modal]="true" 
-[(visible)]="visible" 
-[style]="{ width: '50rem' }" 
-[breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
-[maximizable]="true"
-  [draggable]="false"
->
-<form *ngIf="ProyectoForm" [formGroup]="ProyectoForm">
-
-  <div class="form-group">
-    <label for="exampleInputPassword1">Proyecto</label>
-    <input (input)="verificarProyecto()" type="text" formControlName="Nombre" class="form-control"
-      id="exampleInputPassword1" placeholder="Escriba el nombre del proyecto" />
-    <span *ngIf="proyectoFound==true" style="color: red;">
-      <p>Ya existe un proyecto con este nombre</p>
-    </span>
+      </ng-template>
+    </p-table>
 
   </div>
 
-  <div *ngIf="this.usuario.isAdmin==true" class="form-group">
-    <label for="exampleInputPassword1">Empresa</label>
-    <select (change)="selectSucursalByEmpresa($any($event.target).value)" formControlName="idEmpresa" class="form-control" id="exampleFormControlSelect1">
-      <option value="0">Seleccione una empresa</option>
-      <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
+  <p-dialog header="Crear Proyecto" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true" [draggable]="false">
+    <form *ngIf="ProyectoForm" [formGroup]="ProyectoForm">
 
-    </select>
-  </div>
-  <div *ngIf="this.usuario.isAdmin==true"  class="form-group">
-    <label for="exampleInputPassword1">Sucursal (opcional)
-       <span 
-       *ngIf="this.Sucursales.length==0"
-       style="color: red;"
-       >No tiene sucursales creadas o activas</span></label>
-    <select formControlName="idSucursal" class="form-control" id="exampleFormControlSelect1">
-      <option value="0">Seleccione una sucursal</option>
-      <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Proyecto</label>
+        <input (input)="verificarProyecto()" type="text" formControlName="Nombre" class="form-control"
+          id="exampleInputPassword1" placeholder="Escriba el nombre del proyecto" />
+        <span *ngIf="proyectoFound==true" style="color: red;">
+          <p>Ya existe un proyecto con este nombre</p>
+        </span>
 
-    </select>
-  </div>
-  <div *ngIf="this.usuario.isAdmin==false" class="form-group">
-    <label for="exampleInputPassword1">Sucursal (opcional)
-       <span 
-       *ngIf="this.Sucursales.length==0"
-       style="color: red;"
-       >No tiene sucursales creadas o activas</span></label>
-    <select formControlName="idSucursal" class="form-control" id="exampleFormControlSelect1">
-      <option value="0">Seleccione una sucursal</option>
-      <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
+      </div>
 
-    </select>
-  </div>
+      <!-- <div *ngIf="this.usuario.isAdmin==true" class="form-group">
+        <label for="exampleInputPassword1">Empresa</label>
+        <select (change)="selectSucursalByEmpresa($any($event.target).value)" formControlName="idEmpresa"
+          class="form-control" id="exampleFormControlSelect1">
+          <option value="0">Seleccione una empresa</option>
+          <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
 
-  <button type="button" [disabled]="this.idEmpresa=='' || this.idEmpresa== '0' " (click)="showCrearSucursal()" class="btn btn-success">Crear Sucursal</button>
-<br>
-<br>
-<div *ngIf="this.idEmpresa!='' ">
-  <p-multiSelect
-  *ngIf="getUsuarioByEmpresa(this.idEmpresa).length>0"
-  [options]="getUsuarioByEmpresa(this.idEmpresa)" 
-  formControlName="Usuarios"
-  [maxSelectedLabels]="1" 
- 
-  [selectedItemsLabel]="getSelecteUsuariosLabelCrear()"
-  optionLabel="NombreEmpresa" 
-  appendTo="body"
-  placeholder="Seleccione los usuarios"
-  [style]="{'width':'600px'}"
-  [panelStyle]="{'width':'600px'}"
-  />
+        </select>
+      </div> -->
+      <div *ngIf="this.usuario.isAdmin==true" class="form-group">
+        <label for="exampleInputPassword1">Sucursal (opcional)
+          <span *ngIf="this.Sucursales.length==0" style="color: red;">No tiene sucursales creadas o
+            activas</span></label>
+        <select formControlName="idSucursal" class="form-control" id="exampleFormControlSelect1">
+          <option value="0">Seleccione una sucursal</option>
+          <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
 
-</div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Duración del proyecto</label>
-    <br>
-    <p-calendar 
-        formControlName="RangoFechas"
-        [numberOfMonths]="2" 
-        appendTo="body"
-        dateFormat="dd/mm/yy"
-        selectionMode="range" 
-        [readonlyInput]="false" />
+        </select>
+      </div>
+      <div *ngIf="this.usuario.isAdmin==false" class="form-group">
+        <label for="exampleInputPassword1">Sucursal (opcional)
+          <span *ngIf="this.Sucursales.length==0" style="color: red;">No tiene sucursales creadas o
+            activas</span></label>
+        <select formControlName="idSucursal" class="form-control" id="exampleFormControlSelect1">
+          <option value="0">Seleccione una sucursal</option>
+          <option value="{{sucursal.id}}" *ngFor="let sucursal of Sucursales">{{sucursal.Nombre}}</option>
 
-  </div>
+        </select>
+      </div>
+      <div *ngIf="this.idEmpresa!='' ">
 
-  <div *ngIf="this.usuario.idRol==1" class="form-group">
-    <label for="exampleInputPassword1">Empresa</label>
-    <select formControlName="idEmpresa" class="form-control" id="exampleFormControlSelect1">
-      <option value="0">Seleccione una empresa</option>
-      <option value="{{empresa.id}}" *ngFor="let empresa of Empresas">{{empresa.Nombre}}</option>
+        <label for="exampleInputPassword1">Usuarios</label>
+        <ng-select loadingText="Cargando cuentas..." formControlName="Usuarios"
+          notFoundText="No hay usuarios disponibles" class="mt-1" [items]="Usuarios" [multiple]="true"
+          [closeOnSelect]="false" [searchable]="true" bindLabel="Nombres" placeholder="Seleccione los usuarios">
+        </ng-select>
+        <label for="exampleInputPassword1">Sucursales</label>
 
-    </select>
-  </div>
+        <ng-select loadingText="Cargando cuentas..." formControlName="Sucursal"
+          notFoundText="No hay sucursales disponibles" class="mt-1" [items]="Sucursales" [multiple]="false"
+          [closeOnSelect]="true" [searchable]="true" bindLabel="Nombre" placeholder="Seleccione una sucursal">
+        </ng-select>
 
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Duración del proyecto</label>
+        <br>
+        <p-calendar formControlName="RangoFechas" [numberOfMonths]="2" appendTo="body" dateFormat="dd/mm/yy"
+          selectionMode="range" [readonlyInput]="false" />
 
-  <button [disabled]="this.ProyectoForm.invalid || proyectoFound==true" (click)="crearProyecto()" type="button"
-    class="btn btn-primary">Guardar</button>
-</form>
-</p-dialog>
+      </div>
+      <button [disabled]="this.ProyectoForm.invalid || proyectoFound==true" (click)="crearProyecto()" type="button"
+        class="btn btn-primary">Guardar</button>
+    </form>
+  </p-dialog>
 
-<p-dialog 
-header="" 
-[modal]="true"
-[(visible)]="visibleSucursal" 
-[style]="{ width: '50rem' }" 
-[breakpoints]="{ '1199px': '75vw', '575px': '50vw' }" 
-[maximizable]="true">
-<h6>Crear sucursal para la empresa: <strong>{{this.nombreEmpresa}}</strong> </h6>
-<div class="input-group mb-3">
-  <input type="text" [formControl]="Sucursal" class="form-control" placeholder="Nombre de la sucursal" aria-label="Username" aria-describedby="basic-addon1">
-</div>
+  <p-dialog header="" [modal]="true" [(visible)]="visibleSucursal" [style]="{ width: '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '50vw' }" [maximizable]="true">
+    <h6>Crear sucursal para la empresa: <strong>{{this.nombreEmpresa}}</strong> </h6>
+    <div class="input-group mb-3">
+      <input type="text" [formControl]="Sucursal" class="form-control" placeholder="Nombre de la sucursal"
+        aria-label="Username" aria-describedby="basic-addon1">
+    </div>
 
 
-<button type="button" (click)="crearSucursal()" class="btn btn-success">Crear Sucursal</button>
+    <button type="button" (click)="crearSucursal()" class="btn btn-success">Crear Sucursal</button>
 
-</p-dialog>
+  </p-dialog>
 
 </app-card>
