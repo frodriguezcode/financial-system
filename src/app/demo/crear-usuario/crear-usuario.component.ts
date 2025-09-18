@@ -18,6 +18,7 @@ import ProyectosComponent from '../proyectos/proyectos.component';
 import { CalendarModule } from 'primeng/calendar';
 import { PrimeNGConfig } from 'primeng/api';
 import { AccordionModule } from 'primeng/accordion';
+import { NgSelectModule } from '@ng-select/ng-select';
 import Swal from 'sweetalert2'
 @Component({
   selector: 'app-crear-usuario',
@@ -27,6 +28,7 @@ import Swal from 'sweetalert2'
      ReactiveFormsModule,
      TableModule,
      DialogModule,
+     NgSelectModule,
      AccordionModule,
      MultiSelectModule,
      CalendarModule],
@@ -436,7 +438,7 @@ cargarFormularioProyecto(){
     RangoFechas: new FormControl(null),
     FechaInicio: new FormControl(''),
     FechaFinal: new FormControl(''),
-    idSucursal: new FormControl('0'), 
+    Sucursales: new FormControl('0'), 
     FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
 }
@@ -506,9 +508,6 @@ cargarFormulario() {
     idEmpresa: new FormControl(this.idEmpresa,[Validators.required]),
     idMatriz: new FormControl(this.usuario.idMatriz),
     idRol: new FormControl('',[Validators.required]),
-    IdSucursal: new FormControl(0),
-    Sucursales: new FormControl([]),
-    Proyectos: new FormControl([]),
     ConfigInicialCompletado:new FormControl(false),
     Correo: new FormControl('', [Validators.email, Validators.required]),
     CorreoVerificado: new FormControl('', [Validators.email, Validators.required]),

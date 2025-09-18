@@ -137,12 +137,12 @@
       </div>
       <div *ngIf="this.idEmpresa!='' ">
 
-        <label for="exampleInputPassword1">Usuarios</label>
+        <label for="exampleInputPassword1">Usuarios que se asignarán a este proyecto (opcional)</label>
         <ng-select loadingText="Cargando cuentas..." formControlName="Usuarios"
           notFoundText="No hay usuarios disponibles" class="mt-1" [items]="Usuarios" [multiple]="true"
           [closeOnSelect]="false" [searchable]="true" bindLabel="Nombres" placeholder="Seleccione los usuarios">
         </ng-select>
-        <label for="exampleInputPassword1">Sucursales</label>
+        <label for="exampleInputPassword1">Sucursal que se asignará a este proyecto (opcional)</label>
 
         <ng-select loadingText="Cargando cuentas..." formControlName="Sucursal"
           notFoundText="No hay sucursales disponibles" class="mt-1" [items]="Sucursales" [multiple]="false"
