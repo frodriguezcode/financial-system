@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { NgSelectModule } from '@ng-select/ng-select';
+import SucursalesComponent from '../sucursales/sucursales.component';
 
 @Component({
   selector: 'app-proyectos',
@@ -29,13 +30,16 @@ import { NgSelectModule } from '@ng-select/ng-select';
     TableModule,
     NgSelectModule,
     DialogModule,
-    MultiSelectModule],
+    MultiSelectModule,
+    SucursalesComponent
+    ],
   templateUrl: './proyectos.component.html',
   styleUrls: ['./proyectos.component.scss']
 })
 export default class ProyectosComponent implements OnInit {
   @Input() empresaID:string=''
   @Output() proyectoCreado = new EventEmitter<any>();
+  @Input() ConfigInicial:boolean
   Proyectos:any=[]
   Empresas:any=[]
   Sucursales:any=[]
@@ -99,7 +103,7 @@ ngOnInit(): void {
 
   
 
-  this.obtenerEmpresas()
+  this.obtenerEmpresas(this.ConfigInicial)
 
   
   this.obtenerSucursales()
@@ -179,7 +183,7 @@ selectSucursalByEmpresa(idEmpresa:any){
 }
 
 
-cargarFormulario(){
+cargarFormulario(ConfigInicial:boolean){
   this.ProyectoForm = new FormGroup({
     Nombre: new FormControl('',[Validators.required]), 
     idMatriz: new FormControl(this.usuario.idMatriz,[Validators.required]), 
@@ -193,6 +197,7 @@ cargarFormulario(){
     Sucursal: new FormControl(''), 
     FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
+   this.visible=ConfigInicial
 }
 toggleEdicion(Proyecto: any) {
 
@@ -338,7 +343,7 @@ this.ProyectoForm.removeControl('Sucursal')
     });
 
 
-    this.cargarFormulario()
+    this.cargarFormulario(false)
   })
 
 }
@@ -472,11 +477,11 @@ obtenerSucursalesByMatriz(){
 }
 
 
-obtenerEmpresas(){
+obtenerEmpresas(ConfigInicial:boolean){
   this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp: any)=>{
     this.Empresas=resp
     this.obtenerProyectos()
-  this.cargarFormulario()
+  this.cargarFormulario(ConfigInicial)
   })
 }
 

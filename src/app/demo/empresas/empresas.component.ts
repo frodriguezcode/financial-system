@@ -156,29 +156,29 @@ export default class EmpresasComponent implements OnInit {
         OrdenAnterior: 0
       },
       {
+        Nombre: 'Crear Usuarios',
+        Opcional: false,
+        Descripcion: 'Aquí podrás crear los usuarios que tendrán acceso al sistema',
+        Visitado: false,
+        Orden: 2,
+        OrdenAnterior: 1
+      },
+      {
         Nombre: 'Crear Sucursales',
         Opcional: true,
         Descripcion: 'Ahora crearemos las sucursales de tu empresa. Si tu empresa no tiene sucursales puedes pasar al siguiente paso.',
         Visitado: false,
-        Orden: 2,
-        OrdenAnterior: 1
+        Orden: 3,
+        OrdenAnterior: 2
       },
       {
         Nombre: 'Crear Proyectos',
         Descripcion: 'Ahora crearemos los proyectos de tu empresa. Si tu empresa no tiene proyectos puedes crearlos posteriormente y pasar al siguiente paso.',
         Opcional: false,
         Visitado: false,
-        Orden: 3,
-        OrdenAnterior: 2
-
-      },
-      {
-        Nombre: 'Crear Usuarios',
-        Opcional: false,
-        Descripcion: 'Aquí podrás crear los usuarios que tendrán acceso al sistema',
-        Visitado: false,
         Orden: 4,
         OrdenAnterior: 3
+
       },
       {
         Nombre: 'Crear Cuentas Contables',

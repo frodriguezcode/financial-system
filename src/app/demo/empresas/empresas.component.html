@@ -135,14 +135,20 @@
               </app-roles>
               </div>
               <div *ngIf="flujo.Orden == 2">
-                <app-sucursal (sucursalCreada)="guardarSucursalByEmpresa($event)" [empresaID]="idEmpresaCreada"></app-sucursal>
+                <app-crear-usuario
+                [ConfigInicial]="true"
+                (usuarioCreado)="guardarUsuarioByEmpresa($event)"
+                  [empresaID]="idEmpresaCreada"></app-crear-usuario>
               </div>
               <div *ngIf="flujo.Orden == 3">
-                <app-proyectos (proyectoCreado)="guardarProyectoByEmpresa($event)" [empresaID]="idEmpresaCreada"></app-proyectos>
+                <app-sucursal 
+                [ConfigInicial]="true"
+                (sucursalCreada)="guardarSucursalByEmpresa($event)" [empresaID]="idEmpresaCreada"></app-sucursal>
               </div>
               <div *ngIf="flujo.Orden == 4">
-                <app-crear-usuario (usuarioCreado)="guardarUsuarioByEmpresa($event)"
-                  [empresaID]="idEmpresaCreada"></app-crear-usuario>
+                <app-proyectos
+                [ConfigInicial]="true"
+                (proyectoCreado)="guardarProyectoByEmpresa($event)" [empresaID]="idEmpresaCreada"></app-proyectos>
               </div>
               <div *ngIf="flujo.Orden == 5">
                 <app-elemento [empresaID]="idEmpresaCreada"></app-elemento>

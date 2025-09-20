@@ -9,11 +9,23 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { TableModule } from 'primeng/table';
+import { AuthService } from 'src/app/services/auth.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-sucursal',
   standalone: true,
-  imports: [CommonModule, SharedModule,FormsModule,ReactiveFormsModule],
+  imports: [
+    CommonModule, 
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TableModule,
+    NgSelectModule,
+    DialogModule
+    ],
   templateUrl: './sucursales.component.html',
   styleUrls: ['./sucursales.component.scss']
 })
@@ -21,13 +33,20 @@ export default class SucursalesComponent implements OnInit {
   Sucursales:any=[]
   Empresas:any=[]
   sucursalFound:boolean=false
+  cargando:boolean=false
   SucursalForm!:FormGroup
   Fecha:any= new Date();
   usuario:any
+  Usuarios:any=[]
+  visible: boolean = false;
   @Input() empresaID:string=''
+  @Input() ConfigInicial:boolean
   @Output() sucursalCreada = new EventEmitter<any>();
   idEmpresa:string=''
-  constructor(private datePipe: DatePipe,private conS:ConfigurationService,private toastr: ToastrService, private readonly router: Router) {}
+  constructor(private datePipe: DatePipe,
+    private authS:AuthService,
+    private conS:ConfigurationService,
+    private toastr: ToastrService, private readonly router: Router) {}
 
 ngOnInit(): void {
   this.conS.usuario$.subscribe(usuario => {
@@ -43,9 +62,9 @@ ngOnInit(): void {
     else {
         this.idEmpresa=this.usuario.idEmpresa
     }
-    
-    this.obtenerSucursales()
-  this.obtenerEmpresas()
+    this.obtenerUsuarios(this.ConfigInicial)
+  
+    this.obtenerEmpresas()
   
  
   });
@@ -54,16 +73,38 @@ ngOnInit(): void {
 
   
 }
+obtenerUsuariosProyectos(idsUsuarios:any){
+  return this.Usuarios.filter((user:any)=>idsUsuarios.includes(user.id))
+}
 
-cargarFormulario(){
+obtenerUsuarios(ConfigInicial:boolean){
+   this.authS.obtenerUsuarios(this.idEmpresa).subscribe(resp=>{
+    this.Usuarios=resp
+    this.obtenerSucursales(ConfigInicial)
+   })
+}
+
+guardarUsuarios(sucursal:any){
+sucursal.idsUsuarios=sucursal.UsuariosSeleccionados.map((user:any)=>user.id)
+delete sucursal.UsuariosSeleccionados
+
+this.conS.ActualizarSucursal(sucursal).then(resp=>{})
+}
+
+cargarFormulario(showDialog:boolean){
+
   this.SucursalForm = new FormGroup({
     Nombre: new FormControl('',[Validators.required]), 
     idMatriz: new FormControl(this.usuario.idMatriz,[Validators.required]), 
     idEmpresa: new FormControl(this.idEmpresa,[Validators.required]), 
     Activo: new FormControl(true), 
+    UsuariosSeleccionados: new FormControl([]), 
     Editando: new FormControl(false), 
     FechaCreacion: new FormControl(this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')), 
    })
+ 
+    this.visible=showDialog
+   
 }
 toggleEdicion(Sucursal: any) {
 
@@ -105,30 +146,33 @@ verificarSucursal(){
 }
 
 crearSucursal(){
-  // Swal.fire({
-  //   title: 'Ahora crearemos los usuarios para la nueva empresa'
-  //  });
-  //  Swal.showLoading();
+this.SucursalForm.addControl('idsUsuarios', new FormControl([]));
+this.SucursalForm.patchValue({
+
+  idsUsuarios: this.SucursalForm.value.UsuariosSeleccionados == undefined
+  || this.SucursalForm.value.UsuariosSeleccionados.length==0
+  ? []: this.SucursalForm.value.UsuariosSeleccionados?.map((user: any) => user.id) || []
+})
+
+this.SucursalForm.removeControl('UsuariosSeleccionados')
   this.conS.crearSucursal(this.SucursalForm.value).then((resp: any)=>{
     this.sucursalCreada.emit(this.SucursalForm.value);
-  //   Swal.hideLoading();
-  //   setTimeout(()=>{
-  //     this.router.navigate(['/Usuarios'])
-  // }, 3000);
-
-    this.cargarFormulario()
+    
+    this.cargarFormulario(false)
   })
 }
-obtenerSucursales(){
+obtenerSucursales(ConfigInicial:boolean){
   this.conS.obtenerSucursales(this.idEmpresa).subscribe((resp: any)=>{
   this.Sucursales=resp
+  this.Sucursales.map((sucursal:any)=>sucursal.UsuariosSeleccionados=this.obtenerUsuariosProyectos(sucursal.idsUsuarios))
+this.cargarFormulario(ConfigInicial)
   })
 }
 obtenerEmpresas(){
   this.conS.obtenerEmpresas(this.usuario.idMatriz).subscribe((resp: any)=>{
 
   this.Empresas=resp
-  this.cargarFormulario()
+  
   })
 }
 

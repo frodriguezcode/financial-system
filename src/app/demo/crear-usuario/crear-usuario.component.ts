@@ -48,6 +48,7 @@ ProyectoForm!: FormGroup;
 nombreEmpresa:any
 @Input() empresaID:string=''
 @Output() usuarioCreado = new EventEmitter<any>();
+@Input() ConfigInicial:boolean
 idEmpresa:string=''
 Sucursal:FormControl=new FormControl ('')
 Fecha: any = new Date();
@@ -87,9 +88,7 @@ ngOnInit(): void {
     else {
         this.idEmpresa=this.usuario.idEmpresa
     }  
-   
-    this.obtenerProyectosByMatriz()
-    this.obtenerSucursales()
+     this.obtenerRoles()
  
     this.obtenerEmpresas()
   
@@ -180,7 +179,7 @@ obtenerProyectosByMatriz(){
   this.conS.obtenerProyectosByMatriz(this.usuario.idMatriz).subscribe((data=>{
     this.Proyectos=data
     this.ProyectosBack=data
-    this.obtenerRoles()
+  
   }))
 }
 
@@ -260,7 +259,7 @@ getLabelNameSucursales(sucursales): string {
   }
   
 }
-obtenerUsuarios(){
+obtenerUsuarios(ConfigInicial:boolean){
   let subscribe:Subscription
  this.authS.obtenerUsuariosByMatriz(this.usuario.idMatriz).subscribe(resp=>{
     //subscribe.unsubscribe()
@@ -295,7 +294,7 @@ obtenerUsuarios(){
     this.usuario.Rol=this.getNombreRol(this.usuario.idRol)
     localStorage.setItem('usuarioFinancialSystems', JSON.stringify( this.usuario)); 
     this.UsuariosBack=resp
-    this.cargarFormulario()
+    this.cargarFormulario(ConfigInicial)
  
   })
 }
@@ -334,7 +333,7 @@ obtenerRoles(){
     this.RolesBack=roles
     this.Roles=this.RolesBack.filter((resp:any)=>resp.idEmpresa==this.idEmpresa)
     console.log('Roles',this.Roles)
-    this.obtenerUsuarios()
+    this.obtenerUsuarios(this.ConfigInicial)
 
   })
 }
@@ -491,7 +490,7 @@ crearProyecto(){
 
 
 
-cargarFormulario() {
+cargarFormulario(configInicial:boolean) {
   // *Formulario de usuario
   let Fecha:any
   Fecha=this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
@@ -519,6 +518,7 @@ cargarFormulario() {
 // this.usuarioForm.get('idRol')!.disable();
 // this.usuarioForm.get('Sucursales')!.disable();
 // this.usuarioForm.get('Proyectos')!.disable();
+this.visible=configInicial
 }
 fieldsMatchValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
