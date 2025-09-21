@@ -33,6 +33,7 @@ export default class RolesComponent implements OnInit {
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef) {
   }
+  todosSelect: boolean = false
   Modulos:any=[]
   Atributos :any=[]
   selectedNodes:any=[]
@@ -212,6 +213,29 @@ updateSeleccionado(node: any, seleccionado: boolean) {
       this.updateSeleccionado(child, seleccionado);
     });
   }
+
+      let _AtributosRol: any = []
+    this.ItemsModulosAtributos.forEach((atributo: any) => {
+      atributo.children.forEach((element: any) => {
+
+        let _DataAtributo = {
+          "Nombre": element.label,
+          "Seleccionado": element.data.Seleccionado,
+          "idModulo": element.data.atributo.idModulo,
+          "id": element.data.atributo.id
+
+        }
+        _AtributosRol.push(_DataAtributo)
+
+      });
+
+
+    });
+
+
+
+    let todosSeleccionados = _AtributosRol.every((atributo: any) => atributo.Seleccionado === true);
+    this.todosSelect = todosSeleccionados
 }
 
 selectAll(){

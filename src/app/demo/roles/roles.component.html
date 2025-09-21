@@ -44,7 +44,16 @@
                     </div>
                   </div>
                   <div class="scroll-container" *ngIf="ItemsModulosAtributos.length>0">
+                  
+                  <div *ngIf="!this.metaKeySelection || todosSelect==false" 
+                    class="alert alert-warning" role="alert">
+                    Selecciona los módulos a los que los usuarios accederán en el sistema
+                  </div>
 
+                  <div *ngIf="this.metaKeySelection || todosSelect==true" 
+                    class="alert alert-success" role="alert">
+                    Todos los accesos seleccionados (el rol será tipo administrador)
+                  </div>
                     <p-tree [value]="ItemsModulosAtributos" selectionMode="checkbox"
                       class="w-full md:w-30rem horizontal-tree" [(selection)]="selectedNodes"
                       (onNodeSelect)="onNodeSelect($event)" (onNodeUnselect)="onNodeUnselect($event)" />

@@ -539,7 +539,7 @@ export default class EmpresasComponent implements OnInit {
           timer: 1500
         });
         setTimeout(() => {
-          this.active = orden - 1
+          this.active = orden - 3
         }, 250);
       } else {
         this.actualizarEstadoFlujo(orden);

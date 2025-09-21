@@ -105,13 +105,19 @@
             </div>
 
             <div class="col-md-6 col-lg-6 col-12">
-              <div class="form-group">
-                <label for="exampleInputPassword1">Contraseña</label>
-                <input type="password" formControlName="Password" class="form-control" id="exampleInputPassword1"
-                  placeholder="Escriba una contraseña" />
+              <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+              <div class="input-group mb-4">
+                <input formControlName="Password" [type]="mostrarContrasenia ? 'text' : 'password'" class="form-control"
+                  placeholder="Password" aria-label="Username" aria-describedby="basic-addon3" />
+             
+                  <button class="btn btn-success" type="button" (click)="cambiarMostrarContrasenia()" id="button-addon2">
+                  <i *ngIf="mostrarContrasenia" class="fa-solid fa-eye-slash"></i>
+                  <i *ngIf="!mostrarContrasenia" class="fa-solid fa-eye"></i>
+                </button>
               </div>
               <span style="color:red" *ngIf="verifyPassw()==true">Esta contraseña ya existe en su organización</span>
             </div>
+
             <div class="col-md-6 col-lg-6 col-12">
               <div class="form-group">
                 <label for="exampleInputPassword1">Verificar Contraseña</label>
@@ -173,7 +179,7 @@
                 </p>
               </div>
             </div>
-       
+
           </div>
 
           <button [disabled]="this.usuarioForm.invalid || usuarioFound==true || verifyPassw()==true"

@@ -45,6 +45,7 @@ export default class CrearUsuarioComponent implements OnInit {
   ) {}
 usuarioForm!: FormGroup;
 ProyectoForm!: FormGroup;
+mostrarContrasenia = false;
 nombreEmpresa:any
 @Input() empresaID:string=''
 @Output() usuarioCreado = new EventEmitter<any>();
@@ -545,7 +546,9 @@ fieldsMatchValidator(): ValidatorFn {
     return Object.keys(errors).length ? errors : null;
   };
 }
-
+    cambiarMostrarContrasenia() {
+      this.mostrarContrasenia = !this.mostrarContrasenia;
+    }
 
 toggleEdicion(Usuario: any) {
   if(this.authS.validarAtributo('JCcvjQOlOQ7ktXNPORzL',[])==true){
