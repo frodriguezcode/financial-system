@@ -827,8 +827,12 @@ if(this.CuentaHijoSeleccionado){
   this.TipoEntidad==2 ?
   this.CatalogoCuentasNieto=this.CuentasNietos.filter((cuenta:any)=>cuenta.idHijo==this.CuentaHijoSeleccionado.id
   && cuenta.idsProyectos.includes(this.ProyectoSeleccionado.id)):
+
   this.CatalogoCuentasNieto=this.CuentasNietos.filter((cuenta:any)=>cuenta.idHijo==this.CuentaHijoSeleccionado.id
-  && cuenta.idsProyectos.includes(this.SucursalSeleccionada.id))
+  && cuenta.idsSucursales.includes(this.SucursalSeleccionada.id))
+
+  console.log('CatalogoCuentasNieto',this.CatalogoCuentasNieto)
+  console.log('CuentasNietos',this.CuentasNietos)
 }
 else {
   this.CatalogoCuentasNieto=[]
