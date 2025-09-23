@@ -392,7 +392,7 @@ export default class EmpresasComponent implements OnInit {
             });
           }
           else if (this.obtenerUsuariosByEmpresa().length == 0) {
-            this.active = 3
+            this.active = 1
             this.toastr.success('Te quedaste en la sección de Usuarios', 'Bienvenido de nuevo!', {
               timeOut: 2000,
               positionClass: 'toast-center-center'

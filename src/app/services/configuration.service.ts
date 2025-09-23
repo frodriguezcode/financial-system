@@ -3150,6 +3150,12 @@ async  crearCuentaNieto(Item: any): Promise<string> {
       .doc(Items.id)
       .ref.update({ Activo: Activo });
   }
+  ActualizarCuentaNietoEstado(Cuenta: any, Activo: boolean) {
+    return this.afs
+      .collection('CuentasNietos')
+      .doc(Cuenta.id)
+      .ref.update({ Activo: Activo });
+  }
 
   // !Socios de negocios
   crearSocio(Socio: any) {

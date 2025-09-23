@@ -83,7 +83,7 @@ export default class ItemsComponent implements OnInit,AfterViewInit  {
   Sucursales: any = [];
   Proyectos: any = [];
   Empresas: any = [];
-  anchoTabla: string = '50rem';
+  anchoTabla: string = '70rem';
   @Input() empresaID: string = '';
 
    ngAfterViewInit() {
@@ -415,6 +415,7 @@ focusInputCuentaNieto() {
         data: {
           name: hij.Nombre,
           Alias: hij.Alias,
+          Activo:hij.Activo,
           Prefijo: hij.Prefijo,
           Customizable: hij.Customizable,
           idHijo: hij.idHijo == undefined ? '' : hij.idHijo,
@@ -448,6 +449,7 @@ focusInputCuentaNieto() {
           name: niet.Nombre,
           Alias: niet.Alias,
           Prefijo: niet.Prefijo,
+          Activo:niet.Activo,
           CuentaFija:niet.CuentaFija,
           idNieto: niet.idNieto == undefined ? '' : niet.idNieto,
           id: niet.id == undefined ? '' : niet.id,
@@ -476,6 +478,7 @@ focusInputCuentaNieto() {
       this.construirCatalogoItems(true);
     });
   }
+
 
   obtenerCuentasNietos() {
     let Subscripcion: Subscription;
@@ -552,6 +555,7 @@ focusInputCuentaNieto() {
 
     this.Items.push({
       Nombre: '',
+      Activo: true,
       Prefijo: idCateg + '.' + (Orden + 1),
       PrefijoPadre: Number(idCateg),
       PrefijoHijo: Orden + 1,
@@ -585,6 +589,7 @@ focusInputCuentaNieto() {
     let Orden: any = this.CuentasNietos.filter((it: any) => it.idHijo == rowData.idHijo).length;
     this.CuentasNietos.push({
       Nombre: '',
+      Activo: true,
       Prefijo: rowData.PrefijoPadre + '.' + rowData.PrefijoHijo + '.' + (Orden + 1),
       PrefijoPadre: Number(rowData.PrefijoPadre),
       PrefijoHijo: Number(rowData.PrefijoHijo),
@@ -657,6 +662,7 @@ focusInputCuentaNieto() {
           const formattedHour = hours % 12 || 12;
 
           let Item = {
+            Activo:true,
             Nombre: `${hijo.Prefijo} ${hijo.Alias}`,
             Prefijo: hijo.Prefijo,
             PrefijoPadre: hijo.PrefijoPadre,
@@ -751,6 +757,7 @@ focusInputCuentaNieto() {
         const formattedHour = hours % 12 || 12;
 
         let CuentaNieto = {
+          Activo:true,
           Nombre: `${nieto.Prefijo} ${nieto.Alias}`,
           Prefijo: nieto.Prefijo,
           PrefijoPadre: nieto.PrefijoPadre,
@@ -795,6 +802,26 @@ focusInputCuentaNieto() {
           this.construirCatalogoItems(false);
         });
       }
+    }
+  }
+
+  ActualizarEstadoCuenta(cuenta:any){
+    cuenta.Activo=!cuenta.Activo
+    if(cuenta.Tipo=='Hijo'){
+      this.conS.ActualizarItemEstado(cuenta,cuenta.Activo).then((resp) => {
+        this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+          timeOut: 1000,
+          positionClass: 'toast-center-center'
+        });
+      })
+    }
+   else if(cuenta.Tipo=='Nieto'){
+      this.conS.ActualizarCuentaNietoEstado(cuenta,cuenta.Activo).then((resp) => {
+        this.toastr.success('Cuenta actualizada', '¡Éxito!', {
+          timeOut: 1000,
+          positionClass: 'toast-center-center'
+        });
+      })
     }
   }
 }
