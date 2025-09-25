@@ -76,7 +76,7 @@ const routes: Routes = [
       },
       {
         path: 'flujos',
-        loadComponent: () => import('./demo/flujos/panel-flujos/flujos-panel.component')
+        loadComponent: () => import('./demo/flujos/consolidado-mejorado/consolidado-mejorado.component')
       },
       {
         path: 'manager-recapt',

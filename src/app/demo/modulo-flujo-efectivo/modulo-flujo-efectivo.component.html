@@ -1,0 +1,56 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Flujo de Efectivo Operativo" [options]="false">
+  <p-treeTable
+  *ngIf="cargar==false"
+  [value]="DataTreeTable" 
+  [columns]="Cabecera" 
+  [resizableColumns]="true"
+  [scrollable]="true" 
+  scrollDirection="both"
+  scrollHeight="800px" 
+  [scrollable]="true" 
+  [tableStyle]="{'min-width': (Cabecera.length * 150) + 'px'}">
+      
+      <!-- Encabezados dinámicos -->
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width:500px; background:#F9FAFB; 
+       z-index:2; position:sticky; left:0">
+        Concepto
+      </th>
+      <th *ngFor="let col of Cabecera" 
+      [style.width]="'250px'" 
+      [hidden]="col.Nombre === 'Concepto'">
+        {{ col.Nombre }}
+      </th>
+    </tr>
+  </ng-template>
+
+<ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+    <tr [ttRow]="rowNode">
+      <!-- Columna Concepto -->
+      <td style="width:500px; position:sticky; left:0; background:white; z-index:1">
+        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+     <span *ngIf="rowData.strong==true">
+       <strong>{{ rowData.name }}</strong> 
+     </span>
+     <span *ngIf="rowData.strong==false">
+       {{ rowData.name }}
+     </span>
+  
+      </td>
+
+      <!-- Otras columnas -->
+      <td *ngFor="let col of Cabecera"  [hidden]="col.Nombre === 'Concepto'">
+        {{ rowData.valores[col.Nombre] || '' }}
+      </td>
+    </tr>
+  </ng-template>
+  </p-treeTable>
+
+
+
+    </app-card>
+  </div>
+</div>

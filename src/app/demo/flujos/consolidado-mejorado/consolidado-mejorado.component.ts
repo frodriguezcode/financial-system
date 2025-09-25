@@ -474,7 +474,19 @@ this.Categorias=[]
           "idAbuelo":categoria.idAbuelo,
         }
         this.Categorias.push(_Categ)
+        if(categoria.Orden==3){
+          this.Categorias.push(
+            {
+            "Calculado":true,
+            "Mostrar":true,
+            "Nombre":'% de los ingresos para operar',
+            "Orden":20,
+            "Suma":false,
+            "Tipo":20,
+            "id":20,
+          })          
 
+        }
         if(categoria.Orden==9){
           this.Categorias.push(
             {

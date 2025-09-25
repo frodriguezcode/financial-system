@@ -1,0 +1,8 @@
+:host ::ng-deep .p-treetable-scrollable-wrapper .p-treetable-frozen-view {
+  min-width: 400px !important;
+  max-width: 400px !important;
+}
+
+:host ::ng-deep .p-treetable-scrollable-wrapper .p-treetable-unfrozen-view {
+  overflow-x: auto;
+}
