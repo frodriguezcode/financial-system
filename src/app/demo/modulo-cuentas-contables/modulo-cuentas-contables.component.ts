@@ -76,6 +76,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
   }
 
   getCuentasPadres(){
+    this.CuentaPadreSeleccionada=null
       if(this.OpcionSeleccionada==1){
         this.CuentasPadres=this.Categorias.filter((categ:any)=>categ.Tipo==1)
       }
