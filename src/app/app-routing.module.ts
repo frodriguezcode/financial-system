@@ -68,7 +68,8 @@ const routes: Routes = [
       },
       {
         path: 'item',
-        loadComponent: () => import('./demo/Items/items.component')
+        loadComponent: () => import('./demo/modulo-cuentas-contables/modulo-cuentas-contables.component')
+       // loadComponent: () => import('./demo/Items/items.component')
       },
       {
         path: 'socios',

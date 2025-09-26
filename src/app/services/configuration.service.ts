@@ -199,6 +199,9 @@ export class ConfigurationService {
   obtenerDataEmpresa(idCorporacion: any) {
     return this.http.get(`${this.linkApiMejorada + 'obtenerDataByEmpresa/' + idCorporacion}`);
   }
+  obtenerDataCatalogosEmpresa(idCorporacion: any) {
+    return this.http.get(`${this.linkApiMejorada + 'obtenerDataCatalogosByEmpresa/' + idCorporacion}`);
+  }
 
 
   construirItemsCatalogos(
