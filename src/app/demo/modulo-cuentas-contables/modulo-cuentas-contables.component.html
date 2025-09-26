@@ -37,7 +37,12 @@
                   <label for="formGroupExampleInput" class="form-label">Nombre de la cuenta</label>
                   <input
                   #InputCuentaHijo
+                  [formControl]="NombreCuentaHijo"
+                  [disabled]="this.CuentaPadreSeleccionada==null"
                   type="text" class="form-control custom-input" placeholder="" aria-label="Last name">
+                  <p *ngIf="this.CuentaPadreSeleccionada==null" style="color: red; font-size: 10px;">
+                    Escoja una cuenta padre
+                  </p>
                 </div>
 
               </div>
@@ -55,7 +60,7 @@
                     [searchable]="true" bindLabel="Nombre" 
                     placeholder="Proyectos"
                     [(ngModel)]="ProyectosSeleccionados">
-                  </ng-select>
+                </ng-select>
 
                 <label for="formGroupExampleInput" class="form-label">
                   Escoja las sucursales asociadas a esta cuenta
@@ -69,9 +74,12 @@
                     [searchable]="true" bindLabel="Nombre" 
                     placeholder="Sucursales"
                     [(ngModel)]="SucursalesSeleccionadas">
-                  </ng-select>
+                </ng-select>
                 </p-accordionTab>
               </p-accordion>
+              <button type="button"
+              (click)="guardarCuentaHijo()"
+              class="btn btn-success">Guardar</button>           
 
             </p-accordionTab>
             <p-accordionTab header="Crear Cuenta Nieto">

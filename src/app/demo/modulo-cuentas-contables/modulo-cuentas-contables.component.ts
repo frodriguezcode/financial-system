@@ -7,6 +7,7 @@ import { ConfigurationService } from 'src/app/services/configuration.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-modulo-cuentas-contables',
@@ -16,13 +17,15 @@ import { NgSelectModule } from '@ng-select/ng-select';
   styleUrls: ['./modulo-cuentas-contables.component.scss']
 })
 export default class ModuloCuentasContableComponent implements OnInit {
+  NombreCuentaHijo:FormControl = new FormControl('')
+  NombreCuentaNieto:FormControl = new FormControl('')
   Proyectos:any=[]
   ProyectosSeleccionados:any=[]
   Sucursales:any=[]
   SucursalesSeleccionadas:any=[]
   Categorias:any=[]
   CuentasPadres:any=[]
-  CuentaPadreSeleccionada:any=[]
+  CuentaPadreSeleccionada:any
   CuentasHijos:any=[]
   CuentasNietos:any=[]
   usuario: any;
@@ -38,6 +41,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
     private toastr: ToastrService
   ) { }
   ngOnInit(): void {
+   this.NombreCuentaHijo.disable();
     this.OpcionesTipoCuenta=
     [
       {
@@ -59,7 +63,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
       }
 
    
-        this.idEmpresa = this.usuario.idEmpresa;
+      this.idEmpresa = this.usuario.idEmpresa;
       
 
       this.getCatalogos()
@@ -77,6 +81,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
 
   getCuentasPadres(){
     this.CuentaPadreSeleccionada=null
+    this.NombreCuentaHijo.setValue('')
+   this.NombreCuentaHijo.disable();
       if(this.OpcionSeleccionada==1){
         this.CuentasPadres=this.Categorias.filter((categ:any)=>categ.Tipo==1)
       }
@@ -89,6 +95,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
   }
 
   focusInput() {
+    this.NombreCuentaHijo.enable();
   setTimeout(() => {
     if (this.InputCuentaHijo?.nativeElement) {
       this.InputCuentaHijo.nativeElement.focus();
@@ -111,9 +118,51 @@ export default class ModuloCuentasContableComponent implements OnInit {
 
     });
 
-  console.log('Proyectos',this.Proyectos)
-  console.log('Sucursales',this.Sucursales)
+
   }
+  padZero(num: number): string {
+    return (num < 10 ? '0' : '') + num;
+  }
+  guardarCuentaHijo(){
+    const currentDate = new Date();
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHour = hours % 12 || 12;
+    let idsProyectos = this.ProyectosSeleccionados.map((proyect: any) => proyect.id)
+    let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
+    console.log('CuentaPadre',this.CuentaPadreSeleccionada)
+    console.log('NombreCuentaHijo',this.NombreCuentaHijo)
+    let Orden: any = this.CuentasHijos.filter((it: any) => it.idPadre == this.CuentaPadreSeleccionada.id).length;    
+    let Item = {
+      Activo:true,
+      TipoProforma:1,
+      Nombre:this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1)+' '+ this.NombreCuentaHijo.value ,
+      Prefijo: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1),
+      PrefijoPadre: Number(this.CuentaPadreSeleccionada.idCateg),
+      PrefijoHijo: Orden + 1,
+      CuentaFija:false,
+      Alias:this.NombreCuentaHijo.value,
+      FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+      HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+      Tipo: 'Hijo',
+      idPadre:this.CuentaPadreSeleccionada.id,
+      idsSucursales: idsSucursales,
+      idsProyectos: idsProyectos,
+      idAbuelo: this.CuentaPadreSeleccionada.idAbuelo,
+      Customizable: true,
+      Editable: false,
+      Orden: Orden + 1,
+      OrdenReal: this.CuentasHijos.length + 1,
+      idEmpresa: this.idEmpresa,
+      idCorporacion: this.usuario.idMatriz,
+      Created_User: this.usuario.id
+    };
+    console.log('Item',Item)
+  }
+
+
+
 
 
 }
