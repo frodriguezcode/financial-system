@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-sm-12">
     <app-card cardTitle="Hello Card" [options]="false">
-      <div class="row">
+      <div class="row" *ngIf="cargando==false">
         <div class="col-4">
           <p-accordion [activeIndex]="0">
             <p-accordionTab header="Crear Cuenta Hijo">
@@ -78,6 +78,7 @@
                 </p-accordionTab>
               </p-accordion>
               <button type="button"
+              [disabled]="this.OpcionSeleccionada==null"
               (click)="guardarCuentaHijo()"
               class="btn btn-success">Guardar</button>           
 

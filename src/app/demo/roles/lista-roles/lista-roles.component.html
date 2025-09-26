@@ -3,99 +3,41 @@
     <app-card *ngIf="this.Roles.length>0" cardTitle="Listado de Roles" [options]="false">
       <button type="button" (click)="showCrearRol()" class="btn btn-success">+ Rol</button>
       <div class="row">
-        <div class="col-12 col-md-2 col-lg-2">
-          <div class="list-group">
-            <div style="cursor: pointer;" *ngFor="let rol of Roles" (click)="rolSelect(rol)">
+        <ag-grid-angular 
+        *ngIf="cargando==false" 
+        class="ag-theme-alpine mt-1" 
+        [gridOptions]="gridOptions"
+        style="width: 100%; height: 600px;"
+          [rowData]="RowData" [columnDefs]="CabeceraAtributos"
+          >
+        </ag-grid-angular>
 
-              <a   class="list-group-item list-group-item-action">{{rol.Rol}}</a>
 
-            </div>
-
-          </div>
-   
-        </div>
-        <div class="col-12 col-md-8 col-lg-8">
-
-          <div *ngIf="this.ItemsModulosAtributos.length==0"  class="alert alert-warning" role="alert">
-            Elija un módulo para ver sus respectivos atributos
-          </div>
-
-          <div *ngIf="this.ItemsModulosAtributos.length>0" >
-            <div *ngIf="ItemsModulosAtributos.length==0" class="d-flex justify-content-center">
-              <div class="spinner-grow text-success" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-            </div>
-            <div class="scroll-container" *ngIf="ItemsModulosAtributos.length>0">
-     
-              <p-tree 
-              [value]="ItemsModulosAtributos" 
-              selectionMode="checkbox" 
-              class="" 
-              [(selection)]="selectedNodes"
-            
-              (onNodeSelect)="onNodeSelect($event)"
-              (onNodeUnselect)="onNodeUnselect($event)" />
-            </div>
-
-        </div>
-          <!-- <div class="container">
-            <div class="row">
-              <div *ngFor="let modulo of ModulosTodos" class="col-12 col-lg-4 col-md-6">
-              
-                  <div class="card">
-                    <div class="card-header text-bg-primary" style="padding-top: 7px; padding-bottom: 7px;">
-                      <p style="color: white;">{{modulo.Nombre}}</p> 
-                    </div>
-              
-                    <ul style="margin-top: -20px;" class="list-group list-group-flush">
-                      <li *ngFor="let atributo of getAtributosByModulo(modulo.id)" class="list-group-item">
-                        <input (change)="addAtributo(atributo)" class="form-check-input me-1" type="checkbox" [checked]="atributo.Seleccionado" value="" id="firstCheckbox">
-                        <label class="form-check-label" for="firstCheckbox">{{atributo.Nombre}}</label>
-                      </li>
-                
-                    </ul>
-                  </div>
-
-           
-              </div>
-            </div>
-          </div> -->
-       
-
-        </div>
-
-        <div 
-        *ngIf="this.ItemsModulosAtributos.length>0"
-        class="col-12 col-md-2 col-lg-2">
+        <div *ngIf="this.ItemsModulosAtributos.length>0" class="col-12 col-md-2 col-lg-2">
           <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
-              <button type="button"  (click)="actualizarRol()"
-              [ngClass]="ConfigInicial == false ? 'saveButton btn btn-success float-end m-1' 
-              : 'saveButtonConfig btn btn-success float-end m-1'"
-              >Guardar</button>
+              <button type="button" (click)="actualizarRol()" [ngClass]="ConfigInicial == false ? 'saveButton btn btn-success float-end m-1' 
+              : 'saveButtonConfig btn btn-success float-end m-1'">Guardar</button>
             </div>
             <div class="col-12 col-md-12 col-lg-12 mt-3">
-              <div style="margin-left:130px;"  >
+              <div style="margin-left:130px;">
                 <p-inputSwitch (onChange)="selectAll()" inputId="input-metakey" [(ngModel)]="metaKeySelection" />
               </div>
-                <div style="margin-left:110px;" >
-                  <label style="font-size: 12px;" class="text-center"  for="input-metakey">Seleccionar todo</label>
-                </div>
+              <div style="margin-left:110px;">
+                <label style="font-size: 12px;" class="text-center" for="input-metakey">Seleccionar todo</label>
+              </div>
 
             </div>
             <div class="col-12 col-md-12 col-lg-12 mt-3">
-              <button type="button "
-              (click)="expandAll()" 
-              class="btn btn-primary float-end ">Expandir <i class="bi bi-plus"></i></button>
+              <button type="button " (click)="expandAll()" class="btn btn-primary float-end ">Expandir <i
+                  class="bi bi-plus"></i></button>
             </div>
-    
+
             <div class="col-12 col-md-12 col-lg-12">
-              <button type="button"
-              (click)="collapseAll()"
-              class="btn btn-primary float-end mt-1 ">Contraer <i class="bi bi-dash"></i></button>
+              <button type="button" (click)="collapseAll()" class="btn btn-primary float-end mt-1 ">Contraer <i
+                  class="bi bi-dash"></i></button>
             </div>
-    
+
           </div>
         </div>
 
@@ -106,12 +48,7 @@
   </div>
 </div>
 
-    <p-dialog 
-        header="Creación de roles" 
-        [modal]="true" 
-        [(visible)]="visibleCrearRol" 
-        [style]="{ width: '80rem' }" 
-        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
-        [maximizable]="true">
-          <app-roles *ngIf="visibleCrearRol==true" [ConfigInicial]="true"></app-roles>
-    </p-dialog>
+<p-dialog header="Creación de roles" [modal]="true" [(visible)]="visibleCrearRol" [style]="{ width: '80rem' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
+  <app-roles *ngIf="visibleCrearRol==true" [ConfigInicial]="true"></app-roles>
+</p-dialog>

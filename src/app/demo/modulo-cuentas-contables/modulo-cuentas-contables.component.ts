@@ -33,6 +33,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
   DataCatalogos:any=[]
   OpcionesTipoCuenta:any=[]
   OpcionSeleccionada:any
+  cargando:boolean=true
   @ViewChild('InputCuentaHijo', { static: false }) InputCuentaHijo!: ElementRef;
   constructor(
     private datePipe: DatePipe,
@@ -118,6 +119,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
 
     });
 
+    this.cargando=false
+
 
   }
   padZero(num: number): string {
@@ -142,6 +145,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
       PrefijoPadre: Number(this.CuentaPadreSeleccionada.idCateg),
       PrefijoHijo: Orden + 1,
       CuentaFija:false,
+      TipoCuenta:this.OpcionSeleccionada,
       Alias:this.NombreCuentaHijo.value,
       FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
       HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
