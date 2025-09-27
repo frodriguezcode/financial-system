@@ -221,13 +221,14 @@ obtenerEmpresas(idMatriz:string) {
       .collection('Atributos')
       .valueChanges();
   }
-  guardarRol(Rol:any){
-    var id = this.afs.createId();
-   return this.afs
-   .collection('Roles')
-   .doc(id)
-   .ref.set(Object.assign(Rol, { id: id }));
-  }
+guardarRol(rol: any): Promise<string> {
+  const id = this.afs.createId();
+  return this.afs
+    .collection('Roles')
+    .doc(id)
+    .ref.set(Object.assign(rol, { id: id }))
+    .then(() => id); // Retorna el ID después de guardar
+}
   obtenerRoles(idEmpresa:string) {
  
     return this.afs

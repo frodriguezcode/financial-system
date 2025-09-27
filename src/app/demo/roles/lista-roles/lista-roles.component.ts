@@ -1,6 +1,6 @@
 // angular import
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -17,6 +17,8 @@ import { ModuleRegistry, AllCommunityModule, RowStyle, RowClassParams } from 'ag
 import { AgGridAngular, AgGridModule } from 'ag-grid-angular';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 ModuleRegistry.registerModules([ AllCommunityModule]); 
 @Component({
@@ -25,7 +27,8 @@ ModuleRegistry.registerModules([ AllCommunityModule]);
   imports: [CommonModule, 
     SharedModule,TreeModule,
     AgGridAngular, AgGridModule,
-    InputSwitchModule,DialogModule,RolesComponent],
+    NgSelectModule,
+    InputSwitchModule,DialogModule],
   templateUrl: './lista-roles.component.html',
   styleUrls: ['./lista-roles.component.scss']
 })
@@ -33,7 +36,11 @@ export default class ListaRolesComponent implements OnInit {
   @Input() Atributos:any
   @Input() ConfigInicial:boolean=false
   @Input() empresaID:string=''
+  @Output() rolCreado = new EventEmitter<any>();
+  Fecha:any= new Date();
+  NombreRol:FormControl = new FormControl('')
   idEmpresa:string=''
+  isAdmin:boolean=false
   Roles:any=[]
   CatalagoRoles:any=[]
   RowData:any=[]
@@ -52,8 +59,10 @@ visibleCrearRol: boolean = false;
   cargando: boolean = true;
   constructor(private authS:AuthService,private toastr: ToastrService, 
     private conS:ConfigurationService,
+    private datePipe: DatePipe,
     private cdr: ChangeDetectorRef ){}
 @Input() ModulosTodos:any
+
  public gridOptions = {
   onCellValueChanged: (event: any) => this.onCellValueChanged(event)
  }
@@ -80,17 +89,42 @@ ngOnInit(): void {
 
 
 }
+
+
 onCellValueChanged(event){
-  
+
+
+
   let idRol = event.data.idRol;
   let idAtributo = event.colDef.id;
   let Valor = event.value;
   let _Rol:any=[]
 
   _Rol = JSON.parse(JSON.stringify(this.Roles.find((rol:any)=>rol.id==idRol)));
-  _Rol.Atributos.find((atr:any)=>atr.id==idAtributo).Seleccionado=Valor
-  this.authS.actualizarRol(_Rol).then((resp:any)=>{
 
+  if(event.colDef.Tipo==1){
+    _Rol.Rol=Valor
+  }
+  else {
+    
+    if(_Rol.Atributos.find((atr:any)=>atr.id==idAtributo)!=undefined){
+      _Rol.Atributos.find((atr:any)=>atr.id==idAtributo).Seleccionado=Valor
+
+    }
+    else {
+      _Rol.Atributos.push({
+        "Nombre":event.colDef.headerName,
+        "id":event.colDef.id,
+        "idModulo":event.colDef.idModulo,
+        "Seleccionado":Valor,
+      })
+    }
+
+  }
+  this.authS.actualizarRol(_Rol).then((resp:any)=>{
+     if(event.colDef.Tipo==1){
+       this.toastr.success('Nombre de rol cambiado', '¡Exito!');
+     }
   })
 
 
@@ -125,12 +159,14 @@ obtenerModulos(){
 
 construirColsCabecera(){
   this.CatalagoRoles=[]
-  this.Roles.forEach(rol => {
+  this.Roles.sort((a: any, b: any) => b.Orden - a.Orden).
+  forEach(rol => {
     this.CatalagoRoles.push({
       Nombre: rol.Rol,
       idRol:rol.id
     })
   });
+
 this.construirCabecera()  
   
 
@@ -140,12 +176,21 @@ getAtributosByModulo(idModulo:string,Atributos:any)
 {
   return Atributos.filter((atr:any)=>atr.idModulo==idModulo)
 }
+
+editarRol(params:any){
+
+}
 construirCabecera(){
+  this.CabeceraAtributos=[]
   this.CabeceraAtributos.push({
       headerName: 'Rol',
+      editable:true,
       field: 'Rol',
       idRol:'0',
       Tipo: 1,
+      onCellClicked: (params) => {
+      this.editarRol(params.data);
+      },
       pinned: 'left',
       sortable: false,
       filter: false
@@ -153,6 +198,8 @@ construirCabecera(){
   const ModulosCabecera = this.ModulosSeleccionados.length > 0 ? this.ModulosSeleccionados : this.Modulos;
   const AtributosCabecera = this.AtributosSeleccionados.length > 0 ? this.AtributosSeleccionados : this.AtributosSistema;
 
+  console.log('ModulosCabecera',ModulosCabecera)
+  console.log('ModulosSeleccionados',this.ModulosSeleccionados)
   ModulosCabecera.forEach((modulo:any) => {
 
     const children = this.getAtributosByModulo(modulo.id,AtributosCabecera).map((atr: any) => {
@@ -160,6 +207,7 @@ construirCabecera(){
     return {
       headerName: atr.Nombre,
       field: uniqueField,
+      Tipo:2,
       id:atr.id,
       idModulo:modulo.id,
       editable:true,
@@ -172,7 +220,7 @@ construirCabecera(){
   this.CabeceraAtributos.push({
       headerName: modulo.Nombre,
       field: modulo.Nombre,
-      Tipo: 2,
+      Tipo: 3,
       sortable: false,
       filter: false,
       children: children
@@ -230,6 +278,7 @@ construirData(){
 obtenerRoles(){
   let Subscripcion:Subscription
 Subscripcion=  this.authS.obtenerRoles(this.idEmpresa).subscribe((resp:any)=>{
+  this.AtributosRoles=[]
     Subscripcion.unsubscribe()
     this.Roles=resp
     this.Roles.forEach((rol:any) => {
@@ -242,6 +291,53 @@ Subscripcion=  this.authS.obtenerRoles(this.idEmpresa).subscribe((resp:any)=>{
     });
     this.obtenerModulos()
   })
+}
+
+async guardarRol() {
+try {
+let _AtributosSistema=[...this.AtributosSistema]
+_AtributosSistema.map((atr:any)=>atr.Seleccionado=this.isAdmin)
+
+
+  let _Rol:any={
+    "Rol":this.NombreRol.value,
+    "Atributos":_AtributosSistema,
+    "Orden":this.Roles.length+1,
+    "idEmpresa":this.idEmpresa,
+    "isAdmin":this.isAdmin,
+    "idMatriz":this.usuario.idMatriz,
+    "idUsuario":this.usuario.id,
+    "Usuario":this.usuario.Usuario,
+    "Nuevo":this.isAdmin,
+    "FechaRegistro":this.datePipe.transform(this.Fecha.setDate(this.Fecha.getDate()), 'yyyy-MM-dd')
+  }
+
+
+  const id = await this.authS.guardarRol(_Rol);
+  _Rol.id=id
+  this.Roles.push(_Rol)
+  this.AtributosRoles=[]
+  this.Roles.forEach((rol:any) => {
+      rol.Atributos.forEach(atr => {
+        atr.idRol=rol.id
+        this.AtributosRoles.push(atr)
+        
+      });
+      
+  });
+  this.construirColsCabecera()
+
+  // console.log('Rol guardado con ID:', id);
+   this.rolCreado.emit(_Rol);
+
+
+}
+
+catch (error) {
+  console.error('Error al guardar:', error);
+}
+
+  
 }
 
 rolSelect(rolSelecionado:any){

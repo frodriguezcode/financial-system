@@ -2,10 +2,18 @@
   <div class="col-sm-12">
     <app-card *ngIf="this.Roles.length>0" cardTitle="Listado de Roles" [options]="false">
       <button type="button" (click)="showCrearRol()" class="btn btn-success">+ Rol</button>
+      <ng-select 
+            class="mt-1" (change)="construirCabecera()" 
+            [items]="Modulos" [multiple]="true" [closeOnSelect]="false"
+            [searchable]="true" bindLabel="Nombre" placeholder="Selec. uno o varios módulos"
+            [(ngModel)]="ModulosSeleccionados">
+      </ng-select>
+     
       <div class="row">
         <ag-grid-angular 
         *ngIf="cargando==false" 
         class="ag-theme-alpine mt-1" 
+       
         [gridOptions]="gridOptions"
         style="width: 100%; height: 600px;"
           [rowData]="RowData" [columnDefs]="CabeceraAtributos"
@@ -48,7 +56,26 @@
   </div>
 </div>
 
-<p-dialog header="Creación de roles" [modal]="true" [(visible)]="visibleCrearRol" [style]="{ width: '80rem' }"
+<p-dialog header="Creación de roles" [modal]="true" [(visible)]="visibleCrearRol"
+   [style]="{ width: '40rem' }"
   [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
-  <app-roles *ngIf="visibleCrearRol==true" [ConfigInicial]="true"></app-roles>
+  <div class="form-floating mb-3">
+  <input type="text" 
+  [formControl]="NombreRol"
+  class="form-control"
+   id="floatingInput" placeholder="name@example.com">
+  <label for="floatingInput">Escriba un nombre del rol</label>
+</div>
+<div class="form-check">
+  <input
+  [(ngModel)]="isAdmin"
+  name="isAdmin"
+  class="form-check-input" type="checkbox" value="" id="checkDefault">
+  <label class="form-check-label" for="checkDefault">
+    Establecer como admin
+  </label>
+</div>
+<button 
+(click)="guardarRol()"
+type="button" class="btn btn-success">Guardar</button>
 </p-dialog>
