@@ -1,13 +1,23 @@
 <div class="row">
   <div class="col-sm-12">
     <app-card *ngIf="this.Roles.length>0" cardTitle="Listado de Roles" [options]="false">
-      <button type="button" (click)="showCrearRol()" class="btn btn-success">+ Rol</button>
-      <ng-select 
-            class="mt-1" (change)="construirCabecera()" 
-            [items]="Modulos" [multiple]="true" [closeOnSelect]="false"
-            [searchable]="true" bindLabel="Nombre" placeholder="Selec. uno o varios módulos"
-            [(ngModel)]="ModulosSeleccionados">
-      </ng-select>
+     <div class="row">
+        <div class="col-2">
+         <button type="button" (click)="showCrearRol()" class="btn btn-success mt-3">Crear Rol</button>
+        </div>
+       <div class="col-4">
+         <label for="username">Módulos del sistema</label>
+           <ng-select 
+                 class="mt-1" (change)="construirCabecera()" 
+                 [items]="Modulos" [multiple]="true" [closeOnSelect]="false"
+                 [searchable]="true" bindLabel="Nombre" placeholder="Selec. uno o varios módulos"
+                 [(ngModel)]="ModulosSeleccionados">
+           </ng-select>
+   
+        </div>
+
+
+     </div>
      
       <div class="row">
         <ag-grid-angular 

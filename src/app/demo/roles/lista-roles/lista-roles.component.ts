@@ -197,9 +197,6 @@ construirCabecera(){
   })
   const ModulosCabecera = this.ModulosSeleccionados.length > 0 ? this.ModulosSeleccionados : this.Modulos;
   const AtributosCabecera = this.AtributosSeleccionados.length > 0 ? this.AtributosSeleccionados : this.AtributosSistema;
-
-  console.log('ModulosCabecera',ModulosCabecera)
-  console.log('ModulosSeleccionados',this.ModulosSeleccionados)
   ModulosCabecera.forEach((modulo:any) => {
 
     const children = this.getAtributosByModulo(modulo.id,AtributosCabecera).map((atr: any) => {
@@ -238,8 +235,8 @@ construirData(){
  this.CatalagoRoles
  .forEach((catalogo:any) => {
   const fila: any = {
-    Rol: catalogo.Nombre, // OJO: debe coincidir con el field 'Concepto' en CabeceraBack
-    Nombre: catalogo.Nombre, // OJO: debe coincidir con el field 'Concepto' en CabeceraBack
+    Rol: catalogo.Nombre, 
+    Nombre: catalogo.Nombre,
     idRol:catalogo.idRol,
    
   };
@@ -269,7 +266,7 @@ construirData(){
 
   rowData.push(fila);
  });
- console.log('rowData',rowData)
+
  this.RowData=rowData
    this.cargando=false
 }
