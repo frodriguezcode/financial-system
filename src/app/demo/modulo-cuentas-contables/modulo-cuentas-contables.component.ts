@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormControl } from '@angular/forms';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-modulo-cuentas-contables',
   standalone: true,
@@ -134,9 +134,15 @@ export default class ModuloCuentasContableComponent implements OnInit {
     const formattedHour = hours % 12 || 12;
     let idsProyectos = this.ProyectosSeleccionados.map((proyect: any) => proyect.id)
     let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
-    console.log('CuentaPadre',this.CuentaPadreSeleccionada)
-    console.log('NombreCuentaHijo',this.NombreCuentaHijo)
     let Orden: any = this.CuentasHijos.filter((it: any) => it.idPadre == this.CuentaPadreSeleccionada.id).length;    
+   
+    if(this.NombreCuentaHijo.value==''){
+      this.toastr.warning('Debe colocar el nombre de la cuenta', '¡Alerta!', {
+      timeOut: 2000,
+      positionClass: 'toast-center-center'
+    }); 
+    }
+   
     let Item = {
       Activo:true,
       TipoProforma:1,
