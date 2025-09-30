@@ -9,7 +9,7 @@
          <label for="username">Módulos del sistema</label>
            <ng-select 
                  class="mt-1" (change)="construirCabecera()" 
-                 [items]="Modulos" [multiple]="true" [closeOnSelect]="false"
+                 [items]="Modulos" [multiple]="true" [closeOnSelect]="true"
                  [searchable]="true" bindLabel="Nombre" placeholder="Selec. uno o varios módulos"
                  [(ngModel)]="ModulosSeleccionados">
            </ng-select>
