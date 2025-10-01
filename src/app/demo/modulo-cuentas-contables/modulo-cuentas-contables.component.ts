@@ -9,12 +9,13 @@ import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormControl } from '@angular/forms';
 import { TreeModule } from 'primeng/tree';
+import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { TreeNode } from 'primeng/api';
 @Component({
   selector: 'app-modulo-cuentas-contables',
   standalone: true,
-  imports: [CommonModule, SharedModule,AccordionModule,NgSelectModule,TreeModule],
+  imports: [CommonModule, SharedModule,AccordionModule,NgSelectModule,TreeModule,NgbAccordionModule],
   templateUrl: './modulo-cuentas-contables.component.html',
   styleUrls: ['./modulo-cuentas-contables.component.scss']
 })
