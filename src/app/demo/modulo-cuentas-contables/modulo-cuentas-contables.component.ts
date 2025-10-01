@@ -8,11 +8,13 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormControl } from '@angular/forms';
+import { TreeModule } from 'primeng/tree';
 import Swal from 'sweetalert2';
+import { TreeNode } from 'primeng/api';
 @Component({
   selector: 'app-modulo-cuentas-contables',
   standalone: true,
-  imports: [CommonModule, SharedModule,AccordionModule,NgSelectModule],
+  imports: [CommonModule, SharedModule,AccordionModule,NgSelectModule,TreeModule],
   templateUrl: './modulo-cuentas-contables.component.html',
   styleUrls: ['./modulo-cuentas-contables.component.scss']
 })
@@ -34,6 +36,9 @@ export default class ModuloCuentasContableComponent implements OnInit {
   OpcionesTipoCuenta:any=[]
   OpcionSeleccionada:any
   cargando:boolean=true
+  TreeData:any=[]
+  selectedNode: any = [];
+  activeIndex=0
   @ViewChild('InputCuentaHijo', { static: false }) InputCuentaHijo!: ElementRef;
   constructor(
     private datePipe: DatePipe,
@@ -106,8 +111,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
 
   construirData(){
     let DataEmpresa=this.DataCatalogos.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
-    console.log('DataEmpresa',DataEmpresa)
     this.Categorias=DataEmpresa.Categorias
+    console.log('Categorias',this.Categorias)
     this.Proyectos=DataEmpresa.Proyectos
     this.Sucursales=DataEmpresa.Sucursales
     this.CuentasHijos=DataEmpresa._CuentasContables
@@ -118,8 +123,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
       });
 
     });
-
-    this.cargando=false
+    this.construirTreeData()
+    
 
 
   }
@@ -172,7 +177,64 @@ export default class ModuloCuentasContableComponent implements OnInit {
   }
 
 
+getCuentasPadre(idAbuelo:string){
+  let _CuentasPadre:any=[]
+  this.Categorias
+  .filter((cuentaPadre:any)=>cuentaPadre.idAbuelo==idAbuelo)
+  .forEach(cuenta => {
+    _CuentasPadre.push({
+      key: `${idAbuelo}-${cuenta.id}`,
+      id: cuenta.id,
+      Tipo:'Padre',
+      Editable:false,
+      label: cuenta.Nombre,
+      data: cuenta.Nombre,
+      icon: 'pi pi-fw pi-inbox',
+    })
+    
+  });
 
+  return _CuentasPadre
+  
+}
 
+construirTreeData(){
+  this.Categorias
+  .filter((abuelo:any)=>abuelo.Tipo==3)
+  .forEach((cuenta:any) => {
+
+    this.TreeData.push(
+      {
+      key: cuenta.id,
+      id: cuenta.id,
+      label: cuenta.Nombre,
+      Tipo:'Abuelo',
+      Editable:false,
+      data: cuenta.Nombre,
+      icon: 'pi pi-fw pi-inbox',  
+      children: this.getCuentasPadre(cuenta.id)   
+      }
+    )
+    
+  });
+this.cargando=false
+}
+
+   activeIndexChange(index : any){
+        this.activeIndex = index
+    }
+
+onNodeSelected(event: any) {
+    // El evento contiene el nodo seleccionado en event.node
+    console.log('Nodo seleccionado:', event.node);
+    
+   if(event.node.Tipo=='Abuelo'){
+      this.activeIndex=0
+   }
+   else {
+    this.activeIndex=1
+   }
+
+  }
 
 }
