@@ -10,6 +10,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FormControl } from '@angular/forms';
 import { TreeModule } from 'primeng/tree';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
+import { TreeDragDropService } from 'primeng/api';
 import Swal from 'sweetalert2';
 import { TreeNode } from 'primeng/api';
 @Component({
@@ -17,6 +18,7 @@ import { TreeNode } from 'primeng/api';
   standalone: true,
   imports: [CommonModule, SharedModule,AccordionModule,NgSelectModule,TreeModule,NgbAccordionModule],
   templateUrl: './modulo-cuentas-contables.component.html',
+  providers:[TreeDragDropService],
   styleUrls: ['./modulo-cuentas-contables.component.scss']
 })
 export default class ModuloCuentasContableComponent implements OnInit {
@@ -113,7 +115,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
   construirData(){
     let DataEmpresa=this.DataCatalogos.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
     this.Categorias=DataEmpresa.Categorias
-    console.log('Categorias',this.Categorias)
+    
     this.Proyectos=DataEmpresa.Proyectos
     this.Sucursales=DataEmpresa.Sucursales
     this.CuentasHijos=DataEmpresa._CuentasContables
@@ -124,6 +126,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
       });
 
     });
+    console.log('CuentasHijos',this.CuentasHijos)
+    console.log('CuentasNietos',this.CuentasNietos)
     this.construirTreeData()
     
 
@@ -188,9 +192,12 @@ getCuentasPadre(idAbuelo:string){
       id: cuenta.id,
       Tipo:'Padre',
       Editable:false,
+      droppable: false,
+      draggable: false,
       label: cuenta.Nombre,
       data: cuenta.Nombre,
       icon: 'pi pi-fw pi-inbox',
+      children:this.getCuentasHijo(cuenta.id)
     })
     
   });
@@ -199,26 +206,73 @@ getCuentasPadre(idAbuelo:string){
   
 }
 
-construirTreeData(){
-  this.Categorias
-  .filter((abuelo:any)=>abuelo.Tipo==3)
-  .forEach((cuenta:any) => {
+getCuentasHijo(idPadre:string){
+  let _CuentasHijo:any=[]
+  this.CuentasHijos
+  .filter((cuentaHijo:any)=>cuentaHijo.idPadre==idPadre)
+  .forEach(cuenta => {
+    _CuentasHijo.push({
+      key: `${cuenta.idAbuelo}-${idPadre}-${cuenta.id}`,
+      keyPadre:`${cuenta.idAbuelo}-${idPadre}`,
+      id: cuenta.id,
+      Tipo:'Hijo',
+      Editable:false,
+      label: cuenta.Nombre,
+      droppable: false, 
+      data: cuenta.Nombre,
+      icon: 'pi pi-fw pi-inbox',
+      children:this.getCuentasNieto(cuenta.id)
+    })
+    
+  });
 
-    this.TreeData.push(
-      {
+  return _CuentasHijo
+  
+}
+getCuentasNieto(idHijo:string){
+  let _CuentasNieto:any=[]
+  this.CuentasNietos
+  .filter((cuentaHijo:any)=>cuentaHijo.idHijo==idHijo)
+  .forEach((cuenta:any) => {
+    _CuentasNieto.push({
+      key: `${cuenta.idAbuelo}-${cuenta.idPadre}-${idHijo}-${cuenta.id}`,
+      keyHijo: `${cuenta.idAbuelo}-${cuenta.idPadre}-${idHijo}`,
+      id: cuenta.id,
+      Tipo:'Nieto',
+      Editable:false,
+      label: cuenta.Nombre,
+      data: cuenta.Nombre,
+      droppable: false, 
+      icon: 'pi pi-fw pi-inbox',
+
+    })
+    
+  });
+
+  return _CuentasNieto
+  
+}
+
+construirTreeData() {
+  // limpia completamente la referencia
+  this.TreeData = [];
+
+  this.TreeData = this.Categorias
+    .filter((abuelo: any) => abuelo.Tipo == 3)
+    .map((cuenta: any) => ({
       key: cuenta.id,
       id: cuenta.id,
       label: cuenta.Nombre,
-      Tipo:'Abuelo',
-      Editable:false,
+      Tipo: 'Abuelo',
+      Editable: false,
+      droppable: false,
+      draggable: false,
       data: cuenta.Nombre,
-      icon: 'pi pi-fw pi-inbox',  
-      children: this.getCuentasPadre(cuenta.id)   
-      }
-    )
-    
-  });
-this.cargando=false
+      icon: 'pi pi-fw pi-inbox',
+      children: this.getCuentasPadre(cuenta.id)
+    }));
+
+  this.cargando = false;
 }
 
    activeIndexChange(index : any){
@@ -237,5 +291,27 @@ onNodeSelected(event: any) {
    }
 
   }
+
+onNodeDrop(event: any) {
+  const { dragNode, dropNode, dropPoint, accept } = event;
+
+ console.log('event',event)
+  let KeydragNode=event.dragNode.Tipo=='Hijo'? event.dragNode.keyPadre : event.dragNode.keyHijo
+  let KeydropNode=event.dropNode.Tipo=='Hijo'? event.dropNode.keyPadre : event.dropNode.keyHijo
+
+  // Evitar drop dentro del nodo
+  if (dropPoint === 'node') return;
+  // Solo permitir si tienen el mismo keyHijo
+  if (KeydragNode === KeydropNode) {
+    // ✅ permitido
+    if (typeof accept === 'function') accept();
+  } 
+  else {   
+    this.toastr.warning('La cuenta no debe moverse fuera de su flujo', '¡Alerta!', {
+      timeOut: 2000,
+      positionClass: 'toast-center-center'
+    }); 
+  }
+}
 
 }

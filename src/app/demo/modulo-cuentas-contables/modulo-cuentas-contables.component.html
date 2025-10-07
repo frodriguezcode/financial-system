@@ -111,9 +111,18 @@
             </p-accordionTab>
           </p-accordion>
         </div>
-        <div class="col-8">
+        <div *ngIf="TreeData.length>0" class="col-8">
           <div class="card flex justify-content-center">
-            <p-tree [value]="TreeData" selectionMode="single" [(selection)]="selectedNode" (onNodeSelect)="onNodeSelected($event)" />
+            <p-tree [value]="TreeData" 
+            selectionMode="single"
+            [draggableNodes]="true" 
+            [droppableNodes]="true" 
+            draggableScope="self" 
+            droppableScope="self"    
+            [validateDrop]="true"         
+            [(selection)]="selectedNode" 
+            (onNodeDrop)="onNodeDrop($event)"
+            (onNodeSelect)="onNodeSelected($event)" />
           </div>
         </div>
       </div>
