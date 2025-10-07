@@ -81,6 +81,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
     });
   }
 
+
+
   getCatalogos(){
     this.conS.obtenerDataCatalogosEmpresa(this.usuario.idMatriz).subscribe((data:any)=>{
       this.DataCatalogos=data
