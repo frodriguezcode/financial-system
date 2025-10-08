@@ -3446,6 +3446,19 @@ async crearRegistro(Registro: any): Promise<string> {
     );
 
   }
+  obtenerCatalogoCuentas() {
+
+    const CuentasHijos$ = this.afs.collection('CatalogCuentasHijo').valueChanges();
+    const CuentasNietos$ = this.afs.collection('CatalogCuentasNieto').valueChanges();
+
+    return combineLatest([CuentasHijos$, CuentasNietos$]).pipe(
+      map(([CuentasHijos, CuentasNietos]) => {
+
+        return [CuentasHijos, CuentasNietos];
+      })
+    );
+
+  }
 
 
 

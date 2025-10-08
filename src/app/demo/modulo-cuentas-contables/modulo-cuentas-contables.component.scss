@@ -11,3 +11,31 @@
   transform: translate(-50%, -50%);
   position: fixed !important;
 }
+
+
+@media (min-width: 1100px) and (max-width: 1290px) { 
+  /* En tu archivo CSS */
+  .tree-container {
+    max-height: 500px; /* Altura máxima que desees */
+    overflow-y: auto; /* Scroll vertical cuando sea necesario */
+  }
+  
+  .tree-container .p-tree {
+    width: 100%;
+  }
+
+
+ }
+@media (min-width: 1300px) and (max-width: 2000px) { 
+  /* En tu archivo CSS */
+  .tree-container {
+    max-height: 600px; /* Altura máxima que desees */
+    overflow-y: auto; /* Scroll vertical cuando sea necesario */
+  }
+  
+  .tree-container .p-tree {
+    width: 100%;
+  }
+
+
+ }

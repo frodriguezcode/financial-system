@@ -191,6 +191,7 @@ getCuentasPadre(idAbuelo:string){
   .forEach(cuenta => {
     _CuentasPadre.push({
       key: `${idAbuelo}-${cuenta.id}`,
+      Orden:cuenta.Orden,
       id: cuenta.id,
       Tipo:'Padre',
       Editable:false,
@@ -199,7 +200,7 @@ getCuentasPadre(idAbuelo:string){
       label: cuenta.Nombre,
       data: cuenta.Nombre,
       icon: 'pi pi-fw pi-inbox',
-      children:this.getCuentasHijo(cuenta.id)
+      children:this.getCuentasHijo(cuenta.id).sort((a, b) => a.Orden - b.Orden)
     })
     
   });
@@ -217,13 +218,14 @@ getCuentasHijo(idPadre:string){
       key: `${cuenta.idAbuelo}-${idPadre}-${cuenta.id}`,
       keyPadre:`${cuenta.idAbuelo}-${idPadre}`,
       id: cuenta.id,
+      Orden:cuenta.Orden,
       Tipo:'Hijo',
       Editable:false,
       label: cuenta.Nombre,
       droppable: false, 
       data: cuenta.Nombre,
       icon: 'pi pi-fw pi-inbox',
-      children:this.getCuentasNieto(cuenta.id)
+      children:this.getCuentasNieto(cuenta.id).sort((a, b) => a.Orden - b.Orden)
     })
     
   });
@@ -240,6 +242,7 @@ getCuentasNieto(idHijo:string){
       key: `${cuenta.idAbuelo}-${cuenta.idPadre}-${idHijo}-${cuenta.id}`,
       keyHijo: `${cuenta.idAbuelo}-${cuenta.idPadre}-${idHijo}`,
       id: cuenta.id,
+      Orden:cuenta.Orden,
       Tipo:'Nieto',
       Editable:false,
       label: cuenta.Nombre,
@@ -271,7 +274,7 @@ construirTreeData() {
       draggable: false,
       data: cuenta.Nombre,
       icon: 'pi pi-fw pi-inbox',
-      children: this.getCuentasPadre(cuenta.id)
+      children: this.getCuentasPadre(cuenta.id).sort((a, b) => a.Orden - b.Orden)
     }));
 
   this.cargando = false;

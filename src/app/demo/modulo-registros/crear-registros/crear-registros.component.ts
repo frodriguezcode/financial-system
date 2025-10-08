@@ -14,6 +14,8 @@ import { ModuleRegistry, AllCommunityModule, RowStyle, RowClassParams } from 'ag
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 import { FieldsetModule } from 'primeng/fieldset';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 ModuleRegistry.registerModules([ AllCommunityModule ]); 
 @Component({
   selector: 'app-crear-registros',
@@ -27,7 +29,7 @@ ModuleRegistry.registerModules([ AllCommunityModule ]);
   styleUrls: ['./crear-registros.component.scss']
 })
 export default class CrearRegistrosComponent implements OnInit {
-constructor(private conS:ConfigurationService,private toastr: ToastrService){}
+constructor(private conS:ConfigurationService,private toastr: ToastrService,private authS:AuthService){}
 Valor:number=0
 TipoEntidad:number=0
 Total:any
@@ -148,6 +150,8 @@ this.localeText = {
   ungroupBy: 'Desagrupar por',
 };
 
+
+
 this.columnDefs=
 [
   {
@@ -228,7 +232,7 @@ this.conS.usuario$.subscribe((usuario) => {
         this.idEmpresa = this.usuario.idEmpresa;
       }
       this.obtenerCuentasBancarias()
-
+     // this.obtenerCatalogoCuentas()
       
 
 });
@@ -238,6 +242,40 @@ this.conS.usuario$.subscribe((usuario) => {
 }
 
 
+
+ obtenerCatalogoCuentas(){
+  const currentDate = new Date();
+  const hours = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const formattedHour = hours % 12 || 12;
+  let Subscription:Subscription
+Subscription=  this.conS. obtenerCatalogoCuentas().subscribe((resp:any)=>{
+  Subscription.unsubscribe()
+   
+
+
+    let cuentasHijos=resp[0]
+    let cuentasNietos=resp[1]
+    console.log('cuentasHijos',cuentasHijos)
+    console.log('cuentasNietos',cuentasNietos)
+
+    let CatalogoEmpresa ={
+    "idEmpresa":this.idEmpresa,
+    "idMatriz":this.usuario.idMatriz,
+    "CuentasHijos":cuentasHijos,
+    "CuentasNietos":cuentasNietos,
+    "Fecha": new Date(),
+    "AnioRegistro":new Date(new Date()).getFullYear(),
+    "Hora": formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+    }
+
+    this.authS.construirCatalogoCuentas(CatalogoEmpresa).then((resp:any)=>{
+
+
+    })
+  })
+ }
 
 onFilterChanged(event: any) {
   this.recalcularTotal();
