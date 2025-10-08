@@ -9,31 +9,60 @@
                 <strong> Tipo de Cuenta </strong>
               </label>
               <br />
-              <div *ngFor="let opcion of OpcionesTipoCuenta" class="form-check form-check-inline">
-                <input (change)="getCuentasPadres()" class="form-check-input" type="radio"
-                  [(ngModel)]="OpcionSeleccionada" name="inlineRadioOptions" id="inlineRadio1"
-                  [checked]="opcion.Seleccionado" value="{{ opcion.id }}" />
-                <label class="form-check-label" for="inlineRadio1">{{ opcion.Nombre }}</label>
+
+              <div *ngFor="let opcion of OpcionesTipoCuenta; let i = index" class="form-check form-check-inline">
+                <input
+                  (change)="getCuentasPadres()"
+                  class="form-check-input"
+                  type="radio"
+                  [(ngModel)]="OpcionSeleccionada"
+                  name="inlineRadioOptions"
+                  [id]="'inlineRadio' + i"
+                  [value]="opcion.id"
+                />
+                <label class="form-check-label" [for]="'inlineRadio' + i">{{ opcion.Nombre }}</label>
+              </div>
+
+              <div class="d-flex justify-content-end">
+                <div style="margin-top: -50px">
+                  <p-inputSwitch 
+                  (onChange)="cambiarEstadoCuentaHijo()"
+                  [(ngModel)]="checkedHijo" />
+                </div>
               </div>
 
               <div class="row">
                 <div class="col-12">
                   <label for="formGroupExampleInput" class="form-label">Elija la cuenta padre</label>
-                  <ng-select loadingText="Cargando cuentas..." notFoundText="No hay cuentas disponibles" class="mt-1"
-                    [items]="CuentasPadres" [disabled]="this.OpcionSeleccionada == null" [multiple]="false"
-                    [closeOnSelect]="true" [searchable]="true" (change)="focusInput()" bindLabel="Nombre"
-                    placeholder="Seleccione una cuenta padre" [(ngModel)]="this.CuentaPadreSeleccionada">
+                  <ng-select
+                    loadingText="Cargando cuentas..."
+                    notFoundText="No hay cuentas disponibles"
+                    class="mt-1"
+                    [items]="CuentasPadres"
+                    [disabled]="this.OpcionSeleccionada == null"
+                    [multiple]="false"
+                    [closeOnSelect]="true"
+                    [searchable]="true"
+                    (change)="focusInput()"
+                    bindLabel="Nombre"
+                    placeholder="Seleccione una cuenta padre"
+                    [(ngModel)]="this.CuentaPadreSeleccionada"
+                  >
                   </ng-select>
-                  <p *ngIf="this.OpcionSeleccionada == null" style="color: red; font-size: 10px"> Escoja un tipo de
-                    cuenta </p>
+                  <p *ngIf="this.OpcionSeleccionada == null" style="color: red; font-size: 10px"> Escoja un tipo de cuenta </p>
                 </div>
                 <div style="margin-top: -14px" class="col-12">
                   <label for="formGroupExampleInput" class="form-label">Nombre de la cuenta</label>
-                  <input #InputCuentaHijo [formControl]="NombreCuentaHijo"
-                    [disabled]="this.CuentaPadreSeleccionada == null" type="text" class="form-control custom-input"
-                    placeholder="" aria-label="Last name" />
-                  <p *ngIf="this.CuentaPadreSeleccionada == null" style="color: red; font-size: 10px"> Escoja una cuenta
-                    padre </p>
+                  <input
+                    #InputCuentaHijo
+                    [formControl]="NombreCuentaHijo"
+                    [disabled]="this.CuentaPadreSeleccionada == null"
+                    type="text"
+                    class="form-control custom-input"
+                    placeholder=""
+                    aria-label="Last name"
+                  />
+                  <p *ngIf="this.CuentaPadreSeleccionada == null" style="color: red; font-size: 10px"> Escoja una cuenta padre </p>
                 </div>
               </div>
               <div ngbAccordion>
@@ -44,20 +73,36 @@
                   <div ngbAccordionCollapse>
                     <div ngbAccordionBody>
                       <ng-template>
-                        <label for="formGroupExampleInput" class="form-label"> Escoja los proyectos asociados a esta
-                          cuenta </label>
-                        <ng-select loadingText="Cargando cuentas..." notFoundText="No hay proyectos disponibles"
-                          class="mt-1" [items]="Proyectos" [disabled]="this.OpcionSeleccionada == null"
-                          [multiple]="true" [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre"
-                          placeholder="Proyectos" [(ngModel)]="ProyectosSeleccionados">
+                        <label for="formGroupExampleInput" class="form-label"> Escoja los proyectos asociados a esta cuenta </label>
+                        <ng-select
+                          loadingText="Cargando cuentas..."
+                          notFoundText="No hay proyectos disponibles"
+                          class="mt-1"
+                          [items]="Proyectos"
+                          [disabled]="this.OpcionSeleccionada == null"
+                          [multiple]="true"
+                          [closeOnSelect]="false"
+                          [searchable]="true"
+                          bindLabel="Nombre"
+                          placeholder="Proyectos"
+                          [(ngModel)]="ProyectosSeleccionados"
+                        >
                         </ng-select>
 
-                        <label for="formGroupExampleInput" class="form-label mt-2"> Escoja las sucursales asociadas a
-                          esta cuenta </label>
-                        <ng-select loadingText="Cargando cuentas..." notFoundText="No hay proyectos disponibles"
-                          class="mt-1" [items]="Sucursales" [disabled]="this.OpcionSeleccionada == null"
-                          [multiple]="true" [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre"
-                          placeholder="Sucursales" [(ngModel)]="SucursalesSeleccionadas">
+                        <label for="formGroupExampleInput" class="form-label mt-2"> Escoja las sucursales asociadas a esta cuenta </label>
+                        <ng-select
+                          loadingText="Cargando cuentas..."
+                          notFoundText="No hay proyectos disponibles"
+                          class="mt-1"
+                          [items]="Sucursales"
+                          [disabled]="this.OpcionSeleccionada == null"
+                          [multiple]="true"
+                          [closeOnSelect]="false"
+                          [searchable]="true"
+                          bindLabel="Nombre"
+                          placeholder="Sucursales"
+                          [(ngModel)]="SucursalesSeleccionadas"
+                        >
                         </ng-select>
                       </ng-template>
                     </div>
@@ -65,21 +110,31 @@
                 </div>
               </div>
 
-              <button type="button" [disabled]="this.OpcionSeleccionada == null" (click)="guardarCuentaHijo()"
-                class="btn btn-success mt-3">Guardar</button>
+              <button type="button" [disabled]="this.OpcionSeleccionada == null" (click)="guardarCuentaHijo()" class="btn btn-success mt-3"
+                >Guardar</button
+              >
             </p-accordionTab>
             <p-accordionTab header="Crear Cuenta Nieto">
               <p> Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium... </p>
             </p-accordionTab>
           </p-accordion>
         </div>
-        <div *ngIf="TreeData.length>0" class="col-8">
+        <div *ngIf="TreeData.length > 0" class="col-8">
           <h5>Catálago de Cuentas Contables</h5>
           <div class="card flex justify-content-center">
             <div class="tree-container">
-              <p-tree [value]="TreeData" selectionMode="single" [draggableNodes]="true" [droppableNodes]="true"
-                draggableScope="self" droppableScope="self" [validateDrop]="true" [(selection)]="selectedNode"
-                (onNodeDrop)="onNodeDrop($event)" (onNodeSelect)="onNodeSelected($event)" />
+              <p-tree
+                [value]="TreeData"
+                selectionMode="single"
+                [draggableNodes]="true"
+                [droppableNodes]="true"
+                draggableScope="self"
+                droppableScope="self"
+                [validateDrop]="true"
+                [(selection)]="selectedNode"
+                (onNodeDrop)="onNodeDrop($event)"
+                (onNodeSelect)="onNodeSelected($event)"
+              />
             </div>
           </div>
         </div>

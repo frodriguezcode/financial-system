@@ -2728,6 +2728,12 @@ export class ConfigurationService {
       .doc(tipo.id)
       .ref.update(tipo);
   }
+  ActualizarCatalogoEmpresa(catalogo: any) {
+    return this.afs
+      .collection('CatalogoCuentasEmpresa')
+      .doc(catalogo.id)
+      .ref.update(catalogo);
+  }
 
   ActualizarTipoEstado(Tipo: any, Activo: boolean) {
     return this.afs

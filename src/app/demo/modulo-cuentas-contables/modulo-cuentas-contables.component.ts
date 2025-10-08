@@ -11,12 +11,14 @@ import { FormControl } from '@angular/forms';
 import { TreeModule } from 'primeng/tree';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeDragDropService } from 'primeng/api';
+import { InputSwitchModule } from 'primeng/inputswitch';
 import Swal from 'sweetalert2';
 import { TreeNode } from 'primeng/api';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 @Component({
   selector: 'app-modulo-cuentas-contables',
   standalone: true,
-  imports: [CommonModule, SharedModule,AccordionModule,NgSelectModule,TreeModule,NgbAccordionModule],
+  imports: [CommonModule, SharedModule,AccordionModule,NgSelectModule,TreeModule,NgbAccordionModule,InputSwitchModule],
   templateUrl: './modulo-cuentas-contables.component.html',
   providers:[TreeDragDropService],
   styleUrls: ['./modulo-cuentas-contables.component.scss']
@@ -31,23 +33,30 @@ export default class ModuloCuentasContableComponent implements OnInit {
   Categorias:any=[]
   CuentasPadres:any=[]
   CuentaPadreSeleccionada:any
+  CuentaHijoSeleccionada:any
+  CuentaNietoSeleccionada:any
   CuentasHijos:any=[]
   CuentasNietos:any=[]
   usuario: any;
   idEmpresa:string=''
   DataCatalogos:any=[]
   OpcionesTipoCuenta:any=[]
+  CatalagoCuentasEmpresa:any=[]
   OpcionSeleccionada:any
   cargando:boolean=true
   TreeData:any=[]
+   expandedKeys: any = [];
   selectedNode: any = [];
   activeIndex=0
+  checkedHijo: boolean = true;
+  mostrarOpcionesCuenta: boolean = true;
   @ViewChild('InputCuentaHijo', { static: false }) InputCuentaHijo!: ElementRef;
   constructor(
     private datePipe: DatePipe,
     private conS: ConfigurationService,
     private authS: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private afs: AngularFirestore
   ) { }
   ngOnInit(): void {
    this.NombreCuentaHijo.disable();
@@ -86,6 +95,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
   getCatalogos(){
     this.conS.obtenerDataCatalogosEmpresa(this.usuario.idMatriz).subscribe((data:any)=>{
       this.DataCatalogos=data
+      console.log('DataCatalogos',this.DataCatalogos)
+
       this.construirData()
     })
   }
@@ -117,7 +128,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
   construirData(){
     let DataEmpresa=this.DataCatalogos.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
     this.Categorias=DataEmpresa.Categorias
-    
+    this.CatalagoCuentasEmpresa=DataEmpresa.CatalogoCuentasEmpresa
     this.Proyectos=DataEmpresa.Proyectos
     this.Sucursales=DataEmpresa.Sucursales
     this.CuentasHijos=DataEmpresa._CuentasContables
@@ -130,6 +141,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
     });
     console.log('CuentasHijos',this.CuentasHijos)
     console.log('CuentasNietos',this.CuentasNietos)
+    console.log('CatalagoCuentasEmpresa',this.CatalagoCuentasEmpresa)
     this.construirTreeData()
     
 
@@ -155,15 +167,15 @@ export default class ModuloCuentasContableComponent implements OnInit {
     }); 
     }
    
-    let Item = {
-      Activo:true,
+    let Item:any = {
+      Activo:this.checkedHijo,
       TipoProforma:1,
       Nombre:this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1)+' '+ this.NombreCuentaHijo.value ,
       Prefijo: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1),
       PrefijoPadre: Number(this.CuentaPadreSeleccionada.idCateg),
       PrefijoHijo: Orden + 1,
       CuentaFija:false,
-      TipoCuenta:this.OpcionSeleccionada,
+      TipoCuenta:Number(this.OpcionSeleccionada),
       Alias:this.NombreCuentaHijo.value,
       FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
       HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
@@ -180,8 +192,28 @@ export default class ModuloCuentasContableComponent implements OnInit {
       idCorporacion: this.usuario.idMatriz,
       Created_User: this.usuario.id
     };
-    console.log('Item',Item)
+
+
+    const id = this.afs.createId();
+    Item.id=id
+
+    this.CuentasHijos.push(Item)
+    this.CatalagoCuentasEmpresa[0].CuentasHijos.push(Item)
+    this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp=>{
+      this.expandedKeys.push(Item.idAbuelo);
+      this.expandedKeys.push(Item.idPadre);
+      this.expandedKeys.push(Item.id);
+      this.NombreCuentaHijo.setValue('')
+      this.construirTreeData()
+      this.toastr.success('Se guardó la cuenta contable', '¡Éxito!', {
+      timeOut: 2000,
+      positionClass: 'toast-center-center'
+    }); 
+    
+    }))
   }
+
+
 
 
 getCuentasPadre(idAbuelo:string){
@@ -198,6 +230,7 @@ getCuentasPadre(idAbuelo:string){
       droppable: false,
       draggable: false,
       label: cuenta.Nombre,
+      expanded: this.verificarExpanded(cuenta.id),
       data: cuenta.Nombre,
       icon: 'pi pi-fw pi-inbox',
       children:this.getCuentasHijo(cuenta.id).sort((a, b) => a.Orden - b.Orden)
@@ -225,6 +258,7 @@ getCuentasHijo(idPadre:string){
       droppable: false, 
       data: cuenta.Nombre,
       icon: 'pi pi-fw pi-inbox',
+      expanded: this.verificarExpanded(cuenta.id),
       children:this.getCuentasNieto(cuenta.id).sort((a, b) => a.Orden - b.Orden)
     })
     
@@ -258,6 +292,10 @@ getCuentasNieto(idHijo:string){
   
 }
 
+  verificarExpanded(idElemento: any) {
+    return this.expandedKeys.filter((exp: any) => exp == idElemento).length > 0 ? true : false;
+  }
+
 construirTreeData() {
   // limpia completamente la referencia
   this.TreeData = [];
@@ -272,6 +310,7 @@ construirTreeData() {
       Editable: false,
       droppable: false,
       draggable: false,
+      expanded: this.verificarExpanded(cuenta.id),  
       data: cuenta.Nombre,
       icon: 'pi pi-fw pi-inbox',
       children: this.getCuentasPadre(cuenta.id).sort((a, b) => a.Orden - b.Orden)
@@ -284,14 +323,48 @@ construirTreeData() {
         this.activeIndex = index
     }
 
+ cambiarEstadoCuentaHijo(){
+  if(this.CuentaHijoSeleccionada){
+    console.log('Estado',this.checkedHijo)
+    console.log('Estado',this.CuentaHijoSeleccionada)
+
+    this.CatalagoCuentasEmpresa[0].CuentasHijos.find((cuenta:any)=>cuenta.id==this.CuentaHijoSeleccionada.id).Activo=this.checkedHijo
+    this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then(resp=>{
+
+
+    })
+
+  }
+ }   
+
 onNodeSelected(event: any) {
     // El evento contiene el nodo seleccionado en event.node
-    console.log('Nodo seleccionado:', event.node);
-    
-   if(event.node.Tipo=='Abuelo'){
+    this.mostrarOpcionesCuenta=false
+    if(event.node.Tipo=='Hijo'){
+      this.CuentaHijoSeleccionada=this.CuentasHijos.find((cuenta:any)=>cuenta.id==event.node.id)
+      console.log('CuentaHijoSeleccionada', this.CuentaHijoSeleccionada);
+      this.OpcionSeleccionada=this.CuentaHijoSeleccionada.TipoCuenta
+      console.log('OpcionSeleccionada',this.OpcionSeleccionada)
+      
+
+      if(this.OpcionSeleccionada==1){
+        this.CuentasPadres=this.Categorias.filter((categ:any)=>categ.Tipo==1)
+      }
+    else if(this.OpcionSeleccionada==2){
+        this.CuentasPadres=this.Categorias.filter((categ:any)=>categ.Tipo==2)
+      }
+
+
+
+      this.NombreCuentaHijo.setValue(this.CuentaHijoSeleccionada.Alias)
+      this.CuentaPadreSeleccionada=this.CuentasPadres.find((cp:any)=>cp.id==this.CuentaHijoSeleccionada.idPadre)
+      this.checkedHijo=this.CuentaHijoSeleccionada.Activo
       this.activeIndex=0
+    
+ 
+
    }
-   else {
+   else if(event.node.Tipo=='Nieto'){ 
     this.activeIndex=1
    }
 
