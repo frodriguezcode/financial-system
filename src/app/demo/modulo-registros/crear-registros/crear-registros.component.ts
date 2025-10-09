@@ -71,6 +71,7 @@ rowData :any=[]
  gridApi: any;
 gridColumnApi: any;
 localeText:any
+DataByMatriz:any=[]
 @ViewChild('agGrid') agGrid!: AgGridAngular;
 statusBar = {
   statusPanels: [
@@ -152,6 +153,7 @@ this.localeText = {
 
 
 
+
 this.columnDefs=
 [
   {
@@ -222,16 +224,20 @@ this.OpcionesSociosNegocio.push(
 this.conS.usuario$.subscribe((usuario) => {
       if (usuario) {
         this.usuario = usuario;
+        this.idEmpresa=this.usuario.idEmpresa
+        this.construirData()
       } else {
         this.usuario = JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+        this.idEmpresa=this.usuario.idEmpresa
+        this.getDatos()
       }
 
-      if (this.empresaID != '') {
-        this.idEmpresa = this.empresaID;
-      } else {
-        this.idEmpresa = this.usuario.idEmpresa;
-      }
-      this.obtenerCuentasBancarias()
+      // if (this.empresaID != '') {
+      //   this.idEmpresa = this.empresaID;
+      // } else {
+      //   this.idEmpresa = this.usuario.idEmpresa;
+      // }
+    //  this.obtenerCuentasBancarias()
      // this.obtenerCatalogoCuentas()
       
 
@@ -241,7 +247,102 @@ this.conS.usuario$.subscribe((usuario) => {
   
 }
 
+getDatos(){
+  this.conS.obtenerDataEmpresa(this.usuario.idMatriz).subscribe((resp:any)=>{
+    
+    this.DataByMatriz=resp
+    this.construirData()
+  })
+}
 
+construirData(){
+  let DataByEmpresa=this.DataByMatriz.filter((data:any)=>data.idEmpresa==this.idEmpresa)[0]
+  console.log('DataByEmpresa',DataByEmpresa)
+  this.CuentasBancarias=DataByEmpresa.CuentasBancarias
+  this.SocioNegocios=DataByEmpresa.Socios
+  this.CuentasBancarias.map((cuenta:any)=>{cuenta.Nombre=cuenta.Nombre + ' ' + cuenta.Cuenta,cuenta.Tipo='3'})
+  this.Categorias=DataByEmpresa.Categorias
+  this.Padres=this.Categorias.filter((padre:any)=>padre.Tipo==1 || padre.Tipo==2)
+  this.CuentasHijos=DataByEmpresa._CuentasContables
+  this.CuentasNietos=[]
+  this.CuentasHijos.forEach((cuentaHijo:any) => {
+    cuentaHijo.CuentasNieto.forEach((cuentaNieto:any) => {
+      this.CuentasNietos.push(cuentaNieto)     
+    });
+
+  });
+  this.Proyectos=DataByEmpresa.Proyectos
+  this.Sucursales=DataByEmpresa.Sucursales
+  this.Registros=DataByEmpresa.RegistrosContables.sort((a: any, b: any) => b.Orden - a.Orden)
+  this.obtenerRegistros()
+
+}
+
+obtenerRegistros(){
+let Total:number=0
+this.Registros.forEach(reg => {
+  this.rowData.push(
+{
+    "Socio de Negocio": reg.Cliente!='' ? reg.Cliente : reg.Proveedor !='' ? reg.Proveedor : reg.CuentaBancaria!='' ? this.getCuentaBancaria(reg.CuentaBancaria).Nombre :   '-',
+    "idSocioNegocio": reg.idCliente!='' ? reg.idCliente : reg.idProveedor !='' ? reg.idProveedor : reg.idCuentaBancaria!='' ? reg.idCuentaBancaria:'-',
+    "Cuenta Contable":this.getNombreCuentaContable(reg.idCuentaContablePadre!=''? reg.idCuentaContablePadre : ''),
+    "Sub Cuenta Contable": this.getNombreSubCuentaContable(reg.idCuentaContableHijo),
+    "Cuenta Nieto": this.getNombreCuentaContableNieto(reg.idCuentaContableNieto), 
+    "Valor": reg.TipoRegistro == 1 ? '$ ' + reg.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '-$ ' + reg.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+    "ValorNumero": reg.Valor,  
+    "Orden": reg.Orden,  
+    "NumeroDocumento": reg.NumeroDocumento,       
+    "TipoRegistro": reg.TipoRegistro,           
+    "Comentarios": reg.Comentarios,           
+    "TipoSocioNegocio": reg.TipoSocioNegocio,           
+    "Num Documento o Factura": reg.NumeroDocumento,
+    "Fecha": reg.Fecha,
+    "idProyecto": reg.idProyecto,
+    "idSucursal": reg.idSucursal,
+    "Proyecto":this.getNombreProyecto(reg.idProyecto) ,
+    "Sucursal": this.getNombreSucursal(reg.idSucursal) ,
+    "idRegistro":reg.id,
+    "idCuentaPadre":reg.idCuentaContablePadre,
+    "idCuentaHijo":reg.idCuentaContableHijo,
+    "idCuentaNieto":reg.idCuentaContableNieto,
+}
+)
+Total+=reg.TipoRegistro == 1 ?  (reg.Valor) : (reg.Valor*-1)
+
+});
+
+this.Total=Total<0? 
+{
+  'Valor':'-$ ' + (Total*-1).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  'Color':'red'
+  
+}:
+{
+  'Valor':'$ ' + (Total).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  'Color':'black'
+  
+}
+
+// const total = this.rowData.reduce((acc, fila) => acc + (fila.ValorNumero || 0), 0);
+
+//   this.rowData.push({
+//     idRegistro: 'TOTAL',
+//     "Socio de Negocio": "TOTAL",
+//     "Cuenta Contable": "",
+//     "Sub Cuenta Contable": "",
+//     "Cuenta Nieto": "",
+//     "Num Documento o Factura": "",
+//     "Valor": "$ " + total.toLocaleString(),
+//     "Fecha": "",
+//     "Proyecto": "",
+//     "Sucursal": ""
+//   });
+
+
+Swal.close();
+this.cargando=false
+
+}
 
  obtenerCatalogoCuentas(){
   const currentDate = new Date();
@@ -283,6 +384,7 @@ onFilterChanged(event: any) {
 
 recalcularTotal() {
   let total = 0;
+
   this.gridApi.forEachNodeAfterFilter((node: any) => {
     // ⚡ aquí sumas el campo que quieras (ej: "ValorNumero")
     total += node.data.TipoRegistro==1 ? node.data.ValorNumero : node.data.ValorNumero*-1;
@@ -422,75 +524,7 @@ onRowClicked(registro: any,copiar:any) {
  
 }
 
-obtenerRegistros(){
-  this.conS.obtenerRegistros(this.idEmpresa).subscribe((resp:any)=>{
-  this.Registros=resp.sort((a: any, b: any) => b.Orden - a.Orden) 
-  let Total:number=0
-this.Registros.forEach(reg => {
-  this.rowData.push(
-{
-    "Socio de Negocio": reg.Cliente!='' ? reg.Cliente : reg.Proveedor !='' ? reg.Proveedor : reg.CuentaBancaria!='' ? this.getCuentaBancaria(reg.CuentaBancaria).Nombre :   '-',
-    "idSocioNegocio": reg.idCliente!='' ? reg.idCliente : reg.idProveedor !='' ? reg.idProveedor : reg.idCuentaBancaria!='' ? reg.idCuentaBancaria:'-',
-    "Cuenta Contable":this.getNombreCuentaContable(reg.idCuentaContablePadre!=''? reg.idCuentaContablePadre : ''),
-    "Sub Cuenta Contable": this.getNombreSubCuentaContable(reg.idCuentaContableHijo),
-    "Cuenta Nieto": this.getNombreCuentaContableNieto(reg.idCuentaContableNieto), 
-    "Valor": reg.TipoRegistro == 1 ? '$ ' + reg.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '-$ ' + reg.Valor.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-    "ValorNumero": reg.Valor,  
-    "Orden": reg.Orden,  
-    "NumeroDocumento": reg.NumeroDocumento,       
-    "TipoRegistro": reg.TipoRegistro,           
-    "Comentarios": reg.Comentarios,           
-    "TipoSocioNegocio": reg.TipoSocioNegocio,           
-    "Num Documento o Factura": reg.NumeroDocumento,
-    "Fecha": reg.Fecha,
-    "idProyecto": reg.idProyecto,
-    "idSucursal": reg.idSucursal,
-    "Proyecto":this.getNombreProyecto(reg.idProyecto) ,
-    "Sucursal": this.getNombreSucursal(reg.idSucursal) ,
-    "idRegistro":reg.id,
-    "idCuentaPadre":reg.idCuentaContablePadre,
-    "idCuentaHijo":reg.idCuentaContableHijo,
-    "idCuentaNieto":reg.idCuentaContableNieto,
-}
-)
-Total+=reg.TipoRegistro == 1 ?  (reg.Valor) : (reg.Valor*-1)
-});
-this.Total=Total<0? 
 
-{
-  'Valor':'-$ ' + (Total*-1).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-  'Color':'red'
-  
-}:
-
-{
-  'Valor':'$ ' + (Total).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-  'Color':'black'
-  
-}
-
-
-// const total = this.rowData.reduce((acc, fila) => acc + (fila.ValorNumero || 0), 0);
-
-//   this.rowData.push({
-//     idRegistro: 'TOTAL',
-//     "Socio de Negocio": "TOTAL",
-//     "Cuenta Contable": "",
-//     "Sub Cuenta Contable": "",
-//     "Cuenta Nieto": "",
-//     "Num Documento o Factura": "",
-//     "Valor": "$ " + total.toLocaleString(),
-//     "Fecha": "",
-//     "Proyecto": "",
-//     "Sucursal": ""
-//   });
-
-
-Swal.close();
-this.cargando=false
-  })
-
-}
   padZero(num: number): string {
     return (num < 10 ? '0' : '') + num;
   }
@@ -538,14 +572,14 @@ else  if(this.Fecha==''){
     }); 
     Swal.close();
 }
-else  if( (this.CuentaHijoSeleccionado.Prefijo=='1.2.1' || this.CuentaHijoSeleccionado.Prefijo=='1.2.2') 
-   && this.CuentaNietoSeleccionado==null){
-    this.toastr.warning('Debe seleccionar una cuenta nieto', '¡Alerta!', {
-      timeOut: 2000,
-      positionClass: 'toast-center-center'
-    }); 
-    Swal.close();
-}
+// else  if( (this.CuentaHijoSeleccionado.Prefijo=='1.2.1' || this.CuentaHijoSeleccionado.Prefijo=='1.2.2') 
+//    && this.CuentaNietoSeleccionado==null){
+//     this.toastr.warning('Debe seleccionar una cuenta nieto', '¡Alerta!', {
+//       timeOut: 2000,
+//       positionClass: 'toast-center-center'
+//     }); 
+//     Swal.close();
+// }
 
   else {
   if(this.copiadoRegistro==true){
@@ -688,6 +722,7 @@ else  if( (this.CuentaHijoSeleccionado.Prefijo=='1.2.1' || this.CuentaHijoSelecc
      }
   let Total:number=0
   Total=this.Registros.reduce((acc, fila) => acc + ( fila.TipoRegistro == 1? fila.ValorNumero :(fila.ValorNumero*-1) || 0), 0);
+
   this.Total=Total<0? 
 
 {
