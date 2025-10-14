@@ -5,24 +5,6 @@
         <div class="col-4">
           <p-accordion (activeIndexChange)="activeIndexChange($event)" [activeIndex]="activeIndex">
             <p-accordionTab header="Crear Cuenta Hijo">
-              <label for="formGroupExampleInput" class="form-label">
-                <strong> Tipo de Cuenta </strong>
-              </label>
-              <br />
-
-              <div *ngFor="let opcion of OpcionesTipoCuenta; let i = index" class="form-check form-check-inline">
-                <input
-                  (change)="getCuentasPadres()"
-                  class="form-check-input"
-                  type="radio"
-                  [(ngModel)]="OpcionSeleccionada"
-                  name="inlineRadioOptions"
-                  [id]="'inlineRadio' + i"
-                  [value]="opcion.id"
-                />
-                <label class="form-check-label" [for]="'inlineRadio' + i">{{ opcion.Nombre }}</label>
-              </div>
-
               <div class="d-flex justify-content-end">
                 <div style="margin-top: -50px">
                   <p-inputSwitch 
@@ -32,37 +14,16 @@
               </div>
 
               <div class="row">
-                <div class="col-12">
-                  <label for="formGroupExampleInput" class="form-label">Elija la cuenta padre</label>
-                  <ng-select
-                    loadingText="Cargando cuentas..."
-                    notFoundText="No hay cuentas disponibles"
-                    class="mt-1"
-                    [items]="CuentasPadres"
-                    [disabled]="this.OpcionSeleccionada == null"
-                    [multiple]="false"
-                    [closeOnSelect]="true"
-                    [searchable]="true"
-                    (change)="focusInput()"
-                    bindLabel="Nombre"
-                    placeholder="Seleccione una cuenta padre"
-                    [(ngModel)]="this.CuentaPadreSeleccionada"
-                  >
-                  </ng-select>
-                  <p *ngIf="this.OpcionSeleccionada == null" style="color: red; font-size: 10px"> Escoja un tipo de cuenta </p>
-                </div>
                 <div style="margin-top: -14px" class="col-12">
                   <label for="formGroupExampleInput" class="form-label">Nombre de la cuenta</label>
                   <input
                     #InputCuentaHijo
-                    [formControl]="NombreCuentaHijo"
-                    [disabled]="this.CuentaPadreSeleccionada == null"
+                    [formControl]="NombreCuentaHijo" 
                     type="text"
                     class="form-control custom-input"
                     placeholder=""
                     aria-label="Last name"
                   />
-                  <p *ngIf="this.CuentaPadreSeleccionada == null" style="color: red; font-size: 10px"> Escoja una cuenta padre </p>
                 </div>
               </div>
               <div ngbAccordion>
@@ -79,7 +40,7 @@
                           notFoundText="No hay proyectos disponibles"
                           class="mt-1"
                           [items]="Proyectos"
-                          [disabled]="this.OpcionSeleccionada == null"
+                          [disabled]="this.CuentaPadreSeleccionada == null"
                           [multiple]="true"
                           [closeOnSelect]="false"
                           [searchable]="true"
@@ -95,7 +56,7 @@
                           notFoundText="No hay proyectos disponibles"
                           class="mt-1"
                           [items]="Sucursales"
-                          [disabled]="this.OpcionSeleccionada == null"
+                          [disabled]="this.CuentaPadreSeleccionada == null"
                           [multiple]="true"
                           [closeOnSelect]="false"
                           [searchable]="true"
@@ -110,7 +71,7 @@
                 </div>
               </div>
 
-              <button type="button" [disabled]="this.OpcionSeleccionada == null" (click)="guardarCuentaHijo()" class="btn btn-success mt-3"
+              <button type="button" [disabled]="this.CuentaPadreSeleccionada == null" (click)="guardarCuentaHijo()" class="btn btn-success mt-3"
                 >Guardar</button
               >
             </p-accordionTab>
