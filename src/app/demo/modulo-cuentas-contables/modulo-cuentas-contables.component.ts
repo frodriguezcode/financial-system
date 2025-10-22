@@ -13,12 +13,15 @@ import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeDragDropService } from 'primeng/api';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import Swal from 'sweetalert2';
-import { TreeNode } from 'primeng/api';
+import { TreeTableModule } from 'primeng/treetable';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+
 @Component({
   selector: 'app-modulo-cuentas-contables',
   standalone: true,
-  imports: [CommonModule, SharedModule, AccordionModule, NgSelectModule, TreeModule, NgbAccordionModule, InputSwitchModule],
+  imports: [CommonModule, SharedModule, AccordionModule, NgSelectModule, TreeModule, NgbAccordionModule, InputSwitchModule,TreeTableModule,FloatLabelModule],
   templateUrl: './modulo-cuentas-contables.component.html',
   providers: [TreeDragDropService],
   styleUrls: ['./modulo-cuentas-contables.component.scss']
@@ -51,6 +54,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
   checkedHijo: boolean = true;
   mostrarOpcionesCuenta: boolean = true;
   @ViewChild('InputCuentaHijo', { static: false }) InputCuentaHijo!: ElementRef;
+  @ViewChild('treeTable') treeTable: any;
+   newRowId: string = '';
   constructor(
     private datePipe: DatePipe,
     private conS: ConfigurationService,
@@ -136,48 +141,118 @@ export default class ModuloCuentasContableComponent implements OnInit {
   padZero(num: number): string {
     return (num < 10 ? '0' : '') + num;
   }
-  guardarCuentaHijo() {
-    if (this.CuentaHijoSeleccionada) {
-      let idsProyectos = this.ProyectosSeleccionados.map((proyecto: any) => proyecto.id)
-      let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
+  // guardarCuentaHijo() {
+  //   if (this.CuentaHijoSeleccionada) {
+  //     let idsProyectos = this.ProyectosSeleccionados.map((proyecto: any) => proyecto.id)
+  //     let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
 
 
-      this.CatalagoCuentasEmpresa[0].CuentasHijos
-        .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-        .Alias = this.NombreCuentaHijo.value
+  //     this.CatalagoCuentasEmpresa[0].CuentasHijos
+  //       .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+  //       .Alias = this.NombreCuentaHijo.value
 
-      this.CatalagoCuentasEmpresa[0].CuentasHijos
-        .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-        .Nombre = this.CuentaHijoSeleccionada.Prefijo + ' ' + this.NombreCuentaHijo.value
+  //     this.CatalagoCuentasEmpresa[0].CuentasHijos
+  //       .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+  //       .Nombre = this.CuentaHijoSeleccionada.Prefijo + ' ' + this.NombreCuentaHijo.value
 
-      this.CatalagoCuentasEmpresa[0].CuentasHijos
-        .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-        .idsProyectos = idsProyectos
+  //     this.CatalagoCuentasEmpresa[0].CuentasHijos
+  //       .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+  //       .idsProyectos = idsProyectos
 
-      this.CatalagoCuentasEmpresa[0].CuentasHijos
-        .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-        .idsSucursales = idsSucursales
+  //     this.CatalagoCuentasEmpresa[0].CuentasHijos
+  //       .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+  //       .idsSucursales = idsSucursales
 
-      this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
-        this.expandedKeys.push(this.CuentaHijoSeleccionada.idAbuelo);
-        this.expandedKeys.push(this.CuentaHijoSeleccionada.idPadre);
-        this.expandedKeys.push(this.CuentaHijoSeleccionada.id);
-        this.NombreCuentaHijo.setValue('');
-        this.NombreCuentaHijo.disable();
-        this.CuentaHijoSeleccionada = null
-        this.CuentaPadreSeleccionada = null
-        this.ProyectosSeleccionados = []
-        this.SucursalesSeleccionadas = []
-        this.construirTreeData();
-        this.toastr.success('Se actualizó la cuenta contable', '¡Éxito!', {
-          timeOut: 2000,
-          positionClass: 'toast-center-center'
-        });
-      });
+  //     this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
+  //       this.expandedKeys.push(this.CuentaHijoSeleccionada.idAbuelo);
+  //       this.expandedKeys.push(this.CuentaHijoSeleccionada.idPadre);
+  //       this.expandedKeys.push(this.CuentaHijoSeleccionada.id);
+  //       this.NombreCuentaHijo.setValue('');
+  //       this.NombreCuentaHijo.disable();
+  //       this.CuentaHijoSeleccionada = null
+  //       this.CuentaPadreSeleccionada = null
+  //       this.ProyectosSeleccionados = []
+  //       this.SucursalesSeleccionadas = []
+  //       this.construirTreeData();
+  //       this.toastr.success('Se actualizó la cuenta contable', '¡Éxito!', {
+  //         timeOut: 2000,
+  //         positionClass: 'toast-center-center'
+  //       });
+  //     });
 
 
-    }
-    else {
+  //   }
+  //   else {
+  //     const currentDate = new Date();
+  //     const hours = currentDate.getHours();
+  //     const minutes = currentDate.getMinutes();
+  //     const ampm = hours >= 12 ? 'PM' : 'AM';
+  //     const formattedHour = hours % 12 || 12;
+  //     let idsProyectos = this.ProyectosSeleccionados.map((proyect: any) => proyect.id);
+  //     let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id);
+  //     let Orden: any = this.CuentasHijos.filter((it: any) => it.idPadre == this.CuentaPadreSeleccionada.id).length;
+
+  //     if (this.NombreCuentaHijo.value == '') {
+  //       this.toastr.warning('Debe colocar el nombre de la cuenta', '¡Alerta!', {
+  //         timeOut: 2000,
+  //         positionClass: 'toast-center-center'
+  //       });
+  //     }
+
+  //     let Item: any = {
+  //       Activo: this.checkedHijo,
+  //       TipoProforma: 1,
+  //       Nombre: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1) + ' ' + this.NombreCuentaHijo.value,
+  //       Prefijo: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1),
+  //       PrefijoPadre: Number(this.CuentaPadreSeleccionada.idCateg),
+  //       PrefijoHijo: Orden + 1,
+  //       CuentaFija: false,
+  //       TipoCuenta: this.CuentaPadreSeleccionada.Tipo,
+  //       Alias: this.NombreCuentaHijo.value,
+  //       FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+  //       HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+  //       Tipo: 'Hijo',
+  //       idPadre: this.CuentaPadreSeleccionada.id,
+  //       idsSucursales: idsSucursales,
+  //       idsProyectos: idsProyectos,
+  //       idAbuelo: this.CuentaPadreSeleccionada.idAbuelo,
+  //       Customizable: true,
+  //       Editable: false,
+  //       Orden: Orden + 1,
+  //       OrdenReal: this.CuentasHijos.length + 1,
+  //       idEmpresa: this.idEmpresa,
+  //       idCorporacion: this.usuario.idMatriz,
+  //       Created_User: this.usuario.id
+  //     };
+
+  //     console.log('Item', Item)
+
+  //     const id = this.afs.createId();
+  //     Item.id = id;
+
+  //     this.CuentasHijos.push(Item);
+  //     this.CatalagoCuentasEmpresa[0].CuentasHijos.push(Item);
+  //     this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
+  //       this.expandedKeys.push(Item.idAbuelo);
+  //       this.expandedKeys.push(Item.idPadre);
+  //       this.expandedKeys.push(Item.id);
+  //       this.NombreCuentaHijo.setValue('');
+  //       this.construirTreeData();
+  //       this.toastr.success('Se guardó la cuenta contable', '¡Éxito!', {
+  //         timeOut: 2000,
+  //         positionClass: 'toast-center-center'
+  //       });
+  //     });
+  //   }
+  // }
+
+
+
+
+  addCuentaHijo()
+  {
+    const newItemId = 'new-item-' + Date.now();
+    const id = this.afs.createId();
       const currentDate = new Date();
       const hours = currentDate.getHours();
       const minutes = currentDate.getMinutes();
@@ -186,16 +261,11 @@ export default class ModuloCuentasContableComponent implements OnInit {
       let idsProyectos = this.ProyectosSeleccionados.map((proyect: any) => proyect.id);
       let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id);
       let Orden: any = this.CuentasHijos.filter((it: any) => it.idPadre == this.CuentaPadreSeleccionada.id).length;
-
-      if (this.NombreCuentaHijo.value == '') {
-        this.toastr.warning('Debe colocar el nombre de la cuenta', '¡Alerta!', {
-          timeOut: 2000,
-          positionClass: 'toast-center-center'
-        });
-      }
-
-      let Item: any = {
-        Activo: this.checkedHijo,
+  
+      console.log('CuentaPadreSeleccionada',this.CuentaPadreSeleccionada)
+      let Item:any=
+     {
+        Activo: true,
         TipoProforma: 1,
         Nombre: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1) + ' ' + this.NombreCuentaHijo.value,
         Prefijo: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1),
@@ -207,6 +277,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
         FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
         HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
         Tipo: 'Hijo',
+        id:id,
         idPadre: this.CuentaPadreSeleccionada.id,
         idsSucursales: idsSucursales,
         idsProyectos: idsProyectos,
@@ -218,28 +289,76 @@ export default class ModuloCuentasContableComponent implements OnInit {
         idEmpresa: this.idEmpresa,
         idCorporacion: this.usuario.idMatriz,
         Created_User: this.usuario.id
-      };
+    }
+    console.log('Item',Item)
+    this.CuentasHijos.push(Item);
+    this.CatalagoCuentasEmpresa[0].CuentasHijos.push(Item);
+    this.expandedKeys.push(this.CuentaPadreSeleccionada.idAbuelo);
+    this.expandedKeys.push(Item.idPadre);
+    this.expandedKeys.push(Item.id);
+    this.construirTreeData() 
+   
+  setTimeout(() => {
+   this.scrollToNewInput(Item.id);
+  }, 100);
 
-      console.log('Item', Item)
 
-      const id = this.afs.createId();
-      Item.id = id;
+  }
 
-      this.CuentasHijos.push(Item);
-      this.CatalagoCuentasEmpresa[0].CuentasHijos.push(Item);
-      this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
-        this.expandedKeys.push(Item.idAbuelo);
-        this.expandedKeys.push(Item.idPadre);
-        this.expandedKeys.push(Item.id);
-        this.NombreCuentaHijo.setValue('');
+  nodeSelect(event: any) {
+     console.log('event',event)
+    this.NombreCuentaHijo.setValue('')
+    if (event.node.Tipo == 'Padre') {
+      this.CuentaPadreSeleccionada = this.CuentasPadres.find((padre: any) => padre.id == event.node.id)
+      this.NombreCuentaHijo.enable();
+      this.InputCuentaHijo.nativeElement.focus();
+      console.log('CuentaPadreSeleccionada', this.CuentaPadreSeleccionada)
+    }
+  }
+   nodeUnselect(event: any) {
+        console.log('eventUnselect',event)
+   }
+
+guardarCuentaHijo(Cuenta:any){
+  this.CatalagoCuentasEmpresa[0].CuentasHijos
+  .find((ch: any) => ch.id == Cuenta.id)
+  .Alias = Cuenta.data.Alias
+
+this.CatalagoCuentasEmpresa[0].CuentasHijos
+  .find((ch: any) => ch.id == Cuenta.id)
+  .Nombre = Cuenta.Prefijo + ' ' 
+  + Cuenta.data.Alias
+
+  this.CuentasHijos
+  .find((ch: any) => ch.id == Cuenta.id).Editable=false
+  
+  this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
         this.construirTreeData();
-        this.toastr.success('Se guardó la cuenta contable', '¡Éxito!', {
+        this.toastr.success('Se actualizó la cuenta contable', '¡Éxito!', {
           timeOut: 2000,
           positionClass: 'toast-center-center'
         });
+});
+
+
+
+
+}
+private scrollToNewInput(itemId: string) {
+  setTimeout(() => {
+    const element = document.querySelector(`[data-item-id="${itemId}"]`);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
       });
     }
-  }
+  }, 150);
+}
+
+
+
+
 
   getCuentasPadre(idAbuelo: string) {
     let _CuentasPadre: any = [];
@@ -253,8 +372,17 @@ export default class ModuloCuentasContableComponent implements OnInit {
         droppable: false,
         draggable: false,
         label: cuenta.Nombre,
+        idCateg:cuenta.idCateg,
+        idAbuelo:cuenta.idAbuelo,
+        TipoCuenta:cuenta.Tipo,
         expanded: this.verificarExpanded(cuenta.id),
-        data: cuenta.Nombre,
+        data: {
+        id:cuenta.id,  
+        name:cuenta.Nombre,    
+        AddCuenta: false,  
+        Editable: false,
+        Texto:'+ Cuenta Hijo'
+        },
         icon: 'pi pi-fw pi-inbox',
         children: this.getCuentasHijo(cuenta.id).sort((a, b) => a.Orden - b.Orden)
       });
@@ -271,11 +399,21 @@ export default class ModuloCuentasContableComponent implements OnInit {
         keyPadre: `${cuenta.idAbuelo}-${idPadre}`,
         id: cuenta.id,
         Orden: cuenta.Orden,
+        Prefijo: cuenta.Prefijo,
+        PrefijoPadre:cuenta.PrefijoPadre,
         Tipo: 'Hijo',
-        Editable: false,
+        TipoCuenta:cuenta.TipoCuenta,
+        Editable: cuenta.Editable,
         label: cuenta.Nombre,
+        idPadre: cuenta.idPadre,
         droppable: false,
-        data: cuenta.Nombre,
+        data: {
+        name:cuenta.Nombre, 
+        id:cuenta.id,
+        AddCuenta: true,  
+        Editable: cuenta.Editable,
+        Texto:'+ Sub Cuenta'   
+        },
         icon: 'pi pi-fw pi-inbox',
         expanded: this.verificarExpanded(cuenta.id),
         children: this.getCuentasNieto(cuenta.id).sort((a, b) => a.Orden - b.Orden)
@@ -295,7 +433,13 @@ export default class ModuloCuentasContableComponent implements OnInit {
         Tipo: 'Nieto',
         Editable: false,
         label: cuenta.Nombre,
-        data: cuenta.Nombre,
+        data: {
+        name:cuenta.Nombre, 
+        AddCuenta: false,
+        id:cuenta.id,
+        Editable: cuenta.Editable,
+       
+        },
         droppable: false,
         icon: 'pi pi-fw pi-inbox'
       });
@@ -311,7 +455,6 @@ export default class ModuloCuentasContableComponent implements OnInit {
   construirTreeData() {
     // limpia completamente la referencia
     this.TreeData = [];
-
     this.TreeData = this.Categorias.filter((abuelo: any) => abuelo.Tipo == 3).map((cuenta: any) => ({
       key: cuenta.id,
       id: cuenta.id,
@@ -321,11 +464,16 @@ export default class ModuloCuentasContableComponent implements OnInit {
       droppable: false,
       draggable: false,
       expanded: this.verificarExpanded(cuenta.id),
-      data: cuenta.Nombre,
+      data: {
+        name:cuenta.Nombre,   
+        AddCuenta: false, 
+        Editable:false  
+      },
       icon: 'pi pi-fw pi-inbox',
       children: this.getCuentasPadre(cuenta.id).sort((a, b) => a.Orden - b.Orden)
     }));
 
+    console.log('TreeData',this.TreeData)
     this.cargando = false;
   }
 
