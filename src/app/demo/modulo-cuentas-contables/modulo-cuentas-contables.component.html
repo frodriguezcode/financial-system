@@ -4,16 +4,20 @@
       <div style="margin-top: -40px;" class="row">
         <div class="col-4">
           <label for="formGroupExampleInput" class="form-label">Proyectos</label>
-          <ng-select loadingText="Cargando cuentas..." notFoundText="No hay proyectos disponibles" class="mt-1"
+          <ng-select 
+          (change)="filtradoProyectos()"
+           loadingText="Cargando cuentas..." notFoundText="No hay proyectos disponibles" class="mt-1"
             [items]="Proyectos" [multiple]="true" [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre"
-            placeholder="Proyectos" [(ngModel)]="ProyectosSeleccionados">
+            placeholder="Proyectos" [(ngModel)]="ProyectosSeleccionadosFiltro">
           </ng-select>
         </div>
         <div class="col-4">
           <label for="formGroupExampleInput" class="form-label">Sucursales</label>
-          <ng-select loadingText="Cargando cuentas..." notFoundText="No hay sucursales disponibles" class="mt-1"
+          <ng-select 
+          (change)="filtradoSucursales()"
+          loadingText="Cargando cuentas..." notFoundText="No hay sucursales disponibles" class="mt-1"
             [items]="Sucursales" [multiple]="true" [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre"
-            placeholder="Sucursales" [(ngModel)]="SucursalesSeleccionadas">
+            placeholder="Sucursales" [(ngModel)]="SucursalesSeleccionadasFiltro">
           </ng-select>
 
         </div>
@@ -21,63 +25,63 @@
 
       <div class="row" *ngIf="cargando == false">
         <div class="col-4">
-          <p-accordion (activeIndexChange)="activeIndexChange($event)" [activeIndex]="activeIndex">
-            <p-accordionTab header="Crear Cuenta Hijo">
-              <div class="d-flex justify-content-end">
-                <div style="margin-top: -60px">
-                  <p-inputSwitch (onChange)="cambiarEstadoCuentaHijo()" [(ngModel)]="checkedHijo" />
+          <div class="d-flex justify-content-end">
+            <div style="margin-top: 10px">
+              <p-inputSwitch (onChange)="cambiarEstadoCuentaHijo()" [(ngModel)]="checkedHijo" />
+            </div>
+          </div>
+          <div class="row">
+            <div style="margin-top: -30px" class="col-12">
+              <label for="formGroupExampleInput" class="form-label">Nombre de la cuenta</label>
+              <input #InputCuentaHijo [formControl]="NombreCuentaHijo" type="text" class="form-control custom-input"
+                placeholder="" aria-label="Last name" />
+            </div>
+          </div>
+          <div ngbAccordion>
+            <div ngbAccordionItem [collapsed]="true">
+              <h2 ngbAccordionHeader>
+                <button ngbAccordionButton>Mas opciones</button>
+              </h2>
+              <div ngbAccordionCollapse>
+                <div ngbAccordionBody>
+                  <ng-template>
+                    <label for="formGroupExampleInput" class="form-label">Proyectos Asociados</label>
+                    <ng-select loadingText="Cargando cuentas..." notFoundText="No hay proyectos disponibles"
+                      class="mt-1" [items]="Proyectos" [multiple]="true" [closeOnSelect]="false" [clearable]="false"
+                      [searchable]="true" bindLabel="Nombre" placeholder="Proyectos"
+                      [(ngModel)]="ProyectosSeleccionados">
+                    </ng-select>
+
+                    <label for="formGroupExampleInput" class="form-label mt-2">Sucursales Asociadas</label>
+                    <ng-select loadingText="Cargando cuentas..." notFoundText="No hay proyectos disponibles"
+                      class="mt-1" [clearable]="false" [items]="Sucursales" [multiple]="true" [closeOnSelect]="false"
+                      [searchable]="true" bindLabel="Nombre" placeholder="Sucursales"
+                      [(ngModel)]="SucursalesSeleccionadas">
+                    </ng-select>
+                  </ng-template>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div class="row">
-                <div style="margin-top: -14px" class="col-12">
-                  <label for="formGroupExampleInput" class="form-label">Nombre de la cuenta</label>
-                  <input #InputCuentaHijo [formControl]="NombreCuentaHijo" type="text" class="form-control custom-input"
-                    placeholder="" aria-label="Last name" />
-                </div>
-              </div>
-              <div ngbAccordion>
-                <div ngbAccordionItem [collapsed]="true">
-                  <h2 ngbAccordionHeader>
-                    <button ngbAccordionButton>Mas opciones</button>
-                  </h2>
-                  <div ngbAccordionCollapse>
-                    <div ngbAccordionBody>
-                      <ng-template>
-                        <label for="formGroupExampleInput" class="form-label"> Escoja los proyectos asociados a esta
-                          cuenta </label>
-                        <ng-select loadingText="Cargando cuentas..." notFoundText="No hay proyectos disponibles"
-                          class="mt-1" [items]="Proyectos" [multiple]="true" [closeOnSelect]="false" [searchable]="true"
-                          bindLabel="Nombre" placeholder="Proyectos" [(ngModel)]="ProyectosSeleccionados">
-                        </ng-select>
+          <button
+          *ngIf="!CuentaNietoSeleccionada"
+          type="button" (click)="addCuentaHijo()"
+            [disabled]="this.CuentaPadreSeleccionada == null && this.CuentaHijoSeleccionada == null "
+            class="btn btn-success mt-3">Guardar
+          </button>
+          <button
+          *ngIf="CuentaNietoSeleccionada"
+          type="button" (click)="editarCuentaNieto()"
+          
+            class="btn btn-success mt-3">Guardar
+          </button>
 
-                        <label for="formGroupExampleInput" class="form-label mt-2"> Escoja las sucursales asociadas a
-                          esta cuenta </label>
-                        <ng-select loadingText="Cargando cuentas..." notFoundText="No hay proyectos disponibles"
-                          class="mt-1" [items]="Sucursales" [multiple]="true" [closeOnSelect]="false"
-                          [searchable]="true" bindLabel="Nombre" placeholder="Sucursales"
-                          [(ngModel)]="SucursalesSeleccionadas">
-                        </ng-select>
-                      </ng-template>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <button type="button" 
-              (click)="addCuentaHijo()"
-              [disabled]="this.CuentaPadreSeleccionada == null" 
-                class="btn btn-success mt-3">Guardar</button>
-            </p-accordionTab>
-            <!-- <p-accordionTab header="Crear Cuenta Nieto">
-              <p> Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium... </p>
-            </p-accordionTab> -->
-          </p-accordion>
         </div>
         <div *ngIf="TreeData.length > 0" class="col-8">
 
           <div class="card flex justify-content-center">
-            <div class="tree-container">
+            <div class="">
               <h6>Catálago de Cuentas Contables</h6>
               <!-- <p-tree
                 [value]="TreeData"
@@ -91,44 +95,52 @@
                 (onNodeDrop)="onNodeDrop($event)"
                 (onNodeSelect)="onNodeSelected($event)"
               /> -->
-              <p-treeTable 
-
-              #treeTable [value]="TreeData" 
-              [scrollable]="true" 
-              selectionMode="single" 
-              [(selection)]="selectedNode" 
-              (onNodeSelect)="nodeSelect($event)" 
-              (onNodeUnselect)="nodeUnselect($event)" 
-              [tableStyle]="{'min-width':'50rem'}"
-              selectionMode="single"
-                draggableScope="self"
-                droppableScope="self"
-              >
-                <ng-template pTemplate="header">
+              <p-treeTable #treeTable [value]="TreeData" [scrollable]="true" selectionMode="single"
+                [(selection)]="selectedNode" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"
+                [tableStyle]="{'min-width':'120rem'}" scrollHeight="600px" selectionMode="single">
+                <ng-template pTemplate="headercell" pTemplate="header">
                   <tr>
                     <th>Cuenta Contable</th>
                     <th></th>
-
+                    <th></th>
+            
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-                  <tr  [ttRow]="rowNode" [ttSelectableRow]="rowNode" [attr.data-item-id]="rowData.id">
+                  <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode" [attr.data-item-id]="rowData.id">
                     <td *ngIf="rowData.Editable==false">
                       <p-treeTableToggler [rowNode]="rowNode" />
                       {{ rowData.name }}
                     </td>
                     <td *ngIf="rowData.Editable==true">
                       <p-floatLabel>
-                        <input #InputCuentaHijo (keyup.enter)="guardarCuentaHijo(rowNode.node)" class="text-center form-control custom-input-cuenta"
-                          pInputText id="username" [(ngModel)]="rowData.Alias" />
+                        <input #InputCuentaNieto (keyup.enter)="guardarCuentaNieto(rowNode.node)"
+                          class="text-center form-control custom-input-cuenta"  id="username"
+                          [(ngModel)]="rowData.Alias" />
                         <label style=" margin-left: 70px;" for="username">Nombre cuenta (Enter para guardar)</label>
                       </p-floatLabel>
                     </td>
                     <td *ngIf="rowData.AddCuenta==true">
-                      <button type="button" 
-                     
-                      class="btn btn-light">{{rowData.Texto}}</button>
+                      <button type="button" (click)="addCuentaNieto(rowData)"
+                        class="btn btn-light">{{rowData.Texto}}</button>
                     </td>
+                    <td *ngIf="rowData.Tipo=='Nieto'">
+                      <div style="margin-left: 10px;" class="d-grid gap-2 d-md-block">
+            
+                        <button class="btn btn-success m-1" type="button"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button class="btn btn-danger m-1" type="button"><i class="fa-solid fa-arrow-down"></i></button>
+                      </div>
+                    </td>
+
+               
+
+                    <td *ngIf="rowData.Tipo!='Nieto'">
+
+                    </td>
+                    <td *ngIf="rowData.Tipo!='Nieto'">
+
+                    </td>
+
                     <td *ngIf="rowData.AddCuenta==false">
                     </td>
 

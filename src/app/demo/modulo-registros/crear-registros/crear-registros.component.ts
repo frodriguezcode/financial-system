@@ -238,7 +238,7 @@ this.conS.usuario$.subscribe((usuario) => {
       //   this.idEmpresa = this.usuario.idEmpresa;
       // }
     //  this.obtenerCuentasBancarias()
-     // this.obtenerCatalogoCuentas()
+    //this.obtenerCatalogoCuentas()
       
 
 });
