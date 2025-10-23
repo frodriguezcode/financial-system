@@ -99,7 +99,6 @@ export default class ModuloCuentasContableComponent implements OnInit {
   getCatalogos() {
     this.conS.obtenerDataCatalogosEmpresa(this.usuario.idMatriz).subscribe((data: any) => {
       this.DataCatalogos = data;
-      console.log('DataCatalogos', this.DataCatalogos);
 
       this.construirData();
     });
@@ -380,7 +379,6 @@ export default class ModuloCuentasContableComponent implements OnInit {
    }
    else 
    {
-    console.log('CuentaHijo', this.CuentaHijoSeleccionada)
     
       let idsProyectos = this.ProyectosSeleccionados.map((proyecto: any) => proyecto.id)
       let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
@@ -490,11 +488,9 @@ export default class ModuloCuentasContableComponent implements OnInit {
          this.scrollToNewInput(CuentaNieto.id);
        }, 100);
 
-       console.log('CuentaNieto',CuentaNieto)
   }
 
   guardarCuentaNieto(cuenta:any){
-    console.log('cuenta',cuenta)
     let cuentaNieto=this.CatalagoCuentasEmpresa[0].CuentasNietos.find((cuentaNieto:any)=>cuentaNieto.id==cuenta.id)
 
       this.CatalagoCuentasEmpresa[0].CuentasNietos
@@ -529,14 +525,9 @@ export default class ModuloCuentasContableComponent implements OnInit {
       });
 
  
-
-
-    console.log('cuentaNieto',cuentaNieto)
-    console.log('CatalagoCuentasEmpresa',this.CatalagoCuentasEmpresa[0])
   }
 
   editarCuentaNieto(){
-    console.log('cuenta',this.CuentaNietoSeleccionada)
     let idsProyectos = this.ProyectosSeleccionados.map((proyecto: any) => proyecto.id)
     let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
 
@@ -582,10 +573,119 @@ export default class ModuloCuentasContableComponent implements OnInit {
   }
 
 
+  bajarCuenta(cuentaNieto:any)
+  {
+    Swal.fire({
+      title: 'Moviendo cuentas...'
+    });
+    Swal.showLoading();
+  const ordenActual = cuentaNieto.Orden;
+  const ordenSiguiente = ordenActual + 1;
+
+  // Encontrar las cuentas
+  const cuentaActual = this.CuentasNietos.find(c => c.Orden === ordenActual && c.idHijo==cuentaNieto.idHijo);
+  const cuentaSiguiente = this.CuentasNietos.find(c => c.Orden === ordenSiguiente && c.idHijo==cuentaNieto.idHijo);
+
+  // Validación rápida
+  if (!cuentaActual || !cuentaSiguiente) return;
+
+  // Intercambiar órdenes - MÁS EFICIENTE
+  [cuentaActual.Orden, cuentaSiguiente.Orden] = [cuentaSiguiente.Orden, cuentaActual.Orden];
+
+  // Actualizar nombres
+  cuentaActual.Nombre = `${cuentaActual.PrefijoHijo}.${cuentaActual.Orden} ${cuentaActual.Alias}`;
+  cuentaActual.Prefijo = `${cuentaActual.PrefijoHijo}.${cuentaActual.Orden}`;
+  cuentaSiguiente.Nombre = `${cuentaSiguiente.PrefijoHijo}.${cuentaSiguiente.Orden} ${cuentaSiguiente.Alias}`;
+  cuentaSiguiente.Prefijo = `${cuentaSiguiente.PrefijoHijo}.${cuentaSiguiente.Orden}`;
+
+
+  // Forzar detección de cambios
+
+  const indiceCuentaActual = this.CatalagoCuentasEmpresa[0].CuentasNietos.findIndex(item => item.id 
+        === cuentaActual.id);
+
+  if (indiceCuentaActual !== -1) {
+      this.CatalagoCuentasEmpresa[0].CuentasNietos[indiceCuentaActual] = cuentaActual; // ← ¡Actualizado!
+  }
+  const indiceCuentaSiguiente = this.CatalagoCuentasEmpresa[0].CuentasNietos.findIndex(item => item.id 
+        === cuentaSiguiente.id);
+
+  if (indiceCuentaSiguiente !== -1) {
+      this.CatalagoCuentasEmpresa[0].CuentasNietos[indiceCuentaSiguiente] = cuentaSiguiente; // ← ¡Actualizado!
+  }
+
+this.CuentasNietos = [...this.CuentasNietos];
+console.log('CuentasNietos',this.CuentasNietos.find((cuenta:any)=>cuenta.id==cuentaActual.id))
+   this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
+
+     this.CuentasNietos = [...this.CuentasNietos];
+     this.expandedKeys.push(cuentaActual.idAbuelo);
+     this.expandedKeys.push(cuentaActual.idPadre);
+     this.expandedKeys.push(cuentaActual.idHijo);
+     this.construirTreeData();
+
+   })
+
+
+  }
+
+  subirCuenta(cuentaNieto: any): void {
+    Swal.fire({
+      title: 'Moviendo cuentas...'
+    });
+    Swal.showLoading();
+  const ordenActual = cuentaNieto.Orden;
+  const ordenAnterior = ordenActual - 1;
+
+  // Validar que no sea la primera
+  if (ordenAnterior < 1) return;
+
+  const cuentaActual = this.CuentasNietos.find(c => c.Orden === ordenActual && c.idHijo==cuentaNieto.idHijo);
+  const cuentaAnterior = this.CuentasNietos.find(c => c.Orden === ordenAnterior && c.idHijo==cuentaNieto.idHijo);
+
+  if (!cuentaActual || !cuentaAnterior) return;
+
+  // Intercambiar órdenes
+  [cuentaActual.Orden, cuentaAnterior.Orden] = [cuentaAnterior.Orden, cuentaActual.Orden];
+
+  // Actualizar nombres
+  cuentaActual.Nombre = `${cuentaActual.PrefijoHijo}.${cuentaActual.Orden} ${cuentaActual.Alias}`;
+  cuentaActual.Prefijo = `${cuentaActual.PrefijoHijo}.${cuentaActual.Orden}`;
+  cuentaAnterior.Nombre = `${cuentaAnterior.PrefijoHijo}.${cuentaAnterior.Orden} ${cuentaAnterior.Alias}`;
+  cuentaAnterior.Prefijo = `${cuentaAnterior.PrefijoHijo}.${cuentaAnterior.Orden}`;
+
+  // Forzar detección de cambios
+  this.CuentasNietos = [...this.CuentasNietos];
+
+
+  const indiceCuentaActual = this.CatalagoCuentasEmpresa[0].CuentasNietos.findIndex(item => item.id 
+        === cuentaActual.id);
+
+  if (indiceCuentaActual !== -1) {
+      this.CatalagoCuentasEmpresa[0].CuentasNietos[indiceCuentaActual] = cuentaActual; // ← ¡Actualizado!
+  }
+  const indiceCuentaAnterior = this.CatalagoCuentasEmpresa[0].CuentasNietos.findIndex(item => item.id 
+        === cuentaAnterior.id);
+
+  if (indiceCuentaAnterior !== -1) {
+      this.CatalagoCuentasEmpresa[0].CuentasNietos[indiceCuentaAnterior] = cuentaAnterior; // ← ¡Actualizado!
+  }
+
+  this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
+
+     this.CuentasNietos = [...this.CuentasNietos];
+     this.expandedKeys.push(cuentaActual.idAbuelo);
+     this.expandedKeys.push(cuentaActual.idPadre);
+     this.expandedKeys.push(cuentaActual.idHijo);
+     this.construirTreeData();
+
+   })
+}
+
+
 
 
   nodeSelect(event: any) {
-    console.log('event', event)
     this.NombreCuentaHijo.setValue('')
     if (event.node.Tipo == 'Padre') {
       this.CuentaHijoSeleccionada = null
@@ -597,7 +697,6 @@ export default class ModuloCuentasContableComponent implements OnInit {
         timeOut: 2000,
         positionClass: 'toast-center-center'
       });
-      console.log('CuentaPadreSeleccionada', this.CuentaPadreSeleccionada)
     }
 
     else if (event.node.Tipo == 'Hijo') 
@@ -605,7 +704,6 @@ export default class ModuloCuentasContableComponent implements OnInit {
       this.CuentaPadreSeleccionada = null
       this.CuentaNietoSeleccionada = null
       this.CuentaHijoSeleccionada = this.CuentasHijos.find((hijo: any) => hijo.id == event.node.id)
-      console.log('CuentaHijoSeleccionada', this.CuentaHijoSeleccionada)
       this.NombreCuentaHijo.setValue(this.CuentaHijoSeleccionada.Alias);
       this.NombreCuentaHijo.enable();
       this.checkedHijo=this.CuentaHijoSeleccionada.Activo
@@ -616,10 +714,10 @@ export default class ModuloCuentasContableComponent implements OnInit {
     }
     else if (event.node.Tipo == 'Nieto') 
     {
+      console.log('event.node',event.node)
       this.CuentaPadreSeleccionada = null
       this.CuentaHijoSeleccionada = null
       this.CuentaNietoSeleccionada = this.CuentasNietos.find((hijo: any) => hijo.id == event.node.id)
-      console.log('CuentaNietoSeleccionada', this.CuentaNietoSeleccionada)
       this.NombreCuentaHijo.setValue(this.CuentaNietoSeleccionada.Alias);
       this.NombreCuentaHijo.enable();
       this.checkedHijo=this.CuentaNietoSeleccionada.Activo
@@ -632,11 +730,11 @@ export default class ModuloCuentasContableComponent implements OnInit {
 
   }
   nodeUnselect(event: any) {
-    console.log('eventUnselect', event)
+ 
   }
 
   guardarCuentaHijo(Cuenta: any) {
-    console.log('CuentaHijoSeleccionada',!this.CuentaHijoSeleccionada)
+
     // this.CatalagoCuentasEmpresa[0].CuentasHijos
     //   .find((ch: any) => ch.id == Cuenta.id)
     //   .Alias = Cuenta.data.Alias
@@ -673,6 +771,9 @@ export default class ModuloCuentasContableComponent implements OnInit {
     }, 150);
   }
 
+stopEvent(event: KeyboardEvent) {
+  event.stopPropagation();
+}
 
 
 
@@ -745,6 +846,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
   }
   getCuentasNieto(idHijo: string) {
     let _CuentasNieto: any = [];
+    const minOrden = Math.min(...this.CuentasNietos.filter((cuentaHijo: any) => cuentaHijo.idHijo == idHijo).map((c:any) => c.Orden));
+    const maxOrden = Math.max(...this.CuentasNietos.filter((cuentaHijo: any) => cuentaHijo.idHijo == idHijo).map((c:any) => c.Orden));
     this.CuentasNietos.filter((cuentaHijo: any) => cuentaHijo.idHijo == idHijo).forEach((cuenta: any) => {
       _CuentasNieto.push({
         key: `${cuenta.idAbuelo}-${cuenta.idPadre}-${idHijo}-${cuenta.id}`,
@@ -757,7 +860,11 @@ export default class ModuloCuentasContableComponent implements OnInit {
         data: {
           name: cuenta.Nombre,
           AddCuenta: false,
+          EsPrimera: cuenta.Orden === minOrden,
+          EsUltima: cuenta.Orden === maxOrden,
+          Orden: cuenta.Orden,
           id: cuenta.id,
+          idHijo:cuenta.idHijo,
           Tipo: 'Nieto',
           Editable: cuenta.Editable,
 
@@ -796,7 +903,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
       children: this.getCuentasPadre(cuenta.id).sort((a, b) => a.Orden - b.Orden)
     }));
 
-    console.log('TreeData', this.TreeData)
+    Swal.close()
     this.cargando = false;
   }
 
@@ -829,13 +936,11 @@ export default class ModuloCuentasContableComponent implements OnInit {
   }
 
   onNodeSelected(event: any) {
-    console.log('event', event)
     this.NombreCuentaHijo.setValue('')
     if (event.node.Tipo == 'Padre') {
       this.CuentaPadreSeleccionada = this.CuentasPadres.find((padre: any) => padre.id == event.node.id)
       this.NombreCuentaHijo.enable();
       this.InputCuentaHijo.nativeElement.focus();
-      console.log('CuentaPadreSeleccionada', this.CuentaPadreSeleccionada)
     }
     else if (event.node.Tipo == 'Hijo') {
       Swal.fire({
@@ -850,7 +955,6 @@ export default class ModuloCuentasContableComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
           this.CuentaHijoSeleccionada = this.CuentasHijos.find((hijo: any) => hijo.id == event.node.id)
-          console.log('CuentaHijoSeleccionada', this.CuentaHijoSeleccionada)
           this.ProyectosSeleccionados = this.getProyectosByCuenta(this.CuentaHijoSeleccionada.idsProyectos);
           this.SucursalesSeleccionadas = this.getSucursalesByCuenta(this.CuentaHijoSeleccionada.idsSucursales);
           this.NombreCuentaHijo.enable();
@@ -872,7 +976,6 @@ export default class ModuloCuentasContableComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
           this.CuentaHijoSeleccionada = this.CuentasHijos.find((hijo: any) => hijo.id == event.node.id)
-          console.log('CuentaHijoSeleccionada', this.CuentaHijoSeleccionada)
           this.ProyectosSeleccionados = this.getProyectosByCuenta(this.CuentaHijoSeleccionada.idsProyectos);
           this.SucursalesSeleccionadas = this.getSucursalesByCuenta(this.CuentaHijoSeleccionada.idsSucursales);
           this.NombreCuentaHijo.enable();
@@ -886,7 +989,6 @@ export default class ModuloCuentasContableComponent implements OnInit {
   onNodeDrop(event: any) {
     const { dragNode, dropNode, dropPoint, accept } = event;
 
-    console.log('event', event);
     let KeydragNode = event.dragNode.Tipo == 'Hijo' ? event.dragNode.keyPadre : event.dragNode.keyHijo;
     let KeydropNode = event.dropNode.Tipo == 'Hijo' ? event.dropNode.keyPadre : event.dropNode.keyHijo;
 
