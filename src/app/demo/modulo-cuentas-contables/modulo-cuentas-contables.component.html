@@ -40,10 +40,12 @@
 
       <div class="row" *ngIf="cargando == false">
         <div class="col-4">
-          <div class="d-flex justify-content-end">
-            <div style="margin-top: 10px">
-              <p-inputSwitch (onChange)="cambiarEstadoCuentaHijo()" [(ngModel)]="checkedHijo" />
-            </div>
+          <div class="d-flex justify-content-end align-items-center" style="margin-top: 10px">
+            <span class="me-2">
+              <span *ngIf="!checkedHijo">Activar Cuenta</span>
+              <span *ngIf="checkedHijo">Desactivar Cuenta</span>
+            </span>
+            <p-inputSwitch (onChange)="cambiarEstadoCuentaHijo()" [(ngModel)]="checkedHijo"> </p-inputSwitch>
           </div>
           <div class="row">
             <div style="margin-top: -30px" class="col-12">
@@ -143,14 +145,14 @@
               >
                 <ng-template pTemplate="headercell" pTemplate="header">
                   <tr>
-                    <th style="font-size: 15px;" class="text-start" >Cuenta Contable</th>
+                    <th style="font-size: 15px" class="text-start">Cuenta Contable</th>
                     <th></th>
                     <th></th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
                   <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode" [attr.data-item-id]="rowData.id">
-                    <td style="font-size: 15px;" *ngIf="rowData.Editable == false">
+                    <td style="font-size: 15px" *ngIf="rowData.Editable == false">
                       <p-treeTableToggler [rowNode]="rowNode" />
                       {{ rowData.name }}
                     </td>
@@ -172,10 +174,18 @@
                     </td>
                     <td *ngIf="rowData.Tipo == 'Nieto'">
                       <div style="margin-left: 10px" class="d-grid gap-2 d-md-block">
-                        <button (click)="subirCuenta(rowData)" class="btn btn-success m-1 btn-sm" [disabled]="rowData.Editable == true || rowData.EsPrimera==true " type="button"
+                        <button
+                          (click)="subirCuenta(rowData)"
+                          class="btn btn-success m-1 btn-sm"
+                          [disabled]="rowData.Editable == true || rowData.EsPrimera == true"
+                          type="button"
                           ><i class="fa-solid fa-arrow-up"></i
                         ></button>
-                        <button (click)="bajarCuenta(rowData)" [disabled]="rowData.Editable == true || rowData.EsUltima==true" class="btn btn-danger m-1 btn-sm" type="button"
+                        <button
+                          (click)="bajarCuenta(rowData)"
+                          [disabled]="rowData.Editable == true || rowData.EsUltima == true"
+                          class="btn btn-danger m-1 btn-sm"
+                          type="button"
                           ><i class="fa-solid fa-arrow-down"></i
                         ></button>
                       </div>

@@ -70,6 +70,11 @@ export default class ModuloCuentasContableComponent implements OnInit {
     private afs: AngularFirestore
   ) { }
   ngOnInit(): void {
+
+    Swal.fire({
+      title: 'Cargando cuentas contables...'
+    });
+    Swal.showLoading();
     this.NombreCuentaHijo.disable();
     this.OpcionesTipoCuenta = [
       {
