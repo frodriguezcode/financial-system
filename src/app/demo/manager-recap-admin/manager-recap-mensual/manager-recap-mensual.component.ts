@@ -48,7 +48,8 @@ export default class ManagerRecapMensualComponent implements OnInit {
       else {
         this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
       }
-      this.obtenerRegistrosStoreManagerRecapt()
+     // this.obtenerRegistrosStoreManagerRecapt()
+     this.obtenerData()
     })  
   this.Anios=[
     {Anio:2023,
@@ -141,6 +142,21 @@ export default class ManagerRecapMensualComponent implements OnInit {
 
 
   }
+
+obtenerData()
+{
+  this.conS.obtenerDataManagerRecaptByEmpresa(this.usuario.idMatriz).subscribe((resp:any)=>{
+    console.log('resp',resp)
+    this.Registros=resp[0].RegistrosManagerRecapt
+    this.RegistrosFlujoEfectivo=resp[0].RegistrosContables
+    this.Categorias=resp[0].Categorias
+
+
+
+
+
+  })
+}
 construirCabecera(){
   this.Cabecera=[]
   this.Cabecera.push({

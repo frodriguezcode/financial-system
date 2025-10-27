@@ -81,7 +81,8 @@ const routes: Routes = [
       },
       {
         path: 'manager-recapt',
-        loadComponent: () => import('./demo/manager-recap-admin/manager-recap-admincomponent')
+        loadComponent: () => import('./demo/manager-recap-admin/manager-recap-optimizado/manager-recap-optimizado.component')
+       // loadComponent: () => import('./demo/manager-recap-admin/manager-recap-admincomponent')
       },
       {
         path: 'roles',
