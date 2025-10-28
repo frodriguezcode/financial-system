@@ -14,7 +14,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 @Component({
   selector: 'app-manager-recap-optimizado',
   standalone: true,
-  imports: [CommonModule, SharedModule, AgGridModule, AgGridAngular,AccordionModule],
+  imports: [CommonModule, SharedModule, AgGridModule, AgGridAngular, AccordionModule],
   templateUrl: './manager-recap-optimizado.component.html',
   styleUrls: ['./manager-recap-optimizado.component.scss']
 })
@@ -91,7 +91,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
       autosizeAllColumns: 'Ajustar todas',
       groupBy: 'Agrupar por',
       ungroupBy: 'Desagrupar por'
-    };    
+    };
     this.conS.usuario$.subscribe(usuario => {
       this.cargando = true
       if (usuario) {
@@ -105,12 +105,12 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
   }
 
-    onGridReady(params: any) {
+  onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     this.gridApi.addEventListener('filterChanged', () => {
-    this.gridApi.onFilterChanged();
-  });
+      this.gridApi.onFilterChanged();
+    });
   }
 
   obtenerData() {
@@ -221,7 +221,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
 
   construirCabecera() {
-    console.log('CatalogoElementos',this.CatalogoElementos)
+    console.log('CatalogoElementos', this.CatalogoElementos)
     let AniosCabecera = this.construirTiempos().AniosSeleccionados;
     let MesesCabecera = this.construirTiempos().MesesSeleccionados;
     this.Cabecera = [];
@@ -245,9 +245,22 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
           Nombre: mes.Mes + ' ' + anio.Anio,
           field: mes.Mes + ' ' + anio.Anio,
           headerName: mes.Mes + ' ' + anio.Anio,
-          Mes:mes.Mes,
+          Mes: mes.Mes,
           Mostrar: true,
-          editable: (params:any) => params.data.editable === true,
+          editable: (params: any) => params.data.editable === true,
+          cellStyle: (params: any) => {
+            if (params.data?.editable === false) {
+              return {
+                backgroundColor: '#f2f2f2',  // gris suave
+                color: '#000'                // texto más tenue
+              };
+            } else {
+              return {
+                backgroundColor: '#ffffff',  // blanco
+                color: '#000'
+              };
+            }
+          },
           width: 200,
           Orden: this.Cabecera.length + 1,
           NumMes: mes.NumMes,
@@ -256,58 +269,60 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
           Tipo: 2
         });
       })
-        this.Cabecera.push({
-          Nombre: 'Acumulado ' + anio.Anio,
-          field:  'Acumulado ' + anio.Anio,
-          headerName:'Acumulado ' + anio.Anio,          
-          Mostrar: true,
-          width: 200,
-          Orden: this.Cabecera.length + 1,
-          Anio: anio.Anio,
-          Tipo: 3
-        });      
-        this.Cabecera.push({
-          Nombre: 'Promedio ' + anio.Anio,
-          field:  'Promedio ' + anio.Anio,
-          headerName:'Promedio ' + anio.Anio,           
-          Mostrar: true,
-          width: 200,
-          Orden: this.Cabecera.length + 1,
-          Anio: anio.Anio,
-          Tipo: 4
-        });      
+      this.Cabecera.push({
+        Nombre: 'Acumulado ' + anio.Anio,
+        field: 'Acumulado ' + anio.Anio,
+        headerName: 'Acumulado ' + anio.Anio,
+        Mostrar: true,
+        width: 200,
+        Orden: this.Cabecera.length + 1,
+        Anio: anio.Anio,
+        Tipo: 3
+      });
+      this.Cabecera.push({
+        Nombre: 'Promedio ' + anio.Anio,
+        field: 'Promedio ' + anio.Anio,
+        headerName: 'Promedio ' + anio.Anio,
+        Mostrar: true,
+        width: 200,
+        Orden: this.Cabecera.length + 1,
+        Anio: anio.Anio,
+        Tipo: 4
+      });
     })
 
-     console.log('Cabecera',this.Cabecera)
-  this.construirData()   
+    console.log('Cabecera', this.Cabecera)
+    this.construirData()
   }
 
-  construirData(){
-    let _DataRow:any=[]
+  construirData() {
+    let _DataRow: any = []
     this.CatalogoElementos.forEach(catalogo => {
-    let _DataRowByElemento:any=[]
-    let AniosCabecera = this.construirTiempos().AniosSeleccionados;
-    let MesesCabecera = this.construirTiempos().MesesSeleccionados;
-      catalogo.Elementos.forEach((element:any) => {
+      let _DataRowByElemento: any = []
+      const copiaCatalogoElementos = [...catalogo.Elementos]
+
+      catalogo.Elementos.forEach((element: any) => {
         let fila: any = {
           Concepto: element.Nombre,
-          editable:element.editable,
-        }; 
+          editable: element.editable,
+        };
         this.Cabecera
-        .filter((cabecera:any)=>cabecera.Tipo!=1)
-        .sort((a: any, b: any) => a.Orden - b.Orden).forEach((cab: any) => {
-        fila[cab.Nombre]=0
+          .filter((cabecera: any) => cabecera.Tipo != 1)
+          .sort((a: any, b: any) => a.Orden - b.Orden).forEach((cab: any) => {
 
 
-      })
-      _DataRowByElemento.push(fila);
+            fila[cab.Nombre] = 0
+
+
+          })
+        _DataRowByElemento.push(fila);
       });
 
       _DataRow.push(_DataRowByElemento)
     });
-  this.RowData=_DataRow
-   this.cargando = false
- console.log('_DataRow',_DataRow)
+    this.RowData = _DataRow
+    this.cargando = false
+    console.log('_DataRow', _DataRow)
   }
 
   construirTiempos() {
