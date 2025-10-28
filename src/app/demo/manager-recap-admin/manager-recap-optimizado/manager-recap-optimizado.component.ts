@@ -247,7 +247,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
           headerName: mes.Mes + ' ' + anio.Anio,
           Mes:mes.Mes,
           Mostrar: true,
-          editable:true,
+          editable: (params:any) => params.data.editable === true,
           width: 200,
           Orden: this.Cabecera.length + 1,
           NumMes: mes.NumMes,
@@ -291,7 +291,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
       catalogo.Elementos.forEach((element:any) => {
         let fila: any = {
           Concepto: element.Nombre,
-          editable:false,
+          editable:element.editable,
         }; 
         this.Cabecera
         .filter((cabecera:any)=>cabecera.Tipo!=1)
