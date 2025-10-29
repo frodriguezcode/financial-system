@@ -95,7 +95,7 @@
             <i class="fa-solid fa-floppy-disk"></i></button>
         </div>
       </div>
-      <p-accordion>
+      <p-accordion [(activeIndex)]="indiceActivo">
         <p-accordionTab header="Más opciones">
           <div class="row">
             <div class="col-4">
@@ -103,8 +103,12 @@
                   style="color: red">(Seleccione una sub cuenta contable)</span>
               </label>
               <label *ngIf="this.CuentaHijoSeleccionado" for="username">Cuenta Nieto </label>
-              <ng-select [disabled]="!this.CuentaHijoSeleccionado" loadingText="Cargando cuentas..."
-                notFoundText="No hay sub cuentas disponibles" class="mt-1" [items]="CatalogoCuentasNieto"
+              <ng-select [disabled]="!this.CuentaHijoSeleccionado"
+                loadingText="Cargando cuentas..."
+                notFoundText="No hay sub cuentas disponibles" 
+                
+                [ngClass]="{'mt-1': ActivarClase === false, 'mt-1 animate__animated animate__bounceIn ' : ActivarClase === true}"
+                [items]="CatalogoCuentasNieto"
                 [multiple]="false" [closeOnSelect]="true" [searchable]="true" bindLabel="Nombre"
                 placeholder="Selec. una sub cuenta contable" [(ngModel)]="CuentaNietoSeleccionado">
               </ng-select>

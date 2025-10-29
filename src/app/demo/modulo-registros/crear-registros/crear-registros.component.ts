@@ -31,6 +31,7 @@ ModuleRegistry.registerModules([ AllCommunityModule ]);
 export default class CrearRegistrosComponent implements OnInit {
 constructor(private conS:ConfigurationService,private toastr: ToastrService,private authS:AuthService){}
 Valor:number=0
+ActivarClase:boolean=false
 TipoEntidad:number=0
 Total:any
 SubTotal:any=null
@@ -72,6 +73,7 @@ rowData :any=[]
 gridColumnApi: any;
 localeText:any
 DataByMatriz:any=[]
+ indiceActivo: number | number[] = null;
 @ViewChild('agGrid') agGrid!: AgGridAngular;
 statusBar = {
   statusPanels: [
@@ -96,6 +98,7 @@ choiceTipoEntidad(tipo:number){
 this.TipoEntidad=tipo
 }
 ngOnInit(): void {
+  console.log('indiceActivo',this.indiceActivo)
       Swal.fire({
         title: 'Cargando módulo...'
       });
@@ -533,8 +536,7 @@ guardarRegistro() {
     Swal.fire({
         title: 'Cargando...'
       });
-      Swal.showLoading();
-
+      Swal.showLoading(); 
 
   if(!this.CatalogoSocioSeleccionado){
           this.toastr.warning('Debe seleccionar un socio de negocios o cuenta bancaria', '¡Alerta!', {
@@ -551,12 +553,26 @@ else  if(!this.PadreSeleccionado){
     }); 
     Swal.close();
   }
+
 else  if(!this.CuentaHijoSeleccionado){
+    this.toastr.warning('Debe seleccionar una cuenta hijo', '¡Alerta!', {
+      timeOut: 2000,
+      positionClass: 'toast-center-center'
+    });
+    Swal.close(); 
+  }
+else  if(this.CuentaHijoSeleccionado.CuentasNieto.length>0 && !this.CuentaNietoSeleccionado){
     this.toastr.warning('Debe seleccionar una sub cuenta contable', '¡Alerta!', {
       timeOut: 2000,
       positionClass: 'toast-center-center'
     });
     Swal.close(); 
+    this.indiceActivo = 0; 
+    this.ActivarClase = true; 
+    setTimeout(()=>{                           // <<<---using ()=> syntax
+    this.ActivarClase = false;
+    }, 2000);
+
   }
 else  if(this.Valor==0){
     this.toastr.warning('Debe colocar un valor diferente de cero', '¡Alerta!', {
