@@ -112,7 +112,17 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
       this.gridApi.onFilterChanged();
     });
   }
+   onCellValueChanged(event: any) {
 
+    console.log('eventEditar',event)
+
+
+  }
+
+ onCellEditingStarted(event: any) {
+  console.log('eventStarted')
+
+  }
   obtenerData() {
     this.conS.obtenerDataManagerRecaptByEmpresa(this.usuario.idMatriz).subscribe((resp: any) => {
       this.Anios = [
@@ -261,6 +271,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
               };
             }
           },
+          
           width: 200,
           Orden: this.Cabecera.length + 1,
           NumMes: mes.NumMes,
@@ -295,23 +306,39 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
     this.construirData()
   }
 
+
+  getValoresManagerRecap(key:any){
+
+    return this.RegistrosManagerRecapt.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecapt.find((data:any)=>data.key==key).ValorMostrar
+
+  }
+
   construirData() {
     let _DataRow: any = []
     this.CatalogoElementos.forEach(catalogo => {
       let _DataRowByElemento: any = []
-      const copiaCatalogoElementos = [...catalogo.Elementos]
+   
 
       catalogo.Elementos.forEach((element: any) => {
         let fila: any = {
           Concepto: element.Nombre,
           editable: element.editable,
+          idElemento:element.id
         };
         this.Cabecera
           .filter((cabecera: any) => cabecera.Tipo != 1)
           .sort((a: any, b: any) => a.Orden - b.Orden).forEach((cab: any) => {
 
+            if(cab.Tipo==2){
+              const key = `${cab.Anio}-${cab.NumMes}-${element.id}`;
+              fila[cab.Nombre] = this.getValoresManagerRecap(key)
 
-            fila[cab.Nombre] = 0
+            }
+
+            else if(cab.Tipo==3) {
+              this.construirTiempos().AniosSeleccionados
+              fila[cab.Nombre] = 0
+            }
 
 
           })
