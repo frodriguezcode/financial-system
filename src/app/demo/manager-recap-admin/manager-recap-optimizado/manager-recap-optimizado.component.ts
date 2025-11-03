@@ -116,6 +116,23 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
     console.log('eventEditar',event)
 
+    let DatosCabecera={
+      "Anio":event.colDef.Anio,
+      "NumMes":event.colDef.NumMes,
+      "Mes":event.colDef.Mes,
+      "Tipo":event.colDef.Tipo,
+    }
+
+    let DatosElemento=
+    {
+      "idElemento":event.data.idElemento,
+      "Concepto":event.data.Concepto,
+      "Valor": event.newValue.startsWith('$') ? event.newValue.substring(1) : event.newValue
+
+    }
+
+    console.log('DatosCabecera',DatosCabecera)
+    console.log('DatosElemento',DatosElemento)
 
   }
 
@@ -241,6 +258,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
       idCampania: '',
       Mes: '',
       Mostrar: true,
+      sort:false,
       width: 200,
       pinned: 'left',
       Orden: this.Cabecera.length + 1,
@@ -275,6 +293,8 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
           width: 200,
           Orden: this.Cabecera.length + 1,
           NumMes: mes.NumMes,
+          filter:false,
+          sort:false,
           NumTrimestre: mes.Trimestre,
           Anio: anio.Anio,
           Tipo: 2
@@ -285,6 +305,8 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
         field: 'Acumulado ' + anio.Anio,
         headerName: 'Acumulado ' + anio.Anio,
         Mostrar: true,
+        filter:false,
+        sort:false,
         width: 200,
         Orden: this.Cabecera.length + 1,
         Anio: anio.Anio,
@@ -295,6 +317,8 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
         field: 'Promedio ' + anio.Anio,
         headerName: 'Promedio ' + anio.Anio,
         Mostrar: true,
+        filter:false,
+        sort:false,        
         width: 200,
         Orden: this.Cabecera.length + 1,
         Anio: anio.Anio,
