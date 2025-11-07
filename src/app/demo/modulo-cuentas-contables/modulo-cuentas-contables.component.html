@@ -24,12 +24,12 @@
         <div class="col-4">
           <div class="d-flex justify-content-end" style="margin-top: 10px">
             <div class="d-flex flex-column align-items-end">
-              <span  class="mb-1 text-end">
+              <span *ngIf="this.CuentaHijoSeleccionada != null || this.CuentaNietoSeleccionada != null"  class="mb-1 text-end">
                 <span *ngIf="!checkedHijo">Activar Cuenta</span>
                 <span *ngIf="checkedHijo">Desactivar Cuenta</span>
               </span>
               <p-inputSwitch
-               [disabled]="this.CuentaPadreSeleccionada == null && this.CuentaHijoSeleccionada == null"
+               [disabled]="this.CuentaHijoSeleccionada == null && this.CuentaNietoSeleccionada == null"
               (onChange)="cambiarEstadoCuentaHijo()" [(ngModel)]="checkedHijo">
               </p-inputSwitch>
             </div>
@@ -38,9 +38,11 @@
 
           <div class="row">
             <div style="margin-top: -30px" class="col-12">
-              <label for="formGroupExampleInput" class="form-label">Nombre de la cuenta</label>
+              <label for="formGroupExampleInput" class="form-label">Nombre de la cuenta 
+
+              </label>
               <input #InputCuentaHijo [formControl]="NombreCuentaHijo" type="text" class="form-control custom-input"
-                placeholder="" aria-label="Last name" />
+                placeholder="Selecc. una cuenta para crear una nueva o editarla" aria-label="Last name" />
             </div>
           </div>
           <div ngbAccordion>
