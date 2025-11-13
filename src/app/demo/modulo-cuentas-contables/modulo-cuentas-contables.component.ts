@@ -455,32 +455,32 @@ export default class ModuloCuentasContableComponent implements OnInit {
   }
 
   addCuentaNieto(cuentaHijo:any){
-     const id = this.afs.createId();
-     const currentDate = new Date();
-     const hours = currentDate.getHours();
-     const minutes = currentDate.getMinutes();
-     const ampm = hours >= 12 ? 'PM' : 'AM';
-     const formattedHour = hours % 12 || 12;
+    const id = this.afs.createId();
+    const currentDate = new Date();
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHour = hours % 12 || 12;
     let idsProyectos = this.Proyectos.map((proyect: any) => proyect.id)
     let idsSucursales = this.Sucursales.map((sucursal: any) => sucursal.id)
-    let cuentaSeleccionada=this.CuentasNietosBack.find((cuenta:any)=>cuenta.id==cuentaHijo.id)
-    let Orden: any = this.CuentasNietosBack.filter((it: any) => it.idHijo == cuentaSeleccionada.id).length+1;
+
+    let Orden: any = this.CuentasNietos.filter((it: any) => it.idHijo == cuentaHijo.id).length+1;
 
   let CuentaNieto = {
           Activo:true,
           id:id,
           Nombre: "",
-          Prefijo: cuentaSeleccionada.Prefijo + '.' + Orden,
-          PrefijoPadre: cuentaSeleccionada.PrefijoPadre,
-          PrefijoHijo: cuentaSeleccionada.Prefijo,
+          Prefijo: cuentaHijo.Prefijo + '.' + Orden,
+          PrefijoPadre: cuentaHijo.PrefijoPadre,
+          PrefijoHijo: cuentaHijo.Prefijo,
           Alias: "",
           CuentaFija:false,
           FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
           HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
           Tipo: 'Nieto',
-          idPadre: cuentaSeleccionada.idPadre,
-          idAbuelo: cuentaSeleccionada.idAbuelo,
-          idHijo: cuentaSeleccionada.id,
+          idPadre: cuentaHijo.idPadre,
+          idAbuelo: cuentaHijo.idAbuelo,
+          idHijo: cuentaHijo.id,
           idsProyectos: idsProyectos,
           idsSucursales: idsSucursales,
           Editable: true,
@@ -490,6 +490,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
           idCorporacion: this.usuario.idMatriz,
           Created_User: this.usuario.id
   };
+
+      console.log('CuentaNieto',CuentaNieto)
   
        this.CuentasNietos.push(CuentaNieto);
        this.CuentasNietosBack.push(CuentaNieto);
@@ -855,6 +857,10 @@ stopEvent(event: KeyboardEvent) {
           name: cuenta.Nombre,
           id: cuenta.id,
           Tipo: 'Hijo',
+          Prefijo: cuenta.Prefijo,
+          PrefijoPadre: cuenta.PrefijoPadre,
+          idPadre: cuenta.idPadre,
+          idAbuelo: cuenta.idAbuelo,
           Activo:cuenta.Activo,
           AddCuenta: true,
           Editable: false,
