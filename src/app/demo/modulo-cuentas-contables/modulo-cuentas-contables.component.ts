@@ -156,7 +156,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
 
     }
   this.NombreCuentaHijo.setValue('')  
-  this.ProyectosSeleccionados=[]
+  this.ProyectosSeleccionados=this.ProyectosSeleccionadosFiltro
   this.SucursalesSeleccionadas=[]
     this.construirTreeData()
   }
@@ -188,7 +188,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
     }
   this.NombreCuentaHijo.setValue('')  
   this.ProyectosSeleccionados=[]
-  this.SucursalesSeleccionadas=[]
+  this.SucursalesSeleccionadas=this.SucursalesSeleccionadasFiltro
   this.construirTreeData()
   }
 
@@ -322,121 +322,136 @@ export default class ModuloCuentasContableComponent implements OnInit {
 
 
   addCuentaHijo() {
-   if(!this.CuentaHijoSeleccionada) 
-   {
-     const newItemId = 'new-item-' + Date.now();
-     const id = this.afs.createId();
-     const currentDate = new Date();
-     const hours = currentDate.getHours();
-     const minutes = currentDate.getMinutes();
-     const ampm = hours >= 12 ? 'PM' : 'AM';
-     const formattedHour = hours % 12 || 12;
-     let idsProyectos = this.ProyectosSeleccionados.map((proyect: any) => proyect.id);
-     let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id);
-     let Orden: any = this.CuentasHijos.filter((it: any) => it.idPadre == this.CuentaPadreSeleccionada.id).length;
- 
-     let Item: any =
-     {
-       Activo: true,
-       TipoProforma: 1,
-       Nombre: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1) + ' ' + this.NombreCuentaHijo.value,
-       Prefijo: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1),
-       PrefijoPadre: Number(this.CuentaPadreSeleccionada.idCateg),
-       PrefijoHijo: Orden + 1,
-       CuentaFija: false,
-       TipoCuenta: this.CuentaPadreSeleccionada.Tipo,
-       Alias: this.NombreCuentaHijo.value,
-       FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
-       HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
-       Tipo: 'Hijo',
-       id: id,
-       idPadre: this.CuentaPadreSeleccionada.id,
-       idsSucursales: idsSucursales,
-       idsProyectos: idsProyectos,
-       idAbuelo: this.CuentaPadreSeleccionada.idAbuelo,
-       Customizable: true,
-       Editable: false,
-       Orden: Orden + 1,
-       OrdenReal: this.CuentasHijos.length + 1,
-       idEmpresa: this.idEmpresa,
-       idCorporacion: this.usuario.idMatriz,
-       Created_User: this.usuario.id
-     }
- 
-     
-     this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
-       this.CuentasHijos.push(Item);
-       this.CatalagoCuentasEmpresa[0].CuentasHijos.push(Item);
-       this.expandedKeys.push(this.CuentaPadreSeleccionada.idAbuelo);
-       this.expandedKeys.push(Item.idPadre);
-       this.expandedKeys.push(Item.id);
-       this.NombreCuentaHijo.setValue('')
-       this.construirTreeData()
+    
+   if(this.NombreCuentaHijo.value==''){
+           this.toastr.warning('Establezca un nombre a la cuenta', 'Alerta!', {
+            timeOut: 2000,
+            positionClass: 'toast-center-center'
+          });
+    }
+    else {
+      if(!this.CuentaHijoSeleccionada) 
+      {
+        const newItemId = 'new-item-' + Date.now();
+        const id = this.afs.createId();
+        const currentDate = new Date();
+        const hours = currentDate.getHours();
+        const minutes = currentDate.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHour = hours % 12 || 12;
+        let idsProyectos = this.ProyectosSeleccionados.map((proyect: any) => proyect.id);
+        let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id);
+        let Orden: any = this.CuentasHijosBack.filter((it: any) => it.idPadre == this.CuentaPadreSeleccionada.id).length;
+    
+          let Item: any =
+          {
+            Activo: true,
+            TipoProforma: 1,
+            Nombre: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1) + ' ' + this.NombreCuentaHijo.value,
+            Prefijo: this.CuentaPadreSeleccionada.idCateg + '.' + (Orden + 1),
+            PrefijoPadre: Number(this.CuentaPadreSeleccionada.idCateg),
+            PrefijoHijo: Orden + 1,
+            CuentaFija: false,
+            TipoCuenta: this.CuentaPadreSeleccionada.Tipo,
+            Alias: this.NombreCuentaHijo.value,
+            FechaCreacion: this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
+            HoraCreacion: formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
+            Tipo: 'Hijo',
+            id: id,
+            idPadre: this.CuentaPadreSeleccionada.id,
+            idsSucursales: idsSucursales,
+            idsProyectos: idsProyectos,
+            idAbuelo: this.CuentaPadreSeleccionada.idAbuelo,
+            Customizable: true,
+            Editable: false,
+            Orden: Orden + 1,
+            OrdenReal: this.CuentasHijosBack.length + 1,
+            idEmpresa: this.idEmpresa,
+            idCorporacion: this.usuario.idMatriz,
+            Created_User: this.usuario.id
+          }
+      
+        
+          this.CatalagoCuentasEmpresa[0].CuentasHijos.push(Item);
+          this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
+            this.CuentasHijos.push(Item);
+            //this.CuentasHijosBack.push(Item);
+            this.expandedKeys.push(this.CuentaPadreSeleccionada.idAbuelo);
+            this.expandedKeys.push(Item.idPadre);
+            this.expandedKeys.push(Item.id);
+            this.NombreCuentaHijo.setValue('')
+            this.construirTreeData()
+        
+            setTimeout(() => {
+              this.scrollToNewInput(Item.id);
+            }, 100);
+            this.toastr.success('Se actualizó la cuenta contable', '¡Éxito!', {
+              timeOut: 2000,
+              positionClass: 'toast-center-center'
+            });
+          });
    
-       setTimeout(() => {
-         this.scrollToNewInput(Item.id);
-       }, 100);
-       this.toastr.success('Se actualizó la cuenta contable', '¡Éxito!', {
-         timeOut: 2000,
-         positionClass: 'toast-center-center'
-       });
-     });
-   }
-   else 
-   {
-    
-      let idsProyectos = this.ProyectosSeleccionados.map((proyecto: any) => proyecto.id)
-      let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
-
-
-      this.CatalagoCuentasEmpresa[0].CuentasHijos
-        .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-        .Alias = this.NombreCuentaHijo.value
-
-      this.CatalagoCuentasEmpresa[0].CuentasHijos
-        .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-        .Nombre = this.CuentaHijoSeleccionada.Prefijo + ' ' + this.NombreCuentaHijo.value
-
-      this.CatalagoCuentasEmpresa[0].CuentasHijos
-        .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-        .idsProyectos = idsProyectos
-
-      this.CatalagoCuentasEmpresa[0].CuentasHijos
-        .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-        .idsSucursales = idsSucursales
-
-      this.CatalagoCuentasEmpresa[0].CuentasHijos
-        .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-        .Activo = this.checkedHijo
-
-      let CuentaEditada=this.CatalagoCuentasEmpresa[0].CuentasHijos
-      .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
-
-      const indice = this.CuentasHijos.findIndex(item => item.id 
-        === CuentaEditada.id);
-      if (indice !== -1) {
-      this.CuentasHijos[indice] = CuentaEditada; // ← ¡Actualizado!
+     
+   
       }
-      this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
-        this.expandedKeys.push(this.CuentaHijoSeleccionada.idAbuelo);
-        this.expandedKeys.push(this.CuentaHijoSeleccionada.idPadre);
-        this.expandedKeys.push(this.CuentaHijoSeleccionada.id);
-        this.NombreCuentaHijo.setValue('');
-        this.CuentaHijoSeleccionada = null
-        this.CuentaPadreSeleccionada = null
-        this.ProyectosSeleccionados = []
-        this.SucursalesSeleccionadas = []
-        this.construirTreeData();
-        this.toastr.success('Se actualizó la cuenta contable', '¡Éxito!', {
-          timeOut: 2000,
-          positionClass: 'toast-center-center'
-        });
-      });
-    
-    
+      else 
+      {
+   
+         let idsProyectos = this.ProyectosSeleccionados.map((proyecto: any) => proyecto.id)
+         let idsSucursales = this.SucursalesSeleccionadas.map((sucursal: any) => sucursal.id)
+   
+   
+         this.CatalagoCuentasEmpresa[0].CuentasHijos
+           .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+           .Alias = this.NombreCuentaHijo.value
+   
+         this.CatalagoCuentasEmpresa[0].CuentasHijos
+           .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+           .Nombre = this.CuentaHijoSeleccionada.Prefijo + ' ' + this.NombreCuentaHijo.value
+   
+         this.CatalagoCuentasEmpresa[0].CuentasHijos
+           .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+           .idsProyectos = idsProyectos
+   
+         this.CatalagoCuentasEmpresa[0].CuentasHijos
+           .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+           .idsSucursales = idsSucursales
+   
+         this.CatalagoCuentasEmpresa[0].CuentasHijos
+           .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+           .Activo = this.checkedHijo
+   
+         let CuentaEditada=this.CatalagoCuentasEmpresa[0].CuentasHijos
+         .find((ch: any) => ch.id == this.CuentaHijoSeleccionada.id)
+   
+         const indice = this.CuentasHijos.findIndex(item => item.id 
+           === CuentaEditada.id);
+         if (indice !== -1) {
+         this.CuentasHijos[indice] = CuentaEditada; // ← ¡Actualizado!
+         }
+         this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
+           this.expandedKeys.push(this.CuentaHijoSeleccionada.idAbuelo);
+           this.expandedKeys.push(this.CuentaHijoSeleccionada.idPadre);
+           this.expandedKeys.push(this.CuentaHijoSeleccionada.id);
+           this.NombreCuentaHijo.setValue('');
+           this.CuentaHijoSeleccionada = null
+           this.CuentaPadreSeleccionada = null
+           this.ProyectosSeleccionados = []
+           this.SucursalesSeleccionadas = []
+           this.construirTreeData();
+           this.toastr.success('Se actualizó la cuenta contable', '¡Éxito!', {
+             timeOut: 2000,
+             positionClass: 'toast-center-center'
+           });
+         });
+       
+       
+   
+   
+      }
 
+    }
 
-   }
   }
 
   addCuentaNieto(cuentaHijo:any){
@@ -448,8 +463,8 @@ export default class ModuloCuentasContableComponent implements OnInit {
      const formattedHour = hours % 12 || 12;
     let idsProyectos = this.Proyectos.map((proyect: any) => proyect.id)
     let idsSucursales = this.Sucursales.map((sucursal: any) => sucursal.id)
-    let cuentaSeleccionada=this.CuentasHijos.find((cuenta:any)=>cuenta.id==cuentaHijo.id)
-    let Orden: any = this.CuentasNietos.filter((it: any) => it.idHijo == cuentaSeleccionada.id).length+1;
+    let cuentaSeleccionada=this.CuentasNietosBack.find((cuenta:any)=>cuenta.id==cuentaHijo.id)
+    let Orden: any = this.CuentasNietosBack.filter((it: any) => it.idHijo == cuentaSeleccionada.id).length+1;
 
   let CuentaNieto = {
           Activo:true,
@@ -470,13 +485,14 @@ export default class ModuloCuentasContableComponent implements OnInit {
           idsSucursales: idsSucursales,
           Editable: true,
           Orden:Orden,
-          OrdenReal: this.CuentasNietos.length + 1,
+          OrdenReal: this.CuentasNietosBack.length + 1,
           idEmpresa: this.idEmpresa,
           idCorporacion: this.usuario.idMatriz,
           Created_User: this.usuario.id
   };
   
        this.CuentasNietos.push(CuentaNieto);
+       this.CuentasNietosBack.push(CuentaNieto);
        this.CatalagoCuentasEmpresa[0].CuentasNietos.push(CuentaNieto);
        this.expandedKeys.push(CuentaNieto.idAbuelo);
        this.expandedKeys.push(CuentaNieto.idPadre);
@@ -730,6 +746,9 @@ console.log('CuentasNietos',this.CuentasNietos.find((cuenta:any)=>cuenta.id==cue
       this.InputCuentaHijo.nativeElement.select();
       this.ProyectosSeleccionados = this.getProyectosByCuenta(this.CuentaNietoSeleccionada.idsProyectos);
       this.SucursalesSeleccionadas = this.getSucursalesByCuenta(this.CuentaNietoSeleccionada.idsSucursales);
+    }
+    else{
+      this.NombreCuentaHijo.disable()
     }
 
 

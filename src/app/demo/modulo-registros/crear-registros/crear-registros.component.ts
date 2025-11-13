@@ -1,6 +1,6 @@
 // angular import
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
@@ -29,7 +29,7 @@ ModuleRegistry.registerModules([ AllCommunityModule ]);
   styleUrls: ['./crear-registros.component.scss']
 })
 export default class CrearRegistrosComponent implements OnInit {
-constructor(private conS:ConfigurationService,private toastr: ToastrService,private authS:AuthService){}
+constructor(private conS:ConfigurationService,private toastr: ToastrService,private authS:AuthService, private datePipe: DatePipe){}
 Valor:number=0
 ActivarClase:boolean=false
 TipoEntidad:number=0
@@ -241,7 +241,7 @@ this.conS.usuario$.subscribe((usuario) => {
       //   this.idEmpresa = this.usuario.idEmpresa;
       // }
     //  this.obtenerCuentasBancarias()
-    //this.obtenerCatalogoCuentas()
+   // this.obtenerCatalogoCuentas()
       
 
 });
@@ -361,15 +361,14 @@ Subscription=  this.conS. obtenerCatalogoCuentas().subscribe((resp:any)=>{
 
     let cuentasHijos=resp[0]
     let cuentasNietos=resp[1]
-    console.log('cuentasHijos',cuentasHijos)
-    console.log('cuentasNietos',cuentasNietos)
+
 
     let CatalogoEmpresa ={
     "idEmpresa":this.idEmpresa,
     "idMatriz":this.usuario.idMatriz,
     "CuentasHijos":cuentasHijos,
     "CuentasNietos":cuentasNietos,
-    "Fecha": new Date(),
+    "Fecha":  this.datePipe.transform(new Date().setDate(new Date().getDate()), 'yyyy-MM-dd'),
     "AnioRegistro":new Date(new Date()).getFullYear(),
     "Hora": formattedHour + ':' + this.padZero(minutes) + ' ' + ampm,
     }
