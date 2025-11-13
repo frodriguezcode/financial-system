@@ -62,6 +62,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
   @ViewChild('InputCuentaNieto', { static: false }) InputCuentaNieto!: ElementRef;
   @ViewChild('treeTable') treeTable: any;
   newRowId: string = '';
+  globalFilterFields = ['name', 'description', 'type'];
   constructor(
     private datePipe: DatePipe,
     private conS: ConfigurationService,
