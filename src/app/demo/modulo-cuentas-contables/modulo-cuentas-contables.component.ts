@@ -56,6 +56,7 @@ export default class ModuloCuentasContableComponent implements OnInit {
   selectedNode: any = [];
   activeIndex = 0;
   checkedHijo: boolean = true;
+  expandedCuentas: boolean = false;
   anchoTabla: string = '70rem';
   mostrarOpcionesCuenta: boolean = true;
   @ViewChild('InputCuentaHijo', { static: false }) InputCuentaHijo!: ElementRef;
@@ -802,10 +803,7 @@ stopEvent(event: KeyboardEvent) {
   event.stopPropagation();
 }
 
-
-
-
-  getCuentasPadre(idAbuelo: string) {
+getCuentasPadre(idAbuelo: string) {
     let _CuentasPadre: any = [];
     this.Categorias.filter((cuentaPadre: any) => cuentaPadre.idAbuelo == idAbuelo).forEach((cuenta) => {
       _CuentasPadre.push({
@@ -838,7 +836,7 @@ stopEvent(event: KeyboardEvent) {
     return _CuentasPadre;
   }
 
-  getCuentasHijo(idPadre: string) {
+getCuentasHijo(idPadre: string) {
     let _CuentasHijo: any = [];
     this.CuentasHijos.filter((cuentaHijo: any) => cuentaHijo.idPadre == idPadre).forEach((cuenta) => {
       _CuentasHijo.push({
@@ -911,6 +909,25 @@ stopEvent(event: KeyboardEvent) {
   verificarExpanded(idElemento: any) {
     return this.expandedKeys.filter((exp: any) => exp == idElemento).length > 0 ? true : false;
   }
+
+toggleApplications() {
+  if (!this.TreeData?.length) return;
+  this.expandedCuentas=!this.expandedCuentas
+  const newFiles = [...this.TreeData];
+
+  // Cambia el estado de TODOS los nodos raíz
+  newFiles.forEach(node => {
+    node.expanded = this.expandedCuentas;
+    node.children.forEach(node => {
+      node.expanded = this.expandedCuentas;
+      node.children.forEach(node => {
+        node.expanded = this.expandedCuentas;
+       })
+    })
+  });
+
+  this.TreeData = newFiles;
+}
 
   construirTreeData() {
     // limpia completamente la referencia

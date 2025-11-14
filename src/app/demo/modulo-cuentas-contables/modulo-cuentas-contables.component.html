@@ -1,46 +1,9 @@
 <div class="row">
   <div class="col-sm-12">
     <app-card cardTitle="Mantenimiento de Cuentas Contables" [options]="false">
-      <div style="margin-top: -40px" class="row">
-        <div class="col-4">
-          <label for="formGroupExampleInput" class="form-label">Proyectos</label>
-          <ng-select
-            (change)="filtradoProyectos()"
-            loadingText="Cargando cuentas..."
-            notFoundText="No hay proyectos disponibles"
-            class="mt-1"
-            [items]="Proyectos"
-            [multiple]="true"
-            [closeOnSelect]="false"
-            [searchable]="true"
-            bindLabel="Nombre"
-            placeholder="Proyectos"
-            [(ngModel)]="ProyectosSeleccionadosFiltro"
-          >
-          </ng-select>
-        </div>
-        <div class="col-4">
-          <label for="formGroupExampleInput" class="form-label">Sucursales</label>
-          <ng-select
-            (change)="filtradoSucursales()"
-            loadingText="Cargando cuentas..."
-            notFoundText="No hay sucursales disponibles"
-            class="mt-1"
-            [items]="Sucursales"
-            [multiple]="true"
-            [closeOnSelect]="false"
-            [searchable]="true"
-            bindLabel="Nombre"
-            placeholder="Sucursales"
-            [(ngModel)]="SucursalesSeleccionadasFiltro"
-          >
-          </ng-select>
-        </div>
-      </div>
-
       <div class="row" *ngIf="cargando == false">
-        <div class="col-4">
-          <div class="d-flex justify-content-end" style="margin-top: 10px">
+        <div class="col-12">
+          <!-- <div class="d-flex justify-content-end" style="margin-top: 10px">
             <div class="d-flex flex-column align-items-end">
               <span *ngIf="this.CuentaHijoSeleccionada != null || this.CuentaNietoSeleccionada != null" class="mb-1 text-end">
                 <span *ngIf="!checkedHijo">Activar Cuenta</span>
@@ -53,10 +16,10 @@
               >
               </p-inputSwitch>
             </div>
-          </div>
+          </div> -->
 
           <div class="row">
-            <div style="margin-top: -30px" class="col-12">
+            <div style="margin-top: -30px" class="col-4">
               <label for="formGroupExampleInput" class="form-label">Nombre de la cuenta </label>
               <input
                 #InputCuentaHijo
@@ -67,51 +30,53 @@
                 aria-label="Last name"
               />
             </div>
+            <div style="margin-top: -40px" class="col-4">
+              <label for="formGroupExampleInput" class="form-label">Proyectos Asociados</label>
+              <ng-select
+                loadingText="Cargando cuentas..."
+                notFoundText="No hay proyectos disponibles"
+                class="mt-1"
+                [items]="Proyectos"
+                [multiple]="true"
+                [closeOnSelect]="false"
+                [clearable]="false"
+                [searchable]="true"
+                bindLabel="Nombre"
+                placeholder="Proyectos"
+                [(ngModel)]="ProyectosSeleccionados"
+              >
+              </ng-select>
+            </div>
+            <div style="margin-top: -40px" class="col-4">
+              <label for="formGroupExampleInput" class="form-label">Sucursales Asociadas</label>
+              <ng-select
+                loadingText="Cargando cuentas..."
+                notFoundText="No hay proyectos disponibles"
+                class="mt-1"
+                [clearable]="false"
+                [items]="Sucursales"
+                [multiple]="true"
+                [closeOnSelect]="false"
+                [searchable]="true"
+                bindLabel="Nombre"
+                placeholder="Sucursales"
+                [(ngModel)]="SucursalesSeleccionadas"
+              >
+              </ng-select>
+            </div>
           </div>
-
-          <label for="formGroupExampleInput" class="form-label">Proyectos Asociados</label>
-          <ng-select
-            loadingText="Cargando cuentas..."
-            notFoundText="No hay proyectos disponibles"
-            class="mt-1"
-            [items]="Proyectos"
-            [multiple]="true"
-            [closeOnSelect]="false"
-            [clearable]="false"
-            [searchable]="true"
-            bindLabel="Nombre"
-            placeholder="Proyectos"
-            [(ngModel)]="ProyectosSeleccionados"
-          >
-          </ng-select>
-
-          <label for="formGroupExampleInput" class="form-label mt-2">Sucursales Asociadas</label>
-          <ng-select
-            loadingText="Cargando cuentas..."
-            notFoundText="No hay proyectos disponibles"
-            class="mt-1"
-            [clearable]="false"
-            [items]="Sucursales"
-            [multiple]="true"
-            [closeOnSelect]="false"
-            [searchable]="true"
-            bindLabel="Nombre"
-            placeholder="Sucursales"
-            [(ngModel)]="SucursalesSeleccionadas"
-          >
-          </ng-select>
 
           <button
             *ngIf="!CuentaNietoSeleccionada"
             type="button"
             (click)="addCuentaHijo()"
             [disabled]="this.CuentaPadreSeleccionada == null && this.CuentaHijoSeleccionada == null"
-            class="btn btn-success mt-3"
+            class="btn btn-success"
             >Guardar
           </button>
-          <button *ngIf="CuentaNietoSeleccionada" type="button" (click)="editarCuentaNieto()" class="btn btn-success mt-3">Guardar </button>
+          <button *ngIf="CuentaNietoSeleccionada" type="button" (click)="editarCuentaNieto()" class="btn btn-success">Guardar </button>
         </div>
-        <div *ngIf="TreeData.length > 0" class="col-8">
+        <div *ngIf="TreeData.length > 0" class="col-12">
           <div class="card flex justify-content-center">
             <div class="">
               <h6>Catálago de Cuentas Contables</h6>
@@ -135,24 +100,65 @@
                 [(selection)]="selectedNode"
                 (onNodeSelect)="nodeSelect($event)"
                 (onNodeUnselect)="nodeUnselect($event)"
-                [tableStyle]="{ 'min-width': '120rem' }"
-                 [globalFilterFields]="globalFilterFields"
+                [tableStyle]="{ 'min-width': '150rem' }"
+                [globalFilterFields]="globalFilterFields"
                 scrollHeight="600px"
                 selectionMode="single"
               >
                 <ng-template pTemplate="caption">
-                  <div class="flex justify-content-end align-items-center">
-                    <div class="p-input-icon-left">
-                      <i class="pi pi-search"></i>
-                      <input
-                        type="text"
-                        pInputText
-                        class="input-group-text custom-input"
-                        placeholder="Buscar cuenta"
-                        (input)="treeTable.filterGlobal($any($event.target).value, 'contains')"
-                      />
+                  <div class="row">
+                    <div class="col-3">
+                      <button (click)="toggleApplications()" type="button" class="btn btn-success btn-sm">
+                        <span *ngIf="!expandedCuentas">Expandir</span>
+                        <span *ngIf="expandedCuentas">Contraer</span>
+                      </button>
+
                     </div>
-                  </div>
+                      <div class="col-3">
+                        <ng-select
+                          (change)="filtradoProyectos()"
+                          loadingText="Cargando cuentas..."
+                          notFoundText="No hay proyectos disponibles"
+                          [items]="Proyectos"
+                          [multiple]="true"
+                          [closeOnSelect]="false"
+                          [searchable]="true"
+                          bindLabel="Nombre"
+                          placeholder="Proyectos"
+                          [(ngModel)]="ProyectosSeleccionadosFiltro"
+                        >
+                        </ng-select>
+                      </div>
+                      <div class="col-3">
+                        <ng-select
+                          (change)="filtradoSucursales()"
+                          loadingText="Cargando cuentas..."
+                          notFoundText="No hay sucursales disponibles"    
+                          [items]="Sucursales"
+                          [multiple]="true"
+                          [closeOnSelect]="false"
+                          [searchable]="true"
+                          bindLabel="Nombre"
+                          placeholder="Sucursales"
+                          [(ngModel)]="SucursalesSeleccionadasFiltro"
+                        >
+                        </ng-select>
+                      </div>
+                      
+                      <div class="col-3">
+                        <div class="p-input-icon-left">
+                          <input
+                          type="text"
+                          pInputText
+                          class="custom-input form-control"
+                          placeholder="Buscar cuenta"
+                          (input)="treeTable.filterGlobal($any($event.target).value, 'contains')"
+                          />
+                        </div>
+
+                      </div>
+                      
+                    </div>
                 </ng-template>
                 <ng-template pTemplate="headercell" pTemplate="header">
                   <tr>
