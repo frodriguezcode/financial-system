@@ -116,7 +116,7 @@
                     </div>
                       <div class="col-3">
                         <ng-select
-                          (change)="filtradoProyectos()"
+                          (change)="filtradoTags()"
                           loadingText="Cargando cuentas..."
                           notFoundText="No hay proyectos disponibles"
                           [items]="Proyectos"
@@ -131,7 +131,7 @@
                       </div>
                       <div class="col-3">
                         <ng-select
-                          (change)="filtradoSucursales()"
+                          (change)="filtradoTags()"
                           loadingText="Cargando cuentas..."
                           notFoundText="No hay sucursales disponibles"    
                           [items]="Sucursales"
@@ -150,9 +150,9 @@
                           <input
                           type="text"
                           pInputText
-                          class="custom-input form-control"
+                          class="custom-input-buscador form-control"
                           placeholder="Buscar cuenta"
-                          (input)="treeTable.filterGlobal($any($event.target).value, 'contains')"
+                         (input)="filtrarTree($any($event.target).value)"
                           />
                         </div>
 

@@ -103,6 +103,52 @@ export default class ModuloCuentasContableComponent implements OnInit {
     });
   }
 
+  expandMatchingNodes(nodes: any[], search: string): boolean {
+  let matchFound = false;
+
+  for (let node of nodes) {
+    const nodeText = JSON.stringify(node.data).toLowerCase();
+
+    // evaluar hijos
+    let childMatch = false;
+    if (node.children && node.children.length > 0) {
+      childMatch = this.expandMatchingNodes(node.children, search);
+    }
+
+    // evaluar nodo actual
+    const selfMatch = nodeText.includes(search);
+
+    // si el nodo coincide o alguno de sus hijos coincide → expandir
+    node.expanded = childMatch || selfMatch;
+
+    if (node.expanded) {
+      matchFound = true;
+    }
+  }
+
+  return matchFound;
+}
+
+filtrarTree(valor: string) {
+  valor = valor.trim().toLowerCase();
+    if (!valor) {
+    this.colapsarTodo(this.TreeData);
+    this.treeTable.filterGlobal('', 'contains');
+    return;
+  }
+  this.treeTable.filterGlobal(valor, 'contains');
+  this.expandMatchingNodes(this.TreeData, valor.toLowerCase());
+}
+
+colapsarTodo(nodes: any[]) {
+  nodes.forEach(n => {
+    n.expanded = false;
+    if (n.children) this.colapsarTodo(n.children);
+  });
+}
+
+
+
   getCatalogos() {
     this.conS.obtenerDataCatalogosEmpresa(this.usuario.idMatriz).subscribe((data: any) => {
       this.DataCatalogos = data;
@@ -194,6 +240,36 @@ export default class ModuloCuentasContableComponent implements OnInit {
   this.construirTreeData()
   }
 
+  filtradoTags(){
+
+   let idsProyectos= 
+   this.ProyectosSeleccionadosFiltro.map((proyecto:any)=>proyecto.id)
+
+
+   let idsSucursales= 
+   this.SucursalesSeleccionadasFiltro.map((suc:any)=>suc.id) 
+
+   
+   let idsTag=[...idsProyectos,...idsSucursales]
+
+   if(idsProyectos.length==0 && idsSucursales.length==0 ){
+   this.CuentasHijos = this.CuentasHijosBack
+   this.CuentasNietos = this.CuentasNietosBack
+   }
+   else {
+   this.CuentasHijos = this.CuentasHijosBack.filter((cuenta:any)=>
+     cuenta.Tags.some((tag:any) => idsTag.includes(tag))
+   )
+   this.CuentasNietos = this.CuentasNietosBack.filter((cuenta:any)=>
+     cuenta.Tags.some((tag:any) => idsTag.includes(tag))
+   )
+   }
+
+   this.construirTreeData()
+
+
+  }
+
   construirData() {
     let DataEmpresa = this.DataCatalogos.filter((data: any) => data.idEmpresa == this.idEmpresa)[0];
     this.Categorias = DataEmpresa.Categorias;
@@ -209,6 +285,18 @@ export default class ModuloCuentasContableComponent implements OnInit {
         this.CuentasNietosBack.push(cuentaNieto);
       });
     });
+
+
+    this.CuentasHijosBack = this.CuentasHijosBack.map(x => ({
+     ...x,
+       Tags: [...x.idsProyectos, ...x.idsSucursales]
+    }));
+    this.CuentasNietosBack = this.CuentasNietosBack.map(x => ({
+     ...x,
+       Tags: [...x.idsProyectos, ...x.idsSucursales]
+    }));
+    console.log('CuentasHijos',this.CuentasNietosBack)
+    console.log('CuentasNieto',this.CuentasNietosBack)
 
     this.construirTreeData();
   }
