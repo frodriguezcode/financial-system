@@ -312,8 +312,7 @@ colapsarTodo(nodes: any[]) {
      ...x,
        Tags: [...x.idsProyectos, ...x.idsSucursales]
     }));
-    console.log('CuentasHijos',this.CuentasNietosBack)
-    console.log('CuentasNieto',this.CuentasNietosBack)
+
 
     this.construirTreeData();
   }
@@ -598,7 +597,6 @@ colapsarTodo(nodes: any[]) {
           Created_User: this.usuario.id
   };
 
-      console.log('CuentaNieto',CuentaNieto)
   
        this.CuentasNietos.push(CuentaNieto);
        this.CuentasNietosBack.push(CuentaNieto);
@@ -745,7 +743,6 @@ colapsarTodo(nodes: any[]) {
   }
 
 this.CuentasNietos = [...this.CuentasNietos];
-console.log('CuentasNietos',this.CuentasNietos.find((cuenta:any)=>cuenta.id==cuentaActual.id))
    this.conS.ActualizarCatalogoEmpresa(this.CatalagoCuentasEmpresa[0]).then((resp) => {
 
      this.CuentasNietos = [...this.CuentasNietos];
@@ -845,7 +842,6 @@ console.log('CuentasNietos',this.CuentasNietos.find((cuenta:any)=>cuenta.id==cue
     }
     else if (event.node.Tipo == 'Nieto') 
     {
-      console.log('event.node',event.node)
       this.CuentaPadreSeleccionada = null
       this.CuentaHijoSeleccionada = null
       this.CuentaNietoSeleccionada = this.CuentasNietos.find((hijo: any) => hijo.id == event.node.id)
