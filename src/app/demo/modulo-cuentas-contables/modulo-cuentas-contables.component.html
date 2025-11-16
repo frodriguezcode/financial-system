@@ -34,6 +34,7 @@
               <label for="formGroupExampleInput" class="form-label">Proyectos Asociados</label>
               <ng-select
                 loadingText="Cargando cuentas..."
+                [disabled]="!this.CuentaPadreSeleccionada && !this.CuentaHijoSeleccionada"
                 notFoundText="No hay proyectos disponibles"
                 class="mt-1"
                 [items]="Proyectos"
@@ -51,6 +52,7 @@
               <label for="formGroupExampleInput" class="form-label">Sucursales Asociadas</label>
               <ng-select
                 loadingText="Cargando cuentas..."
+                [disabled]="!this.CuentaPadreSeleccionada && !this.CuentaHijoSeleccionada"
                 notFoundText="No hay proyectos disponibles"
                 class="mt-1"
                 [clearable]="false"
@@ -107,10 +109,12 @@
               >
                 <ng-template pTemplate="caption">
                   <div class="row">
-                    <div class="col-3">
-                      <button (click)="toggleApplications()" type="button" class="btn btn-success btn-sm">
-                        <span *ngIf="!expandedCuentas">Expandir</span>
-                        <span *ngIf="expandedCuentas">Contraer</span>
+                    <div
+                    
+                    class="col-3 expandable-button">
+                      <button (click)="toggleApplications()" type="button" class="btn btn-info btn-sm">
+                        <span *ngIf="!expandedCuentas">Expandir <i class="fa-solid fa-angle-right"></i></span>
+                        <span *ngIf="expandedCuentas">Contraer <i class="fa-solid fa-angle-down"></i> </span>
                       </button>
 
                     </div>

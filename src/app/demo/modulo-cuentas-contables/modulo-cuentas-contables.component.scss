@@ -6,7 +6,7 @@
 }
 .custom-input-buscador {
   height: 40px;      /* reduce alto */
-  width: 120%;      /* aumenta ancho */
+  width: 130%;      /* aumenta ancho */
   font-size: 14px;   /* ajusta tamaño de texto */
   padding: 2px 6px;  /* controla espacio interno */
 }
@@ -27,6 +27,7 @@
 
 
 
+
 @media (min-width: 1100px) and (max-width: 1290px) { 
   /* En tu archivo CSS */
   .tree-container {
@@ -38,7 +39,9 @@
     width: 100%;
   }
 
-
+.expandable-button{
+  margin-left: -90px;
+  }
  }
 @media (min-width: 1300px) and (max-width: 2000px) { 
   /* En tu archivo CSS */
@@ -49,6 +52,9 @@
   
   .tree-container .p-tree {
     width: 100%;
+  }
+  .expandable-button{
+  margin-left: -130px;
   }
 
 

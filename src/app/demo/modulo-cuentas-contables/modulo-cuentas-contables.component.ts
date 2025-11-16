@@ -255,6 +255,7 @@ colapsarTodo(nodes: any[]) {
    if(idsProyectos.length==0 && idsSucursales.length==0 ){
    this.CuentasHijos = this.CuentasHijosBack
    this.CuentasNietos = this.CuentasNietosBack
+   this.expandedKeys=[]
    }
    else {
    this.CuentasHijos = this.CuentasHijosBack.filter((cuenta:any)=>
@@ -263,7 +264,23 @@ colapsarTodo(nodes: any[]) {
    this.CuentasNietos = this.CuentasNietosBack.filter((cuenta:any)=>
      cuenta.Tags.some((tag:any) => idsTag.includes(tag))
    )
+
+    this.CuentasHijos.forEach(cuentaHijo => {
+      this.expandedKeys.push(cuentaHijo.idAbuelo);
+      this.expandedKeys.push(cuentaHijo.idPadre);
+      this.expandedKeys.push(cuentaHijo.id);
+      
+    });
+    this.CuentasNietos.forEach(cuentaNieto => {
+      this.expandedKeys.push(cuentaNieto.idAbuelo);
+      this.expandedKeys.push(cuentaNieto.idPadre);
+      this.expandedKeys.push(cuentaNieto.idHijo);
+      this.expandedKeys.push(cuentaNieto.id);
+      
+    });
+
    }
+
 
    this.construirTreeData()
 
@@ -801,6 +818,7 @@ console.log('CuentasNietos',this.CuentasNietos.find((cuenta:any)=>cuenta.id==cue
   nodeSelect(event: any) {
     this.NombreCuentaHijo.setValue('')
     if (event.node.Tipo == 'Padre') {
+      
       this.CuentaHijoSeleccionada = null
       this.CuentaNietoSeleccionada = null
       this.CuentaPadreSeleccionada = this.CuentasPadres.find((padre: any) => padre.id == event.node.id)
@@ -846,7 +864,8 @@ console.log('CuentasNietos',this.CuentasNietos.find((cuenta:any)=>cuenta.id==cue
 
   }
   nodeUnselect(event: any) {
- 
+  this.CuentaHijoSeleccionada = null
+  this.CuentaPadreSeleccionada = null
   }
 
   guardarCuentaHijo(Cuenta: any) {
