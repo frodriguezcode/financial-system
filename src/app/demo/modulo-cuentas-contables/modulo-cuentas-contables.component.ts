@@ -862,6 +862,7 @@ this.CuentasNietos = [...this.CuentasNietos];
   nodeUnselect(event: any) {
   this.CuentaHijoSeleccionada = null
   this.CuentaPadreSeleccionada = null
+  this.NombreCuentaHijo.disable()
   }
 
   guardarCuentaHijo(Cuenta: any) {
