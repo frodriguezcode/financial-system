@@ -21,64 +21,42 @@
           <div class="row">
             <div style="margin-top: -40px" class="col-12 col-md-4 col-lg-4">
               <label for="formGroupExampleInput" class="form-label">Nombre de la cuenta </label>
-              <input
-                #InputCuentaHijo
-                [formControl]="NombreCuentaHijo"
-                type="text"
-                class="form-control custom-input"
-                placeholder="Selecc. una cuenta para crear una nueva o editarla"
-                aria-label="Last name"
-              />
+              <input #InputCuentaHijo [formControl]="NombreCuentaHijo" type="text" class="form-control custom-input"
+                placeholder="Selecc. una cuenta para crear una nueva o editarla" aria-label="Last name" />
             </div>
             <div style="margin-top: -40px" class="col-12 col-md-4 col-lg-4">
               <label for="formGroupExampleInput" class="form-label">Proyectos Asociados</label>
-              <ng-select
-                loadingText="Cargando cuentas..."
+              <ng-select loadingText="Cargando cuentas..."
                 [disabled]="!this.CuentaPadreSeleccionada && !this.CuentaHijoSeleccionada"
-                notFoundText="No hay proyectos disponibles"
-                class="mt-1"
-                [items]="Proyectos"
-                [multiple]="true"
-                [closeOnSelect]="false"
-                [clearable]="false"
-                [searchable]="true"
-                bindLabel="Nombre"
-                placeholder="Proyectos"
-                [(ngModel)]="ProyectosSeleccionados"
-              >
+                notFoundText="No hay proyectos disponibles" class="mt-1" [items]="Proyectos" [multiple]="true"
+                [closeOnSelect]="false" [clearable]="false" [searchable]="true" bindLabel="Nombre"
+                placeholder="Proyectos" [(ngModel)]="ProyectosSeleccionados">
               </ng-select>
             </div>
             <div style="margin-top: -40px" class="col-12 col-md-4 col-lg-4">
               <label for="formGroupExampleInput" class="form-label">Sucursales Asociadas</label>
-              <ng-select
-                loadingText="Cargando cuentas..."
+              <ng-select loadingText="Cargando cuentas..."
                 [disabled]="!this.CuentaPadreSeleccionada && !this.CuentaHijoSeleccionada"
-                notFoundText="No hay proyectos disponibles"
-                class="mt-1"
-                [clearable]="false"
-                [items]="Sucursales"
-                [multiple]="true"
-                [closeOnSelect]="false"
-                [searchable]="true"
-                bindLabel="Nombre"
-                placeholder="Sucursales"
-                [(ngModel)]="SucursalesSeleccionadas"
-              >
+                notFoundText="No hay proyectos disponibles" class="mt-1" [clearable]="false" [items]="Sucursales"
+                [multiple]="true" [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre"
+                placeholder="Sucursales" [(ngModel)]="SucursalesSeleccionadas">
               </ng-select>
             </div>
           </div>
 
-          <button
-            *ngIf="!CuentaNietoSeleccionada"
-            type="button"
-            (click)="addCuentaHijo()"
+          <button *ngIf="!CuentaNietoSeleccionada" type="button" (click)="addCuentaHijo()"
             [disabled]="this.CuentaPadreSeleccionada == null && this.CuentaHijoSeleccionada == null"
-            class="btn btn-success"
-            >Guardar
+            class="btn btn-success">Guardar
           </button>
-          <button *ngIf="CuentaNietoSeleccionada" type="button" (click)="editarCuentaNieto()" class="btn btn-success">Guardar </button>
+          <button *ngIf="CuentaNietoSeleccionada" type="button" (click)="editarCuentaNieto()"
+            class="btn btn-success">Guardar </button>
         </div>
         <div *ngIf="TreeData.length > 0" class="col-12">
+          <div class="d-md-flex justify-content-md-end">
+            <button 
+            (click)="exportExcel() "
+            class="btn btn-primary me-md-2" type="button">Button</button>
+          </div>
           <div class="card flex justify-content-center">
             <div class="">
               <h6>Catálago de Cuentas Contables</h6>
@@ -94,75 +72,43 @@
                 (onNodeDrop)="onNodeDrop($event)"
                 (onNodeSelect)="onNodeSelected($event)"
               /> -->
-              <p-treeTable
-                #treeTable
-                [value]="TreeData"
-                [scrollable]="true"
-                selectionMode="single"
-                [(selection)]="selectedNode"
-                (onNodeSelect)="nodeSelect($event)"
-                (onNodeUnselect)="nodeUnselect($event)"
-                [tableStyle]="{ 'min-width': '150rem' }"
-                [globalFilterFields]="globalFilterFields"
-                scrollHeight="600px"
-                selectionMode="single"
-              >
+              <p-treeTable #treeTable [value]="TreeData" [scrollable]="true" selectionMode="single"
+                [(selection)]="selectedNode" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"
+                [tableStyle]="{ 'min-width': '150rem' }" [globalFilterFields]="globalFilterFields" scrollHeight="600px"
+                selectionMode="single">
                 <ng-template pTemplate="caption">
                   <div class="row">
-                    <div
-                    
-                    class="col-3 expandable-button">
+                    <div class="col-3 expandable-button">
                       <button (click)="toggleApplications()" type="button" class="btn btn-info btn-sm">
                         <span *ngIf="!expandedCuentas">Expandir <i class="fa-solid fa-angle-right"></i></span>
                         <span *ngIf="expandedCuentas">Contraer <i class="fa-solid fa-angle-down"></i> </span>
                       </button>
 
                     </div>
-                      <div class="col-12 col-md-3 col-lg-3">
-                        <ng-select
-                          (change)="filtradoTags()"
-                          loadingText="Cargando cuentas..."
-                          notFoundText="No hay proyectos disponibles"
-                          [items]="Proyectos"
-                          [multiple]="true"
-                          [closeOnSelect]="false"
-                          [searchable]="true"
-                          bindLabel="Nombre"
-                          placeholder="Proyectos"
-                          [(ngModel)]="ProyectosSeleccionadosFiltro"
-                        >
-                        </ng-select>
-                      </div>
-                      <div class="col-12 col-md-3 col-lg-3">
-                        <ng-select
-                          (change)="filtradoTags()"
-                          loadingText="Cargando cuentas..."
-                          notFoundText="No hay sucursales disponibles"    
-                          [items]="Sucursales"
-                          [multiple]="true"
-                          [closeOnSelect]="false"
-                          [searchable]="true"
-                          bindLabel="Nombre"
-                          placeholder="Sucursales"
-                          [(ngModel)]="SucursalesSeleccionadasFiltro"
-                        >
-                        </ng-select>
-                      </div>
-                      
-                      <div class="col-12 col-md-3 col-lg-3">
-                        <div class="p-input-icon-left">
-                          <input
-                          type="text"
-                          pInputText
-                          class="custom-input-buscador form-control"
-                          placeholder="Buscar cuenta"
-                         (input)="filtrarTree($any($event.target).value)"
-                          />
-                        </div>
-
-                      </div>
-                      
+                    <div class="col-12 col-md-3 col-lg-3">
+                      <ng-select (change)="filtradoTags()" loadingText="Cargando cuentas..."
+                        notFoundText="No hay proyectos disponibles" [items]="Proyectos" [multiple]="true"
+                        [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre" placeholder="Proyectos"
+                        [(ngModel)]="ProyectosSeleccionadosFiltro">
+                      </ng-select>
                     </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                      <ng-select (change)="filtradoTags()" loadingText="Cargando cuentas..."
+                        notFoundText="No hay sucursales disponibles" [items]="Sucursales" [multiple]="true"
+                        [closeOnSelect]="false" [searchable]="true" bindLabel="Nombre" placeholder="Sucursales"
+                        [(ngModel)]="SucursalesSeleccionadasFiltro">
+                      </ng-select>
+                    </div>
+
+                    <div class="col-12 col-md-3 col-lg-3">
+                      <div class="p-input-icon-left">
+                        <input type="text" pInputText class="custom-input-buscador form-control"
+                          placeholder="Buscar cuenta" (input)="filtrarTree($any($event.target).value)" />
+                      </div>
+
+                    </div>
+
+                  </div>
                 </ng-template>
                 <ng-template pTemplate="headercell" pTemplate="header">
                   <tr>
@@ -179,36 +125,26 @@
                     </td>
                     <td *ngIf="rowData.Editable == true">
                       <p-floatLabel>
-                        <input
-                          #InputCuentaNieto
-                          (keydown)="stopEvent($event)"
+                        <input #InputCuentaNieto (keydown)="stopEvent($event)"
                           (keyup.enter)="guardarCuentaNieto(rowNode.node)"
-                          class="text-center form-control custom-input-cuenta"
-                          id="username"
-                          [(ngModel)]="rowData.Alias"
-                        />
+                          class="text-center form-control custom-input-cuenta" id="username"
+                          [(ngModel)]="rowData.Alias" />
                         <label style="margin-left: 70px" for="username">Nombre cuenta (Enter para guardar)</label>
                       </p-floatLabel>
                     </td>
                     <td *ngIf="rowData.AddCuenta == true">
-                      <button type="button" (click)="addCuentaNieto(rowData)" class="btn btn-light btn-sm">{{ rowData.Texto }}</button>
+                      <button type="button" (click)="addCuentaNieto(rowData)" class="btn btn-light btn-sm">{{
+                        rowData.Texto }}</button>
                     </td>
                     <td *ngIf="rowData.Tipo == 'Nieto'">
                       <div style="margin-left: 10px" class="d-grid gap-2 d-md-block">
-                        <button
-                          (click)="subirCuenta(rowData)"
-                          class="btn btn-success m-1 btn-sm"
-                          [disabled]="rowData.Editable == true || rowData.EsPrimera == true"
-                          type="button"
-                          ><i class="fa-solid fa-arrow-up"></i
-                        ></button>
-                        <button
-                          (click)="bajarCuenta(rowData)"
+                        <button (click)="subirCuenta(rowData)" class="btn btn-success m-1 btn-sm"
+                          [disabled]="rowData.Editable == true || rowData.EsPrimera == true" type="button"><i
+                            class="fa-solid fa-arrow-up"></i></button>
+                        <button (click)="bajarCuenta(rowData)"
                           [disabled]="rowData.Editable == true || rowData.EsUltima == true"
-                          class="btn btn-danger m-1 btn-sm"
-                          type="button"
-                          ><i class="fa-solid fa-arrow-down"></i
-                        ></button>
+                          class="btn btn-danger m-1 btn-sm" type="button"><i
+                            class="fa-solid fa-arrow-down"></i></button>
                       </div>
                     </td>
 

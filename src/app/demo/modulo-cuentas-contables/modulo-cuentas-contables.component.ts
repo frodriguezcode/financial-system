@@ -17,7 +17,8 @@ import { TreeTableModule } from 'primeng/treetable';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-
+import * as XLSX from 'xlsx-js-style';
+import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-modulo-cuentas-contables',
   standalone: true,
@@ -27,6 +28,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
   styleUrls: ['./modulo-cuentas-contables.component.scss']
 })
 export default class ModuloCuentasContableComponent implements OnInit {
+  levelStyles : any
   NombreCuentaHijo: FormControl = new FormControl('');
   NombreCuentaNieto: FormControl = new FormControl('');
   Proyectos: any = [];
@@ -72,7 +74,13 @@ export default class ModuloCuentasContableComponent implements OnInit {
     private afs: AngularFirestore
   ) { }
   ngOnInit(): void {
-
+    this.levelStyles = {
+      0: { fill: { fgColor: { rgb: "D9E1F2" } } }, // Azul claro
+      1: { fill: { fgColor: { rgb: "E2EFDA" } } }, // Verde muy suave
+      2: { fill: { fgColor: { rgb: "FFF2CC" } } }, // Amarillo pastel
+      3: { fill: { fgColor: { rgb: "FCE4D6" } } }, // Naranja suave
+      default: { fill: { fgColor: { rgb: "FFFFFF" } } } // Blanco
+    };
     Swal.fire({
       title: 'Cargando cuentas contables...'
     });
@@ -127,6 +135,49 @@ export default class ModuloCuentasContableComponent implements OnInit {
   }
 
   return matchFound;
+}
+
+flattenNodesForExcel(nodes: any[], level: number = 0, result: any[] = []) {
+  const indent = ' '.repeat(level * 4);
+
+  for (const node of nodes) {
+    result.push({
+      Nombre: indent + node.data?.name
+
+    });
+
+    if (node.children?.length > 0) {
+      this.flattenNodesForExcel(node.children, level + 1, result);
+    }
+  }
+
+  return result;
+}
+
+exportExcel() {
+  // Convierte la treeTable
+  const dataToExport = this.flattenNodesForExcel(this.TreeData);
+
+  // Crea hoja
+  const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+
+  // Ajustar el ancho de las columnas automáticamente
+  worksheet['!cols'] = [
+    { wch: 50 }, // para "Nombre"
+    { wch: 20 },
+    { wch: 15 },
+    { wch: 30 }
+  ];
+
+  // Crear workbook
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Árbol');
+
+  // Exportar
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+  saveAs(blob, 'Arbol.xlsx');
 }
 
 filtrarTree(valor: string) {
@@ -1056,6 +1107,7 @@ toggleApplications() {
     }));
 
     Swal.close()
+    console.log('TreeData',this.TreeData)
     this.cargando = false;
   }
 
