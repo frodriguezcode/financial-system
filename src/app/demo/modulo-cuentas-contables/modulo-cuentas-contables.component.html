@@ -54,10 +54,11 @@
         <div *ngIf="TreeData.length > 0" class="col-12">
           <div class="d-md-flex justify-content-md-end">
             <button 
+            style="margin-top: -20px;"
             (click)="exportExcel() "
-            class="btn btn-primary me-md-2" type="button">Button</button>
+            class="btn btn-primary me-md-2" type="button">Descargar <i class="fa-solid fa-file-arrow-down"></i> </button>
           </div>
-          <div class="card flex justify-content-center">
+          <div class="card flex justify-content-center mt-1">
             <div class="">
               <h6>Catálago de Cuentas Contables</h6>
               <!-- <p-tree
