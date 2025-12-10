@@ -26,6 +26,8 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
   CatalogoElementos: any = []
   RegistrosContable: any = []
   RegistrosManagerRecapt: any = []
+  RegistrosManagerRecaptAcumulado: any = []
+  RegistrosManagerRecaptPromedios: any = []
   RegistrosSaldosIniciales: any = []
   Categorias: any = []
   Cabecera: any = []
@@ -114,7 +116,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
   }
    onCellValueChanged(event: any) {
 
-    console.log('eventEditar',event)
+   
 
     let DatosCabecera={
       "Anio":event.colDef.Anio,
@@ -131,8 +133,8 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
     }
 
-    console.log('DatosCabecera',DatosCabecera)
-    console.log('DatosElemento',DatosElemento)
+     console.log('DatosCabecera',DatosCabecera)
+     console.log('DatosElemento',DatosElemento)
 
   }
 
@@ -234,7 +236,10 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
       ]
       let DataByEmpresa = resp.filter((data: any) => data.idEmpresa == this.usuario.idEmpresa)[0]
+      console.log('DataByEmpresa',DataByEmpresa)
       this.RegistrosManagerRecapt = DataByEmpresa.RegistrosManagerRecapt
+      this.RegistrosManagerRecaptAcumulado = DataByEmpresa.RegistrosManagerRecaptAcumulado
+      this.RegistrosManagerRecaptPromedios = DataByEmpresa.RegistrosManagerRecaptPromedio
       this.RegistrosContable = DataByEmpresa.RegistrosContables
       this.Categorias = DataByEmpresa.Categorias
       this.CatalogoElementos = DataByEmpresa.CatalogoElementos
@@ -306,6 +311,10 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
         headerName: 'Acumulado ' + anio.Anio,
         Mostrar: true,
         filter:false,
+  valueGetter: params => {
+    const v = params.data['Acumulado ' + anio.Anio];
+    return v !== undefined && v !== null ? String(v) : '';
+  },
         sort:false,
         width: 200,
         Orden: this.Cabecera.length + 1,
@@ -336,6 +345,12 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
     return this.RegistrosManagerRecapt.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecapt.find((data:any)=>data.key==key).ValorMostrar
 
   }
+  getValoresManagerRecapAnual(key:any){
+    return this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key).ValorMostrar
+  
+
+
+  }
 
   construirData() {
     let _DataRow: any = []
@@ -352,7 +367,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
         this.Cabecera
           .filter((cabecera: any) => cabecera.Tipo != 1)
           .sort((a: any, b: any) => a.Orden - b.Orden).forEach((cab: any) => {
-
+            
             if(cab.Tipo==2){
               const key = `${cab.Anio}-${cab.NumMes}-${element.id}`;
               fila[cab.Nombre] = this.getValoresManagerRecap(key)
@@ -360,8 +375,11 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
             }
 
             else if(cab.Tipo==3) {
-              this.construirTiempos().AniosSeleccionados
-              fila[cab.Nombre] = 0
+              const keyAnual = `${cab.Anio}-${element.id}`;
+              if(cab.Anio==2023 && element.id=='01-08'){
+                console.log('Valor',this.getValoresManagerRecapAnual(keyAnual))
+              }
+              fila[cab.Nombre] = this.getValoresManagerRecapAnual(keyAnual)
             }
 
 
