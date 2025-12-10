@@ -1,28 +1,3 @@
-
-// Preguntar sobre Factor de conversión a efectivo (What If)
-// Preguntar sobre Pagos en Proveedores
-// Pago a proveedores / Eficiencia y control
-// % de los ingresos para pagar a proveedores
-// Egresos de Operación (%)
-
-// Agregar (-) Pago a proveedores a Cuentas Padre
-// % de los ingresos para operar
-// % de los ingresos para pagar a proveedores
-
-
-// Apuntes de 2025-04-21
-// No crear mas cuentas bajo el padre Egresos de Operacion, solamente Pago a Proveedores y Costos de la Operación
-// Pago a Proveedores tendrá los hijos fijos: Facturas vencidas en meses anteriores, facturas vencidas en el mes en curso y facturas con vencimiento en meses futuros
-// Costos de la operación tendrá hijos dinámicos: Creados por el usuario.
-
-// Modulo de Registro mostrar columna de nietos solamente si se elige el Padre Egresos de Operación
-
-// Store Manager Recapt:
-// Costos de la operación: Sumatoria de las cuentas bajo este padre
-//% de los ingresos para operar : Division del cos
-// Pago a proveedores: Sumatoria de las cuentas bajo este padre
-
-// Todo será visible y calculado.
 [
     {
         "Nombre": "Mercadotecnia",
@@ -34,86 +9,158 @@
                 "Nombre": "Prospectos",
                 "id": "01-01",
                 "idPadre": "01",
+                "field": "Prospectos",
+                "headerName": "Prospectos",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Sangria": false,
+                "Negrita": false,
+                "Icono": "",
                 "Simbolo": 1,
                 "Orden": 1,
                 "OrdenData": 1,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(X) % de Conversión",
                 "id": "01-02",
+                "field": "(X) % de Conversión",
+                "headerName": "(X) % de Conversión",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "OrdenData": 3,
+                "Sangria": false,
+                "Negrita": false,
+                "Icono": "%",
                 "idPadre": "01",
                 "Orden": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(=) Clientes Nuevos",
                 "id": "01-03",
+                "field": "(=) Clientes Nuevos",
+                "headerName": "(=) Clientes Nuevos",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "OrdenData": 2,
                 "idPadre": "01",
+                "Icono": "",
                 "Moneda": false,
                 "Simbolo": 1,
                 "Orden": 3,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(+) Clientes Existentes",
                 "id": "01-04",
+                "field": "(+) Clientes Existentes",
+                "headerName": "(+) Clientes Existentes",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "OrdenData": 4,
                 "Moneda": false,
+                "Icono": "",
                 "idPadre": "01",
                 "Simbolo": 1,
                 "Orden": 4,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(=) Clientes Totales",
                 "id": "01-05",
+                "Icono": "",
                 "idPadre": "01",
+                "field": "(=) Clientes Totales",
+                "headerName": "(=) Clientes Totales",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "OrdenData": 5,
                 "Moneda": false,
                 "Orden": 5,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Transacciones Totales",
                 "id": "01-06",
                 "idPadre": "01",
+                "field": "Transacciones Totales",
+                "headerName": "Transacciones Totales",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
+                "Icono": "",
                 "OrdenData": 6,
                 "Simbolo": 1,
                 "Moneda": false,
                 "Orden": 6,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(X) Transacciones Promedio",
                 "id": "01-07",
+                "field": "(X) Transacciones Promedio",
+                "headerName": "(X) Transacciones Promedio",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Icono": "",
                 "idPadre": "01",
+                "Sangria": false,
+                "Negrita": false,
                 "OrdenData": 7,
                 "Moneda": false,
                 "Orden": 7,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(X) Monto Promedio de Venta",
                 "id": "01-08",
+                "Icono": "$",
+                "field": "(X) Monto Promedio de Venta",
+                "headerName": "(X) Monto Promedio de Venta",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "01",
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": true,
                 "Orden": 8,
                 "OrdenData": 9,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(=) Ventas Netas",
                 "id": "01-09",
+                "field": "(=) Ventas Netas",
+                "headerName": "(=) Ventas Netas",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "OrdenData": 8,
                 "idPadre": "01",
+                "Sangria": false,
+                "Negrita": true,
+                "Icono": "$",
                 "Simbolo": 1,
                 "Orden": 9,
                 "Moneda": true,
-                "Editable": true
+                "editable": true
             }
         ]
     },
@@ -125,324 +172,609 @@
         "Elementos": [
             {
                 "Nombre": "Ventas",
+                "Sangria": false,
+                "field": "Ventas",
+                "headerName": "Ventas",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
+                "Icono": "$",
                 "Moneda": true,
                 "OrdenData": 1,
                 "id": "02-01",
                 "idPadre": "02",
                 "Orden": 1,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(-) Costo de ventas",
                 "id": "02-02",
                 "Moneda": true,
+                "field": "(-) Costo de ventas",
+                "headerName": "(-) Costo de ventas",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
+                "Icono": "-$",
                 "idPadre": "02",
                 "Simbolo": 2,
                 "Orden": 2,
                 "OrdenData": 2,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(=) Utilidad Bruta",
                 "id": "02-03",
+                "field": "(=) Utilidad Bruta",
+                "headerName": "(=) Utilidad Bruta",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Icono": "$",
+                "Sangria": false,
+                "Negrita": true,
                 "Moneda": true,
                 "OrdenData": 3,
                 "idPadre": "02",
                 "Orden": 3,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Margen Bruto",
                 "id": "02-04",
+                "Sangria": false,
+                "field": "Margen Bruto",
+                "headerName": "Margen Bruto",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": true,
                 "Moneda": false,
+                "Icono": "%",
                 "idPadre": "02",
                 "Orden": 4,
                 "OrdenData": 4,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(-) Gastos de Ventas y Mkt",
                 "id": "02-05",
                 "Moneda": true,
+                "field": "(-) Gastos de Ventas y Mkt",
+                "headerName": "(-) Gastos de Ventas y Mkt",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
+                "Icono": "-$",
                 "idPadre": "02",
                 "Simbolo": 2,
                 "Orden": 5,
                 "OrdenData": 5,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(-) Gastos de Operación",
                 "id": "02-06",
+                "field": "(-) Gastos de Operación",
+                "headerName": "(-) Gastos de Operación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": true,
+                "Negrita": false,
+                "Icono": "-$",
                 "idPadre": "02",
                 "Simbolo": 2,
                 "Orden": 6,
                 "OrdenData": 6,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(-) Gastos de Administración",
                 "id": "02-07",
+                "field": "(-) Gastos de Administración",
+                "headerName": "(-) Gastos de Administración",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Icono": "-$",
                 "Moneda": true,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "02",
                 "Simbolo": 2,
                 "OrdenData": 7,
                 "Orden": 7,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "Total gastos de operación",
                 "id": "02-08",
+                "Icono": "-$",
+                "field": "Total gastos de operación",
+                "headerName": "Total gastos de operación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "02",
                 "Orden": 8,
                 "OrdenData": 8,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(=) EBITDA",
                 "id": "02-09",
+                "field": "(=) EBITDA",
+                "headerName": "(=) EBITDA",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "02",
+                "Icono": "$",
                 "Orden": 9,
                 "OrdenData": 9,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Margen de Operación",
                 "id": "02-10",
+                "field": "Margen de Operación",
+                "headerName": "Margen de Operación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Icono": "%",
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "02",
                 "Orden": 10,
                 "OrdenData": 10,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(-) Intereses",
                 "id": "02-11",
+                "field": "(-) Intereses",
+                "headerName": "(-) Intereses",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Icono": "-$",
+                "Sangria": true,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "02",
                 "Simbolo": 2,
                 "Orden": 11,
                 "OrdenData": 11,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(-) Impuestos",
                 "id": "02-12",
+                "Icono": "-$",
+                "field": "(-) Impuestos",
+                "headerName": "(-) Impuestos",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "02",
                 "Simbolo": 2,
                 "Orden": 12,
                 "OrdenData": 12,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(-) Depreciación",
                 "id": "02-13",
+                "field": "(-) Depreciación",
+                "headerName": "(-) Depreciación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Icono": "-$",
                 "Moneda": true,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "02",
                 "Simbolo": 2,
                 "OrdenData": 13,
                 "Orden": 13,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(-) Amortización",
                 "id": "02-14",
+                "Icono": "-$",
+                "field": "(-) Amortización",
+                "headerName": "(-) Amortización",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "02",
                 "Simbolo": 2,
                 "OrdenData": 14,
                 "Orden": 14,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(=) Utilidad Neta",
                 "id": "02-15",
+                "Icono": "$",
                 "Moneda": true,
+                "field": "(=) Utilidad Neta",
+                "headerName": "(=) Utilidad Neta",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "02",
                 "Orden": 15,
                 "OrdenData": 15,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Margen Neto",
                 "id": "02-16",
                 "idPadre": "02",
+                "Sangria": false,
+                "Negrita": true,
+                "field": "Margen Neto",
+                "headerName": "Margen Neto",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Icono": "%",
                 "Moneda": false,
                 "Orden": 16,
                 "OrdenData": 16,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Gasto en Gente",
                 "id": "02-17",
                 "Moneda": true,
+                "Sangria": false,
+                "field": "Gasto en Gente",
+                "headerName": "Gasto en Gente",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
+                "Icono": "$",
                 "idPadre": "02",
                 "Simbolo": 1,
                 "OrdenData": 17,
                 "Orden": 17,
-                "Editable": true
+                "editable": true
             }
         ]
     },
     {
-        "Nombre": "Flujo de Efectivo",
+        "Nombre": "Flujo de Efectivo Libre",
         "id": "03",
         "Mostrar": true,
+        "OrdenData": 16,
+        "Sangria": false,
+        "Negrita": true,
         "Orden": 3,
         "Elementos": [
             {
                 "Nombre": "Efectivo Inicial",
                 "id": "03-01",
                 "idPadre": "03",
+                "Sangria": false,
+                "field": "Efectivo Inicial",
+                "headerName": "Efectivo Inicial",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
+                "OrdenData": 1,
                 "Orden": 1,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "1. Flujo de efectivo Operativo",
+                "field": "1. Flujo de efectivo Operativo",
+                "headerName": "1. Flujo de efectivo Operativo",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "id": "EESGPM4hWXvDlXSRnCwA",
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
+                "OrdenData": 7,
                 "Orden": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "1.1 Ingresos de Operación",
                 "id": "od11V2OHVgaLG1RiXMiz",
+                "field": "1.1 Ingresos de Operación",
+                "headerName": "1.1 Ingresos de Operación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "OrdenData": 2,
                 "Moneda": true,
                 "Tipo": "Padre",
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "03",
                 "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
                 "Orden": 3,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "1.2 Egresos de Operación",
                 "id": "KtA2Cxpd79TJrW9afqR9",
+                "field": "1.2 Egresos de Operación",
+                "headerName": "1.2 Egresos de Operación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "OrdenData": 3,
                 "Moneda": true,
                 "Tipo": "Padre",
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "03",
                 "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "% de los ingresos para operar",
                 "id": "03-5",
+                "field": "% de los ingresos para operar",
+                "headerName": "% de los ingresos para operar",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "Moneda": false,
+                "OrdenData": 4,
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
                 "Orden": 5,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(-) Pago a proveedores",
                 "id": "03-6",
+                "field": "(-) Pago a proveedores",
+                "headerName": "(-) Pago a proveedores",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": false,
                 "Tipo": "Padre",
+                "OrdenData": 5,
                 "idPadre": "03",
                 "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
                 "Orden": 6,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "% de los ingresos para pagar a proveedores",
+                "field": "% de los ingresos para pagar a proveedores",
+                "headerName": "% de los ingresos para pagar a proveedores",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "id": "03-7",
                 "Moneda": false,
+                "Sangria": true,
+                "Negrita": false,
                 "Tipo": "Padre",
+                "OrdenData": 6,
                 "idPadre": "03",
                 "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
                 "Orden": 7,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Factor de conversión a efectivo operativo",
+                "field": "% de los ingresos para pagar a proveedores",
+                "headerName": "% de los ingresos para pagar a proveedores",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "id": "03-8",
                 "Moneda": false,
+                "Sangria": false,
+                "Negrita": true,
+                "OrdenData": 8,
                 "Tipo": "Padre",
                 "idPadre": "03",
                 "idAbuelo": "EESGPM4hWXvDlXSRnCwA",
                 "Orden": 8,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "2. Flujo de efectivo de Inversión",
+                "field": "2. Flujo de efectivo de Inversión",
+                "headerName": "2. Flujo de efectivo de Inversión",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "id": "GMzSuF04XQBsPmAkIB2C",
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
+                "OrdenData": 11,
                 "Orden": 9,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "2.1 Ingresos de Inversión",
                 "id": "JeFc3TNWBgrgubNPmDYU",
+                "field": "2.1 Ingresos de Inversión",
+                "headerName": "2.1 Ingresos de Inversión",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "OrdenData": 9,
                 "Moneda": true,
                 "Tipo": "Padre",
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "03",
                 "idAbuelo": "GMzSuF04XQBsPmAkIB2C",
                 "Orden": 10,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "2.2 Egresos de Inversión",
                 "id": "KNlKzH3EbD5QcXVAnbwe",
+                "field": "2.2 Egresos de Inversión",
+                "headerName": "2.2 Egresos de Inversión",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "OrdenData": 10,
                 "Moneda": true,
                 "Tipo": "Padre",
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "03",
                 "idAbuelo": "GMzSuF04XQBsPmAkIB2C",
                 "Orden": 11,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "3. Flujo de efectivo Financiero",
+                "field": "3. Flujo de efectivo Financiero",
+                "headerName": "3. Flujo de efectivo Financiero",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "id": "psmpY6iyDJNkW7AKFXgK",
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
+                "OrdenData": 14,
                 "Orden": 12,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "3.1 Ingresos Financieros",
                 "id": "jhtHzgzTXRPgCnWDqsUM",
+                "field": "3.1 Ingresos Financieros",
+                "headerName": "3.1 Ingresos Financieros",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "OrdenData": 12,
                 "Moneda": true,
                 "Tipo": "Padre",
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "03",
                 "idAbuelo": "psmpY6iyDJNkW7AKFXgK",
                 "Orden": 13,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "3.2 Egresos Financieros",
                 "id": "2sAJKELNPwwAuAbU6Vlw",
+                "field": "3.2 Egresos Financieros",
+                "headerName": "3.2 Egresos Financieros",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "OrdenData": 13,
                 "Moneda": true,
                 "Tipo": "Padre",
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "03",
                 "idAbuelo": "psmpY6iyDJNkW7AKFXgK",
                 "Orden": 14,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Flujo de Efectivo Neto",
+                "field": "Flujo de Efectivo Neto",
+                "headerName": "Flujo de Efectivo Neto",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "id": "VmmQpdpunMTqkoSjhzzj",
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": true,
                 "Tipo": "Abuelo",
                 "idPadre": "03",
+                "OrdenData": 16,
                 "Orden": 15,
-                "Editable": false
+                "editable": false
             },
             {
-                "Nombre": "Efectivo Final",
+                "Nombre": "(=) Efectivo Final",
                 "id": "03-16",
+                "field": "(=) Efectivo Final",
+                "headerName": "(=) Efectivo Final",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "03",
+                "Icono": "$",
+                "OrdenData": 15,
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": true,
                 "Orden": 16,
-                "Editable": false
+                "editable": false
+            },
+            {
+                "Nombre": "Factor de conversión a efectivo libre",
+                "id": "03-17",
+                "idPadre": "03",
+                "field": "Factor de conversión a efectivo libre",
+                "headerName": "Factor de conversión a efectivo libre",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Icono": "$",
+                "Sangria": true,
+                "Negrita": false,
+                "OrdenData": 17,
+                "Moneda": false,
+                "Orden": 17,
+                "editable": false
             }
         ]
     },
@@ -456,60 +788,109 @@
                 "Nombre": "Saldo Inicial",
                 "id": "04-01",
                 "Moneda": true,
+                "field": "Saldo Inicial",
+                "headerName": "Saldo Inicial",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Simbolo": 1,
                 "idPadre": "04",
                 "Orden": 1,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(-) Cobros",
                 "id": "04-02",
                 "Moneda": true,
-                "Simbolo": 1,
+                "field": "(-) Cobros",
+                "headerName": "(-) Cobros",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
+                "Simbolo": 2,
                 "idPadre": "04",
                 "Orden": 2,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(+) Nuevas ventas a crédito",
                 "id": "04-03",
                 "Moneda": true,
+                "field": "(+) Nuevas ventas a crédito",
+                "headerName": "(+) Nuevas ventas a crédito",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "Simbolo": 1,
                 "idPadre": "04",
                 "Orden": 3,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(=) Saldo Final",
                 "id": "04-04",
+                "field": "(=) Saldo Final",
+                "headerName": "(=) Saldo Final",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "04",
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Variación",
                 "id": "04-05",
                 "Moneda": true,
+                "field": "Variación",
+                "headerName": "Variación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "04",
                 "Orden": 5,
-                "Editable": false
+                "editable": false
             },
             {
-                "Nombre": "Dias de cobro",
+                "Nombre": "Días de cobro",
                 "id": "04-06",
+                "field": "Días de cobro",
+                "headerName": "Días de cobro",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "04",
                 "Orden": 6,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Cash dejado sobre / levantado de la mesa",
                 "id": "04-07",
+                "field": "Cash dejado sobre / levantado de la mesa",
+                "headerName": "Cash dejado sobre / levantado de la mesa",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
                 "idPadre": "04",
+                "Sangria": false,
+                "Negrita": true,
                 "Orden": 7,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -522,60 +903,109 @@
             {
                 "Nombre": "Inventario Inicial",
                 "id": "05-01",
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": true,
+                "field": "Inventario Inicial",
+                "headerName": "Inventario Inicial",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Simbolo": 1,
                 "idPadre": "05",
                 "Orden": 1,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(+) Compras",
                 "id": "05-02",
                 "Moneda": true,
+                "field": "(+) Compras",
+                "headerName": "(+) Compras",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "Simbolo": 1,
                 "idPadre": "05",
                 "Orden": 2,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(-) Costo de ventas",
                 "id": "05-03",
                 "Moneda": true,
+                "field": "(-) Costo de ventas",
+                "headerName": "(-) Costo de ventas",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "05",
                 "Orden": 3,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(=) Inventario Final",
                 "id": "05-04",
                 "Moneda": true,
+                "field": "(=) Inventario Final",
+                "headerName": "(=) Inventario Final",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "05",
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Variación",
                 "id": "05-05",
+                "field": "Variación",
+                "headerName": "Variación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "05",
                 "Orden": 5,
-                "Editable": false
+                "editable": false
             },
             {
-                "Nombre": "Dias de inventario",
+                "Nombre": "Días de inventario",
                 "id": "05-06",
                 "Moneda": false,
+                "Sangria": false,
+                "field": "Días de inventario",
+                "headerName": "Días de inventario",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": true,
                 "idPadre": "05",
                 "Orden": 6,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Cash dejado sobre / levantado de la mesa",
                 "id": "05-07",
                 "Moneda": true,
+                "field": "Cash dejado sobre / levantado de la mesa",
+                "headerName": "Cash dejado sobre / levantado de la mesa",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "05",
                 "Orden": 7,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -587,62 +1017,111 @@
         "Elementos": [
             {
                 "Nombre": "Saldo inicial",
+                "field": "Saldo inicial",
+                "headerName": "Saldo inicial",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "id": "06-01",
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": true,
                 "Simbolo": 1,
                 "idPadre": "06",
                 "Orden": 1,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(+) Compras",
                 "id": "06-02",
+                "field": "(+) Compras",
+                "headerName": "(+) Compras",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": true,
+                "Negrita": false,
                 "Simbolo": 1,
                 "idPadre": "06",
                 "Orden": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(-) Pagos",
                 "id": "06-03",
                 "Moneda": true,
+                "field": "(-) Pagos",
+                "headerName": "(-) Pagos",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "06",
                 "Simbolo": 2,
                 "Orden": 3,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(=) Saldo final",
                 "id": "06-04",
+                "field": "(=) Saldo final",
+                "headerName": "(=) Saldo final",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "06",
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Variación",
+                "field": "Variación",
+                "headerName": "Variación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "id": "06-05",
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "06",
                 "Orden": 5,
-                "Editable": false
+                "editable": false
             },
             {
-                "Nombre": "Dias de pago",
+                "Nombre": "Días de pago",
                 "id": "06-06",
+                "field": "Días de pago",
+                "headerName": "Días de pago",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "06",
                 "Orden": 6,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Cash dejado sobre / levantado de la mesa",
                 "id": "06-07",
+                "field": "Cash dejado sobre / levantado de la mesa",
+                "headerName": "Cash dejado sobre / levantado de la mesa",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
                 "idPadre": "06",
+                "Sangria": false,
+                "Negrita": true,
                 "Orden": 7,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -655,82 +1134,152 @@
             {
                 "Nombre": "Mensual",
                 "id": "07-01",
+                "field": "Mensual",
+                "headerName": "Mensual",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": true,
                 "Moneda": true,
                 "idPadre": "07",
                 "Orden": 1,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "What If",
                 "id": "07-02",
+                "Sangria": true,
+                "field": "What If",
+                "headerName": "What If",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "07",
                 "Orden": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Real",
                 "id": "07-03",
+                "field": "Real",
+                "headerName": "Real",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "07",
                 "Orden": 3,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Factor de conversión a efectivo (What If)",
                 "id": "07-04",
+                "field": "Factor de conversión a efectivo (What If)",
+                "headerName": "Factor de conversión a efectivo (What If)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "07",
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Factor de conversión a efectivo (Real)",
                 "id": "07-05",
                 "Moneda": false,
+                "field": "Factor de conversión a efectivo (Real)",
+                "headerName": "Factor de conversión a efectivo (Real)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "07",
                 "Orden": 5,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Acumulado histórico",
                 "id": "07-06",
+                "field": "Acumulado histórico",
+                "headerName": "Acumulado histórico",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "07",
                 "Orden": 6,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "What If",
                 "id": "07-07",
+                "field": "What If",
+                "headerName": "What If",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "07",
                 "Orden": 7,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Real",
                 "Moneda": true,
+                "field": "Real",
+                "headerName": "Real",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "id": "07-08",
                 "idPadre": "07",
                 "Orden": 8,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Factor de conversión a efectivo (What If)",
                 "id": "07-09",
+                "field": "Factor de conversión a efectivo (What If)",
+                "headerName": "Factor de conversión a efectivo (What If)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "07",
                 "Orden": 9,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Factor de conversión a efectivo (Real)",
                 "id": "07-10",
+                "field": "Factor de conversión a efectivo (Real)",
+                "headerName": "Factor de conversión a efectivo (Real)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "07",
                 "Orden": 10,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -743,37 +1292,65 @@
             {
                 "Nombre": "Saldo Inicial",
                 "id": "08-01",
+                "field": "Saldo Inicial",
+                "headerName": "Saldo Inicial",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": true,
                 "Simbolo": 1,
                 "idPadre": "08",
                 "Orden": 1,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(+) Compras",
                 "id": "08-02",
+                "field": "(+) Compras",
+                "headerName": "(+) Compras",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": true,
+                "Negrita": false,
                 "Simbolo": 1,
                 "idPadre": "08",
                 "Orden": 2,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(-) Ventas",
                 "id": "08-03",
                 "Moneda": true,
+                "field": "(-) Ventas",
+                "headerName": "(-) Ventas",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "08",
+                "Sangria": true,
+                "Negrita": false,
                 "Simbolo": 2,
                 "Orden": 3,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(=) Total - Activo fijo",
                 "id": "08-04",
+                "field": "(-) Ventas",
+                "headerName": "(-) Ventas",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": true,
                 "idPadre": "08",
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -786,37 +1363,65 @@
             {
                 "Nombre": "Saldo inicial",
                 "id": "09-01",
+                "Sangria": false,
+                "field": "Saldo inicial",
+                "headerName": "Saldo inicial",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "09",
                 "Simbolo": 1,
                 "Orden": 1,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(+) Nueva deuda",
                 "id": "09-02",
+                "field": "(+) Nueva deuda",
+                "headerName": "(+) Nueva deuda",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": true,
+                "Negrita": false,
                 "Simbolo": 1,
                 "idPadre": "09",
                 "Orden": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "(-) Pagos",
                 "id": "09-03",
                 "Moneda": true,
+                "field": "(-) Pagos",
+                "headerName": "(-) Pagos",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "Simbolo": 2,
                 "idPadre": "09",
                 "Orden": 3,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(=) Total - Otros pasivos de corto plazo",
                 "id": "09-04",
+                "field": "(=) Total - Otros pasivos de corto plazo",
+                "headerName": "(=) Total - Otros pasivos de corto plazo",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
                 "idPadre": "09",
+                "Sangria": false,
+                "Negrita": true,
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -829,37 +1434,65 @@
             {
                 "Nombre": "Saldo inicial",
                 "id": "10-01",
+                "field": "Saldo inicial",
+                "headerName": "Saldo inicial",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "10",
                 "Simbolo": 1,
                 "Orden": 1,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(+) Nueva deuda",
                 "id": "10-02",
+                "field": "(+) Nueva deuda",
+                "headerName": "(+) Nueva deuda",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
                 "idPadre": "10",
+                "Sangria": true,
+                "Negrita": false,
                 "Simbolo": 1,
                 "Orden": 2,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(-) Pagos",
                 "id": "10-03",
                 "Moneda": true,
+                "field": "(-) Pagos",
+                "headerName": "(-) Pagos",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": true,
+                "Negrita": false,
                 "idPadre": "10",
                 "Simbolo": 2,
                 "Orden": 3,
-                "Editable": true
+                "editable": true
             },
             {
                 "Nombre": "(=) Total - Pasivos de largo plazo",
                 "id": "10-04",
+                "Sangria": true,
+                "field": "(=) Total - Pasivos de largo plazo",
+                "headerName": "(=) Total - Pasivos de largo plazo",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "10",
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -872,58 +1505,107 @@
             {
                 "Nombre": "Flujo Libre",
                 "id": "11-01",
+                "field": "Flujo Libre",
+                "headerName": "Flujo Libre",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "11",
                 "Orden": 1,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Utilidad neta",
                 "id": "11-02",
+                "Sangria": false,
+                "field": "Utilidad neta",
+                "headerName": "Utilidad neta",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "11",
                 "Orden": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Variación en Cuentas por cobrar",
                 "id": "11-03",
+                "Sangria": false,
+                "field": "Variación en Cuentas por cobrar",
+                "headerName": "Variación en Cuentas por cobrar",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "11",
                 "Orden": 3,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Variación en Inventarios",
                 "id": "11-04",
                 "Moneda": true,
+                "field": "Variación en Inventarios",
+                "headerName": "Variación en Inventarios",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "11",
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Variación en las Inversiones",
                 "id": "11-05",
                 "Moneda": true,
+                "field": "Variación en las Inversiones",
+                "headerName": "Variación en las Inversiones",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "11",
                 "Orden": 5,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Variación en Proveedores",
                 "id": "11-06",
+                "field": "Variación en Proveedores",
+                "headerName": "Variación en Proveedores",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "11",
                 "Orden": 6,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Variación en Pasivos de Largo Plazo",
                 "id": "11-07",
+                "Sangria": false,
+                "field": "Variación en Pasivos de Largo Plazo",
+                "headerName": "Variación en Pasivos de Largo Plazo",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
                 "Moneda": true,
                 "idPadre": "11",
                 "Orden": 7,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -937,153 +1619,272 @@
                 "Nombre": "Costo de ventas ($)",
                 "id": "12-01",
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": false,
+                "field": "Costo de ventas ($)",
+                "headerName": "Costo de ventas ($)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "12",
                 "Orden": 1,
                 "OrdenData": 1,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Compras",
                 "id": "12-02",
                 "Moneda": true,
+                "field": "Compras",
+                "headerName": "Compras",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "12",
                 "Orden": 2,
                 "OrdenData": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Días de compra",
                 "id": "12-03",
                 "Moneda": false,
+                "field": "Días de compra",
+                "headerName": "Días de compra",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "12",
                 "Orden": 3,
                 "OrdenData": 3,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Pago a proveedores",
                 "id": "12-04",
+                "field": "Pago a proveedores",
+                "headerName": "Pago a proveedores",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "12",
                 "Orden": 4,
                 "OrdenData": 4,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Costo de ventas (%)",
                 "id": "12-05",
                 "Moneda": false,
+                "field": "Costo de ventas (%)",
+                "headerName": "Costo de ventas (%)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "12",
                 "Orden": 5,
                 "OrdenData": 11,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "% de los ingresos para pagar a proveedores",
                 "id": "12-06",
+                "field": "% de los ingresos para pagar a proveedores",
+                "headerName": "% de los ingresos para pagar a proveedores",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "12",
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": false,
                 "OrdenData": 6,
                 "Orden": 6,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Gastos de operación totales ($)",
                 "id": "12-07",
+                "field": "Gastos de operación totales ($)",
+                "headerName": "Gastos de operación totales ($)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": false,
                 "OrdenData": 7,
                 "idPadre": "12",
                 "Orden": 7,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Egresos de Operación ($)",
                 "id": "12-08",
+                "field": "Egresos de Operación ($)",
+                "headerName": "Egresos de Operación ($)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": true,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "12",
                 "Orden": 8,
                 "OrdenData": 8,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Gastos de operación totales (%)",
                 "id": "12-09",
+                "field": "Gastos de operación totales (%)",
+                "headerName": "Gastos de operación totales (%)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "12",
                 "Orden": 9,
                 "OrdenData": 9,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Egresos de Operación (%)",
                 "id": "12-10",
+                "field": "Egresos de Operación (%)",
+                "headerName": "Egresos de Operación (%)",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "12",
+                "Sangria": false,
+                "Negrita": false,
                 "Orden": 10,
                 "OrdenData": 10,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Margen Bruto",
                 "id": "12-11",
                 "idPadre": "12",
+                "field": "Margen Bruto",
+                "headerName": "Margen Bruto",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Orden": 11,
                 "OrdenData": 5,
                 "Moneda": false,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Margen de Operación",
                 "id": "12-12",
+                "field": "Margen de Operación",
+                "headerName": "Margen de Operación",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "12",
+                "Sangria": false,
+                "Negrita": false,
                 "Orden": 12,
                 "OrdenData": 12,
                 "Moneda": false,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Margen Neto",
                 "id": "12-13",
                 "idPadre": "12",
+                "field": "Margen Neto",
+                "headerName": "Margen Neto",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Orden": 13,
                 "OrdenData": 13,
                 "Moneda": false,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Inversión en Gente",
                 "id": "12-14",
                 "idPadre": "12",
+                "field": "Inversión en Gente",
+                "headerName": "Inversión en Gente",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Orden": 14,
                 "OrdenData": 14,
                 "Moneda": false,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Inversión en Marketing",
                 "id": "12-15",
                 "idPadre": "12",
+                "Sangria": false,
+                "field": "Inversión en Marketing",
+                "headerName": "Inversión en Marketing",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
                 "Orden": 15,
                 "OrdenData": 15,
                 "Moneda": false,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Punto de Equilibrio Mensual",
                 "id": "12-16",
                 "idPadre": "12",
+                "field": "Punto de Equilibrio Mensual",
+                "headerName": "Punto de Equilibrio Mensual",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": true,
                 "Orden": 16,
                 "OrdenData": 16,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Punto de Equilibrio Semanal",
                 "id": "12-17",
+                "field": "Punto de Equilibrio Semanal",
+                "headerName": "Punto de Equilibrio Semanal",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "12",
+                "Sangria": false,
+                "Negrita": false,
                 "Orden": 17,
                 "OrdenData": 17,
                 "Moneda": true,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -1096,34 +1897,62 @@
             {
                 "Nombre": "Días de Cobro",
                 "id": "13-01",
+                "field": "Días de Cobro",
+                "headerName": "Días de Cobro",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "13",
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": false,
                 "Orden": 1,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Días de Inventario",
                 "id": "13-02",
                 "idPadre": "13",
+                "field": "Días de Inventario",
+                "headerName": "Días de Inventario",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": false,
                 "Orden": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Días de Pago",
                 "id": "13-03",
+                "field": "Días de Pago",
+                "headerName": "Días de Pago",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "13",
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": false,
                 "Orden": 3,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Días de recuperación del efectivo",
                 "id": "13-04",
+                "field": "Días de recuperación del efectivo",
+                "headerName": "Días de recuperación del efectivo",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "13",
                 "Moneda": false,
+                "Sangria": false,
+                "Negrita": false,
                 "Orden": 4,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -1136,26 +1965,47 @@
             {
                 "Nombre": "ROI en gente",
                 "id": "14-01",
+                "Sangria": false,
+                "field": "ROI en gente",
+                "headerName": "ROI en gente",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Negrita": false,
                 "Moneda": false,
                 "idPadre": "14",
                 "Orden": 1,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "ROI de Marketing",
                 "id": "14-02",
+                "field": "ROI de Marketing",
+                "headerName": "ROI de Marketing",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "14",
                 "Orden": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "ROI de activos operativos",
                 "id": "14-03",
+                "field": "ROI de activos operativos",
+                "headerName": "ROI de activos operativos",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "Moneda": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "14",
                 "Orden": 3,
-                "Editable": false
+                "editable": false
             }
         ]
     },
@@ -1168,26 +2018,47 @@
             {
                 "Nombre": "Dinero dejado sobre / levantado de la mesa",
                 "id": "15-01",
+                "field": "Dinero dejado sobre / levantado de la mesa",
+                "headerName": "Dinero dejado sobre / levantado de la mesa",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
                 "idPadre": "15",
+                "Sangria": false,
+                "Negrita": false,
                 "Moneda": true,
                 "Orden": 1,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Liquidez",
                 "id": "15-02",
+                "field": "Liquidez",
+                "headerName": "Liquidez",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "15",
                 "Moneda": false,
                 "Orden": 2,
-                "Editable": false
+                "editable": false
             },
             {
                 "Nombre": "Valor del Capital de trabajo",
                 "id": "15-03",
+                "field": "Valor del Capital de trabajo",
+                "headerName": "Valor del Capital de trabajo",
+                "pinned": "left",
+                "filter": true,
+                "sortable": false,
+                "Sangria": false,
+                "Negrita": false,
                 "idPadre": "15",
                 "Moneda": true,
                 "Orden": 3,
-                "Editable": false
+                "editable": false
             }
         ]
     }

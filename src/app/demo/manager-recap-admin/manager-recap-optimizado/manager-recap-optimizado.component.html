@@ -6,7 +6,9 @@
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
-      <p-accordion *ngIf="cargando==false" [activeIndex]="0">
+      <p-accordion 
+      [multiple]="true"
+      *ngIf="cargando==false" >
         <p-accordionTab [header]="catalogo.Nombre" *ngFor="let catalogo of CatalogoElementos; let i = index">
           <div class="d-flex justify-content-start">
 

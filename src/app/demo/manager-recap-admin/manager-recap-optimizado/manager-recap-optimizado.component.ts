@@ -253,7 +253,6 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
 
   construirCabecera() {
-    console.log('CatalogoElementos', this.CatalogoElementos)
     let AniosCabecera = this.construirTiempos().AniosSeleccionados;
     let MesesCabecera = this.construirTiempos().MesesSeleccionados;
     this.Cabecera = [];
@@ -335,11 +334,15 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
       });
     })
 
-    console.log('Cabecera', this.Cabecera)
     this.construirData()
   }
 
 
+  getValoresManagerRecapValorNumero(key:any){
+
+    return this.RegistrosManagerRecapt.find((data:any)=>data.key==key)==undefined ? 0 :this.RegistrosManagerRecapt.find((data:any)=>data.key==key).Valor
+
+  }
   getValoresManagerRecap(key:any){
 
     return this.RegistrosManagerRecapt.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecapt.find((data:any)=>data.key==key).ValorMostrar
@@ -352,6 +355,349 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
   }
 
+  obtenerSubArrayConElemento(RowData:any,idElemento: string) {
+    const elemento = RowData.flat().find(item => item.idElemento === idElemento);
+    return elemento || null;
+  }
+
+
+  actualizarValorSimple(idElemento: string, mesAnio: string, nuevoValor: any): boolean {
+  // Aplanar el array para encontrar el elemento
+  const elemento = this.RowData.flat().find(item => item.idElemento === idElemento);
+  
+  if (elemento) {
+    // Actualizar el valor
+    elemento[mesAnio] = nuevoValor;
+    
+    // IMPORTANTE: Para trigger de detección de cambios en Angular
+    // Esto es necesario porque estamos modificando la referencia interna
+    // pero Angular necesita saber que hubo un cambio
+    this.RowData = [...this.RowData];
+    
+    return true;
+  }
+  
+  return false;
+}
+
+
+
+  actualizarData(Anio:any,Mes:any,Valor:any){
+    let DatosElementos = [];
+    let _RowData=[...this.RowData]
+    this. CatalogoElementos.forEach((catalogo) => {
+        const copiaCatalogoElementos = [...catalogo.Elementos].sort(
+        (a, b) => a.OrdenData - b.OrdenData  );
+      copiaCatalogoElementos.forEach((elemento) => {
+      const key = `${Anio}-${Mes}-${elemento.id}`;
+      const keyAnioMes = `${Anio} ${Mes}`;
+      const index = this.RegistrosManagerRecapt.findIndex((reg: any) => reg.key === key);
+      if (index !== -1) {
+        this.RegistrosManagerRecapt[index].Valor = Number(Valor)
+      }
+      else {
+        this.RegistrosManagerRecapt.push(
+        {
+          key: `${key}`,
+          Anio: Anio,
+          Mes: Mes,
+          "idCatalogo":catalogo.id,
+          idElemento: elemento.id, 
+          Valor: Number(Valor),     
+          TipoNumero:Number(Valor)< 0
+                    ? 1
+                    : 2
+          }
+       )
+      }
+
+      //Procesamiento de Datos
+        if (!DatosElementos[key]) {
+          DatosElementos[key] = [];
+        }  
+        if (elemento.editable == true) {
+          if (elemento.id == "04-01") {
+            if (Mes == 1) 
+            {
+              let Valor =
+                DatosElementos[`${Anio - 1}-${12}-04-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio - 1}-${12}-04-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio - 1}-${12}-04-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)
+              }
+              else 
+              {
+               let Valor =
+                DatosElementos[`${Anio}-${Mes-1}-04-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio}-${Mes-1}-04-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio}-${Mes-1}-04-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+              }
+        
+          }
+          else if (elemento.id == "05-01") {
+            if (Mes == 1) 
+            {
+              let Valor =
+                DatosElementos[`${Anio - 1}-${12}-05-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio - 1}-${12}-05-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio - 1}-${12}-05-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+            }
+            else 
+              {
+               let Valor =
+                DatosElementos[`${Anio}-${Mes-1}-05-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio}-${Mes-1}-05-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio}-${Mes-1}-05-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+              }
+        
+          }   
+
+          else if (elemento.id == "06-01") {
+            if (Mes == 1) 
+            {
+              let Valor =
+                DatosElementos[`${Anio - 1}-${12}-06-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio - 1}-${12}-06-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio - 1}-${12}-06-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+            }
+            else 
+              {
+               let Valor =
+                DatosElementos[`${Anio}-${Mes-1}-06-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio}-${Mes-1}-06-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio}-${Mes-1}-06-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+              }
+        
+          } 
+          else if (elemento.id == "08-01") {
+            if (Mes == 1) 
+            {
+              let Valor =
+                DatosElementos[`${Anio - 1}-${12}-08-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio - 1}-${12}-08-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio - 1}-${12}-08-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+            }
+            else 
+              {
+               let Valor =
+                DatosElementos[`${Anio}-${Mes-1}-08-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio}-${Mes-1}-08-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio}-${Mes-1}-08-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+              }
+        
+          }   
+          else if (elemento.id == "09-01") {
+            if (Mes == 1) 
+            {
+              let Valor =
+                DatosElementos[`${Anio - 1}-${12}-09-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio - 1}-${12}-09-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio - 1}-${12}-09-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+            }
+            else 
+              {
+               let Valor =
+                DatosElementos[`${Anio}-${Mes-1}-09-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio}-${Mes-1}-09-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio}-${Mes-1}-09-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+              }
+        
+          }     
+          else if (elemento.id == "10-01") {
+            if (Mes == 1) 
+            {
+              let Valor =
+                DatosElementos[`${Anio - 1}-${12}-10-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio - 1}-${12}-10-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio - 1}-${12}-10-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+            }
+            else 
+              {
+               let Valor =
+                DatosElementos[`${Anio}-${Mes-1}-10-04`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio}-${Mes-1}-10-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura: DatosElementos[`${Anio}-${Mes-1}-10-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+              }
+        
+          }     
+          else if (
+            elemento.id == "01-01" ||
+            elemento.id == "01-03" ||
+            elemento.id == "01-04" ||
+            elemento.id == "01-06") {     
+              let Valor =
+                DatosElementos[`${key}`]?.[0]?.Valor ==
+                undefined
+                  ? this.getValoresManagerRecapValorNumero(key)
+                  : DatosElementos[`${Anio - 1}-${12}-10-04`]?.[0]?.Valor;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Valor,
+                Lectura: DatosElementos[`${Anio - 1}-${12}-10-04`]?.[0]?.Valor ==
+                  undefined
+                    ? false
+                    : true});
+
+          }                         
+          
+
+
+
+
+
+
+        }        
+
+      })
+    }) 
+  }
+
   construirData() {
     let _DataRow: any = []
     this.CatalogoElementos.forEach(catalogo => {
@@ -362,7 +708,8 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
         let fila: any = {
           Concepto: element.Nombre,
           editable: element.editable,
-          idElemento:element.id
+          idElemento:element.id,
+          idCatalogo:catalogo.id
         };
         this.Cabecera
           .filter((cabecera: any) => cabecera.Tipo != 1)
