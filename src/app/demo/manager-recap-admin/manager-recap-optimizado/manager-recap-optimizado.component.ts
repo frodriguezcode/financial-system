@@ -115,7 +115,6 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
     });
   }
    onCellValueChanged(event: any) {
-
    
 
     let DatosCabecera={
@@ -132,9 +131,9 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
       "Valor": event.newValue.startsWith('$') ? event.newValue.substring(1) : event.newValue
 
     }
+    this.actualizarData(DatosCabecera.Anio,DatosCabecera.NumMes,DatosCabecera.Mes,Number(DatosElemento.Valor),DatosElemento.idElemento)
+   
 
-     console.log('DatosCabecera',DatosCabecera)
-     console.log('DatosElemento',DatosElemento)
 
   }
 
@@ -361,55 +360,55 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
   }
 
 
-  actualizarValorSimple(idElemento: string, mesAnio: string, nuevoValor: any): boolean {
-  // Aplanar el array para encontrar el elemento
-  const elemento = this.RowData.flat().find(item => item.idElemento === idElemento);
-  
-  if (elemento) {
-    // Actualizar el valor
-    elemento[mesAnio] = nuevoValor;
-    
-    // IMPORTANTE: Para trigger de detección de cambios en Angular
-    // Esto es necesario porque estamos modificando la referencia interna
-    // pero Angular necesita saber que hubo un cambio
-    this.RowData = [...this.RowData];
-    
-    return true;
-  }
-  
-  return false;
+  actualizarValorSimple(idElemento: string, mesAnio: string, nuevoValor: any) {
+const filaActual = this.RowData.flat().find(item => item.idElemento === idElemento);
+
+if (filaActual) {
+
+    // nueva referencia → AG Grid refresca
+    const nuevaFila = { ...filaActual, [mesAnio]: nuevoValor };
+
+    // Reemplaza la fila dentro de RowData
+    this.RowData = this.RowData.map(grupo =>
+        grupo.map(item =>
+            item.idElemento === idElemento ? nuevaFila : item
+        )
+    );
+}
 }
 
 
 
-  actualizarData(Anio:any,Mes:any,Valor:any){
+  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any){
     let DatosElementos = [];
     let _RowData=[...this.RowData]
+     const key = `${Anio}-${Mes}-${idElemento}`;
+    const index = this.RegistrosManagerRecapt.findIndex((reg: any) => reg.key === key);
+    if (index !== -1) {
+      this.RegistrosManagerRecapt[index].Valor = Number(Valor)
+    }
+    else {
+      this.RegistrosManagerRecapt.push(
+      {
+        key: `${key}`,
+        Anio: Anio,
+        Mes: Mes,
+        "idCatalogo":'',
+        idElemento: idElemento, 
+        Valor: Number(Valor),     
+        TipoNumero:Number(Valor)< 0
+                  ? 1
+                  : 2
+        }
+     )
+    }
     this. CatalogoElementos.forEach((catalogo) => {
         const copiaCatalogoElementos = [...catalogo.Elementos].sort(
         (a, b) => a.OrdenData - b.OrdenData  );
       copiaCatalogoElementos.forEach((elemento) => {
       const key = `${Anio}-${Mes}-${elemento.id}`;
-      const keyAnioMes = `${Anio} ${Mes}`;
-      const index = this.RegistrosManagerRecapt.findIndex((reg: any) => reg.key === key);
-      if (index !== -1) {
-        this.RegistrosManagerRecapt[index].Valor = Number(Valor)
-      }
-      else {
-        this.RegistrosManagerRecapt.push(
-        {
-          key: `${key}`,
-          Anio: Anio,
-          Mes: Mes,
-          "idCatalogo":catalogo.id,
-          idElemento: elemento.id, 
-          Valor: Number(Valor),     
-          TipoNumero:Number(Valor)< 0
-                    ? 1
-                    : 2
-          }
-       )
-      }
+      const keyAnioMes = `${MesNombre} ${Anio}`;
+      
 
       //Procesamiento de Datos
         if (!DatosElementos[key]) {
@@ -436,9 +435,9 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                     ? false
                     : true});
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)
-              }
-              else 
-              {
+            }
+            else 
+            {
                let Valor =
                 DatosElementos[`${Anio}-${Mes-1}-04-04`]?.[0]?.Valor ==
                 undefined
@@ -455,7 +454,8 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
-              }
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)      
+            }
         
           }
           else if (elemento.id == "05-01") {
@@ -477,6 +477,8 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)     
+
             }
             else 
               {
@@ -496,6 +498,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)     
               }
         
           }   
@@ -519,6 +522,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)      
             }
             else 
               {
@@ -538,6 +542,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)     
               }
         
           } 
@@ -560,6 +565,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)      
             }
             else 
               {
@@ -579,6 +585,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)        
               }
         
           }   
@@ -601,6 +608,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+            this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)        
             }
             else 
               {
@@ -620,6 +628,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)      
               }
         
           }     
@@ -642,6 +651,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+            this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)        
             }
             else 
               {
@@ -661,6 +671,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
                   undefined
                     ? false
                     : true});
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)      
               }
         
           }     
@@ -668,31 +679,43 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
             elemento.id == "01-01" ||
             elemento.id == "01-03" ||
             elemento.id == "01-04" ||
-            elemento.id == "01-06") {     
-              let Valor =
-                DatosElementos[`${key}`]?.[0]?.Valor ==
-                undefined
-                  ? this.getValoresManagerRecapValorNumero(key)
-                  : DatosElementos[`${Anio - 1}-${12}-10-04`]?.[0]?.Valor;
-
+            elemento.id == "01-06") {  
+              let Valor =this.getValoresManagerRecapValorNumero(key)
+        
               DatosElementos[`${key}`].push({
                 Valor:Valor,
                 TipoNumero:Valor < 0 ? 1 : 2,
                 ValorMostrar:Valor,
-                Lectura: DatosElementos[`${Anio - 1}-${12}-10-04`]?.[0]?.Valor ==
-                  undefined
+                Lectura: Valor==
+                  0
                     ? false
                     : true});
+            this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)        
 
           }                         
           
 
+        }
+        
+        else {
+          if (catalogo.id == "01") {
+            if (elemento.id == "01-02") {
+              let Valor1 =DatosElementos[`${Anio}-${Mes}-01-03`]?.[0]?.Valor || 0;
+              let Valor2 =DatosElementos[`${Anio}-${Mes}-01-01`]?.[0]?.Valor || 0;
+              let Valor =Valor2 == 0 ? 0 : Valor1 / Valor2
 
-
-
-
-
-        }        
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:((Valor*100).toFixed(0)) + "%",
+                Lectura: Valor==0
+                    ? false
+                    : true});
+    
+            this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
+            }
+          }
+        }
 
       })
     }) 
