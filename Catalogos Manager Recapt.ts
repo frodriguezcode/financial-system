@@ -17,6 +17,7 @@
                 "Moneda": false,
                 "Sangria": false,
                 "Negrita": false,
+                "idsDependencias":['01-02'],
                 "Icono": "",
                 "Simbolo": 1,
                 "Orden": 1,
@@ -29,6 +30,7 @@
                 "field": "(X) % de Conversión",
                 "headerName": "(X) % de Conversión",
                 "pinned": "left",
+                "idsDependencias":[''],
                 "filter": true,
                 "sortable": false,
                 "OrdenData": 3,
@@ -45,6 +47,7 @@
                 "field": "(=) Clientes Nuevos",
                 "headerName": "(=) Clientes Nuevos",
                 "pinned": "left",
+                "idsDependencias":['01-02','01-05'],
                 "filter": true,
                 "sortable": false,
                 "Sangria": false,
@@ -60,6 +63,7 @@
             {
                 "Nombre": "(+) Clientes Existentes",
                 "id": "01-04",
+                "idsDependencias":['01-05'],
                 "field": "(+) Clientes Existentes",
                 "headerName": "(+) Clientes Existentes",
                 "pinned": "left",
@@ -78,6 +82,7 @@
             {
                 "Nombre": "(=) Clientes Totales",
                 "id": "01-05",
+                "idsDependencias":['01-07','01-08'],
                 "Icono": "",
                 "idPadre": "01",
                 "field": "(=) Clientes Totales",
@@ -95,6 +100,7 @@
             {
                 "Nombre": "Transacciones Totales",
                 "id": "01-06",
+                "idsDependencias":['01-07'],
                 "idPadre": "01",
                 "field": "Transacciones Totales",
                 "headerName": "Transacciones Totales",
@@ -113,6 +119,7 @@
             {
                 "Nombre": "(X) Transacciones Promedio",
                 "id": "01-07",
+                "idsDependencias":['01-08'],
                 "field": "(X) Transacciones Promedio",
                 "headerName": "(X) Transacciones Promedio",
                 "pinned": "left",
@@ -131,6 +138,7 @@
                 "Nombre": "(X) Monto Promedio de Venta",
                 "id": "01-08",
                 "Icono": "$",
+                "idsDependencias":[''],
                 "field": "(X) Monto Promedio de Venta",
                 "headerName": "(X) Monto Promedio de Venta",
                 "pinned": "left",
@@ -147,6 +155,7 @@
             {
                 "Nombre": "(=) Ventas Netas",
                 "id": "01-09",
+                "idsDependencias":['02-01'],
                 "field": "(=) Ventas Netas",
                 "headerName": "(=) Ventas Netas",
                 "pinned": "left",
