@@ -773,7 +773,7 @@ if (filaActual) {
               
           }
           //Estado de Resultados
-          if (catalogo.id == "02") {
+          else if (catalogo.id == "02") {
             if (elemento.id == "02-01") {
               let Valor =
                 DatosElementos[`${Anio}-${Mes}-01-09`]?.[0]?.Valor || 0
@@ -901,11 +901,383 @@ if (filaActual) {
                    
                 });
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)
-            }                                                                
+            }  
           }
+          //Cuentas por cobrar
+          else if (catalogo.id == "04") {
+            if (elemento.id == "04-04") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-01`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-02`]?.[0]?.Valor || 0
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-04-03`]?.[0]?.Valor || 0
+              let Valor = Valor1+Valor2+Valor3
 
-          
- 
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "04-05") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-04`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-01`]?.[0]?.Valor || 0
+
+              let Valor = Valor1-Valor2
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "04-06") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-04`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-02`]?.[0]?.Valor || 0
+
+              let Valor = Valor2 / 30 == 0 ? 0 : Valor1 / (Valor2 / 30)
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "04-07") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-06`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-02`]?.[0]?.Valor || 0
+
+              let Valor = (30 - Valor1) * (Valor2 / 30);
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+          }
+          // Inventarios
+          else if (catalogo.id == "05") {
+            if (elemento.id == "05-03") {
+         
+              let Valor =DatosElementos[`${Anio}-${Mes}-02-02`]?.[0]?.Valor || 0
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }
+            else if (elemento.id == "05-04") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-01`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-02`]?.[0]?.Valor || 0
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-05-03`]?.[0]?.Valor || 0
+
+              let Valor = Valor1+Valor2+Valor3
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }  
+            else if (elemento.id == "05-05") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-04`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-01`]?.[0]?.Valor || 0
+
+              let Valor = Valor1-Valor2
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "05-06") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-04`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-03`]?.[0]?.Valor || 0
+
+              let Valor = Valor2 * -1 == 0 ? 0 : (Valor1 / (Valor2 * -1)) * 30
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }  
+            else if (elemento.id == "05-07") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-06`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-03`]?.[0]?.Valor || 0
+
+              let Valor = (Valor1 - 15) * (Valor2 / 30);
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }                                     
+
+
+          }
+          // Proveedores
+          else if (catalogo.id == "06") {
+            if (elemento.id == "06-02") {        
+              let Valor =DatosElementos[`${Anio}-${Mes}-05-02`]?.[0]?.Valor || 0
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }  
+            else if (elemento.id == "06-03") {        
+              let Valor =DatosElementos[`${Anio}-${Mes}-03-6`]?.[0]?.Valor || 0
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "06-04") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-01`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-02`]?.[0]?.Valor || 0
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-03`]?.[0]?.Valor || 0
+
+              let Valor = Valor1+Valor2+Valor3
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "06-05") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-04`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-01`]?.[0]?.Valor || 0
+
+              let Valor = Valor1-Valor2
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }
+            else if (elemento.id == "06-06") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-04`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-03`]?.[0]?.Valor || 0
+
+              let Valor = Valor2 * -1 == 0 ? 0 : (Valor1 / (Valor2 * -1)) * 30
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "06-07") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-06`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-03`]?.[0]?.Valor || 0
+
+              let Valor = (Valor1 - 30) * (Valor2 / 30);
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }                                       
+          }
+          // Afectación al flujo de efectivo
+          else if (catalogo.id == "07") {
+            if (elemento.id == "07-01") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-05`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-05`]?.[0]?.Valor || 0
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-05`]?.[0]?.Valor || 0
+
+              let Valor = (Valor1 + Valor2) * -1 + Valor3;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "07-02" || elemento.id == "07-08") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-07-01`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+
+              let Valor =Valor1 < 0 ? Valor2 + Valor1 * -1 : Valor2;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }
+            else if (elemento.id == "07-03") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+              let Valor =Valor1 
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
+            }
+            else if (elemento.id == "07-04") {  
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-07-02`]?.[0]?.Valor || 0
+              let Valor =Valor1 == 0 ? 0 : Valor2 / Valor1; 
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:(Valor * 100).toFixed(0) + "%",
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
+            }   
+            else if (elemento.id == "07-05") {  
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-07-03`]?.[0]?.Valor || 0
+              let Valor =Valor1 == 0 ? 0 : Valor2 / Valor1;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:(Valor * 100).toFixed(0) + "%",
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
+            } 
+            else if (elemento.id == "07-06") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-07`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-07`]?.[0]?.Valor || 0
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-07`]?.[0]?.Valor || 0
+
+              let Valor = Valor1 + Valor2 + Valor3;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }    
+            else if (elemento.id == "07-07") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-07-06`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
+
+              let Valor = Valor1 < 0 ? Valor2 + Valor1 * -1 : Valor2;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }  
+            else if (elemento.id == "07-09") {  
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-07-07`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+              let Valor =Valor1 == 0 ? 0 : Valor2 / Valor1;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:(Valor * 100).toFixed(0) + "%",
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
+            }  
+            else if (elemento.id == "07-10") {  
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-07-08`]?.[0]?.Valor || 0
+              let Valor =Valor1 == 0 ? 0 : Valor2 / Valor1;
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:(Valor * 100).toFixed(0) + "%",
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
+            }                         
+                                     
+
+
+          }          
 
         }
 
