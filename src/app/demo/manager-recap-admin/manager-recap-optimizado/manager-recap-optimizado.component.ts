@@ -701,8 +701,8 @@ if (filaActual) {
           //Mercadotecnia
           if (catalogo.id == "01") {
             if (elemento.id == "01-02") {
-              let Valor1 =DatosElementos[`${Anio}-${Mes}-01-03`]?.[0]?.Valor || 0;
-              let Valor2 =DatosElementos[`${Anio}-${Mes}-01-01`]?.[0]?.Valor || 0;
+              let Valor1 =DatosElementos[`${Anio}-${Mes}-01-03`]?.[0]?.Valor || this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-03`);
+              let Valor2 =DatosElementos[`${Anio}-${Mes}-01-01`]?.[0]?.Valor || this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-01`);
               let Valor =Valor2 == 0 ? 0 : Valor1 / Valor2
 
               DatosElementos[`${key}`].push({
@@ -716,8 +716,8 @@ if (filaActual) {
             this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
             }
             else if (elemento.id == "01-05") {
-              let Valor1 =DatosElementos[`${Anio}-${Mes}-01-03`]?.[0]?.Valor || 0;
-              let Valor2 =DatosElementos[`${Anio}-${Mes}-01-04`]?.[0]?.Valor || 0;
+              let Valor1 =DatosElementos[`${Anio}-${Mes}-01-03`]?.[0]?.Valor || this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-03`);
+              let Valor2 =DatosElementos[`${Anio}-${Mes}-01-04`]?.[0]?.Valor || this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-04`);
               let Valor =Valor1 + Valor2
 
               DatosElementos[`${key}`].push({
@@ -731,14 +731,14 @@ if (filaActual) {
             this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0) 
             }  
             else if (elemento.id == "01-07") {
-              let Valor1 =DatosElementos[`${Anio}-${Mes}-01-05`]?.[0]?.Valor || 0;
-              let Valor2 =DatosElementos[`${Anio}-${Mes}-01-06`]?.[0]?.Valor || 0;
+              let Valor1 =DatosElementos[`${Anio}-${Mes}-01-05`]?.[0]?.Valor || this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-05`);
+              let Valor2 =DatosElementos[`${Anio}-${Mes}-01-06`]?.[0]?.Valor || this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-06`);
               let Valor = Valor2 == 0 ? 0 : Valor1 / Valor2
 
               DatosElementos[`${key}`].push({
                 Valor:Valor,
                 TipoNumero:Valor < 0 ? 1 : 2,
-                ValorMostrar:Valor,
+                ValorMostrar:Number(Valor).toFixed(2),
                 Lectura: Valor==0
                     ? false
                     : true});
@@ -748,21 +748,23 @@ if (filaActual) {
             else if (elemento.id == "01-08") {
               let Valor1 =
                 DatosElementos[`${Anio}-${Mes}-01-09`]?.[0]?.Valor ||
-                0;
+                this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-09`);
               let Valor2 =
                 DatosElementos[`${Anio}-${Mes}-01-07`]?.[0]?.Valor ||
-                0;
+                this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-07`);
               let Valor3 =
                 DatosElementos[`${Anio}-${Mes}-01-05`]?.[0]?.Valor ||
-                0;
+                this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-05`);
               let Valor =
                 Valor2 == 0 || Valor3 == 0 ? 0 : Valor1 / Valor2 / Valor3;
+
+       
 
               DatosElementos[`${key}`].push({
                 Valor:Valor,
                 TipoNumero:Valor < 0 ? 1 : 2,
                 ValorMostrar:
-                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                  Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(3)).toLocaleString("en-US")
                   : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
                 Lectura: Valor < 0
                     ? false
@@ -776,7 +778,8 @@ if (filaActual) {
           else if (catalogo.id == "02") {
             if (elemento.id == "02-01") {
               let Valor =
-                DatosElementos[`${Anio}-${Mes}-01-09`]?.[0]?.Valor || 0
+                DatosElementos[`${Anio}-${Mes}-01-09`]?.[0]?.Valor || 
+                this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-01-09`)
 
               DatosElementos[`${key}`].push({
                 Valor:Valor,
@@ -792,8 +795,10 @@ if (filaActual) {
 
             }
             else if (elemento.id == "02-03") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-02`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor 
+              ||  this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-02`]?.[0]?.Valor 
+              || this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-02`)
               let Valor = Valor1+Valor2
 
               DatosElementos[`${key}`].push({
@@ -808,11 +813,12 @@ if (filaActual) {
                 });
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
 
-            }
-      
+            }      
             else if (elemento.id == "02-04") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-03`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-03`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor ||
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
               let Valor = Valor2 == 0 ? 0 : Valor1 / Valor2;
 
               DatosElementos[`${key}`].push({
@@ -825,9 +831,12 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)
             }  
             else if (elemento.id == "02-08") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-05`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-06`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-02-07`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-05`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-05`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-06`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-06`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-02-07`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-07`)
               let Valor = Valor1+Valor2+Valor3
 
               DatosElementos[`${key}`].push({
@@ -841,10 +850,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }     
             else if (elemento.id == "02-09") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-03`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-08`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-03`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-08`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-08`)
               let Valor = Valor1+Valor2
-
               DatosElementos[`${key}`].push({
                 Valor:Valor,
                 TipoNumero:Valor < 0 ? 1 : 2,
@@ -856,8 +866,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "02-10") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-09`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-09`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-09`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
               let Valor = Valor2 == 0 ? 0 : Valor1 / Valor2;
 
               DatosElementos[`${key}`].push({
@@ -870,12 +883,23 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)
             }   
             else if (elemento.id == "02-15") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-09`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-10`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-02-11`]?.[0]?.Valor || 0
-              let Valor4 = DatosElementos[`${Anio}-${Mes}-02-12`]?.[0]?.Valor || 0
-              let Valor5 = DatosElementos[`${Anio}-${Mes}-02-13`]?.[0]?.Valor || 0
-              let Valor6 = DatosElementos[`${Anio}-${Mes}-02-14`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-09`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-09`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-10`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-10`)
+
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-02-11`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-11`)
+
+              let Valor4 = DatosElementos[`${Anio}-${Mes}-02-12`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-12`)
+
+              let Valor5 = DatosElementos[`${Anio}-${Mes}-02-13`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-13`)
+
+              let Valor6 = DatosElementos[`${Anio}-${Mes}-02-14`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-14`)
               let Valor = Valor1+Valor2+Valor3+Valor4+Valor5+Valor6
 
               DatosElementos[`${key}`].push({
@@ -889,8 +913,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "02-16") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-15`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-15`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-15`)
               let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
               let Valor = Valor2 == 0 ? 0 : Valor1 / Valor2;
 
               DatosElementos[`${key}`].push({
@@ -906,9 +932,12 @@ if (filaActual) {
           //Cuentas por cobrar
           else if (catalogo.id == "04") {
             if (elemento.id == "04-04") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-01`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-02`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-04-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-01`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-02`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-04-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-03`)
               let Valor = Valor1+Valor2+Valor3
 
               DatosElementos[`${key}`].push({
@@ -922,8 +951,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "04-05") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-04`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-04`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-01`)
 
               let Valor = Valor1-Valor2
 
@@ -938,8 +970,12 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "04-06") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-04`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-02`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-04`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-02`)
+
 
               let Valor = Valor2 / 30 == 0 ? 0 : Valor1 / (Valor2 / 30)
 
@@ -952,8 +988,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "04-07") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-06`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-02`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-06`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-06`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-02`)
 
               let Valor = (30 - Valor1) * (Valor2 / 30);
 
@@ -972,7 +1011,9 @@ if (filaActual) {
           else if (catalogo.id == "05") {
             if (elemento.id == "05-03") {
          
-              let Valor =DatosElementos[`${Anio}-${Mes}-02-02`]?.[0]?.Valor || 0
+              let Valor =DatosElementos[`${Anio}-${Mes}-02-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-02`)
+
 
               DatosElementos[`${key}`].push({
                 Valor:Valor,
@@ -985,9 +1026,14 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }
             else if (elemento.id == "05-04") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-01`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-02`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-05-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-01`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-02`)
+
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-05-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-03`)
 
               let Valor = Valor1+Valor2+Valor3
 
@@ -1002,8 +1048,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "05-05") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-04`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-04`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-01`)
 
               let Valor = Valor1-Valor2
 
@@ -1018,8 +1066,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "05-06") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-04`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-04`)
+              
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-03`)
 
               let Valor = Valor2 * -1 == 0 ? 0 : (Valor1 / (Valor2 * -1)) * 30
 
@@ -1032,8 +1083,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "05-07") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-06`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-06`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-06`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-03`)
 
               let Valor = (Valor1 - 15) * (Valor2 / 30);
 
@@ -1047,13 +1101,13 @@ if (filaActual) {
                 });
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }                                     
-
-
           }
           // Proveedores
           else if (catalogo.id == "06") {
             if (elemento.id == "06-02") {        
-              let Valor =DatosElementos[`${Anio}-${Mes}-05-02`]?.[0]?.Valor || 0
+              let Valor =DatosElementos[`${Anio}-${Mes}-05-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-02`)
+
               DatosElementos[`${key}`].push({
                 Valor:Valor,
                 TipoNumero:Valor < 0 ? 1 : 2,
@@ -1065,7 +1119,9 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "06-03") {        
-              let Valor =DatosElementos[`${Anio}-${Mes}-03-6`]?.[0]?.Valor || 0
+              let Valor =DatosElementos[`${Anio}-${Mes}-03-6`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-03-6`)
+
               DatosElementos[`${key}`].push({
                 Valor:Valor,
                 TipoNumero:Valor < 0 ? 1 : 2,
@@ -1077,9 +1133,14 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "06-04") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-01`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-02`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-01`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-02`)
+
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-03`)
 
               let Valor = Valor1+Valor2+Valor3
 
@@ -1094,8 +1155,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "06-05") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-04`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-04`]?.[0]?.Valor ||  
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-04`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-01`)
 
               let Valor = Valor1-Valor2
 
@@ -1110,8 +1174,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }
             else if (elemento.id == "06-06") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-04`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-04`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-03`)
 
               let Valor = Valor2 * -1 == 0 ? 0 : (Valor1 / (Valor2 * -1)) * 30
 
@@ -1124,8 +1191,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "06-07") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-06`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-06`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-06`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-06-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-03`)
 
               let Valor = (Valor1 - 30) * (Valor2 / 30);
 
@@ -1143,9 +1213,15 @@ if (filaActual) {
           // Afectación al flujo de efectivo
           else if (catalogo.id == "07") {
             if (elemento.id == "07-01") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-05`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-05`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-05`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-05`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-05`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-05`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-05`)
+
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-05`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-05`)
+
 
               let Valor = (Valor1 + Valor2) * -1 + Valor3;
 
@@ -1160,9 +1236,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "07-02" || elemento.id == "07-08") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-07-01`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
-
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-07-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-07-01`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`)
               let Valor =Valor1 < 0 ? Valor2 + Valor1 * -1 : Valor2;
 
               DatosElementos[`${key}`].push({
@@ -1176,7 +1253,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }
             else if (elemento.id == "07-03") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`)
               let Valor =Valor1 
 
               DatosElementos[`${key}`].push({
@@ -1191,7 +1269,9 @@ if (filaActual) {
             }
             else if (elemento.id == "07-04") {  
               let Valor1 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-07-02`]?.[0]?.Valor || 0
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-07-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-07-02`)
               let Valor =Valor1 == 0 ? 0 : Valor2 / Valor1; 
 
               DatosElementos[`${key}`].push({
@@ -1203,8 +1283,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
             }   
             else if (elemento.id == "07-05") {  
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-07-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-07-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-07-03`)
               let Valor =Valor1 == 0 ? 0 : Valor2 / Valor1;
 
               DatosElementos[`${key}`].push({
@@ -1216,10 +1298,12 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
             } 
             else if (elemento.id == "07-06") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-07`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-07`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-07`]?.[0]?.Valor || 0
-
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-07`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-07`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-07`]?.[0]?.Valor ||
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-07`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-07`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-07`)
               let Valor = Valor1 + Valor2 + Valor3;
 
               DatosElementos[`${key}`].push({
@@ -1233,8 +1317,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }    
             else if (elemento.id == "07-07") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-07-06`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-07-06`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-07-06`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`)
 
               let Valor = Valor1 < 0 ? Valor2 + Valor1 * -1 : Valor2;
 
@@ -1250,7 +1336,9 @@ if (filaActual) {
             }  
             else if (elemento.id == "07-09") {  
               let Valor1 = DatosElementos[`${Anio}-${Mes}-07-07`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-07-07`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-EESGPM4hWXvDlXSRnCwA`)
               let Valor =Valor1 == 0 ? 0 : Valor2 / Valor1;
 
               DatosElementos[`${key}`].push({
@@ -1262,8 +1350,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)               
             }  
             else if (elemento.id == "07-10") {  
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-07-08`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-od11V2OHVgaLG1RiXMiz`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-07-08`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-07-08`)
               let Valor =Valor1 == 0 ? 0 : Valor2 / Valor1;
 
               DatosElementos[`${key}`].push({
@@ -1278,9 +1368,12 @@ if (filaActual) {
           // Activo Fijo
           else if (catalogo.id == "08") {
             if (elemento.id == "08-04") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-08-01`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-08-02`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-08-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-08-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-08-01`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-08-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-08-02`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-08-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-08-03`)
 
               let Valor =Valor1+Valor2+Valor3
 
@@ -1299,7 +1392,8 @@ if (filaActual) {
           // Otros pasivos de Corto Plazo
           else if (catalogo.id == "09") {
             if (elemento.id == "09-02") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-08-02`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-08-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-08-02`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1313,9 +1407,12 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "09-04") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-09-01`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-09-02`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-09-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-09-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-09-01`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-09-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-09-02`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-09-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-09-03`)
 
               let Valor =Valor1+Valor2+Valor3
 
@@ -1334,9 +1431,12 @@ if (filaActual) {
           // Pasivos de Largo Plazo
           else if (catalogo.id == "10") {
             if (elemento.id == "10-04") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-10-01`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-10-02`]?.[0]?.Valor || 0
-              let Valor3 = DatosElementos[`${Anio}-${Mes}-10-03`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-10-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-10-01`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-10-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-10-02`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-10-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-10-03`)
 
               let Valor =Valor1+Valor2+Valor3
 
@@ -1354,7 +1454,8 @@ if (filaActual) {
           // Comparativas
           else if (catalogo.id == "11") {
             if (elemento.id == "11-01") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-VmmQpdpunMTqkoSjhzzj`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-VmmQpdpunMTqkoSjhzzj`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-VmmQpdpunMTqkoSjhzzj`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1368,7 +1469,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }
             else if (elemento.id == "11-02") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-15`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-15`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-15`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1382,7 +1484,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "11-03") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-05`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-05`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-05`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1396,7 +1499,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }   
             else if (elemento.id == "11-04") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-05`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-05`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-05`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1410,8 +1514,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "11-05") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-08-04`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-08-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-08-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-08-04`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-08-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-08-01`)
               let Valor =Valor1-Valor2
 
               DatosElementos[`${key}`].push({
@@ -1425,7 +1532,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "11-06") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-05`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-05`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-05`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1439,8 +1547,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "11-07") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-10-04`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-10-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-10-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-10-04`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-10-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-10-01`)
               let Valor =Valor1-Valor2
 
               DatosElementos[`${key}`].push({
@@ -1457,7 +1567,8 @@ if (filaActual) {
           // Eficiencia y control
           else if (catalogo.id == "12") {
             if (elemento.id == "12-01") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-02`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-02`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1471,7 +1582,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }
             else if (elemento.id == "12-02") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-02`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-02`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1485,8 +1597,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }
             else if (elemento.id == "12-03") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-12-01`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-12-02`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-12-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-12-01`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-12-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-12-02`)
               let Valor =Valor1 / 30 == 0 ? 0 : Valor2 / (Valor1 / 30)
 
               DatosElementos[`${key}`].push({
@@ -1498,7 +1613,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }   
             else if (elemento.id == "12-04") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-03-6`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-03-6`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-03-6`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1512,7 +1628,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "12-05") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-12-11`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-12-11`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-12-11`)
               let Valor =1 - Valor1
 
               DatosElementos[`${key}`].push({
@@ -1524,7 +1641,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }
             else if (elemento.id == "12-06") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-03-7`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-03-7`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-03-7`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1536,7 +1654,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }
             else if (elemento.id == "12-07") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-08`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-08`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-08`)
               let Valor =Valor1*-1
 
               DatosElementos[`${key}`].push({
@@ -1550,7 +1669,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }   
             else if (elemento.id == "12-08") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-KtA2Cxpd79TJrW9afqR9`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-KtA2Cxpd79TJrW9afqR9`)
               let Valor =Valor1*-1
 
               DatosElementos[`${key}`].push({
@@ -1564,8 +1684,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "12-09") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-08`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-08`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-08`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
               let Valor =Valor2 == 0 ? 0 : (Valor1 / Valor2) * -1;
 
               DatosElementos[`${key}`].push({
@@ -1577,7 +1699,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "12-10") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-03-5`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-03-5`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-03-5`)
               let Valor =Valor1
 
               DatosElementos[`${key}`].push({
@@ -1589,8 +1712,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "12-11") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-03`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-03`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
               let Valor =Valor2 == 0 ? 0 : Valor1 / Valor2;
 
               DatosElementos[`${key}`].push({
@@ -1602,8 +1727,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "12-12") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-09`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-09`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-09`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
               let Valor =Valor2 == 0 ? 0 : Valor1 / Valor2;
 
               DatosElementos[`${key}`].push({
@@ -1615,8 +1743,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }    
             else if (elemento.id == "12-13") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-15`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-15`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-15`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
               let Valor =Valor2 == 0 ? 0 : Valor1 / Valor2;
 
               DatosElementos[`${key}`].push({
@@ -1628,8 +1758,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "12-14") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-17`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-17`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-17`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
               let Valor =Valor2 == 0 ? 0 : Valor1 / Valor2;
 
               DatosElementos[`${key}`].push({
@@ -1641,8 +1774,11 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }  
             else if (elemento.id == "12-15") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-05`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-05`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-05`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-01`)
               let Valor =Valor2 == 0 ? 0 : (Valor1 * -1) / Valor2;
 
               DatosElementos[`${key}`].push({
@@ -1654,8 +1790,10 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "12-16") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-08`]?.[0]?.Valor || 0
-              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-11`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-08`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-08`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-11`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-11`)
               let Valor =Valor2 == 0 ? 0 : (Valor1 / Valor2) * -1;
 
               DatosElementos[`${key}`].push({
@@ -1667,7 +1805,8 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             } 
             else if (elemento.id == "12-17") {
-              let Valor1 = DatosElementos[`${Anio}-${Mes}-12-16`]?.[0]?.Valor || 0
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-12-16`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-16`)
               let Valor =Valor1 * 4.33
 
               DatosElementos[`${key}`].push({
@@ -1681,6 +1820,175 @@ if (filaActual) {
               this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
             }                                                                 
                                                    
+          }
+          // Actividad y gestión
+          else if (catalogo.id == "13") {
+            if (elemento.id == "13-01") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-06`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-06`)
+              let Valor =Valor1
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "13-02") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-05-06`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-06`)
+              let Valor =Valor1
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "13-03") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-06-06`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-06`)
+              let Valor =Valor1
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "13-04") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-13-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-13-01`)
+
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-13-02`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-13-02`)
+
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-13-03`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-13-03`)
+              let Valor =Valor1 + Valor2 - Valor3
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+          }
+          //Retorno y rentabilidad
+          else if (catalogo.id == "14") {
+            if (elemento.id == "14-01") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-15`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-15`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-17`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-17`)
+              let Valor =Valor2 == 0 ? 0 : Valor1 / Valor2
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "14-02") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-15`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-15`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-02-05`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-05`)
+              let Valor =Valor2 * -1 == 0 ? 0 : Valor1 / (Valor2 * -1)
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "14-03") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-02-15`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-02-15`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-04-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-01`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-05-01`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-01`)
+              let Valor =Valor2 + Valor3 == 0 ? 0 : Valor1 / (Valor2 + Valor3)
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+          }
+          // Liquidez y solvencia
+          else if (catalogo.id == "15") { 
+            if (elemento.id == "15-01") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-07`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-07`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-07`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-07`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-07`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-07`)
+              let Valor =Valor1 + Valor2 + Valor3
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Valor < 0
+                    ? "-$ " +
+                      Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                    : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "15-02") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-04`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-04`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-04`)
+              let Valor =Valor3 == 0 ? 0 : (Valor1 + Valor2) / Valor3
+
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            } 
+            else if (elemento.id == "15-03") {
+              let Valor1 = DatosElementos[`${Anio}-${Mes}-04-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-04-04`)
+              let Valor2 = DatosElementos[`${Anio}-${Mes}-05-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-05-04`)
+              let Valor3 = DatosElementos[`${Anio}-${Mes}-06-04`]?.[0]?.Valor || 
+              this.getValoresManagerRecapValorNumero(`${Anio}-${Mes}-06-04`)
+              let Valor =Valor1 + Valor2 - Valor3
+              DatosElementos[`${key}`].push({
+                Valor:Valor,
+                TipoNumero:Valor < 0 ? 1 : 2,
+                ValorMostrar:Valor < 0
+                    ? "-$ " +
+                      Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                    : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                Lectura:true
+                });
+              this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)             
+            }            
           }
 
         }
