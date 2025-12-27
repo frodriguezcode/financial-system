@@ -357,10 +357,10 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
   }
   getValoresManagerRecapAnual(key:any){
-    return this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key).ValorMostrar
-  
-
-
+    return this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key).ValorMostrar 
+  }
+  getValoresManagerRecapPromedios(key:any){
+    return this.RegistrosManagerRecaptPromedios.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecaptPromedios.find((data:any)=>data.key==key).ValorMostrar 
   }
 
   obtenerSubArrayConElemento(RowData:any,idElemento: string) {
@@ -2029,11 +2029,12 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any){
             }
 
             else if(cab.Tipo==3) {
-              const keyAnual = `${cab.Anio}-${element.id}`;
-              if(cab.Anio==2023 && element.id=='01-08'){
-                console.log('Valor',this.getValoresManagerRecapAnual(keyAnual))
-              }
+              const keyAnual = `${cab.Anio}-${element.id}`;      
               fila[cab.Nombre] = this.getValoresManagerRecapAnual(keyAnual)
+            }
+            else if(cab.Tipo==4) {
+              const keyAnual = `${cab.Anio}-${element.id}`;      
+              fila[cab.Nombre] = this.getValoresManagerRecapPromedios(keyAnual)
             }
 
 
