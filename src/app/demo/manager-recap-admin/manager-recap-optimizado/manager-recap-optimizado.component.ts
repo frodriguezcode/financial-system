@@ -273,14 +273,18 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
     AniosCabecera.forEach((anio: any) => {
       MesesCabecera.forEach((mes: any) => {
         this.Cabecera.push({
-          Nombre: mes.Mes + ' ' + anio.Anio,
+          Nombre: mes.Mes + ' ' + anio.Anio ,
           field: mes.Mes + ' ' + anio.Anio,
           headerName: mes.Mes + ' ' + anio.Anio,
           Mes: mes.Mes,
           Mostrar: true,
-          editable: (params: any) => params.data.editable === true,
+          editable: (params: any) =>
+            
+          params.data.editable === this.getValoresLectura(`${anio.Anio}-${mes.NumMes}-${params.data.idElemento}`) == false? true:false,
           cellStyle: (params: any) => {
-            if (params.data?.editable === false) {
+            let ValorLectura=
+            this.getValoresLectura(`${anio.Anio}-${mes.NumMes}-${params.data.idElemento}`) == false? true:false
+            if (ValorLectura === false) {
               return {
                 backgroundColor: '#f2f2f2',  // gris suave
                 color: '#000'                // texto más tenue
@@ -347,6 +351,11 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
     return this.RegistrosManagerRecapt.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecapt.find((data:any)=>data.key==key).ValorMostrar
 
   }
+  getValoresLectura(key:any){
+
+    return this.RegistrosManagerRecapt.find((data:any)=>data.key==key)==undefined ? false :this.RegistrosManagerRecapt.find((data:any)=>data.key==key).Lectura
+
+  }
   getValoresManagerRecapAnual(key:any){
     return this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key).ValorMostrar
   
@@ -360,7 +369,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
   }
 
 
-  actualizarValorSimple(idElemento: string, mesAnio: string, nuevoValor: any) {
+actualizarValorSimple(idElemento: string, mesAnio: string, nuevoValor: any) {
 const filaActual = this.RowData.flat().find(item => item.idElemento === idElemento);
 
 if (filaActual) {
@@ -379,9 +388,8 @@ if (filaActual) {
 
 
 
-  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any){
+actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any){
     let DatosElementos = [];
-    let _RowData=[...this.RowData]
      const key = `${Anio}-${Mes}-${idElemento}`;
     const index = this.RegistrosManagerRecapt.findIndex((reg: any) => reg.key === key);
     if (index !== -1) {
@@ -1995,9 +2003,9 @@ if (filaActual) {
 
       })
     }) 
-  }
+}
 
-  construirData() {
+ construirData() {
     let _DataRow: any = []
     this.CatalogoElementos.forEach(catalogo => {
       let _DataRowByElemento: any = []

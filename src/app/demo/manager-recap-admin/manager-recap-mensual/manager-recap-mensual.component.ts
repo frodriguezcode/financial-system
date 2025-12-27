@@ -2345,7 +2345,7 @@ construirData(){
   
         } 
 
-        else if(elemento.id=='01-01' || elemento.id=='01-03' || elemento.id=='01-04' || elemento.id=='01-06')
+        else if(elemento.id=='01-01' || elemento.id=='01-03' || (elemento.id=='01-04' && cab.NumMes==1) || elemento.id=='01-06')
           {   
 
             let Valor=this.getValorElemento(elemento.id,cab.Anio,cab.NumMes,RegistrosBySeccion)
