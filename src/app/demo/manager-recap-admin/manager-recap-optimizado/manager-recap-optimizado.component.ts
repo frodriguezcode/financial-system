@@ -368,6 +368,31 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
   getValoresManagerRecapAnual(key:any){
     return this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key).ValorMostrar 
   }
+
+  getDataAcumulado(keyAnual:any,idCatalogo:any) {
+
+    const total = this.RegistrosManagerRecapt.reduce((sum: any, reg: any) => {
+      return reg.keyAnual == keyAnual && reg.idCatalogo==idCatalogo
+        ? sum + Number(reg.Valor || 0)
+        : sum;
+    }, 0);
+
+    return Math.abs(total);
+  }
+
+  promedioAnual(keyAnual:any,idCatalogo:any){
+  const filtrados = this.RegistrosManagerRecapt.filter((d:any) => d.keyAnual === keyAnual
+  && d.idCatalogo==idCatalogo
+
+  );
+
+  if (filtrados.length === 0) return 0;
+
+  const suma = filtrados.reduce((acc:any, item:any) => acc + item.Valor, 0);
+
+  return suma / filtrados.length;
+  }
+
   getValoresManagerRecapPromedios(key:any){
     return this.RegistrosManagerRecaptPromedios.find((data:any)=>data.key==key)==undefined ? 'No Encontrado' :this.RegistrosManagerRecaptPromedios.find((data:any)=>data.key==key).ValorMostrar 
   }
@@ -436,7 +461,9 @@ setTrim(MesRegistro:any){
 actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalogo:any){
    try {
 
-     let DatosElementos = [];
+      let DatosElementos = [];
+      let DatosElementosPromedios = [];
+      let DatosElementosAcumulados = [];
         const key = `${Anio}-${Mes}-${idElemento}`;
        const index = this.RegistrosManagerRecapt.findIndex((reg: any) => reg.key === key);
        if (index !== -1) {
@@ -472,13 +499,15 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalog
        }
        console.log('Registro',Registro)
    
-       this.conS.guardarOModificarRegistro(Registro).then(resp=>{         
+       //this.conS.guardarOModificarRegistro(Registro).then(resp=>{         
          this. CatalogoElementos.forEach((catalogo) => {
              const copiaCatalogoElementos = [...catalogo.Elementos].sort(
              (a, b) => a.OrdenData - b.OrdenData  );
            copiaCatalogoElementos.forEach((elemento) => {
            const key = `${Anio}-${Mes}-${elemento.id}`;
            const keyAnioMes = `${MesNombre} ${Anio}`;
+           const keyAcumuladoAnio = `Acumulado ${Anio}`;
+           const keyPromedioAnio = `Promedio ${Anio}`;
            
      
            //Procesamiento de Datos
@@ -762,11 +791,23 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalog
                        0
                          ? false
                          : true});
-                 this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)        
-     
-               }                         
-               
-     
+                 this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)
+               } 
+               else if(elemento.id == "01-09"){
+                   let Valor =this.getValoresManagerRecapValorNumero(key)
+             
+                   DatosElementos[`${key}`].push({
+                     Valor:Valor,
+                     TipoNumero:Valor < 0 ? 1 : 2,
+                     ValorMostrar:Valor < 0 ? "-$ " + Number((Valor * -1).toFixed(0)).toLocaleString("en-US")
+                       : "$ " + Number(Valor.toFixed(0)).toLocaleString("en-US"),
+                     Lectura: Valor==
+                       0
+                         ? false
+                         : true});
+                 this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)                
+               }                        
+
              }
              
              else {
@@ -2095,11 +2136,198 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalog
                }
      
              }
-     
+
+             // Actualizar acumulados y promedios
+             const keyAnual = `${Anio}-${elemento.id}`;
+            if (!DatosElementosAcumulados[keyAnual]) {
+              DatosElementosAcumulados[keyAnual] = [];
+            }
+            if (!DatosElementosPromedios[keyAnual]) {
+              DatosElementosPromedios[keyAnual] = [];
+            }
+
+            if (elemento.id == "01-09") {
+              let Valor=this.getDataAcumulado(keyAnual,idCatalogo)
+              DatosElementosAcumulados[`${keyAnual}`].push({ 
+                "Valor":Valor,
+                "TipoNumero":Valor<0 ? 1 : 2,
+                "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+              })
+              DatosElementosPromedios[`${keyAnual}`].push({ 
+                "Valor":(Valor/12),
+                "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                "ValorMostrar": (Valor/12)<0 ? 
+                ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+              })
+
+              this.actualizarValorSimple(
+              elemento.id,keyAcumuladoAnio,
+              DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+              this.actualizarValorSimple(
+              elemento.id,keyPromedioAnio,
+              DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+            }
+            else if(elemento.id=="01-08"){
+            let Valor1 =
+                DatosElementosAcumulados[`${Anio}-01-05`]?.[0]?.Valor || 0;
+            let Valor2 =
+                DatosElementosAcumulados[`${Anio}-01-07`]?.[0]?.Valor || 0;
+            let Valor3 =
+                DatosElementosAcumulados[`${Anio}-01-09`]?.[0]?.Valor || 0;
+            let ValorElemento=Valor2 == 0 || Valor1 == 0 ? 0 : Valor3 / Valor2 / Valor1;
+            
+            DatosElementosAcumulados[`${keyAnual}`].push({ 
+            "Valor":ValorElemento,
+            "TipoNumero":ValorElemento<0 ? 1 : 2,
+            "ValorMostrar": ValorElemento<0 ? ('-$ ' + (Number((ValorElemento * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((ValorElemento).toFixed(0))).toLocaleString('en-US')
+            })
+            let Valor1Promedio =
+                DatosElementosAcumulados[`${Anio}-01-05`]?.[0]?.Valor || 0;
+            let Valor2Promedio =
+                DatosElementosAcumulados[`${Anio}-01-07`]?.[0]?.Valor || 0;
+            let Valor3Promedio =
+                DatosElementosAcumulados[`${Anio}-01-09`]?.[0]?.Valor || 0;
+
+            let ValorPromedio =
+                Valor2Promedio == 0 || Valor1Promedio == 0 ? 0 : Valor3Promedio / Valor2Promedio / Valor1Promedio;                
+            DatosElementosPromedios[`${keyAnual}`].push({
+                Valor: Valor3 / Valor2 / Valor1,
+                TipoNumero: ValorPromedio < 0 ? 1 : 2,
+                ValorMostrar:
+                  ValorPromedio < 0
+                    ? "-$ " +
+                      Number((ValorPromedio * -1).toFixed(0)).toLocaleString(
+                        "en-US"
+                      )
+                    : "$ " +
+                      Number(ValorPromedio.toFixed(0)).toLocaleString("en-US"),
+            }); 
+              this.actualizarValorSimple(
+              elemento.id,keyAcumuladoAnio,
+              DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+              this.actualizarValorSimple(
+              elemento.id,keyPromedioAnio,
+              DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)                                         
+
+            }
+            else if(elemento.id=='01-02'){
+            let Valor1= DatosElementosAcumulados[`${Anio}-01-01`]?.[0]?.Valor || 0
+            let Valor2= DatosElementosAcumulados[`${Anio}-01-03`]?.[0]?.Valor || 0
+            DatosElementosAcumulados[`${keyAnual}`].push({ 
+              "Valor":Valor1==0 ? 0 : Valor2/Valor1 ,
+              "TipoNumero":(Valor1==0 ? 0 : Valor2/Valor1)<0 ? 1 : 2,
+              "ValorMostrar": ((Valor1==0 ? 0 : Valor2/Valor1)*100).toFixed(0) +'%'
+            })
+
+            let ValorPromedio=this.promedioAnual(keyAnual,idCatalogo)
+              DatosElementosPromedios[`${keyAnual}`].push({ 
+                "Valor":ValorPromedio,
+                "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                "ValorMostrar": (ValorPromedio*100).toFixed(0)+'%'
+              })            
+            this.actualizarValorSimple(
+            elemento.id,keyAcumuladoAnio,
+            DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+            this.actualizarValorSimple(
+            elemento.id,keyPromedioAnio,
+            DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+
+
+            }
+            else if(elemento.id=='01-05'){
+              let Valor=this.getValoresManagerRecapValorNumero(`${Anio}-12-01-05`)
+              DatosElementosAcumulados[`${keyAnual}`].push({ 
+                "Valor":Valor,
+                "TipoNumero":Valor<0 ? 1 : 2,
+                "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+              })
+              DatosElementosPromedios[`${keyAnual}`].push({ 
+                "Valor":(Valor/12),
+                "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                "ValorMostrar": (Valor/12)<0 ? 
+                ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+              })
+
+              this.actualizarValorSimple(
+              elemento.id,keyAcumuladoAnio,
+              DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+              this.actualizarValorSimple(
+              elemento.id,keyPromedioAnio,
+              DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)              
+            }
+            else if(elemento.id=='01-07'){
+
+              let Valor1=(DatosElementosAcumulados[`${Anio}-01-06`]?.[0]?.Valor || 0)  
+              let Valor2=(DatosElementosAcumulados[`${Anio}-01-05`]?.[0]?.Valor || 0) 
+              let Valor=Valor2==0?0 :  Valor1/Valor2
+              DatosElementosAcumulados[`${keyAnual}`].push({ 
+                "Valor":Valor,
+                "TipoNumero":Valor<0 ? 1 : 2,
+                "ValorMostrar": Valor.toFixed(1)
+              })
+              DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":(Valor),
+                  "TipoNumero":(Valor)<0 ? 1 : 2,
+                  "ValorMostrar": Valor.toFixed(1)
+              })
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+            }  
+            else if(elemento.id=='01-06' || elemento.id=='01-04' || elemento.id=='01-03' || elemento.id=='01-01'){
+              let Valor=this.getDataAcumulado(keyAnual,idCatalogo)
+              DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor
+              })                
+              DatosElementosPromedios[`${keyAnual}`].push({ 
+                   "Valor":(Valor/12),
+                   "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                   "ValorMostrar": (Valor/12).toFixed(2)
+              })
+              this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+              DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+
+              this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+              DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+            }          
+            else {   
+                let Valor=this.getDataAcumulado(keyAnual,idCatalogo)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })                
+                 DatosElementosPromedios[`${keyAnual}`].push({ 
+                   "Valor":(Valor/12),
+                   "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                   "ValorMostrar": (Valor/12)<0 ? 
+                   ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                 })
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+            }
+
            })
          }) 
          this.toastr.success('Guardado', '¡Exito!');
-       })
+       //})
    }
    catch(error:any){
      this.toastr.error('Ha ocurrido un error, inténtelo nuevamente', '¡Alerta!');
