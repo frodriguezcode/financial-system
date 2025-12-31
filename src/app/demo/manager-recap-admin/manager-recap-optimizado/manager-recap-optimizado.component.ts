@@ -808,6 +808,7 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalog
                  this.actualizarValorSimple(elemento.id,keyAnioMes,DatosElementos[key]?.[0]?.ValorMostrar || 0)                
                } 
                else if(
+                elemento.id == "01-09" || 
                 elemento.id == "02-17" || 
                 elemento.id == "02-02" || 
                 elemento.id == "02-05" || 
@@ -816,6 +817,9 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalog
                 elemento.id == "02-11" || 
                 elemento.id == "02-12" || 
                 elemento.id == "02-13" || 
+                elemento.id == "04-02" || 
+                elemento.id == "04-03" || 
+                elemento.id == "05-02" || 
                 elemento.id == "02-14"  
                )
                {
