@@ -44,6 +44,7 @@
     "ng-click-outside2": "^11.2.0",
     "ngx-color-picker": "^14.0.0",
     "ngx-scrollbar": "^13.0.1",
+    "ngx-spinner": "^19.0.0",
     "ngx-toastr": "^18.0.0",
     "primeicons": "^6.0.1",
     "primeng": "^17.18.15",

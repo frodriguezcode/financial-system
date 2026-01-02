@@ -1,8 +1,14 @@
 
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" 
+size = "medium" color = "#fff" 
+type = "square-jelly-box" [fullScreen] = "true">
+<p style="color: white" > Guardando registro... </p>
+</ngx-spinner>
+
+
 <div class="row">
   <div class="col-sm-12">
     <app-card cardTitle="Store Manager Recapt" [options]="false">
-
 
       <div *ngIf="cargando==true" class="d-flex justify-content-center">
         <div class="spinner-grow text-success" role="status">

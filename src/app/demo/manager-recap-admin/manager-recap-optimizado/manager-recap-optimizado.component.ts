@@ -11,6 +11,7 @@ import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { AgGridAngular, AgGridModule } from 'ag-grid-angular';
 import { AccordionModule } from 'primeng/accordion';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';ModuleRegistry.registerModules([AllCommunityModule]);
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 @Component({
   selector: 'app-manager-recap-optimizado',
   standalone: true,
@@ -19,13 +20,15 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';ModuleRegistry.r
     AgGridModule, 
     AgGridAngular, 
     AccordionModule,
-    ProgressSpinnerModule
+    NgxSpinnerModule
     ],
   templateUrl: './manager-recap-optimizado.component.html',
   styleUrls: ['./manager-recap-optimizado.component.scss']
 })
 export default class ManagerRecaptOptimizadoComponent implements OnInit {
-  constructor(private conS: ConfigurationService, private datePipe: DatePipe, private toastr: ToastrService,) { }
+  constructor(private conS: ConfigurationService, 
+    private spinner: NgxSpinnerService,
+    private datePipe: DatePipe, private toastr: ToastrService,) { }
   usuario: any
   Fecha:any= new Date();
   localeText: any;
@@ -48,6 +51,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
   gridColumnApi: any;
   gridOptions: any;
   ngOnInit(): void {
+ 
     this.localeText = {
       // Textos comunes
       page: 'Página',
@@ -115,6 +119,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
   }
 
+  
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
@@ -152,6 +157,8 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
 
 
   }
+
+
 
  onCellEditingStarted(event: any) {
   console.log('eventStarted')
@@ -364,11 +371,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
       {
         this.construirData()
       } 
-      else {
-      setTimeout(()=>{                           // <<<---using ()=> syntax
-        this.cargandoActualizacion=false
-      },      3000);        
-    } 
+
   }
 
 
@@ -488,9 +491,10 @@ getTipoNumero(idElemento:any,idCatalogo:any)
 
   return Elemento[0].tipo_numero
 }
-actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalogo:any){
+async  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalogo:any){
+   this.spinner.show();
+   setTimeout(() => {
     try {
-      this.cargandoActualizacion=true
       let DatosElementos = [];
       let DatosElementosPromedios = [];
       let DatosElementosAcumulados = [];
@@ -2447,6 +2451,8 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalog
             if (!DatosElementosPromedios[keyAnual]) {
               DatosElementosPromedios[keyAnual] = [];
             }
+
+
             if (catalogo.id == "01") {
               if (elemento.id == "01-09") {
                 let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
@@ -2879,8 +2885,1253 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalog
 
             }
 
+            else if(catalogo.id=='04')
+            {
+              if(elemento.id=='04-01')
+              {
+                let Valor=DatosElementos[`${Anio}-1-04-01`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":(Valor/12),
+                  "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor/12)<0 ? 
+                  ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })                
 
 
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)                                
+                  
+              }
+              else if(
+              elemento.id=='04-02' || 
+              elemento.id=='04-03')
+              {
+                let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":Valor<0 ? 1 : 2,
+                    "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })                
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                     "Valor":(Valor/12),
+                     "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                     "ValorMostrar": (Valor/12)<0 ? 
+                     ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                    elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                    elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+              }
+              else if(elemento.id=='04-04')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-04-01`]?.[0]?.Valor || 0
+                let Valor2= Math.abs(DatosElementosAcumulados[`${Anio}-04-02`]?.[0]?.Valor)  || 0
+                let Valor3=DatosElementosAcumulados[`${Anio}-04-03`]?.[0]?.Valor || 0
+
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":(Valor3-Valor2)+Valor1,
+                  "TipoNumero":((Valor3-Valor2)+Valor1)<0 ? 1 : 2,
+                  "ValorMostrar": ((Valor3-Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3-Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3-Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                let Valor1Promedio=DatosElementosPromedios[`${Anio}-04-01`]?.[0]?.Valor || 0
+                let Valor2Promedio= Math.abs(DatosElementosPromedios[`${Anio}-04-02`]?.[0]?.Valor)  || 0
+                let Valor3Promedio=DatosElementosPromedios[`${Anio}-04-03`]?.[0]?.Valor || 0
+                let ValorPromedio=(Valor3Promedio-Valor2Promedio)+Valor1Promedio
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                }) 
+                
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+                
+                
+              }
+
+              else if(elemento.id=='04-05')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-04-01`]?.[0]?.Valor || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-04-04`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor2-Valor1,
+                  "TipoNumero":(Valor2-Valor1)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor2-Valor1)<0 ? ('-$ ' + (Number(((Valor2-Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor2-Valor1)).toFixed(0))).toLocaleString('en-US')
+                })
+                
+                let Valor1Prom=DatosElementosPromedios[`${Anio}-04-01`]?.[0]?.Valor || 0
+                let Valor2Prom=DatosElementosPromedios[`${Anio}-04-04`]?.[0]?.Valor || 0
+
+                let ValorPromedio=Valor2Prom-Valor1Prom
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                                
+
+              } 
+              
+              else if(elemento.id=='04-06')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-04-01`]?.[0]?.Valor || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-04-02`]?.[0]?.Valor || 0
+                let CalculoInicial=Valor1==0 ?0 : Valor2/Valor1
+                let Valor=CalculoInicial==0 ? 0:360/CalculoInicial
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor": Number((Valor)),
+                  "TipoNumero": (Valor)<0 ? 2 :1,
+                  "ValorMostrar": Number((Valor)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                })
+
+                let Valor1Prom=Number(DatosElementosPromedios[`${Anio}-04-01`]?.[0]?.Valor.toFixed(0)) || 0
+                let Valor2Prom=Number(DatosElementosPromedios[`${Anio}-04-02`]?.[0]?.Valor.toFixed(0)) || 0
+                let CalculoInicialPromedio=Valor1Prom==0 ?0 : Valor2Prom/Valor1Prom
+                let ValorPromedio=CalculoInicialPromedio ==0 ? 0 : 360/CalculoInicialPromedio
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                "Valor":ValorPromedio,
+                "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                "ValorMostrar": (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+
+              } 
+              
+              else if(elemento.id=='04-07')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-04-02`]?.[0]?.Valor || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-04-06`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":(30-Valor2 ) * (Valor1 / 360),
+                  "TipoNumero":(30-Valor2 ) * (Valor1 / 360)<0 ? 1 : 2,
+                  "ValorMostrar": (30-Valor2 ) * (Valor1 / 360)<0 ? ('-$ ' + (Number(((30-Valor2 ) * (Valor1 / 360) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((30-Valor2 ) * (Valor1 / 360)).toFixed(0))).toLocaleString('en-US')          
+                }) 
+                
+                let Valor1Prom=Number(DatosElementosPromedios[`${Anio}-04-02`]?.[0]?.Valor.toFixed(0)) || 0
+                let Valor2Prom=Number(DatosElementosPromedios[`${Anio}-04-06`]?.[0]?.Valor.toFixed(0)) || 0
+
+                let ValorPromedio=(30-Valor2Prom ) * (Valor1Prom / 30)
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+                
+                
+              }
+            }
+
+            else if(catalogo.id=='05')
+            {
+              if(elemento.id=='05-01')
+              {
+                let Valor=DatosElementos[`${Anio}-1-05-01`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":(Valor/12),
+                  "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor/12)<0 ? 
+                  ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })                
+
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)                                
+                  
+              }
+
+              else if(
+              elemento.id=='05-02' || 
+              elemento.id=='05-03')
+              {
+                let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":Valor<0 ? 1 : 2,
+                    "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })                
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                     "Valor":(Valor/12),
+                     "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                     "ValorMostrar": (Valor/12)<0 ? 
+                     ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+              }
+
+              else if(elemento.id=='05-04')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-05-01`]?.[0]?.Valor || 0
+                let Valor2= Math.abs(DatosElementosAcumulados[`${Anio}-05-02`]?.[0]?.Valor)  || 0
+                let Valor3=DatosElementosAcumulados[`${Anio}-05-03`]?.[0]?.Valor || 0
+
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":(Valor3+Valor2)+Valor1,
+                  "TipoNumero":((Valor3+Valor2)+Valor1)<0 ? 1 : 2,
+                  "ValorMostrar": ((Valor3+Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3+Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3+Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                let Valor1Promedio=DatosElementosPromedios[`${Anio}-05-01`]?.[0]?.Valor || 0
+                let Valor2Promedio= Math.abs(DatosElementosPromedios[`${Anio}-05-02`]?.[0]?.Valor)  || 0
+                let Valor3Promedio=DatosElementosPromedios[`${Anio}-05-03`]?.[0]?.Valor || 0            
+                            
+                let ValorPromedio=(Valor3Promedio+Valor2Promedio)+Valor1Promedio
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })  
+                
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+                
+                
+              }
+
+              else if(elemento.id=='05-05')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-05-01`]?.[0]?.Valor || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-05-04`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor2-Valor1,
+                  "TipoNumero":(Valor2-Valor1)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor2-Valor1)<0 ? ('-$ ' + (Number(((Valor2-Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor2-Valor1)).toFixed(0))).toLocaleString('en-US')
+                })
+                
+                let Valor1Prom=DatosElementosPromedios[`${Anio}-05-01`]?.[0]?.Valor || 0
+                let Valor2Prom=DatosElementosPromedios[`${Anio}-05-04`]?.[0]?.Valor || 0
+
+                let ValorPromedio=Valor2Prom-Valor1Prom
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                                
+
+              } 
+              
+              else if(elemento.id=='05-06')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-05-03`]?.[0]?.Valor || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-05-04`]?.[0]?.Valor || 0
+                let Valor=Valor1==0 ? 0 :  Number((Valor2/Valor1)*360)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor": Number((Valor)),
+                  "TipoNumero": (Valor)<0 ? 2 :1,
+                  "ValorMostrar": Number((Valor)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                })
+
+                let Valor1Prom=Number(DatosElementosPromedios[`${Anio}-05-03`]?.[0]?.Valor.toFixed(0)) || 0
+                let Valor2Prom=Number(DatosElementosPromedios[`${Anio}-05-04`]?.[0]?.Valor.toFixed(0)) || 0
+                let ValorPromedio=Valor1Prom==0 ? 0 :  Number((Valor2Prom/Valor1Prom)*360)
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                "Valor":ValorPromedio,
+                "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                "ValorMostrar": (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+
+              } 
+              
+              else if(elemento.id=='05-07')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-05-03`]?.[0]?.Valor || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-05-06`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":(Valor2-15) * (Valor1 / 360),
+                  "TipoNumero":(Valor2-15) * (Valor1 / 360)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor2-15) * (Valor1 / 360)<0 ? ('-$ ' + (Number(((30-Valor2 ) * (Valor1 / 360) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((30-Valor2 ) * (Valor1 / 360)).toFixed(0))).toLocaleString('en-US')          
+                }) 
+                
+                let Valor1Prom=Number(DatosElementosPromedios[`${Anio}-04-02`]?.[0]?.Valor.toFixed(0)) || 0
+                let Valor2Prom=Number(DatosElementosPromedios[`${Anio}-04-06`]?.[0]?.Valor.toFixed(0)) || 0
+
+                let ValorPromedio=(Valor2Prom-15) * (Valor1Prom / 360)
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+                
+                
+              }
+            }
+
+            else if(catalogo.id=='06')
+            {
+              if(elemento.id=='06-01')
+              {
+                let Valor=DatosElementos[`${Anio}-1-06-01`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":(Valor/12),
+                  "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor/12)<0 ? 
+                  ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })                
+
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)                                
+                  
+              }
+
+              else if(
+              elemento.id=='06-02' || 
+              elemento.id=='06-03')
+              {
+                let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":Valor<0 ? 1 : 2,
+                    "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })                
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                     "Valor":(Valor/12),
+                     "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                     "ValorMostrar": (Valor/12)<0 ? 
+                     ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+              }
+
+              else if(elemento.id=='06-04')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-06-01`]?.[0]?.Valor || 0
+                let Valor2= Math.abs(DatosElementosAcumulados[`${Anio}-06-02`]?.[0]?.Valor)  || 0
+                let Valor3=DatosElementosAcumulados[`${Anio}-06-03`]?.[0]?.Valor || 0
+
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":(Valor3+Valor2)+Valor1,
+                  "TipoNumero":((Valor3+Valor2)+Valor1)<0 ? 1 : 2,
+                  "ValorMostrar": ((Valor3+Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3+Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3+Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                let Valor1Promedio=DatosElementosPromedios[`${Anio}-05-01`]?.[0]?.Valor || 0
+                let Valor2Promedio= Math.abs(DatosElementosPromedios[`${Anio}-05-02`]?.[0]?.Valor)  || 0
+                let Valor3Promedio=DatosElementosPromedios[`${Anio}-05-03`]?.[0]?.Valor || 0            
+                            
+                let ValorPromedio=(Valor3Promedio+Valor2Promedio)+Valor1Promedio
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })  
+                
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+                
+                
+              }
+
+              else if(elemento.id=='06-05')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-06-01`]?.[0]?.Valor || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-06-04`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor2-Valor1,
+                  "TipoNumero":(Valor2-Valor1)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor2-Valor1)<0 ? ('-$ ' + (Number(((Valor2-Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor2-Valor1)).toFixed(0))).toLocaleString('en-US')
+                })
+                
+                let Valor1Prom=DatosElementosPromedios[`${Anio}-06-01`]?.[0]?.Valor || 0
+                let Valor2Prom=DatosElementosPromedios[`${Anio}-06-04`]?.[0]?.Valor || 0
+
+                let ValorPromedio=Valor2Prom-Valor1Prom
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                                
+
+              } 
+              
+              else if(elemento.id=='06-06')
+              {
+                let Valor1=Math.abs(DatosElementosAcumulados[`${Anio}-06-03`]?.[0]?.Valor) || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-06-04`]?.[0]?.Valor || 0
+                let Valor=(Valor1*-1)==0 ? 0 :  Number((Valor2/(Valor1*-1))*360)
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":(Valor)<0 ? 1 : 2,
+                    "ValorMostrar": (Valor).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  })
+
+                let Valor1Prom=Number((DatosElementosPromedios[`${Anio}-06-03`]?.[0]?.Valor || 0).toFixed(0)) || 0
+                let Valor2Prom=Number((DatosElementosPromedios[`${Anio}-06-04`]?.[0]?.Valor || 0).toFixed(0)) || 0
+
+                let ValorPromedio=(Valor1Prom*-1)==0?0:Valor2Prom/(Valor1Prom*-1)*30
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                }) 
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+
+              } 
+              
+              else if(elemento.id=='06-07')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-06-03`]?.[0]?.Valor || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-06-06`]?.[0]?.Valor || 0
+                let Valor=(Valor2-30) * (Valor1 / 360)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor <0 ? 1 : 2,
+                  "ValorMostrar": Valor <0 ? ('-$ ' + (Number(((30-Valor2 ) * (Valor1 / 360) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((30-Valor2 ) * (Valor1 / 360)).toFixed(0))).toLocaleString('en-US')          
+                }) 
+                
+                let Valor1Prom=Number(DatosElementosPromedios[`${Anio}-06-02`]?.[0]?.Valor.toFixed(0)) || 0
+                let Valor2Prom=Number(DatosElementosPromedios[`${Anio}-06-06`]?.[0]?.Valor.toFixed(0)) || 0
+
+                let ValorPromedio=(Valor2Prom-30) * (Valor1Prom / 360)
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+                
+                
+              }
+            } 
+
+            else if(catalogo.id=='07')
+            {
+                if(elemento.id=='07-01')
+                {
+                  let Valor1= DatosElementosAcumulados[`${Anio}-04-05`]?.[0]?.Valor || 0
+                  let Valor2= DatosElementosAcumulados[`${Anio}-05-05`]?.[0]?.Valor || 0
+                  let Valor3= DatosElementosAcumulados[`${Anio}-06-05`]?.[0]?.Valor || 0
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":((Valor1+Valor2)*-1)+Valor3,
+                    "TipoNumero":(((Valor1+Valor2)*-1)+Valor3)<0 ? 1 : 2,
+                    "ValorMostrar": (((Valor1+Valor2)*-1)+Valor3)<0 ? 
+                    ('-$ ' + (Number(((((Valor1+Valor2)*-1)+Valor3) * -1).toFixed(0))).toLocaleString('en-US')) :
+                    '$ ' + (Number(((((Valor1+Valor2)*-1)+Valor3)).toFixed(0))).toLocaleString('en-US')
+                  })
+                  let ValorPromedio=(DatosElementosAcumulados[`${Anio}-07-01`]?.[0]?.Valor || 0) /12
+                  DatosElementosPromedios[`${keyAnual}`].push({ 
+                    "Valor":ValorPromedio,
+                    "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                    "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                    '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                  })                                      
+
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+      
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0) 
+                }
+                else if(elemento.id=='07-02')
+                {
+                  let Valor1= DatosElementosAcumulados[`${Anio}-07-01`]?.[0]?.Valor || 0
+                  let Valor2= DatosElementosAcumulados[`${Anio}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+
+                  let Valor=Valor1<0?(Valor2+(Valor1*-1)):Valor1
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":(Valor)<0 ? 1 : 2,
+                    "ValorMostrar": (Valor)<0 ? 
+                    ('-$ ' + (Number(((Valor) * -1).toFixed(0))).toLocaleString('en-US')) :
+                    '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                  })
+                  let ValorPromedio= (DatosElementosAcumulados[`${Anio}-07-02`]?.[0]?.Valor || 0) /12
+                  DatosElementosPromedios[`${keyAnual}`].push({ 
+                    "Valor":ValorPromedio,
+                    "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                    "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                    '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                  })
+
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+      
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+                } 
+                else if(
+                elemento.id=='07-03' || 
+                elemento.id=='07-08')
+                {
+                  let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                      "Valor":Valor,
+                      "TipoNumero":Valor<0 ? 1 : 2,
+                      "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                  })                
+                  DatosElementosPromedios[`${keyAnual}`].push({ 
+                      "Valor":(Valor/12),
+                      "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                      "ValorMostrar": (Valor/12)<0 ? 
+                      ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                  })
+
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+    
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+                }
+                else if(elemento.id=='07-04')
+                {
+                  let Valor1=DatosElementosAcumulados[`${Anio}-07-02`]?.[0]?.Valor || 0
+                  let Valor2=DatosElementosAcumulados[`${Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
+                  let Valor=Valor2==0?0:Valor1/Valor2
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":(Valor)<0 ? 1 : 2,
+                    "ValorMostrar": (Valor*100).toFixed(0) + '%'
+                  })
+                  let Valor1Prom= (DatosElementosPromedios[`${Anio}-07-02`]?.[0]?.Valor || 0) 
+                  let Valor2Prom= (DatosElementosPromedios[`${Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0) 
+                  let ValorPromedio=Valor1Prom==0 ? 0 : Valor2Prom/Valor1Prom
+                  DatosElementosPromedios[`${keyAnual}`].push({ 
+                    "Valor":ValorPromedio,
+                    "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                    "ValorMostrar": (ValorPromedio*100).toFixed(0)+'%'
+                  })                  
+                  
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+    
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+                }
+                else if(elemento.id=='07-05')
+                {
+                  let Valor1=DatosElementosAcumulados[`${Anio}-07-03`]?.[0]?.Valor || 0
+                  let Valor2=DatosElementosAcumulados[`${Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
+                  let Valor=Valor2==0?0:Valor1/Valor2
+
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":(Valor)<0 ? 1 : 2,
+                    "ValorMostrar": (Valor*100).toFixed(0) + '%'
+                  })
+                  
+                  let Valor1Prom= (DatosElementosPromedios[`${Anio}-07-03`]?.[0]?.Valor || 0) 
+                  let Valor2Prom= (DatosElementosPromedios[`${Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0) 
+                  let ValorPromedio=Valor1Prom==0 ? 0 : Valor2Prom/Valor1Prom
+                  DatosElementosPromedios[`${keyAnual}`].push({ 
+                    "Valor":ValorPromedio,
+                    "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                    "ValorMostrar": (ValorPromedio*100).toFixed(0)+'%'
+                  })
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                                     
+                }
+                else if(elemento.id=='07-06')
+                {
+                  let Valor1= DatosElementosAcumulados[`${Anio}-04-07`]?.[0]?.Valor || 0
+                  let Valor2= DatosElementosAcumulados[`${Anio}-05-07`]?.[0]?.Valor || 0
+                  let Valor3= DatosElementosAcumulados[`${Anio}-06-05`]?.[0]?.Valor || 0
+                
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":(Valor1+Valor2+Valor3),
+                    "TipoNumero":(Valor1+Valor2+Valor3)<0 ? 1 : 2,
+                    "ValorMostrar": ((Valor1+Valor2+Valor3))<0 ? 
+                    ('-$ ' + (Number((((Valor1+Valor2+Valor3)*-1)).toFixed(0))).toLocaleString('en-US')) :
+                    '$ ' + (Number(((Valor1+Valor2+Valor3)).toFixed(0))).toLocaleString('en-US')
+                  })
+                  let ValorPromedio= (DatosElementosAcumulados[`${Anio}-07-06`]?.[0]?.Valor || 0) /12
+                  DatosElementosPromedios[`${keyAnual}`].push({ 
+                    "Valor":ValorPromedio,
+                    "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                    "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                    '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                  }) 
+                  
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+                }
+                else if(elemento.id=='07-07')
+                {
+                  let Valor1=DatosElementosAcumulados[`${Anio}-07-06`]?.[0]?.Valor || 0
+                  let Valor2=DatosElementosAcumulados[`${Anio}-EESGPM4hWXvDlXSRnCwA`]?.[0]?.Valor || 0
+
+                  let Valor=Valor1<0?(Valor2+(Valor1*-1)):Valor1
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":(Valor)<0 ? 1 : 2,
+                    "ValorMostrar": (Valor)<0 ? 
+                    ('-$ ' + (Number(((Valor) * -1).toFixed(0))).toLocaleString('en-US')) :
+                    '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                  })
+                  let ValorPromedio=(DatosElementosAcumulados[`${Anio}-07-07`]?.[0]?.Valor) /12
+                  DatosElementosPromedios[`${keyAnual}`].push({ 
+                    "Valor":ValorPromedio,
+                    "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                    "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                    '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                  })             
+                  
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+                } 
+                else if(elemento.id=='07-09')
+                {
+                  let Valor1= DatosElementosAcumulados[`${Anio}-07-07`]?.[0]?.Valor || 0
+                  let Valor2= DatosElementosAcumulados[`${Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
+
+                  let Valor=Valor2==0?0:Valor1/Valor2
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":(Valor)<0 ? 1 : 2,
+                    "ValorMostrar": (Valor*100).toFixed(0) + '%'
+                  })
+                  
+                  let Valor1Prom= (DatosElementosPromedios[`${Anio}-07-07`]?.[0]?.Valor || 0) 
+                  let Valor2Prom= (DatosElementosPromedios[`${Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0) 
+                  let ValorPromedio=Valor1Prom==0 ? 0 : Valor2Prom/Valor1Prom
+                  DatosElementosPromedios[`${keyAnual}`].push({ 
+                    "Valor":ValorPromedio,
+                    "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                    "ValorMostrar": (ValorPromedio*100).toFixed(0)+'%'
+                  })
+                  
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+                }
+                else if(elemento.id=='07-10')
+                {
+                  let Valor1=DatosElementosAcumulados[`${Anio}-07-08`]?.[0]?.Valor || 0
+                  let Valor2=DatosElementosAcumulados[`${Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0
+                  let Valor=Valor2==0?0:Valor1/Valor2
+
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":(Valor)<0 ? 1 : 2,
+                    "ValorMostrar": (Valor*100).toFixed(0) + '%'
+                  })
+
+                  let Valor1Prom= (DatosElementosPromedios[`${Anio}-07-08`]?.[0]?.Valor || 0) 
+                  let Valor2Prom= (DatosElementosPromedios[`${Anio}-od11V2OHVgaLG1RiXMiz`]?.[0]?.Valor || 0) 
+                  let ValorPromedio=Valor1Prom==0 ? 0 : Valor2Prom/Valor1Prom
+
+                  DatosElementosPromedios[`${keyAnual}`].push({ 
+                    "Valor":ValorPromedio,
+                    "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                    "ValorMostrar": (ValorPromedio*100).toFixed(0)+'%'
+                  })                   
+                  
+                  this.actualizarValorSimple(
+                  elemento.id,keyPromedioAnio,
+                  DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                  this.actualizarValorSimple(
+                  elemento.id,keyAcumuladoAnio,
+                  DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+                }                                  
+
+            }
+            else if(catalogo.id=='08')
+            {
+              if(elemento.id=='08-01')
+              {
+                let Valor=DatosElementos[`${Anio}-1-08-01`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":(Valor),
+                  "TipoNumero":(Valor)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor)<0 ? 
+                  ('-$ ' + (Number(((Valor) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })                
+
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)                                
+                  
+              }
+              else if(
+              elemento.id=='08-02' || 
+              elemento.id=='08-03')
+              {
+                let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":Valor<0 ? 1 : 2,
+                    "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })                
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                     "Valor":(Valor/12),
+                     "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                     "ValorMostrar": (Valor/12)<0 ? 
+                     ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+              }
+
+              else if(elemento.id=='08-04')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-08-01`]?.[0]?.Valor || 0
+                let Valor2= Math.abs(DatosElementosAcumulados[`${Anio}-08-02`]?.[0]?.Valor)  || 0
+                let Valor3=DatosElementosAcumulados[`${Anio}-08-03`]?.[0]?.Valor || 0
+
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":(Valor3+Valor2)+Valor1,
+                  "TipoNumero":((Valor3+Valor2)+Valor1)<0 ? 1 : 2,
+                  "ValorMostrar": ((Valor3+Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3+Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3+Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                let Valor1Promedio=DatosElementosPromedios[`${Anio}-08-01`]?.[0]?.Valor || 0
+                let Valor2Promedio= Math.abs(DatosElementosPromedios[`${Anio}-08-02`]?.[0]?.Valor)  || 0
+                let Valor3Promedio=DatosElementosPromedios[`${Anio}-08-03`]?.[0]?.Valor || 0            
+                            
+                let ValorPromedio=(Valor3Promedio+Valor2Promedio)+Valor1Promedio
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })  
+                
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+              }
+            }
+            else if(catalogo.id=='09')
+            {
+              if(elemento.id=='09-01')
+              {
+                let Valor=DatosElementos[`${Anio}-1-09-01`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":(Valor),
+                  "TipoNumero":(Valor)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor)<0 ? 
+                  ('-$ ' + (Number(((Valor) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })                
+
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)                                
+                  
+              }
+              else if(
+              elemento.id=='09-02' || 
+              elemento.id=='09-03')
+              {
+                let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":Valor<0 ? 1 : 2,
+                    "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })                
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                     "Valor":(Valor/12),
+                     "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                     "ValorMostrar": (Valor/12)<0 ? 
+                     ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+              }
+
+              else if(elemento.id=='09-04')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-09-01`]?.[0]?.Valor || 0
+                let Valor2= Math.abs(DatosElementosAcumulados[`${Anio}-09-02`]?.[0]?.Valor)  || 0
+                let Valor3=DatosElementosAcumulados[`${Anio}-09-03`]?.[0]?.Valor || 0
+
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":(Valor3+Valor2)+Valor1,
+                  "TipoNumero":((Valor3+Valor2)+Valor1)<0 ? 1 : 2,
+                  "ValorMostrar": ((Valor3+Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3+Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3+Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
+                })         
+                            
+                let ValorPromedio=(Valor3+Valor2)+Valor1
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })  
+                
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+              }
+            }
+            else if(catalogo.id=='10')
+            {
+              if(elemento.id=='10-01')
+              {
+                let Valor=DatosElementos[`${Anio}-1-10-01`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":(Valor),
+                  "TipoNumero":(Valor)<0 ? 1 : 2,
+                  "ValorMostrar": (Valor)<0 ? 
+                  ('-$ ' + (Number(((Valor) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })                
+
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)                                
+                  
+              }
+              else if(
+              elemento.id=='10-02' || 
+              elemento.id=='10-03')
+              {
+                let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":Valor<0 ? 1 : 2,
+                    "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })                
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                     "Valor":(Valor/12),
+                     "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                     "ValorMostrar": (Valor/12)<0 ? 
+                     ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                  
+              }
+
+              else if(elemento.id=='10-04')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-10-01`]?.[0]?.Valor || 0
+                let Valor2= Math.abs(DatosElementosAcumulados[`${Anio}-10-02`]?.[0]?.Valor)  || 0
+                let Valor3=DatosElementosAcumulados[`${Anio}-10-03`]?.[0]?.Valor || 0
+
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":(Valor3+Valor2)+Valor1,
+                  "TipoNumero":((Valor3+Valor2)+Valor1)<0 ? 1 : 2,
+                  "ValorMostrar": ((Valor3+Valor2)+Valor1)<0 ? ('-$ ' + (Number((((Valor3+Valor2)+Valor1) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((((Valor3+Valor2)+Valor1)).toFixed(0))).toLocaleString('en-US')
+                })         
+                            
+                let ValorPromedio=(Valor3+Valor2)+Valor1
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })  
+                
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+              }
+            }
+            
+            else if(catalogo.id=='11')
+            {
+              if(elemento.id=='11-01')
+              {
+                let Valor=DatosElementosAcumulados[`${Anio}-VmmQpdpunMTqkoSjhzzj`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+
+                let ValorPromedio=Number(DatosElementosAcumulados[`${Anio}-11-01`]?.[0]?.Valor || 0 ) /12
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+                
+              } 
+              else if(elemento.id=='11-02')
+              {
+               let Valor= DatosElementosAcumulados[`${Anio}-02-15`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                 "Valor":Valor,
+                 "TipoNumero":Valor<0 ? 1 : 2,
+                 "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+               
+              let ValorPromedio=Number(DatosElementosAcumulados[`${Anio}-11-02`]?.[0]?.Valor || 0 ) /12
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+    
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                               
+              }
+              else if(elemento.id=='11-03')
+              {
+                let Valor= DatosElementosAcumulados[`${Anio}-04-05`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+                
+                let ValorPromedio=Number( DatosElementosAcumulados[`${Anio}-11-03`]?.[0]?.Valor || 0 ) /12
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                                 
+              }
+              else if(elemento.id=='11-04')
+              {
+                let Valor= DatosElementosAcumulados[`${Anio}-05-05`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+                let ValorPromedio=Number( DatosElementosAcumulados[`${Anio}-11-04`]?.[0]?.Valor || 0 ) /12
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                
+                
+              } 
+              else if(elemento.id=='11-05')
+              {
+                let Valor1= DatosElementosAcumulados[`${Anio}-08-04`]?.[0]?.Valor || 0
+                let Valor2= DatosElementosAcumulados[`${Anio}-08-01`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor1-Valor2,
+                  "TipoNumero":Valor1-Valor2<0 ? 1 : 2,
+                  "ValorMostrar": (Valor1-Valor2)<0 ? ('-$ ' + (Number(((Valor1-Valor2) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor1-Valor2).toFixed(0))).toLocaleString('en-US')
+                })
+                
+                let ValorPromedio=Number( DatosElementosAcumulados[`${Anio}-11-05`]?.[0]?.Valor || 0 ) /12
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                                
+              } 
+              else if(elemento.id=='11-06')
+              {
+                let Valor=DatosElementosAcumulados[`${Anio}-06-05`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                })
+                
+                let ValorPromedio=Number(DatosElementosAcumulados[`${Anio}-11-06`]?.[0]?.Valor || 0 ) /12
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                                 
+              } 
+              
+              else if(elemento.id=='11-07')
+              {
+                let Valor1=DatosElementosAcumulados[`${Anio}-10-04`]?.[0]?.Valor || 0
+                let Valor2=DatosElementosAcumulados[`${Anio}-10-01`]?.[0]?.Valor || 0
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor1-Valor2,
+                  "TipoNumero":Valor1-Valor2<0 ? 1 : 2,
+                  "ValorMostrar": (Valor1-Valor2)<0 ? ('-$ ' + (Number(((Valor1-Valor2) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor1-Valor2).toFixed(0))).toLocaleString('en-US')
+                })
+                let ValorPromedio=Number(DatosElementosAcumulados[`${Anio}-11-07`]?.[0]?.Valor || 0 ) /12
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":ValorPromedio,
+                  "TipoNumero":ValorPromedio<0 ? 1 : 2,
+                  "ValorMostrar": ValorPromedio<0 ? ('-$ ' + (Number((ValorPromedio * -1).toFixed(0))).toLocaleString('en-US')) : 
+                  '$ ' + (Number((ValorPromedio).toFixed(0))).toLocaleString('en-US')
+                })
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)                                                
+              }  
+                  
+
+            }  
+
+
+          
+            
+            
+            
+            
+              
+    
 
            })
          }) 
@@ -2891,6 +4142,11 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalog
    catch(error:any){
      this.toastr.error('Ha ocurrido un error, inténtelo nuevamente', '¡Alerta!');
    }
+  
+
+  this.spinner.hide();
+  }, 100); // 100ms para que el spinner se muestre
+
 
 }
 

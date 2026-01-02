@@ -9099,7 +9099,26 @@ function construirDataManagerRecapt(CatalogoElementos, registros, Cabecera) {
   }
 }
 
+                  let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
+                  DatosElementosAcumulados[`${keyAnual}`].push({ 
+                    "Valor":Valor,
+                    "TipoNumero":Valor<0 ? 1 : 2,
+                    "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                  })                
+                   DatosElementosPromedios[`${keyAnual}`].push({ 
+                     "Valor":(Valor/12),
+                     "TipoNumero":(Valor/12)<0 ? 1 : 2,
+                     "ValorMostrar": (Valor/12)<0 ? 
+                     ('-$ ' + (Number(((Valor/12) * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number(((Valor/12)).toFixed(0))).toLocaleString('en-US')
+                   })
 
+                    this.actualizarValorSimple(
+                    elemento.id,keyPromedioAnio,
+                    DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                    this.actualizarValorSimple(
+                    elemento.id,keyAcumuladoAnio,
+                    DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
 
 actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalogo:any){
    try {
@@ -11267,3 +11286,13 @@ actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalog
    catch(error:any){
      this.toastr.error('Ha ocurrido un error, inténtelo nuevamente', '¡Alerta!');
    }
+
+
+
+
+   
+
+   
+
+
+   

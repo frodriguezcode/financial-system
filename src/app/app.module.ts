@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
 
 // project import
 import { AppRoutingModule } from './app-routing.module';
@@ -31,6 +31,7 @@ import { registerLocaleData } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 
 import localeEs from '@angular/common/locales/es';
+import { NgxSpinnerModule } from 'ngx-spinner';
 registerLocaleData(localeEs);
 @NgModule({
   declarations: [
@@ -62,9 +63,10 @@ registerLocaleData(localeEs);
     FirebaseModule,
     HttpClientModule,
     DialogModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    NgxSpinnerModule.forRoot({ type: 'square-jelly-box' })
   ],
-  providers: [DatePipe],
+  providers: [DatePipe,provideAnimations()],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
