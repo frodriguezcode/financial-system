@@ -31,13 +31,21 @@ type = "square-jelly-box" [fullScreen] = "true">
             </div>
 
           </div>
-          <ag-grid-angular *ngIf="cargando==false" style="width: 100%; height: 500px" class="ag-theme-alpine"
+          <ag-grid-angular
+            *ngIf="cargando == false"
+            class="ag-theme-alpine"
+            style="width: 100%"
+            domLayout="autoHeight"
             [rowData]="RowData[i]"
+            [columnDefs]="Cabecera"
+            [pagination]="false"
+            [suppressMovableColumns]="true"
+            rowSelection="single"
+            [localeText]="localeText"
+            [defaultColDef]="{ resizable: true, sortable: true, filter: true }"
             (cellValueChanged)="onCellValueChanged($event)"
             (cellEditingStarted)="onCellEditingStarted($event)"
-            [pagination]="true" [suppressMovableColumns]="true" [columnDefs]="Cabecera"
-            rowSelection="single" (gridReady)="onGridReady($event)" [localeText]="localeText"
-            [defaultColDef]="{ resizable: true, sortable: true, filter: true }">
+            (gridReady)="onGridReady($event)">
           </ag-grid-angular>
         </p-accordionTab>
       </p-accordion>

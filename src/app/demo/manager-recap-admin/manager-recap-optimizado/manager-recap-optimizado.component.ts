@@ -305,9 +305,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
             const v = params.data[mes.Mes + ' ' + anio.Anio];
             return v !== undefined && v !== null ? String(v) : '';
           },          
-          editable: (params: any) =>
-            
-          params.data.editable === this.getValoresLectura(`${anio.Anio}-${mes.NumMes}-${params.data.idElemento}`) == false? true:false,
+          editable: (params: any) => params.data?.editable,
           cellStyle: (params: any) => {
             let ValorLectura=
             this.getValoresLectura(`${anio.Anio}-${mes.NumMes}-${params.data.idElemento}`) == false? true:false
@@ -315,7 +313,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
             this.getColorValor(`${anio.Anio}-${mes.NumMes}-${params.data.idElemento}`) == 2? '#D10810':'#000000'
             if (ValorLectura === false) {
               return {
-                backgroundColor: '#f2f2f2',  // gris suave
+                backgroundColor: '#bbe3f8ff',  // gris suave
                 color: ColorValor                // texto más tenue
               };
             } else {
@@ -342,10 +340,19 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
         headerName: 'Acumulado ' + anio.Anio,
         Mostrar: true,
         filter:false,
-  valueGetter: params => {
-    const v = params.data['Acumulado ' + anio.Anio];
-    return v !== undefined && v !== null ? String(v) : '';
-  },
+        valueGetter: params => {
+          const v = params.data['Acumulado ' + anio.Anio];
+          return v !== undefined && v !== null ? String(v) : '';
+        },
+        cellStyle: (params: any) => {
+            let ColorValor=
+            this.getDataAcumulado(`${anio.Anio}-${params.data.idElemento}`,params.data.idCatalogo) <0? '#D10810':'#000000'
+          
+              return {
+                backgroundColor: '#ebe8e8ff',  // gris suave
+                color: ColorValor                // texto más tenue
+              }; 
+          },        
         sort:false,
         width: 200,
         Orden: this.Cabecera.length + 1,
@@ -358,7 +365,20 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
         headerName: 'Promedio ' + anio.Anio,
         Mostrar: true,
         filter:false,
-        sort:false,        
+        sort:false,  
+        cellStyle: (params: any) => {
+            let ColorValor=
+            this.getDataAcumulado(`${anio.Anio}-${params.data.idElemento}`,params.data.idCatalogo) <0? '#D10810':'#000000'
+          
+              return {
+                backgroundColor: '#ebe8e8ff',  // gris suave
+                color: ColorValor                // texto más tenue
+              }; 
+          },         
+        valueGetter: params => {
+          const v = params.data['Promedio ' + anio.Anio];
+          return v !== undefined && v !== null ? String(v) : '';
+        },       
         width: 200,
         Orden: this.Cabecera.length + 1,
         Anio: anio.Anio,
@@ -388,6 +408,9 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
   getValoresLectura(key:any){
     return this.RegistrosManagerRecapt.find((data:any)=>data.key==key)==undefined ? false :this.RegistrosManagerRecapt.find((data:any)=>data.key==key).Lectura
   }
+  getValoresLecturaAcumulado(key:any){
+    return this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key)==undefined ? false :this.RegistrosManagerRecaptAcumulado.find((data:any)=>data.key==key).Lectura
+  }
   getColorValor(key:any){
     return this.RegistrosManagerRecapt.find((data:any)=>data.key==key)==undefined ? false :this.RegistrosManagerRecapt.find((data:any)=>data.key==key).tipo_numero
   }
@@ -403,7 +426,7 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
         : sum;
     }, 0);
 
-    return Math.abs(total);
+    return total;
   }
 
   promedioAnual(keyAnual:any,idCatalogo:any){
@@ -491,6 +514,14 @@ getTipoNumero(idElemento:any,idCatalogo:any)
 
   return Elemento[0].tipo_numero
 }
+getEditable(idElemento:any,idCatalogo:any)
+{
+  let Catalogo=this.CatalogoElementos.filter((cat:any)=>cat.id==idCatalogo)
+  let Elemento= Catalogo[0].Elementos.filter((elemento:any)=>elemento.id==idElemento)
+
+
+  return Elemento[0].editable
+}
 async  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,idCatalogo:any){
    this.spinner.show();
    setTimeout(() => {
@@ -503,11 +534,10 @@ async  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,id
        
        let ValorElemento=
        this.getTipoNumero(idElemento,idCatalogo)==2 ? Number(Math.abs(Valor))*-1 : Number(Valor)
-       
+
        if (index !== -1) {
          this.RegistrosManagerRecapt[index].Valor = Number(ValorElemento)
          this.RegistrosManagerRecapt[index].tipo_numero=Number(ValorElemento)< 0 ? 2: 1
-         
        }
        else {
          this.RegistrosManagerRecapt.push(
@@ -537,7 +567,7 @@ async  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,id
          "FechaActualizacion":"",
          "AnioRegistro": Anio,    
          "idElemento": idElemento,    
-         "Valor": Number(Valor),    
+         "Valor":Number(ValorElemento),    
          "idCatalogo": idCatalogo  
        }
        console.log('Registro',Registro)
@@ -4928,7 +4958,7 @@ async  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,id
       catalogo.Elementos.forEach((element: any) => {
         let fila: any = {
           Concepto: element.Nombre,
-          editable: element.editable,
+          editable: this.getEditable(element.id,catalogo.id),
           idElemento:element.id,
           idCatalogo:catalogo.id
         };
