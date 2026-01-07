@@ -2579,7 +2579,7 @@ async  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,id
                 DatosElementosAcumulados[`${keyAnual}`].push({ 
                   "Valor":Valor,
                   "TipoNumero":Valor<0 ? 1 : 2,
-                  "ValorMostrar": Valor<0 ? ('-$ ' + (Number((Valor * -1).toFixed(0))).toLocaleString('en-US')) : '$ ' + (Number((Valor).toFixed(0))).toLocaleString('en-US')
+                  "ValorMostrar": (Valor).toFixed(0)
                 })
                 DatosElementosPromedios[`${keyAnual}`].push({ 
                   "Valor":(Valor/12),
@@ -2595,6 +2595,27 @@ async  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,id
                 this.actualizarValorSimple(
                 elemento.id,keyPromedioAnio,
                 DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)              
+              }
+              else if(elemento.id=='01-04'){
+                let Valor=this.getValoresManagerRecapValorNumero(`${Anio}-12-01-04`)
+                DatosElementosAcumulados[`${keyAnual}`].push({ 
+                  "Valor":Valor,
+                  "TipoNumero":Valor<0 ? 1 : 2,
+                  "ValorMostrar": (Valor).toFixed(0)
+                })
+                DatosElementosPromedios[`${keyAnual}`].push({ 
+                  "Valor":"",
+                  "TipoNumero":1,
+                  "ValorMostrar": ""
+                })
+  
+                this.actualizarValorSimple(
+                elemento.id,keyAcumuladoAnio,
+                DatosElementosAcumulados[keyAnual]?.[0]?.ValorMostrar || 0)
+  
+                this.actualizarValorSimple(
+                elemento.id,keyPromedioAnio,
+                DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)                
               }
               else if(elemento.id=='01-07'){
   
@@ -2619,7 +2640,7 @@ async  actualizarData(Anio:any,Mes:any,MesNombre:any,Valor:any,idElemento:any,id
                     elemento.id,keyPromedioAnio,
                     DatosElementosPromedios[keyAnual]?.[0]?.ValorMostrar || 0)
               }  
-              else if(elemento.id=='01-06' || elemento.id=='01-04' || elemento.id=='01-03' || elemento.id=='01-01'){
+              else if(elemento.id=='01-06' ||  elemento.id=='01-03' || elemento.id=='01-01'){
                 let Valor=this.getDataAcumulado(keyAnual,catalogo.id)
                 DatosElementosAcumulados[`${keyAnual}`].push({ 
                     "Valor":Valor,
