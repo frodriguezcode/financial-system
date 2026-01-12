@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { jwtDecode } from 'jwt-decode';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,6 +14,8 @@ export class AuthService {
   urlSeverMailLocal = 'https://apisistemafinanciero.onrender.com/formulario/';
   urlMailRecoverPassw= 'https://apisistemafinanciero.onrender.com/recuperarPassw/';
   urlMailUpdatePassw= 'https://apisistemafinanciero.onrender.com/updatePassw/';
+   linkApiMejorada = 'http://localhost:3000/'
+  //linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
   Atributos:any=[]
   constructor(
     private afs: AngularFirestore,
@@ -19,6 +23,43 @@ export class AuthService {
     private datePipe: DatePipe
   ) {
     
+  }
+
+    private readonly TOKEN_KEY = 'token';
+
+  get token(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  getUserFromToken(): any | null {
+    if (!this.token) return null;
+
+    try {
+      return jwtDecode<any>(this.token);
+    } catch {
+      return null;
+    }
+  }
+
+    /** ⏳ Verifica expiración */
+  isTokenExpired(): boolean {
+  const user = this.getUserFromToken();
+  if (!user || !user.exp) return true;
+
+  const now = Date.now();           // milisegundos
+  const exp = user.exp * 1000;      // convertir a ms
+
+  return now >= exp;
+  }
+
+
+
+  isLoggedIn(): boolean {
+    return !!this.token;
+  }
+
+  logout() {
+    localStorage.removeItem(this.TOKEN_KEY);
   }
   validarAtributo(idAtributo:string,Atributos:any) {
     this.Atributos=[]
@@ -1726,6 +1767,18 @@ obtenerEmpresas(idMatriz:string) {
     .ref.set(Object.assign(CatalogoCuentas, {id: id}))
   }
 
+
+  iniciarSesion(usuario:string,password:string){
+
+
+   
+   return this._http.post<any>( `${this.linkApiMejorada + 'login/' }`, { usuario, password })
+    .pipe(
+      tap((resp:any) => {
+        localStorage.setItem('token', resp.token);
+      })
+    );   
+  }
   obtenerUsuarioLogin(usuario:string,password:string) {
     
     return this.afs

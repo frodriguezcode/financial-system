@@ -16,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FieldsetModule } from 'primeng/fieldset';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 ModuleRegistry.registerModules([ AllCommunityModule ]); 
 @Component({
   selector: 'app-crear-registros',
@@ -29,7 +30,10 @@ ModuleRegistry.registerModules([ AllCommunityModule ]);
   styleUrls: ['./crear-registros.component.scss']
 })
 export default class CrearRegistrosComponent implements OnInit {
-constructor(private conS:ConfigurationService,private toastr: ToastrService,private authS:AuthService, private datePipe: DatePipe){}
+constructor(private conS:ConfigurationService,
+  private toastr: ToastrService,
+  private readonly router: Router,
+  private authS:AuthService, private datePipe: DatePipe){}
 Valor:number=0
 ActivarClase:boolean=false
 TipoEntidad:number=0
@@ -98,7 +102,15 @@ choiceTipoEntidad(tipo:number){
 this.TipoEntidad=tipo
 }
 ngOnInit(): void {
-  console.log('indiceActivo',this.indiceActivo)
+  const user = this.authS.getUserFromToken();
+  const expirado=this.authS.isTokenExpired()
+  if (!user || expirado) {
+    this.router.navigate(['auth/signin']);
+    return;
+  }
+
+  console.log('user',user)
+
       Swal.fire({
         title: 'Cargando módulo...'
       });
@@ -230,7 +242,7 @@ this.conS.usuario$.subscribe((usuario) => {
         this.idEmpresa=this.usuario.idEmpresa
         this.construirData()
       } else {
-        this.usuario = JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+        this.usuario = user
         this.idEmpresa=this.usuario.idEmpresa
         this.getDatos()
       }

@@ -13,6 +13,7 @@ import { of } from 'rxjs';
 import { ConfigurationService } from 'src/app/services/configuration.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-nav-right',
   templateUrl: './nav-right.component.html',
@@ -52,7 +53,9 @@ export class NavRightComponent implements DoCheck,OnInit {
 
 	closeResult = '';
   // constructor
-  constructor(   private authS:AuthService,private conS:ConfigurationService,private toastr: ToastrService,
+  constructor(  
+    private readonly router: Router,
+    private authS:AuthService,private conS:ConfigurationService,private toastr: ToastrService,
 
     config: NgbModalConfig,
 		private modalService: NgbModal,
@@ -88,7 +91,13 @@ export class NavRightComponent implements DoCheck,OnInit {
 }
 
   ngOnInit(): void {
-    this.usuario= JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+  const user = this.authS.getUserFromToken();
+console.log('Expira en:', new Date(user!.exp * 1000));
+  if (!user) {
+    this.router.navigate(['/login']);
+    return;
+  }
+    this.usuario= user
     this.obtenerRoles()
     this.obtenerUsuariosByMatriz()
     this.obtenerEmpresas()

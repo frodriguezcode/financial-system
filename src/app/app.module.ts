@@ -29,9 +29,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { registerLocaleData } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import localeEs from '@angular/common/locales/es';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { AuthInterceptor } from './interceptors/auth-interceptor';
 registerLocaleData(localeEs);
 @NgModule({
   declarations: [
@@ -66,7 +68,15 @@ registerLocaleData(localeEs);
     ToastrModule.forRoot(),
     NgxSpinnerModule.forRoot({ type: 'square-jelly-box' })
   ],
-  providers: [DatePipe,provideAnimations()],
+  providers: [DatePipe,provideAnimations(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
