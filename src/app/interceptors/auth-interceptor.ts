@@ -7,39 +7,45 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,private Auth:AuthService) {}
 
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+ intercept(req: HttpRequest<any>, next: HttpHandler) {
+  const accessToken = localStorage.getItem('access_token');
 
-    const token = localStorage.getItem('token');
+  let authReq = req;
 
-    let authReq = req;
-
-    if (token) {
-      authReq = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-    }
-
-    return next.handle(authReq).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          localStorage.removeItem('token');
-          this.router.navigate(['/login']);
-        }
-        return throwError(() => error);
-      })
-    );
+  if (accessToken) {
+    authReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
   }
+
+  return next.handle(authReq).pipe(
+    catchError(err => {
+      if (err.status === 401) {
+        return this.Auth.refreshToken().pipe(
+          switchMap((token:any) => {
+            localStorage.setItem('access_token', token);
+            return next.handle(
+              req.clone({
+                setHeaders: { Authorization: `Bearer ${token}` }
+              })
+            );
+          })
+        );
+      }
+      return throwError(() => err);
+    })
+  );
+}
+
 }

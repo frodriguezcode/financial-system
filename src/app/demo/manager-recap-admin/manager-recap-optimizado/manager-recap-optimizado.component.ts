@@ -12,6 +12,7 @@ import { AgGridAngular, AgGridModule } from 'ag-grid-angular';
 import { AccordionModule } from 'primeng/accordion';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';ModuleRegistry.registerModules([AllCommunityModule]);
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { AuthService } from 'src/app/services/auth.service';
 @Component({
   selector: 'app-manager-recap-optimizado',
   standalone: true,
@@ -28,7 +29,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 export default class ManagerRecaptOptimizadoComponent implements OnInit {
   constructor(private conS: ConfigurationService, 
     private spinner: NgxSpinnerService,
-    private datePipe: DatePipe, private toastr: ToastrService,) { }
+    private datePipe: DatePipe, private toastr: ToastrService, private authS:AuthService) { }
   usuario: any
   Fecha:any= new Date();
   localeText: any;
@@ -106,13 +107,16 @@ export default class ManagerRecaptOptimizadoComponent implements OnInit {
       groupBy: 'Agrupar por',
       ungroupBy: 'Desagrupar por'
     };
+
+    const user = this.authS.getUserFromToken();
+
     this.conS.usuario$.subscribe(usuario => {
       this.cargando = true
       if (usuario) {
         this.usuario = usuario
       }
       else {
-        this.usuario = JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+        this.usuario = user
       }
       this.obtenerData()
     })

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
 
@@ -1776,9 +1776,19 @@ obtenerEmpresas(idMatriz:string) {
     .pipe(
       tap((resp:any) => {
         localStorage.setItem('token', resp.token);
+        localStorage.setItem('refreshToken', resp.refreshToken);
       })
     );   
   }
+
+  refreshToken(): Observable<string> {
+  const refreshToken = localStorage.getItem('refresh_token');
+
+  return this._http.post<any>('api/refresh-token', { refreshToken })
+    .pipe(map(r => r.accessToken));
+}
+
+
   obtenerUsuarioLogin(usuario:string,password:string) {
     
     return this.afs
