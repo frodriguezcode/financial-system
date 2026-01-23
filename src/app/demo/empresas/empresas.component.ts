@@ -213,7 +213,15 @@ export default class EmpresasComponent implements OnInit {
         OrdenAnterior: 7
       },
     );
-    this.usuario = JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
+
+    const user = this.authS.getUserFromToken();
+    const expirado=this.authS.isTokenExpired()
+    if (!user || expirado) {
+      this.router.navigate(['auth/signin']);
+      Swal.close()
+      return;
+    }
+    this.usuario =user
     this.obtenerEmpresas();
     this.obtenerCorporaciones();
     this.obtenerAtributos();

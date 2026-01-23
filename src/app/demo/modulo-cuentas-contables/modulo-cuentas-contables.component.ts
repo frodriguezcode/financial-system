@@ -19,6 +19,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import * as XLSX from 'xlsx-js-style';
 import { saveAs } from 'file-saver';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-modulo-cuentas-contables',
   standalone: true,
@@ -71,7 +72,9 @@ export default class ModuloCuentasContableComponent implements OnInit {
     private conS: ConfigurationService,
     private authS: AuthService,
     private toastr: ToastrService,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private readonly router: Router
+    
   ) { }
   ngOnInit(): void {
     this.levelStyles = {
@@ -98,12 +101,23 @@ export default class ModuloCuentasContableComponent implements OnInit {
         Seleccionado: false
       }
     ];
+      const user = this.authS.getUserFromToken();
+      const expirado=this.authS.isTokenExpired()
+      if (!user || expirado) {
+        this.router.navigate(['auth/signin']);
+        Swal.close()
+        return;
+      }
+
+    Swal.fire({
+      title: 'Cargando cuentas contables...'
+    });
+    Swal.showLoading();
     this.conS.usuario$.subscribe((usuario) => {
       if (usuario) {
         this.usuario = usuario;
       } else {
-        this.usuario = JSON.parse(localStorage.getItem('usuarioFinancialSystems')!);
-      }
+        this.usuario = user      }
 
       this.idEmpresa = this.usuario.idEmpresa;
 

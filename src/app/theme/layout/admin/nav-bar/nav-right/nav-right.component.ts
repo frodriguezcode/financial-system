@@ -98,6 +98,7 @@ console.log('Expira en:', new Date(user!.exp * 1000));
     return;
   }
     this.usuario= user
+    console.log('usuario',this.usuario)
     this.obtenerRoles()
     this.obtenerUsuariosByMatriz()
     this.obtenerEmpresas()
