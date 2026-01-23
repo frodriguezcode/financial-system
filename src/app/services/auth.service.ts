@@ -14,8 +14,8 @@ export class AuthService {
   urlSeverMailLocal = 'https://apisistemafinanciero.onrender.com/formulario/';
   urlMailRecoverPassw= 'https://apisistemafinanciero.onrender.com/recuperarPassw/';
   urlMailUpdatePassw= 'https://apisistemafinanciero.onrender.com/updatePassw/';
-   linkApiMejorada = 'http://localhost:3000/'
-  //linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
+  // linkApiMejorada = 'http://localhost:3000/'
+  linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
   Atributos:any=[]
   constructor(
     private afs: AngularFirestore,
