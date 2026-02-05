@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, tap } from 'rxjs';
+import { EMPTY, map, Observable, tap, throwError } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
 
@@ -14,8 +14,8 @@ export class AuthService {
   urlSeverMailLocal = 'https://apisistemafinanciero.onrender.com/formulario/';
   urlMailRecoverPassw= 'https://apisistemafinanciero.onrender.com/recuperarPassw/';
   urlMailUpdatePassw= 'https://apisistemafinanciero.onrender.com/updatePassw/';
-  //linkApiMejorada = 'http://localhost:3000/'
-  linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
+  linkApiMejorada = 'http://localhost:3000/'
+  //linkApiMejorada = 'https://apisistemafinanciero.onrender.com/'
   Atributos:any=[]
   constructor(
     private afs: AngularFirestore,
@@ -1781,11 +1781,15 @@ obtenerEmpresas(idMatriz:string) {
     );   
   }
 
-  refreshToken(): Observable<string> {
+refreshToken(): Observable<string> {
   const refreshToken = localStorage.getItem('refresh_token');
 
-  return this._http.post<any>('api/refresh-token', { refreshToken })
-    .pipe(map(r => r.accessToken));
+  if (refreshToken) {
+    return this._http.post<any>('api/refresh-token', { refreshToken })
+      .pipe(map(r => r.accessToken));
+  }
+
+  return throwError(() => new Error('No refresh token'));
 }
 
 

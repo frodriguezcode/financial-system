@@ -16,7 +16,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private router: Router,private Auth:AuthService) {}
 
- intercept(req: HttpRequest<any>, next: HttpHandler) {
+intercept(req: HttpRequest<any>, next: HttpHandler) {
   const accessToken = localStorage.getItem('access_token');
 
   let authReq = req;
@@ -31,21 +31,34 @@ export class AuthInterceptor implements HttpInterceptor {
 
   return next.handle(authReq).pipe(
     catchError(err => {
+
+      // 🔴 NO interceptar el login
+      if (req.url.includes('login')) {
+        return throwError(() => err);
+      }
+
       if (err.status === 401) {
         return this.Auth.refreshToken().pipe(
-          switchMap((token:any) => {
+          switchMap((token: any) => {
             localStorage.setItem('access_token', token);
+
             return next.handle(
               req.clone({
                 setHeaders: { Authorization: `Bearer ${token}` }
               })
             );
+          }),
+          catchError(refreshError => {
+            this.router.navigate(['/login']);
+            return throwError(() => refreshError);
           })
         );
       }
+
       return throwError(() => err);
     })
   );
 }
+
 
 }

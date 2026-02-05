@@ -38,59 +38,71 @@ ngOnInit(): void {
       this.mostrarContrasenia = !this.mostrarContrasenia;
     }
 
-  inicioSesion(){
-    
-    Swal.fire({
-      title: 'Iniciando sesión....'
-     });
-     Swal.showLoading();
+inicioSesion() {
 
-    this.autS.iniciarSesion(this.Usuario.value,this.Password.value).subscribe((resp:any)=>{
-      if(resp.acceso==false){
+  Swal.fire({
+    title: 'Iniciando sesión....'
+  });
+  Swal.showLoading();
+
+  this.autS.iniciarSesion(this.Usuario.value, this.Password.value)
+    .subscribe({
+      next: (resp: any) => {
+        if (resp.acceso == false) {
+          Swal.fire({
+            position: "center",
+            icon: "warning",
+            title: "Credenciales incorrectas",
+            showConfirmButton: false,
+            timer: 1500
+          });
+        } else {
+          if (resp.usuario.ConfigInicial == false && resp.usuario.isAdmin == true) {
+            this.router.navigate(['/empresas']);
+            Swal.close();
+            this.obtenerAtributos(resp.usuario.idEmpresa, resp.usuario.idRol);
+          }
+          else if (resp.usuario.ConfigInicial == false && resp.usuario.isAdmin == false) {
+            Swal.fire({
+              position: "center",
+              icon: "warning",
+              title: "Tu empresa aun no ha sido totalmente configurada",
+              text: "Comunícate con el administrador de tu empresa.",
+              showConfirmButton: true,
+              timer: 1500
+            });
+          }
+          else {
+            this.obtenerAtributos(resp.usuario.idEmpresa, resp.usuario.idRol);
+            this.router.navigate(['/registros']);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Inicio de sesión exitoso",
+              showConfirmButton: false,
+              timer: 1500
+            });
+          }
+        }
+      },
+
+      error: (err) => {
+        Swal.close();
+        console.log('ERROR DEL LOGIN', err);
+
+        const mensaje =
+          err?.error?.mensaje ||
+          'Error al iniciar sesión';
+
         Swal.fire({
-          position: "center",
-          icon: "warning",
-          title: "Credenciales incorrectas",
-          showConfirmButton: false,
-          timer: 1500
-        });        
+          icon: 'error',
+          title: 'Error',
+          text: mensaje
+        });
       }
-      else {
-           if(resp.usuario.ConfigInicial==false && resp.usuario.isAdmin==true ){
-             this.router.navigate(['/empresas'])
-             Swal.close()
-             this.obtenerAtributos(resp.usuario.idEmpresa,resp.usuario.idRol)
-           }
-          else if(resp.usuario.ConfigInicial==false && resp.usuario.isAdmin==false ){
-             Swal.fire({
-               position: "center",
-               icon: "warning",
-               title: "Tu empresa aun no ha sido totalmente configurada",
-               text: "Comunícate con el administrador de tu empresa.",
-               showConfirmButton: true,
-               timer: 1500
-             });
-           }
-           else{
-            this.obtenerAtributos(resp.usuario.idEmpresa,resp.usuario.idRol)
-             this.router.navigate(['/registros'])
-             Swal.fire({
-               position: "center",
-               icon: "success",
-               title: "Inicio de sesión exitoso",
-               showConfirmButton: false,
-               timer: 1500
-             });
-   
-    
-           }           
+    });
+}
 
-      }
-
-      console.log('Data',resp)   
-
-    })
-  }  
 
   login(){
     
